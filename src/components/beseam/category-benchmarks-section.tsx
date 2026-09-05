@@ -2,8 +2,8 @@ import Link from "next/link";
 
 import { ArrowRight } from "lucide-react";
 
-import { Reveal } from "@/components/beseam/reveal";
 import { BENCHMARK_INK } from "@/components/beseam/category-benchmark";
+import { Reveal } from "@/components/beseam/reveal";
 import { BENCHMARK_RUN, CATEGORY_BENCHMARKS } from "@/data/category-benchmarks";
 
 const SCORED_BENCHMARKS = CATEGORY_BENCHMARKS.map((benchmark) => ({
@@ -79,11 +79,12 @@ export default function CategoryBenchmarksSection() {
                 Products can be visible in one place and missed in another.
               </h2>
               <p className="mt-6 max-w-[48ch] text-[16px] leading-[1.7] text-black/64">
-                Beseam asks the same buying questions across AI assistants to find
-                where your products appear, where they are missed, and how those
-                results differ. In the latest run,{" "}
+                Beseam asks the same buying questions across AI assistants to
+                find where your products appear, where they are missed, and how
+                those results differ. In the latest run,{" "}
                 <strong className="font-semibold text-ink-deep">
-                  {SOLO_SHARE}% of brand appearances occurred on only one assistant.
+                  {SOLO_SHARE}% of brand appearances occurred on only one
+                  assistant.
                 </strong>
               </p>
               <Link
@@ -94,14 +95,17 @@ export default function CategoryBenchmarksSection() {
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Link>
               <p className="mt-7 max-w-[38ch] border-l-2 border-signal-ink pl-4 text-[13.5px] font-medium leading-[1.55] text-black/68">
-                Consideration is fragmented. Beseam follows what happens next.
+                A readable catalog gets you considered. Beseam follows whether
+                you get chosen, and shows what changed.
               </p>
             </div>
 
             <div>
               <figure className="border-t-2 border-ink-deep pt-4">
                 <figcaption className="flex flex-wrap items-center justify-between gap-2 font-mono text-[11px] uppercase tracking-[0.1em] text-black/52">
-                  <span className="font-semibold text-black/62">How often assistants agreed</span>
+                  <span className="font-semibold text-black/62">
+                    How often assistants agreed
+                  </span>
                   <span>{BENCHMARK_RUN.namings} brand appearances</span>
                 </figcaption>
 
@@ -136,7 +140,11 @@ export default function CategoryBenchmarksSection() {
                       <dd className="flex shrink-0 items-baseline gap-1 text-ink-deep">
                         <span className="font-semibold">{band.value}</span>
                         <span className="text-black/44">
-                          ({Math.round((band.value / BENCHMARK_RUN.namings) * 100)}%)
+                          (
+                          {Math.round(
+                            (band.value / BENCHMARK_RUN.namings) * 100,
+                          )}
+                          %)
                         </span>
                       </dd>
                       <dt className="min-w-0 font-semibold uppercase tracking-[0.08em] text-black/56">
@@ -192,7 +200,10 @@ export default function CategoryBenchmarksSection() {
                         </span>
                         <span className="w-12 shrink-0 whitespace-nowrap text-right font-mono text-[12px] tabular-nums text-ink-deep">
                           {benchmark.singleEngineBrands}
-                          <span className="text-black/40"> of {benchmark.brands.length}</span>
+                          <span className="text-black/40">
+                            {" "}
+                            of {benchmark.brands.length}
+                          </span>
                         </span>
                       </span>
                     </li>

@@ -29,11 +29,11 @@ const lora = Lora({
 
 export const metadata: Metadata = {
   title: {
-    default: "Beseam | Find, fix, and measure ecommerce growth",
+    default: "Beseam | See why AI picked someone else",
     template: "%s | Beseam",
   },
   description:
-    "Beseam continuously finds the strongest opportunities to improve growth, prepares and executes supported fixes under your rules, and measures what changed.",
+    "Beseam shows you where AI shopping assistants leave your products out, why, what to fix, and whether the fix worked. Free store scan; customer-facing changes only with your approval.",
   authors: [{ name: "Beseam" }],
   creator: "Beseam",
   publisher: "Beseam",
@@ -59,9 +59,9 @@ export const metadata: Metadata = {
     apple: [{ url: "/favicon/apple-touch-icon.png", sizes: "180x180" }],
   },
   openGraph: {
-    title: "Beseam - Find, fix, and measure ecommerce growth",
+    title: "Beseam | See why AI picked someone else",
     description:
-      "Beseam continuously finds the strongest opportunities to improve growth, prepares and executes supported fixes under your rules, and measures what changed.",
+      "Beseam shows you where AI shopping assistants leave your products out, why, what to fix, and whether the fix worked. Free store scan; customer-facing changes only with your approval.",
     url: "/",
     siteName: "Beseam",
     type: "website",
@@ -77,9 +77,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Beseam - Find, fix, and measure ecommerce growth",
+    title: "Beseam | See why AI picked someone else",
     description:
-      "Beseam continuously finds the strongest opportunities to improve growth, prepares and executes supported fixes under your rules, and measures what changed.",
+      "Beseam shows you where AI shopping assistants leave your products out, why, what to fix, and whether the fix worked. Free store scan; customer-facing changes only with your approval.",
     images: [HOME_SOCIAL_IMAGE],
   },
 };

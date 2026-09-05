@@ -7,12 +7,13 @@ import CookieConsent from "@/components/cookie-consent";
 import { HOME_SOCIAL_IMAGE, buildPublicMetadata } from "@/lib/seo";
 import { STORE_HEALTH_FAQS } from "@/lib/store-health-faqs";
 export const metadata: Metadata = buildPublicMetadata({
-  title: "Beseam | Find, fix, and measure ecommerce growth",
+  title: "Beseam | See why AI picked someone else",
   description:
-    "Beseam continuously finds the strongest opportunities to improve growth, prepares and applies supported fixes under your rules, and measures what changed.",
+    "Beseam shows you where AI shopping assistants leave your products out, why, what to fix, and whether the fix worked. Free store scan; customer-facing changes only with your approval.",
   path: "/",
   image: HOME_SOCIAL_IMAGE,
-  imageAlt: "Beseam finding, fixing, and measuring ecommerce growth opportunities",
+  imageAlt:
+    "Beseam finding, fixing, and measuring ecommerce growth opportunities",
 });
 
 export default function Home() {
@@ -23,9 +24,9 @@ export default function Home() {
         "@type": "WebPage",
         "@id": "https://beseam.com/#webpage",
         url: "https://beseam.com/",
-        name: "Beseam | Find, fix, and measure ecommerce growth",
+        name: "Beseam | See why AI picked someone else",
         description:
-          "Beseam continuously finds the strongest opportunities to improve growth, prepares and applies supported fixes under your rules, and measures what changed.",
+          "Beseam shows you where AI shopping assistants leave your products out, why, what to fix, and whether the fix worked. Free store scan; customer-facing changes only with your approval.",
         about: { "@id": "https://beseam.com/#organization" },
         inLanguage: "en",
       },
