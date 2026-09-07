@@ -31,7 +31,7 @@ const SCAN_CONTENTS = [
   {
     label: "Your product pages",
     detail:
-      "A sample read end to end, then compared against your catalog — names, prices and availability that disagree.",
+      "We read a sample of pages in full, then compare them with your catalog — names, prices and stock that do not match.",
   },
   {
     label: "A sample AI answer",
@@ -48,16 +48,14 @@ export default function ScanPage() {
           <h1 className="mx-auto max-w-[22ch] text-balance font-display text-[clamp(2.8rem,5vw,4.8rem)] font-normal leading-[1] tracking-[-0.025em]">
             See what may stop shoppers from buying.
           </h1>
-          {/* Name the assessment before anyone types. A merchant who arrives
-              expecting keyword analysis should read what this is, and what it
-              is not, here — not work it out from the findings afterwards. */}
+          {/* Name the assessment before anyone types, in one line. The full
+              "what this is / what it is not" wording lives once, in
+              `FreeScanPromise` directly above the field — repeating it here put
+              the same paragraph on the page twice. */}
           <p className="mx-auto mt-7 max-w-[58ch] text-[17px] leading-[1.7] text-black/64">
-            Enter your domain. This is a technical discoverability read of your
-            public storefront: what search engines and AI assistants can see in
-            your product pages, catalog data and site signals, and what is worth
-            improving first. It is not a keyword report — search demand is not
-            measured here, and shopper questions come after this scan, not in
-            it.
+            Enter your domain and your email. We read your public store the way
+            a search engine or an AI assistant reads it, then email you the link
+            to your audit.
           </p>
         </div>
 
@@ -100,7 +98,21 @@ export default function ScanPage() {
             This scan reads your store once. Beseam keeps checking, and proves
             what changed.
           </p>
-          <LiveAnswerCheck placement="ai_discovery_scan" showPromise />
+          <LiveAnswerCheck
+            placement="ai_discovery_scan"
+            showPromise
+            formNote={
+              // Same reassurance the homepage hero used to carry, moved here:
+              // it belongs between the field and the result, not the hero.
+              <p className="mx-auto mt-2 max-w-3xl text-center text-[12.5px] leading-snug text-black/54">
+                Free scan reads your store once.
+                <span className="block">
+                  Beseam: Find &rarr; Prepare &rarr; Approve &rarr; Apply &rarr;
+                  Measure
+                </span>
+              </p>
+            }
+          />
         </div>
 
         {/* Two doors, ranked. The upgrade the scan cannot give you — questions

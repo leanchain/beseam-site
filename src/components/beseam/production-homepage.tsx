@@ -47,9 +47,9 @@ export default function ProductionHomepage() {
                 <span className="text-signal-ink">someone else</span>.
               </h1>
               <p className="pointer-events-auto mx-auto mt-6 max-w-[64ch] text-[17px] leading-[1.7] text-black/64 sm:text-[18px]">
-                Beseam shows you where AI shopping assistants leave your
-                products out, why, what to fix &mdash; and whether the fix
-                worked.
+                Beseam keeps watching AI discovery, your store, and your
+                shoppers to find what is worth improving, makes the changes you
+                approve, and shows you what changed.
               </p>
               <div className="pointer-events-auto mx-auto mt-9 w-full">
                 <LiveAnswerCheck
@@ -57,17 +57,7 @@ export default function ProductionHomepage() {
                   handOffTo="/scan"
                   formNote={
                     <div className="mx-auto mt-2 flex flex-col items-center text-center">
-                      {/* The boundary the tester never found: the scan is one
-                          read, the app is the loop. Both named before a domain
-                          is typed. */}
-                      <p className="text-[12.5px] leading-snug text-black/54">
-                        Free scan reads your store once.
-                        <span className="block">
-                          Beseam: Find &rarr; Prepare &rarr; Approve &rarr;
-                          Apply &rarr; Measure
-                        </span>
-                      </p>
-                      <ul className="mt-4 flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
+                      <ul className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
                         {SCAN_RETURNS.map((item) => (
                           <li
                             key={item}
