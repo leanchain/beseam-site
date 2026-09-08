@@ -46,12 +46,13 @@ export default function LanguageSwitcher({
     const onPointerDown = (event: PointerEvent) => {
       if (!containerRef.current?.contains(event.target as Node)) close(false);
     };
+    const onScroll = () => close(false);
     document.addEventListener("pointerdown", onPointerDown);
-    window.addEventListener("scroll", () => close(false), {
-      passive: true,
-      once: true,
-    });
-    return () => document.removeEventListener("pointerdown", onPointerDown);
+    window.addEventListener("scroll", onScroll, { passive: true, once: true });
+    return () => {
+      document.removeEventListener("pointerdown", onPointerDown);
+      window.removeEventListener("scroll", onScroll);
+    };
   }, [open, close]);
 
   const select = useCallback(
@@ -63,6 +64,9 @@ export default function LanguageSwitcher({
         next,
         typeof location !== "undefined" && location.protocol === "https:",
       );
+      // Same-origin signal for anything (e.g. UntranslatedNotice) that needs
+      // to react to the cookie change without a route transition.
+      window.dispatchEvent(new Event("bs:locale-change"));
       const destination = counterpartPath(pathname, next);
       trackEvent({
         action: "language_switched",
@@ -72,8 +76,11 @@ export default function LanguageSwitcher({
         ...getMarketingProperties(placement, destination ?? pathname),
       });
       close(true);
+      // No counterpart: stay put. The notice above picks up the cookie
+      // change via the "bs:locale-change" event -- no router.refresh() is
+      // needed, since locale/dictionary here are derived from the pathname,
+      // not from server state that a refresh would refetch.
       if (destination) router.push(destination);
-      else router.refresh(); // no counterpart: stay put, let the notice appear
     },
     [close, locale, pathname, placement, router, trackEvent],
   );
@@ -127,6 +134,9 @@ export default function LanguageSwitcher({
         aria-haspopup="listbox"
         aria-expanded={open}
         aria-controls={open ? listboxId : undefined}
+        aria-activedescendant={
+          open ? `${listboxId}-${LOCALES[activeIndex]}` : undefined
+        }
         onClick={() => setOpen((v) => !v)}
         className="inline-flex min-h-11 items-center gap-1.5 px-2 text-[14px] font-semibold text-black/62 transition-colors hover:text-signal-ink focus-visible:ring-2 focus-visible:ring-signal-ink"
       >
@@ -146,7 +156,6 @@ export default function LanguageSwitcher({
           id={listboxId}
           role="listbox"
           aria-label={t.switcher.listboxAriaLabel}
-          aria-activedescendant={`${listboxId}-${LOCALES[activeIndex]}`}
           tabIndex={-1}
           className="absolute right-0 top-full z-50 mt-1 min-w-[10rem] border border-black/14 bg-ground shadow-lg"
         >

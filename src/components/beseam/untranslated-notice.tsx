@@ -24,11 +24,16 @@ export default function UntranslatedNotice() {
   const [show, setShow] = useState(false);
 
   useEffect(() => {
-    const wantsGerman = readLocaleCookie(document.cookie) === "de";
-    const hasGerman =
-      counterpartPath(pathname, "de") !== null || pathname.startsWith("/de");
-    const dismissed = sessionStorage.getItem(DISMISS_KEY) === "1";
-    setShow(wantsGerman && !hasGerman && !dismissed);
+    const evaluate = () => {
+      const wantsGerman = readLocaleCookie(document.cookie) === "de";
+      const hasGerman =
+        counterpartPath(pathname, "de") !== null || pathname.startsWith("/de");
+      const dismissed = sessionStorage.getItem(DISMISS_KEY) === "1";
+      setShow(wantsGerman && !hasGerman && !dismissed);
+    };
+    evaluate();
+    window.addEventListener("bs:locale-change", evaluate);
+    return () => window.removeEventListener("bs:locale-change", evaluate);
   }, [pathname]);
 
   if (!show) return null;
