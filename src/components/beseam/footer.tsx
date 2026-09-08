@@ -37,14 +37,6 @@ const FOOTER_GROUPS = [
 export default function BeseamFooter() {
   return (
     <footer className="relative overflow-hidden bg-ink-deep text-white">
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -left-[12rem] -top-[14rem] h-[42rem] w-[42rem] opacity-90 blur-3xl"
-        style={{
-          background:
-            "radial-gradient(circle, rgba(255,91,61,0.22) 0%, rgba(255,91,61,0.10) 34%, rgba(255,91,61,0.025) 56%, transparent 72%)",
-        }}
-      />
       <div className="relative mx-auto max-w-[92rem] px-5 pb-8 pt-14 sm:px-8 sm:pt-16 lg:px-10">
         <div className="grid gap-12 border-b border-white/18 pb-12 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1.25fr)] lg:gap-20">
           <div>
@@ -53,6 +45,16 @@ export default function BeseamFooter() {
                 variant="secondary-inverted"
                 className="text-white"
                 style={{ fontSize: "clamp(72px, 9vw, 96px)" }}
+                markGlow={
+                  <div
+                    aria-hidden="true"
+                    className="pointer-events-none absolute left-1/2 top-1/2 -z-10 h-[42rem] w-[42rem] -translate-x-1/2 -translate-y-1/2 opacity-90 blur-3xl"
+                    style={{
+                      background:
+                        "radial-gradient(circle, rgba(255,91,61,0.22) 0%, rgba(255,91,61,0.10) 34%, rgba(255,91,61,0.025) 56%, transparent 72%)",
+                    }}
+                  />
+                }
               />
             </Link>
             <p className="mt-7 max-w-[20ch] font-display text-[34px] leading-[1.08] tracking-[-0.02em] text-white/92">

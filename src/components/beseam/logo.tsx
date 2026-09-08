@@ -1,4 +1,4 @@
-import type { CSSProperties } from "react";
+import type { CSSProperties, ReactNode } from "react";
 
 import { cn } from "@/lib/utils";
 
@@ -16,6 +16,8 @@ export interface LogoProps {
   variant?: LogoVariant;
   /** Collapse the wordmark so only the B mark stays (e.g. scrolled navbar). */
   hideWordmark?: boolean;
+  /** Decoration rendered behind the B mark, centered on it (e.g. a footer glow). */
+  markGlow?: ReactNode;
 }
 
 const MARK_VIEW_BOX = "62 62 484 696";
@@ -65,6 +67,7 @@ export default function Logo({
   style,
   variant = "default",
   hideWordmark = false,
+  markGlow,
 }: LogoProps) {
   return (
     <span
@@ -73,7 +76,10 @@ export default function Logo({
     >
       {/* Inline geometry means the mark and wordmark paint together; there is
           no second image request that can make “eseam” appear before the B. */}
-      <LogoMark variant={variant} className={markClassName} />
+      <span className="relative isolate inline-flex shrink-0">
+        {markGlow}
+        <LogoMark variant={variant} className={markClassName} />
+      </span>
       <span
         aria-hidden="true"
         className={cn(
