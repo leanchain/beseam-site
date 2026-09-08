@@ -40,18 +40,18 @@ const GERMAN_TO_ENGLISH = Object.freeze(
 // Italian page to send anyone to yet.
 const GERMAN_COUNTRIES = new Set(["DE", "AT", "CH", "LI"]);
 
-// Search engines and preview fetchers must be able to reach both language
-// versions directly; the reciprocal hreflang pair is what tells them the two
-// are alternates. Redirecting them by IP hides one version from the index.
+// A right-hand boundary only: crawler names carry `bot` as a compound suffix
+// (`Googlebot/2.1`, `bingbot/2.0`), so a left `\b` would break them -- but the
+// token must not run on into another word, which is what misread `iRobotApp`
+// and `Bothell` as crawlers and quietly cost those visitors the redirect.
+// `crawler` precedes `crawl` because alternation is leftmost-first.
 const CRAWLER =
-  /bot|crawl|spider|slurp|bingpreview|facebookexternalhit|embedly|quora link preview|outbrain|pinterest|w3c_validator|lighthouse|headlesschrome/i;
+  /(?:bot|crawler|crawl|spider|slurp)(?![a-z])|bingpreview|facebookexternalhit|embedly|quora link preview|outbrain|pinterest|w3c_validator|lighthouse|headlesschrome/i;
 
 /** @param {string} pathname */
 export function normalizePath(pathname) {
   if (!pathname) return "/";
-  if (pathname.length > 1 && pathname.endsWith("/"))
-    return pathname.slice(0, -1);
-  return pathname;
+  return pathname.replace(/\/+$/, "") || "/";
 }
 
 /** @param {string} pathname */

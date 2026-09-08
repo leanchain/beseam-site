@@ -27,11 +27,14 @@ function redirectInput(overrides = {}) {
   };
 }
 
-test("normalizePath strips one trailing slash but keeps the root", () => {
+test("normalizePath strips trailing slashes and keeps the root", () => {
   assert.equal(normalizePath("/"), "/");
   assert.equal(normalizePath("/scan/"), "/scan");
   assert.equal(normalizePath("/de/"), "/de");
   assert.equal(normalizePath(""), "/");
+  assert.equal(normalizePath("/scan//"), "/scan");
+  assert.equal(normalizePath("/de//"), "/de");
+  assert.equal(normalizePath("//"), "/");
 });
 
 test("localeFromPathname reads the /de prefix and nothing else", () => {
@@ -107,9 +110,19 @@ test("isCrawler matches the common bots and not a real browser", () => {
     true,
   );
   assert.equal(
+    isCrawler(
+      "Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)",
+    ),
+    true,
+  );
+  assert.equal(isCrawler("Mozilla/5.0 (compatible; Yandex crawler)"), true);
+  assert.equal(
     isCrawler("Mozilla/5.0 (Macintosh) Chrome/140.0.0.0 Safari/537.36"),
     false,
   );
+  assert.equal(isCrawler("Mozilla/5.0 (Linux; U; iRobotApp/3.2)"), false);
+  assert.equal(isCrawler("Mozilla/5.0 (Bothell County Library Kiosk)"), false);
+  assert.equal(isCrawler("Mozilla/5.0 RobotShop/1.0"), false);
   assert.equal(isCrawler(null), false);
 });
 
@@ -190,5 +203,12 @@ test("nothing else is redirected", () => {
     ),
     null,
     "crawlers must reach both languages directly",
+  );
+});
+
+test("doubled-slash paths redirect correctly", () => {
+  assert.equal(
+    redirectTargetFor(redirectInput({ country: "DE", pathname: "/scan//" })),
+    "/de/scan",
   );
 });
