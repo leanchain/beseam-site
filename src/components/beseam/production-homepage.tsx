@@ -6,7 +6,9 @@ import ConnectedEvidence from "@/components/beseam/connected-evidence";
 import CredibilityRail from "@/components/beseam/credibility-rail";
 import EvidenceToWork from "@/components/beseam/evidence-to-work";
 import FirstMonthPromise from "@/components/beseam/first-month-promise";
+import HeroScrollCue from "@/components/beseam/hero-scroll-cue";
 import HeroSurfaceShift from "@/components/beseam/hero-surface-shift";
+import HeroViewportFit from "@/components/beseam/hero-viewport-fit";
 import MeasureImpact from "@/components/beseam/measure-impact";
 import { Reveal } from "@/components/beseam/reveal";
 import WhatBeseamDoes from "@/components/beseam/what-beseam-does";
@@ -35,12 +37,13 @@ export default function ProductionHomepage() {
   return (
     <div className="bg-ground text-[#151515]">
       <section id="home-hero" className="relative isolate overflow-hidden">
-        <div className="pointer-events-none absolute inset-x-0 top-0 z-0 h-[80svh]">
+        <HeroViewportFit />
+        <div className="pointer-events-none absolute inset-x-0 top-0 z-0 h-[calc(100svh-var(--hero-reserve))]">
           <HeroSurfaceShift />
         </div>
         <div
           id="ai-check"
-          className="pointer-events-none relative z-10 mx-auto flex min-h-[80svh] max-w-[92rem] scroll-mt-24 items-center justify-center px-5 py-20 sm:px-8 sm:py-24 lg:px-10 lg:py-24"
+          className="pointer-events-none relative z-10 mx-auto flex min-h-[calc(100svh-var(--hero-reserve))] max-w-[92rem] scroll-mt-24 items-center justify-center px-5 py-20 sm:px-8 sm:py-24 lg:px-10 lg:py-24"
         >
           <Reveal className="w-full">
             <div className="mx-auto w-full max-w-[76rem] text-center">
@@ -51,12 +54,13 @@ export default function ProductionHomepage() {
               <p className="pointer-events-auto mx-auto mt-6 max-w-[64ch] text-[17px] leading-[1.7] text-black/64 sm:text-[18px]">
                 Beseam keeps watching AI discovery, your store, and your
                 shoppers to find what is worth improving, makes the changes you
-                approve, and shows you what changed.
+                approve, and shows you the impact of your changes.
               </p>
               <div className="pointer-events-auto mx-auto mt-9 w-full">
                 <LiveAnswerCheck
                   placement="homepage_hero"
                   handOffTo="/scan"
+                  glowInput
                   formNote={
                     <div className="mx-auto mt-2 flex flex-col items-center text-center">
                       <ul className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
@@ -80,6 +84,7 @@ export default function ProductionHomepage() {
             </div>
           </Reveal>
         </div>
+        <HeroScrollCue />
       </section>
 
       <CredibilityRail />

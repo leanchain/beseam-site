@@ -6,6 +6,12 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
+  /* Hero fills the viewport minus this much: sticky nav + research rail.
+   * Falls back to a measured-typical value; hero-viewport-fit.tsx overwrites
+   * it with the real, rendered nav+rail height on mount so the rail's
+   * bottom edge always lands exactly on the viewport's bottom edge. */
+  --hero-reserve: 11rem;
+
   /* Beseam editorial system */
   --beseam-surface: #fafafa;
   --beseam-panel: #f6f6f6;

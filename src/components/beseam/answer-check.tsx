@@ -2948,6 +2948,7 @@ export default function AnswerCheck({
   formNote,
   showPromise = false,
   handOffTo,
+  glowInput = false,
 }: {
   placement?: string;
   /**
@@ -2971,6 +2972,13 @@ export default function AnswerCheck({
    * they enter one.
    */
   showPromise?: boolean;
+  /**
+   * Warm ambient glow on the domain field itself. Off by default -- the
+   * homepage hero is the one surface with nothing else competing for
+   * attention above the fold, so it is the one place a glow reads as an
+   * invitation rather than noise.
+   */
+  glowInput?: boolean;
 }) {
   const { trackEvent } = useAnalytics();
   const router = useRouter();
@@ -3264,6 +3272,14 @@ export default function AnswerCheck({
                 placeholder="yourstore.com"
                 aria-invalid={Boolean(error)}
                 className={inputClass}
+                style={
+                  glowInput
+                    ? {
+                        boxShadow:
+                          "0 0 0 1px rgba(184,68,29,0.18), 0 0 14px 1px rgba(184,68,29,0.14)",
+                      }
+                    : undefined
+                }
               />
             </div>
             {handOffTo ? (

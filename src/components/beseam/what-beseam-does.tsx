@@ -316,7 +316,13 @@ export default function WhatBeseamDoes() {
                         aria-hidden="true"
                         className="hidden items-center text-signal-ink xl:absolute xl:-right-[1.35rem] xl:top-[1.6rem] xl:z-10 xl:flex xl:bg-ground"
                       >
-                        <span className="h-px w-7 bg-signal-ink/70" />
+                        {/* Overlaps the head: the icon draws its own shaft
+                            from 3px inside its box, so a line stopping at the
+                            box edge leaves a visible break in the connector. */}
+                        <span
+                          className="h-px w-8 bg-signal-ink/70"
+                          style={{ marginRight: -4 }}
+                        />
                         <ArrowRight className="h-3.5 w-3.5 shrink-0" />
                       </span>
                     ) : null}

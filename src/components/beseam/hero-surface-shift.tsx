@@ -52,6 +52,11 @@ const STATE = "240ms cubic-bezier(.22,.61,.36,1)";
 // at the midpoint, so the hue crosses before the eye can read it.
 const COLOR = "140ms cubic-bezier(.22,.61,.36,1)";
 const LAYER = "380ms cubic-bezier(.22,.61,.36,1)";
+// The graph's auto-journey waits for the cursor to actually settle before it
+// starts moving on its own -- a mouse still in motion means the visitor is
+// reading/scanning, and starting motion under an active cursor reads as
+// competing for attention rather than demonstrating the product.
+const AUTO_JOURNEY_IDLE_DELAY_MS = 1200;
 const HUBS: readonly Hub[] = [
   {
     id: "ai",
@@ -1163,6 +1168,7 @@ export default function HeroSurfaceShift() {
   const focusFrameRef = useRef<number | null>(null);
   const autoTravelFrameRef = useRef<number | null>(null);
   const autoResumeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const autoIdleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const foregroundExitTimerRef = useRef<ReturnType<typeof setTimeout> | null>(
     null,
   );
@@ -1221,6 +1227,40 @@ export default function HeroSurfaceShift() {
   const [renderedForegroundHubId, setRenderedForegroundHubId] = useState<
     string | null
   >(INITIAL_AUTO_HUB_ID);
+  // Gate the auto-journey's start on cursor idle, not just a mount timer:
+  // devices without a fine pointer (touch) skip the gate outright, and a
+  // moving mouse keeps re-arming the timer until it actually stops.
+  const [autoIdleElapsed, setAutoIdleElapsed] = useState(false);
+  useEffect(() => {
+    if (autoIdleElapsed) return;
+
+    const canTrackMouse =
+      typeof window.matchMedia !== "function" ||
+      window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+
+    if (!canTrackMouse) {
+      setAutoIdleElapsed(true);
+      return;
+    }
+
+    const armIdleTimer = () => {
+      if (autoIdleTimerRef.current) clearTimeout(autoIdleTimerRef.current);
+      autoIdleTimerRef.current = setTimeout(() => {
+        setAutoIdleElapsed(true);
+      }, AUTO_JOURNEY_IDLE_DELAY_MS);
+    };
+
+    armIdleTimer();
+    window.addEventListener("mousemove", armIdleTimer, { passive: true });
+
+    return () => {
+      window.removeEventListener("mousemove", armIdleTimer);
+      if (autoIdleTimerRef.current) {
+        clearTimeout(autoIdleTimerRef.current);
+        autoIdleTimerRef.current = null;
+      }
+    };
+  }, [autoIdleElapsed]);
   useEffect(() => {
     let frame = 0;
     const updateLayout = () => {
@@ -1243,7 +1283,11 @@ export default function HeroSurfaceShift() {
   const graphLayout = GRAPH_LAYOUTS[layoutName];
   const autoJourney = JOURNEYS[autoJourneyIndex];
   const autoJourneyVisible =
-    !activeHubId && !cardState && !autoInteractionPaused && !autoJourneyDone;
+    !activeHubId &&
+    !cardState &&
+    !autoInteractionPaused &&
+    !autoJourneyDone &&
+    autoIdleElapsed;
   const focusRadius =
     layoutName === "ultrawide"
       ? 430

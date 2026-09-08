@@ -43,7 +43,7 @@ const INVENTORY: readonly InventoryItem[] = [
   { name: "category-benchmarks-section", status: "Homepage", note: "AI Shopping Report ledger on the homepage" },
   { name: "channel-icon", status: "Foundation", note: "AI / commerce channel marks" },
   { name: "connected-evidence", status: "Homepage", note: "Trimmed decision trace — ends at the finding" },
-  { name: "credibility-rail", status: "Homepage", note: "Two-register proof band under the hero" },
+  { name: "credibility-rail", status: "Homepage", note: "Single-line research banner under the hero" },
   { name: "decision-bridge", status: "Used elsewhere", note: "Connected-system architecture on /platform" },
   { name: "evidence-to-work", status: "Homepage", note: "Standalone Actions-queue section" },
   { name: "faq-section", status: "Homepage", note: "Homepage FAQ" },
@@ -158,7 +158,7 @@ export default function PlaybookPage() {
       </section>
 
       <div className="border-b border-black/14 bg-[#faf1eb] px-5 py-3 text-center font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-signal-ink">Current homepage sections</div>
-      <MajorPreview name="credibility-rail" status="Homepage" note="Two-register proof band under the hero"><CredibilityRail /></MajorPreview>
+      <MajorPreview name="credibility-rail" status="Homepage" note="Single-line research banner under the hero"><CredibilityRail /></MajorPreview>
       <MajorPreview name="what-beseam-does" status="Homepage" note="Concrete discovery-to-purchase capability journey"><WhatBeseamDoes /></MajorPreview>
       <MajorPreview name="connected-evidence" status="Homepage" note="Worked evidence trace before the product action view"><ConnectedEvidence /></MajorPreview>
       <MajorPreview name="evidence-to-work" status="Homepage" note="Standalone Actions-queue section"><EvidenceToWork /></MajorPreview>

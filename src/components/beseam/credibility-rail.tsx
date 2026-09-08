@@ -1,22 +1,15 @@
 import Link from "next/link";
 
-import { ArrowRight, Check } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 import { BENCHMARK_RUN } from "@/data/category-benchmarks";
 
 /**
- * The proof layer directly under the hero, split into its two honest
- * registers: what is true about the product today, and what the published
- * research actually measured. Sample sizes (questions, engines, answers) live
- * on /benchmarks and /data; the rail carries the one finding that argues for
- * the product. The product side carries factual claims, not scale claims,
- * until real usage figures exist.
+ * A single-line research banner directly under the hero: one published
+ * finding plus a link to the full report and method, kept as compact as a
+ * site announcement bar. Sample sizes (questions, engines, answers) live on
+ * /benchmarks and /data.
  */
-const PRODUCT_FACTS = [
-  "Live with a real merchant pilot",
-  "Customer-facing changes require approval",
-] as const;
-
 const SOLO_SHARE = Math.round(
   (BENCHMARK_RUN.singleEngineOnly / BENCHMARK_RUN.namings) * 100,
 );
@@ -24,60 +17,28 @@ const SOLO_SHARE = Math.round(
 export default function CredibilityRail() {
   return (
     <section
-      aria-label="Why trust Beseam"
-      className="border-y border-black/14 bg-white"
+      id="research-rail"
+      aria-label="Research finding"
+      className="border-y border-black/14 bg-[#faf1eb]"
     >
-      <div className="mx-auto grid max-w-[92rem] px-5 sm:px-8 lg:grid-cols-[minmax(0,0.72fr)_minmax(0,1.28fr)] lg:px-10">
-        <div className="border-b border-black/12 py-6 lg:border-b-0 lg:border-r lg:pr-12">
-          <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.12em] text-signal-ink">
-            Product
-          </p>
-          <ul className="mt-3.5 space-y-2">
-            {PRODUCT_FACTS.map((fact) => (
-              <li
-                key={fact}
-                className="flex items-center gap-2.5 text-[14px] font-medium text-black/70"
-              >
-                <Check
-                  aria-hidden="true"
-                  className="h-3.5 w-3.5 shrink-0 text-signal-ink"
-                />
-                {fact}
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div className="py-6 lg:pl-16">
-          <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
-            <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.12em] text-black/50">
-              Research
-            </p>
-            <Link
-              href="/benchmarks"
-              className="group inline-flex items-center gap-1.5 text-[13px] font-semibold text-ink-deep underline decoration-black/25 underline-offset-4 hover:decoration-signal-ink"
-            >
-              See the report &amp; method
-              <ArrowRight
-                aria-hidden="true"
-                className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5"
-              />
-            </Link>
-          </div>
-          <div className="mt-3.5 flex flex-wrap items-baseline gap-x-5 gap-y-2">
-            <p className="font-display text-[34px] leading-none tracking-[-0.01em] text-ink-deep tabular-nums">
-              {SOLO_SHARE}%
-            </p>
-            <div className="min-w-0 flex-1">
-              <p className="text-[13.5px] font-medium leading-[1.45] text-ink-deep">
-                of brand appearances occurred on only one AI assistant.
-              </p>
-              <p className="mt-1 text-[12.5px] leading-[1.5] text-black/56">
-                Same shopper questions, three assistants, different brands
-                named.
-              </p>
-            </div>
-          </div>
-        </div>
+      <div className="mx-auto flex max-w-[92rem] flex-wrap items-baseline justify-center gap-x-2.5 gap-y-1 px-5 py-3 text-center sm:px-8 lg:px-10">
+        <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.12em] text-signal-ink">
+          New research
+        </span>
+        <p className="text-[13px] font-medium leading-[1.4] text-black/70">
+          {SOLO_SHARE}% of brand appearances occurred on only one AI
+          assistant.
+        </p>
+        <Link
+          href="/benchmarks"
+          className="group inline-flex items-center gap-1 text-[13px] font-semibold text-ink-deep underline decoration-black/25 underline-offset-4 hover:decoration-signal-ink"
+        >
+          See the report &amp; method
+          <ArrowRight
+            aria-hidden="true"
+            className="h-3 w-3 transition-transform group-hover:translate-x-0.5"
+          />
+        </Link>
       </div>
     </section>
   );
