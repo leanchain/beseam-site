@@ -346,17 +346,20 @@ function StoreVignette() {
           What shoppers ask here
         </span>
 
-        <ul className="mt-2.5 flex flex-col">
+        {/* The rows share the column: four questions spread over the height
+            the panel actually has, rather than bunched under the title with
+            the verdict stranded at the bottom of a white field. */}
+        <ul className="mt-2.5 flex flex-1 flex-col">
           {PAGE_QUESTIONS.map((row, index) => (
             <li
               key={row.question}
-              className="vig-step flex items-baseline gap-2 border-b border-black/8 py-1.5 last:border-0"
+              className="vig-step flex flex-1 items-center gap-2 border-b border-black/8 py-1.5 last:border-0"
               style={vig(index + 1, "0.2s")}
             >
               {row.answered ? (
-                <Check className="h-3.5 w-3.5 shrink-0 translate-y-[2px] text-black/35" />
+                <Check className="h-3.5 w-3.5 shrink-0 text-black/35" />
               ) : (
-                <X className="h-3.5 w-3.5 shrink-0 translate-y-[2px] text-signal-ink" />
+                <X className="h-3.5 w-3.5 shrink-0 text-signal-ink" />
               )}
               <span className="min-w-0 flex-1 truncate text-[12px] text-ink-deep">
                 {row.question}
@@ -377,7 +380,7 @@ function StoreVignette() {
             foot of the panel: the questions read from the title down, and the
             verdict closes the page rather than floating in the middle of it. */}
         <div
-          className="vig-step vig-stamp mt-auto flex items-center gap-1.5 border-t border-black/10 pt-3 text-signal-ink"
+          className="vig-step vig-stamp mt-2.5 flex shrink-0 items-center gap-1.5 border-t border-black/10 pt-2.5 text-signal-ink"
           style={vig(5, "0.2s")}
         >
           <X className="h-3.5 w-3.5 shrink-0" />
@@ -430,7 +433,7 @@ function PersonalizationVignette() {
           alt=""
           width={PRODUCT_PHOTO.width}
           height={PRODUCT_PHOTO.height}
-          className="h-12 w-auto shrink-0 object-contain"
+          className="h-[4.5rem] w-auto shrink-0 object-contain"
         />
         <div className="min-w-0 flex-1">
           <p className="font-mono text-[11px] uppercase tracking-[0.08em] text-black/60">
@@ -448,18 +451,22 @@ function PersonalizationVignette() {
       {/* The fix arriving, and it is the same two questions the middle panel
           left with a cross. Answers, not tags: a chip saying "breathable"
           would not have told the shopper anything they could act on. */}
-      <div className="mt-2.5 flex min-h-0 flex-1 flex-col justify-center bg-signal-ink/[0.045] px-3 py-2.5 ring-1 ring-signal-ink/12">
-        <div className="flex items-center gap-1.5">
+      <div className="mt-2.5 flex min-h-0 flex-1 flex-col bg-signal-ink/[0.045] px-3 py-3 ring-1 ring-signal-ink/12">
+        <div className="flex shrink-0 items-center gap-1.5">
           <WandSparkles className="h-3.5 w-3.5 shrink-0 text-signal-ink" />
           <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-signal-ink">
             Helpful context added
           </span>
         </div>
-        <dl className="mt-2 flex flex-col gap-1.5">
+        {/* The two answers share the block's height, the same way the middle
+            panel's questions share theirs -- the pair reads as one table
+            across the two tiles rather than as content floating in a tinted
+            box. */}
+        <dl className="mt-2 flex flex-1 flex-col">
           {ADDED_CONTEXT.map((row, index) => (
             <div
               key={row.question}
-              className="vig-step flex items-baseline gap-2"
+              className="vig-step flex flex-1 items-center gap-2 border-b border-signal-ink/12 last:border-0"
               style={vig(index + 5, "0.2s")}
             >
               <dt className="min-w-0 flex-1 truncate text-[12px] text-ink-deep">
@@ -476,7 +483,7 @@ function PersonalizationVignette() {
       {/* The panel is about the shopper choosing, so it ends where choosing
           ends. Green, because nothing else in this section is. */}
       <div
-        className="vig-step vig-stamp mt-2.5 flex shrink-0 items-center gap-1.5 bg-[#1a6b43]/[0.07] px-2 py-1.5 ring-1 ring-[#1a6b43]/20"
+        className="vig-step vig-stamp mt-auto flex shrink-0 items-center gap-1.5 bg-[#1a6b43]/[0.07] px-2 py-2 ring-1 ring-[#1a6b43]/20"
         style={vig(8, "0.2s")}
       >
         <CheckCircle2
