@@ -9,17 +9,19 @@ import { ArrowRight, Menu, X } from "lucide-react";
 
 import Logo from "@/components/beseam/logo";
 import TrackedLink from "@/components/beseam/tracked-link";
+import { useDictionary } from "@/i18n/use-locale";
 import { APP_LOGIN_URL } from "@/lib/app-urls";
 import { cn } from "@/lib/utils";
 // Fieldbook stays reachable from the footer; primary nav keeps only what a
 // buyer needs to understand and start: product, method, research.
 const NAV_LINKS = [
-  { label: "Platform", href: "/platform" },
-  { label: "How we work", href: "/how-we-work" },
-  { label: "AI Shopping Report", href: "/benchmarks" },
+  { key: "platform", href: "/platform" },
+  { key: "howWeWork", href: "/how-we-work" },
+  { key: "report", href: "/benchmarks" },
 ] as const;
 
 export default function BeseamNavbar() {
+  const t = useDictionary();
   const [scrolled, setScrolled] = useState(false);
   const [pastHero, setPastHero] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -53,7 +55,7 @@ export default function BeseamNavbar() {
         href="#main-content"
         className="absolute left-4 top-2 -translate-y-20 bg-ink-deep px-4 py-2 text-sm font-semibold text-white focus:translate-y-0"
       >
-        Skip to content
+        {t.nav.skipToContent}
       </a>
 
       <div className="mx-auto max-w-[92rem] px-4 transition-all duration-200 sm:px-6 lg:px-8">
@@ -63,7 +65,11 @@ export default function BeseamNavbar() {
             scrolled ? "h-14" : "h-16",
           )}
         >
-          <Link href="/" className="flex items-center" aria-label="Beseam home">
+          <Link
+            href="/"
+            className="flex items-center"
+            aria-label={t.nav.homeAriaLabel}
+          >
             <Logo
               variant="secondary"
               className="text-ink-deep"
@@ -71,14 +77,17 @@ export default function BeseamNavbar() {
             />
           </Link>
 
-          <nav aria-label="Primary" className="hidden items-center lg:flex">
+          <nav
+            aria-label={t.nav.primaryAriaLabel}
+            className="hidden items-center lg:flex"
+          >
             {NAV_LINKS.map((link) => (
               <Link
-                key={link.label}
+                key={link.key}
                 href={link.href}
                 className="min-h-11 whitespace-nowrap px-3 py-3 text-[14px] font-medium text-black/62 transition-colors hover:text-ink-deep focus-visible:ring-2 focus-visible:ring-signal-ink xl:px-4"
               >
-                {link.label}
+                {t.nav.links[link.key]}
               </Link>
             ))}
           </nav>
@@ -95,7 +104,7 @@ export default function BeseamNavbar() {
               placement="navbar"
               className="text-[14px] font-semibold text-black/62 transition-colors hover:text-signal-ink"
             >
-              Log in
+              {t.nav.login}
             </TrackedLink>
             {showCta && (
               <TrackedLink
@@ -106,7 +115,7 @@ export default function BeseamNavbar() {
                 preserveUtm
                 className="group inline-flex min-h-10 items-center justify-center gap-2 whitespace-nowrap bg-signal-ink px-4 text-[13px] font-semibold text-white focus-visible:ring-2 focus-visible:ring-signal-ink focus-visible:ring-offset-3"
               >
-                Scan my store
+                {t.nav.cta}
                 <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
               </TrackedLink>
             )}
@@ -118,7 +127,9 @@ export default function BeseamNavbar() {
             onClick={() => setMobileOpen((open) => !open)}
             aria-expanded={mobileOpen}
             aria-controls="mobile-navigation"
-            aria-label={mobileOpen ? "Close navigation" : "Open navigation"}
+            aria-label={
+              mobileOpen ? t.nav.closeNavigation : t.nav.openNavigation
+            }
           >
             {mobileOpen ? (
               <X className="h-5 w-5" />
@@ -138,15 +149,18 @@ export default function BeseamNavbar() {
           )}
         >
           <div className="mx-auto max-w-[92rem] px-5 pb-7 sm:px-8">
-            <nav aria-label="Mobile" className="border-b border-black/18 py-3">
+            <nav
+              aria-label={t.nav.mobileAriaLabel}
+              className="border-b border-black/18 py-3"
+            >
               {NAV_LINKS.map((link) => (
                 <Link
-                  key={link.label}
+                  key={link.key}
                   href={link.href}
                   onClick={() => setMobileOpen(false)}
                   className="block border-b border-black/14 py-4 text-[14px] font-semibold text-black/68 last:border-b-0"
                 >
-                  {link.label}
+                  {t.nav.links[link.key]}
                 </Link>
               ))}
             </nav>
@@ -157,7 +171,7 @@ export default function BeseamNavbar() {
                 placement="mobile_nav"
                 className="flex min-h-12 items-center justify-center border border-black/40 text-[14px] font-semibold text-ink-deep"
               >
-                Log in
+                {t.nav.login}
               </TrackedLink>
               <TrackedLink
                 href="/scan"
@@ -168,7 +182,7 @@ export default function BeseamNavbar() {
                 onClick={() => setMobileOpen(false)}
                 className="flex min-h-12 items-center justify-center gap-2 bg-signal-ink px-5 text-[14px] font-semibold text-white"
               >
-                Scan my store
+                {t.nav.cta}
                 <ArrowRight className="h-4 w-4" />
               </TrackedLink>
             </div>
