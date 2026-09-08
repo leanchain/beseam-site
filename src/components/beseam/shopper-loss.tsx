@@ -146,9 +146,9 @@ const COLLECTION: readonly {
   name: string;
   price: string;
 }[] = [
-  { kind: "tee", name: "Everyday Tee", price: "CHF 39" },
-  { kind: "hoodie", name: "Heavy Hoodie", price: "CHF 89" },
-  { kind: "shell", name: "Rain Shell", price: "CHF 149" },
+  { kind: "tee", name: "Everyday Tee", price: "€39" },
+  { kind: "hoodie", name: "Heavy Hoodie", price: "€89" },
+  { kind: "shell", name: "Rain Shell", price: "€149" },
 ];
 
 const UNANSWERED = [
@@ -207,7 +207,7 @@ function ChoiceSpecimen() {
 /* 03 — supplements. Decided, and lost in the last three clicks. */
 
 const CART_LINES = [
-  { label: "Subtotal", value: "CHF 64.00", muted: false },
+  { label: "Subtotal", value: "€64.00", muted: false },
   { label: "Delivery", value: "Calculated at the next step", muted: true },
   { label: "Total", value: "—", muted: true },
 ] as const;
@@ -413,9 +413,9 @@ export default function ShopperLoss() {
               </h2>
             </div>
             <p className="max-w-[50ch] text-[17px] leading-[1.7] text-black/64">
-              Many lost sales show up in one of these three moments. Beseam helps
-              you see where shoppers are dropping out and what deserves attention
-              first, without pretending one signal proves the cause.
+              Many lost sales show up in one of these three moments. Beseam
+              helps you see where shoppers are dropping out and what deserves
+              attention first, without pretending one signal proves the cause.
             </p>
           </div>
         </Reveal>

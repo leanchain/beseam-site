@@ -88,7 +88,7 @@ const vig = (index: number, base?: string): CSSProperties =>
  * need to be real, take them from `category-benchmarks.ts` and print the
  * engine and date with them.
  */
-const ASKED = "waterproof jacket for commuting, size M, under $200";
+const ASKED = "waterproof jacket for commuting, size M, under €200";
 
 /**
  * What the assistant read out of the question before it answered. Every cell
@@ -101,29 +101,29 @@ const PARSED = [
   { label: "Use case", value: "Commuting" },
   { label: "Material", value: "Waterproof" },
   { label: "Size", value: "M" },
-  { label: "Price", value: "Under $200" },
+  { label: "Price", value: "Under €200" },
 ] as const;
 
 const ANSWER_PICKS = [
   {
     product: "Ridgeline Commuter Shell",
     store: "Northvale Outfitters",
-    price: "$168",
+    price: "€168",
   },
   {
     product: "Halden 3-Layer Rain Jacket",
     store: "Halden Rainwear",
-    price: "$142",
+    price: "€142",
   },
   {
     product: "Spoke Packable Waterproof",
     store: "Storm & Spoke",
-    price: "$119",
+    price: "€119",
   },
 ] as const;
 
 /** The merchant's own product, so the last two panels have something to sell. */
-const PRODUCT = { name: "City Shell", price: "$149" } as const;
+const PRODUCT = { name: "City Shell", price: "€149" } as const;
 
 /**
  * The four things a shopper wants to know before buying this jacket, and what
