@@ -858,8 +858,9 @@ html.theme-transition::view-transition-new(root) {
  * else -- phones, short windows, reduced motion -- the stage is its own height
  * and the panels are dealt by the section's own travel through the viewport.
  *
- * The panel is exactly as tall as what it holds, and sticks a little below the
- * top of the screen. It deliberately does not fill the viewport: a panel padded
+ * The panel is exactly as tall as what it holds, and sticks below the site
+ * header rather than under it -- the header is sticky too, and a panel pinned
+ * at the top of the viewport hands it the panel's first line to cover. It deliberately does not fill the viewport: a panel padded
  * out to `100vh` centres nicely on a laptop but on a tall monitor carries half
  * a screen of nothing above the heading, or -- once that is anchored to the top
  * instead -- half a screen of nothing between the last tile and whatever the
@@ -881,7 +882,7 @@ html.theme-transition::view-transition-new(root) {
 
   .deal-panel {
     position: sticky;
-    top: clamp(0px, 4vh, 3rem);
+    top: 5.5rem;
   }
 }
 .marketing-wash {

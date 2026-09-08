@@ -43,13 +43,10 @@ export type DealCell = {
 export function ScrollDeal({
   className,
   cells,
-  header,
   footer,
 }: {
   className?: string;
   cells: DealCell[];
-  /** Kept inside the pinned panel, so the section holds together while it deals. */
-  header?: ReactNode;
   /**
    * Dealt last, as one more beat of the same sequence -- a closing line lands
    * under the finished row while the section is still held, rather than being
@@ -185,7 +182,6 @@ export function ScrollDeal({
       }
     >
       <div ref={panelRef} className="deal-panel">
-        {header}
         <div className={className}>
           {cells.map((cell) => (
             <div
