@@ -3261,15 +3261,16 @@ export default function AnswerCheck({
     submitting || (result && isScanInFlight(result) && !result.reject_reason),
   );
 
-  // The address is asked on the surface that owns the result, once the store
-  // read has landed and the free sample is still filling in. `rejected` never
-  // asks: there is no audit to send. Anything past `awaiting_verification` has
-  // already been through the emailed link.
+  // A domain someone already ran to completion is the one path where the whole
+  // audit renders with nothing asked for it, so `ready` asks too — the address
+  // buys the link rather than the probe. `rejected` never asks: there is no
+  // audit to send. `queued`/`running` are mid-probe, already past the gate.
+  const scanIsComplete = result?.status === "ready";
   const showEmailAsk = Boolean(
     !handOffTo &&
     result &&
     !result.reject_reason &&
-    result.status === "awaiting_verification",
+    (result.status === "awaiting_verification" || scanIsComplete),
   );
 
   const focusEmailField = () => {
@@ -3386,12 +3387,14 @@ export default function AnswerCheck({
                 Sent to {email.trim()}
               </p>
               <p className="mt-2.5 text-[18px] font-semibold tracking-[-0.01em] text-ink-deep">
-                One click in your inbox and we keep going.
+                {scanIsComplete
+                  ? "Your link is in your inbox."
+                  : "One click in your inbox and we keep going."}
               </p>
               <p className="mt-1.5 max-w-[54ch] text-[13.5px] leading-relaxed text-[#5f5a55]">
-                Nothing on this page goes away in the meantime. Open the link
-                and we ask the assistants about your products, then show you the
-                whole audit.
+                {scanIsComplete
+                  ? "Nothing on this page goes away. The link opens this same audit whenever you want it back."
+                  : "Nothing on this page goes away in the meantime. Open the link and we ask the assistants about your products, then show you the whole audit."}
               </p>
               {/* A sent state with no exit strands anyone who mistyped their
                   address or never received the mail. */}
@@ -3412,9 +3415,9 @@ export default function AnswerCheck({
                 Where do we send your audit?
               </label>
               <p className="mt-1.5 max-w-[54ch] text-[13px] leading-relaxed text-[#5f5a55]">
-                We are reading {result?.domain ?? "your store"} now. Leave an
-                address and we send one link — click it and we also ask the
-                assistants about your products.
+                {scanIsComplete
+                  ? `The audit for ${result?.domain ?? "your store"} is complete. Leave an address and we send you the link, so it is yours to open and keep.`
+                  : `We are reading ${result?.domain ?? "your store"} now. Leave an address and we send one link — click it and we also ask the assistants about your products.`}
               </p>
               <div className="mt-3.5 grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto]">
                 <input
