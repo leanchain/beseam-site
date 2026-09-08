@@ -87,10 +87,33 @@ const vig = (index: number, base?: string): CSSProperties =>
  * need to be real, take them from `category-benchmarks.ts` and print the
  * engine and date with them.
  */
+const ASKED = "waterproof jacket for commuting, size M, under $200";
+
+/**
+ * What the assistant read out of the question before it answered. Every cell
+ * is derivable from `ASKED` on its own -- no invented constraint the shopper
+ * never gave -- because the panel is claiming the assistant understood the
+ * question, and a cell with nothing behind it in the query would be a lie
+ * about how these engines work.
+ */
+const PARSED = [
+  { label: "Use case", value: "Commuting" },
+  { label: "Material", value: "Waterproof" },
+  { label: "Size", value: "M" },
+  { label: "Price", value: "Under $200" },
+] as const;
+
 const ANSWER_PICKS = [
-  "Northvale Outfitters",
-  "Storm & Spoke",
-  "Halden Rainwear",
+  {
+    product: "Ridgeline Commuter Shell",
+    store: "Northvale Outfitters",
+    price: "$168",
+  },
+  {
+    product: "Halden 3-Layer Rain Jacket",
+    store: "Halden Rainwear",
+    price: "$142",
+  },
 ] as const;
 
 const DOMAINS = [
@@ -118,7 +141,7 @@ function DiscoveryVignette() {
   return (
     <div
       aria-hidden="true"
-      className="flex h-[11rem] flex-col bg-white p-3.5 ring-1 ring-black/10"
+      className="flex h-[14rem] flex-col bg-white p-3.5 ring-1 ring-black/10"
     >
       <div className="flex shrink-0 items-center justify-between gap-2 border-b border-black/10 pb-2">
         <span className="vig-step font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-black/60">
@@ -138,31 +161,56 @@ function DiscoveryVignette() {
         </div>
       </div>
 
-      {/* Typed, because a shopper types it. Thirty-six characters, which is
-          the count `steps(36)` in globals.css is pacing -- edit the string
+      {/* Typed, because a shopper types it. Fifty-one characters, which is
+          the count `steps(51)` in globals.css is pacing -- edit the string
           and the timing function has to move with it. */}
       <span
         className="vig-type mt-2 max-w-full shrink-0 text-[12.5px] font-semibold leading-[1.3] text-ink-deep"
-        style={{ "--vig-chars": 36 } as CSSProperties}
+        style={{ "--vig-chars": ASKED.length } as CSSProperties}
       >
-        best waterproof jacket for commuting
+        {ASKED}
       </span>
 
-      {/* The answer, not the scoreboard. Three stores arrive one at a time,
-          the way an assistant lists them, and the reader watches the list
-          finish without their own store in it. */}
-      <ol className="mt-2 flex min-h-0 flex-1 flex-col justify-center gap-1">
-        {ANSWER_PICKS.map((store, index) => (
+      {/* The assistant taking the question apart before it answers. This is
+          the part a merchant never sees and cannot argue with: the engine
+          already knows what the shopper meant by every clause. */}
+      <dl className="mt-2.5 grid shrink-0 grid-cols-4 gap-3 border-b border-black/10 pb-2.5">
+        {PARSED.map((field, index) => (
+          <div key={field.label} className="min-w-0">
+            <dt
+              className="vig-step font-mono text-[11px] uppercase tracking-[0.07em] text-black/45"
+              style={vig(index, "1.15s")}
+            >
+              {field.label}
+            </dt>
+            <dd
+              className="vig-step mt-0.5 truncate text-[12px] font-medium text-ink-deep"
+              style={vig(index, "1.25s")}
+            >
+              {field.value}
+            </dd>
+          </div>
+        ))}
+      </dl>
+
+      {/* The answer, not the scoreboard. The matches arrive one at a time, the
+          way an assistant lists them, and the reader watches the list finish
+          without their own store in it. */}
+      <ol className="mt-2 flex min-h-0 flex-1 flex-col justify-center gap-1.5">
+        {ANSWER_PICKS.map((pick, index) => (
           <li
-            key={store}
-            className="vig-step flex items-baseline gap-1.5"
-            style={vig(index, "0.95s")}
+            key={pick.product}
+            className="vig-step flex items-baseline gap-2"
+            style={vig(index + 4, "1.25s")}
           >
             <span className="shrink-0 font-mono text-[11px] text-black/40">
               {index + 1}.
             </span>
-            <span className="min-w-0 truncate text-[12px] font-medium text-ink-deep">
-              {store}
+            <span className="min-w-0 flex-1 truncate text-[12px] font-medium text-ink-deep">
+              {pick.product}
+            </span>
+            <span className="shrink-0 font-mono text-[11px] text-black/50">
+              {pick.store} · {pick.price}
             </span>
           </li>
         ))}
@@ -170,7 +218,7 @@ function DiscoveryVignette() {
 
       <div
         className="vig-step vig-stamp mt-1.5 flex shrink-0 items-center gap-1.5 border-t border-black/10 pt-2 text-signal-ink"
-        style={vig(3, "1.05s")}
+        style={vig(6, "1.35s")}
       >
         <X className="h-3.5 w-3.5 shrink-0" />
         <span className="font-mono text-[12px] font-semibold uppercase tracking-[0.06em]">
@@ -185,7 +233,7 @@ function StoreVignette() {
   return (
     <div
       aria-hidden="true"
-      className="flex h-[11rem] overflow-hidden bg-white ring-1 ring-black/10"
+      className="flex h-[14rem] overflow-hidden bg-white ring-1 ring-black/10"
     >
       <div className="flex w-[36%] min-w-0 flex-col items-center justify-center bg-ground/60 px-2">
         <Image
@@ -241,7 +289,7 @@ function PersonalizationVignette() {
   return (
     <div
       aria-hidden="true"
-      className="flex h-[11rem] flex-col bg-white p-3.5 ring-1 ring-black/10"
+      className="flex h-[14rem] flex-col bg-white p-3.5 ring-1 ring-black/10"
     >
       <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5">
         <span
