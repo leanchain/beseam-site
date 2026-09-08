@@ -100,7 +100,7 @@ const ASKED = "waterproof jacket for commuting, size M, under €200";
 const PARSED = [
   { label: "Use case", value: "Commuting" },
   { label: "Material", value: "Waterproof" },
-  { label: "Size", value: "M" },
+  { label: "Size", value: "Size M" },
   { label: "Price", value: "Under €200" },
 ] as const;
 
@@ -195,7 +195,7 @@ function DiscoveryVignette() {
   return (
     <div
       aria-hidden="true"
-      className="flex h-[18rem] flex-col bg-white p-3.5 ring-1 ring-black/10"
+      className="flex h-[21rem] flex-col bg-white p-3.5 ring-1 ring-black/10"
     >
       <div className="flex shrink-0 items-center justify-between gap-2 border-b border-black/10 pb-2">
         <span className="vig-step font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-black/60">
@@ -227,25 +227,29 @@ function DiscoveryVignette() {
 
       {/* The assistant taking the question apart before it answers. This is
           the part a merchant never sees and cannot argue with: the engine
-          already knows what the shopper meant by every clause. */}
-      <dl className="mt-2.5 grid shrink-0 grid-cols-4 gap-3 border-b border-black/10 pb-2.5">
+          already knows what the shopper meant by every clause.
+
+          One badge per clause rather than a four-column table: the clauses
+          are read individually, not compared down a column, and a badge that
+          is as wide as its own content wraps where the panel is narrow
+          instead of squeezing four columns into a phone. */}
+      {/* One badge per clause, and the value carries it alone. Label plus
+          value would not fit on one line here at a readable size -- four
+          `USE CASE Commuting` pairs need about 407px against the panel's 396
+          -- and this section has a floor of 11px that a merchant put there,
+          so the labels went rather than the type size. `Size M` says its own
+          field; the other three already did. */}
+      <ul className="mt-2.5 flex shrink-0 flex-wrap gap-1.5 border-b border-black/10 pb-2.5">
         {PARSED.map((field, index) => (
-          <div key={field.label} className="min-w-0">
-            <dt
-              className="vig-step font-mono text-[11px] uppercase tracking-[0.07em] text-black/45"
-              style={vig(index, "1.15s")}
-            >
-              {field.label}
-            </dt>
-            <dd
-              className="vig-step mt-0.5 truncate text-[12px] font-medium text-ink-deep"
-              style={vig(index, "1.25s")}
-            >
-              {field.value}
-            </dd>
-          </div>
+          <li
+            key={field.label}
+            className="vig-step shrink-0 whitespace-nowrap border border-black/12 px-1.5 py-0.5 text-[11px] font-medium text-ink-deep"
+            style={vig(index, "1.15s")}
+          >
+            {field.value}
+          </li>
         ))}
-      </dl>
+      </ul>
 
       {/* The answer, not the scoreboard: the assistant's own cards, dealt one
           at a time, and the reader watches the answer finish without their
@@ -257,7 +261,7 @@ function DiscoveryVignette() {
             className="vig-step flex min-w-0 flex-col border border-black/12"
             style={vig(index + 4, "1.25s")}
           >
-            <span className="flex h-[3.5rem] shrink-0 items-center justify-center overflow-hidden bg-[#f4f1ed]">
+            <span className="flex h-[4.75rem] shrink-0 items-center justify-center overflow-hidden bg-[#f4f1ed]">
               {/* Unoptimised on purpose: two 60px-tall thumbnails inside an
                   animated panel are not worth a second network round trip
                   through the image route. */}
@@ -304,7 +308,7 @@ function StoreVignette() {
   return (
     <div
       aria-hidden="true"
-      className="flex h-[18rem] overflow-hidden bg-white ring-1 ring-black/10"
+      className="flex h-[21rem] overflow-hidden bg-white ring-1 ring-black/10"
     >
       <div className="flex w-[31%] min-w-0 flex-col items-center justify-center bg-ground/60 px-2">
         <Image
@@ -379,7 +383,7 @@ function PersonalizationVignette() {
   return (
     <div
       aria-hidden="true"
-      className="flex h-[18rem] flex-col bg-white p-3.5 ring-1 ring-black/10"
+      className="flex h-[21rem] flex-col bg-white p-3.5 ring-1 ring-black/10"
     >
       <div className="flex shrink-0 flex-wrap items-center gap-x-2 gap-y-1.5">
         <span
