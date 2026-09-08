@@ -420,7 +420,19 @@ export default function WhatBeseamDoes() {
                       <span
                         data-deal-arrow
                         aria-hidden="true"
-                        className="hidden xl:absolute xl:-left-4 xl:top-1/2 xl:z-10 xl:flex xl:h-8 xl:w-8 xl:-translate-y-1/2 xl:items-center xl:justify-center xl:bg-ground xl:text-signal-ink"
+                        className="hidden items-center justify-center text-signal-ink xl:absolute xl:z-10 xl:flex xl:bg-ground"
+                        // Geometry inline, not as utilities: the box is one
+                        // 2rem square centred on a border, used nowhere else,
+                        // and inline values cannot be missed by a stale
+                        // Tailwind build the way a fresh `xl:top-1/2` can.
+                        // It only resolves where the element is shown (xl).
+                        style={{
+                          top: "50%",
+                          left: "-1rem",
+                          height: "2rem",
+                          width: "2rem",
+                          transform: "translateY(-50%)",
+                        }}
                       >
                         <ArrowRight
                           className="h-[18px] w-[18px] shrink-0"
