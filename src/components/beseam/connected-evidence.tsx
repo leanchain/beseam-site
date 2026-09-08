@@ -1,8 +1,9 @@
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 
 import { ArrowRight, X } from "lucide-react";
 
 import { Reveal } from "@/components/beseam/reveal";
+import { SequenceReveal } from "@/components/beseam/sequence-reveal";
 
 /**
  * The trace forks on purpose. A single-file chain shows a story any tool could
@@ -200,13 +201,22 @@ function MobileTrace() {
       <div className="border-y border-white/14">
         <div className="py-5">
           <div className="flex items-baseline gap-3">
-            <span className="font-mono text-[10px] font-semibold tabular-nums text-signal">01</span>
+            <span className="font-mono text-[10px] font-semibold tabular-nums text-signal">
+              01
+            </span>
             <StepLabel>What the shopper did</StepLabel>
           </div>
           <div className="mt-3 flex flex-wrap items-center gap-2 text-[12px]">
-            <span className="bg-white/[0.06] px-2 py-1 text-white/78">waterproof jacket</span>
-            <ArrowRight className="h-3.5 w-3.5 text-signal" aria-hidden="true" />
-            <span className="bg-signal/[0.08] px-2 py-1 text-signal">+ for commuting</span>
+            <span className="bg-white/[0.06] px-2 py-1 text-white/78">
+              waterproof jacket
+            </span>
+            <ArrowRight
+              className="h-3.5 w-3.5 text-signal"
+              aria-hidden="true"
+            />
+            <span className="bg-signal/[0.08] px-2 py-1 text-signal">
+              + for commuting
+            </span>
           </div>
           <p className="mt-3 text-[15px] leading-[1.5] text-white/88">
             Same jackets returned. The shopper left without opening one.
@@ -215,28 +225,41 @@ function MobileTrace() {
 
         <div className="border-t border-white/14 py-5">
           <div className="flex items-baseline gap-3">
-            <span className="font-mono text-[10px] font-semibold tabular-nums text-signal">02</span>
+            <span className="font-mono text-[10px] font-semibold tabular-nums text-signal">
+              02
+            </span>
             <StepLabel>Strongest evidence</StepLabel>
           </div>
           <div className="mt-3 flex flex-wrap gap-2">
             {ruledOut.map((item) => (
-              <span key={item.domain} className="bg-white/[0.05] px-2 py-1 text-[10px] text-white/48">
+              <span
+                key={item.domain}
+                className="bg-white/[0.05] px-2 py-1 text-[10px] text-white/48"
+              >
                 {item.finding}
               </span>
             ))}
           </div>
           {issue ? (
             <div className="mt-3 border-l-2 border-signal bg-signal/[0.07] px-4 py-3.5">
-              <p className="font-mono text-[9px] font-semibold uppercase tracking-[0.1em] text-signal">{issue.domain}</p>
-              <p className="mt-1.5 text-[16px] font-medium leading-[1.4] text-white">{issue.finding}</p>
-              <p className="mt-1 text-[12px] leading-[1.5] text-white/58">{issue.detail}</p>
+              <p className="font-mono text-[9px] font-semibold uppercase tracking-[0.1em] text-signal">
+                {issue.domain}
+              </p>
+              <p className="mt-1.5 text-[16px] font-medium leading-[1.4] text-white">
+                {issue.finding}
+              </p>
+              <p className="mt-1 text-[12px] leading-[1.5] text-white/58">
+                {issue.detail}
+              </p>
             </div>
           ) : null}
         </div>
 
         <div className="border-t border-white/14 py-5">
           <div className="flex items-baseline gap-3">
-            <span className="font-mono text-[10px] font-semibold tabular-nums text-signal">03</span>
+            <span className="font-mono text-[10px] font-semibold tabular-nums text-signal">
+              03
+            </span>
             <StepLabel>Proposed change</StepLabel>
           </div>
           <p className="mt-3 text-[15px] font-medium leading-[1.5] text-white/90">
@@ -244,9 +267,15 @@ function MobileTrace() {
           </p>
           <div className="mt-4 flex items-center gap-2 text-[11px] font-semibold text-white/80">
             <span>You approve</span>
-            <ArrowRight className="h-3 w-3 shrink-0 text-signal" aria-hidden="true" />
+            <ArrowRight
+              className="h-3 w-3 shrink-0 text-signal"
+              aria-hidden="true"
+            />
             <span>Beseam applies it</span>
-            <ArrowRight className="h-3 w-3 shrink-0 text-signal" aria-hidden="true" />
+            <ArrowRight
+              className="h-3 w-3 shrink-0 text-signal"
+              aria-hidden="true"
+            />
             <span>Check again</span>
           </div>
         </div>
@@ -274,15 +303,15 @@ export default function ConnectedEvidence() {
             </div>
             <div className="max-w-[50ch] text-[16px] leading-[1.75] text-white/72">
               <p>
-              Beseam looks at what the shopper did, checks product, search, and
-              stock data, rules out weaker explanations, then turns the strongest
-              finding into a change you can approve and check again.
+                Beseam looks at what the shopper did, checks product, search,
+                and stock data, rules out weaker explanations, then turns the
+                strongest finding into a change you can approve and check again.
               </p>
             </div>
           </div>
         </Reveal>
 
-        <Reveal delay={0.06}>
+        <SequenceReveal index={0}>
           <div className="mt-10 lg:border lg:border-white/16 lg:bg-white/[0.02]">
             <div className="flex flex-wrap items-center justify-between gap-3 border-y border-white/12 py-3 lg:border-t-0 lg:border-b lg:px-6">
               <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.12em] text-signal">
@@ -298,8 +327,13 @@ export default function ConnectedEvidence() {
 
               <div className="hidden lg:block">
                 <div className="grid grid-cols-2 gap-6">
-                  {QUERIES.map((query) => (
-                    <div key={query.value} className="relative text-center">
+                  {QUERIES.map((query, i) => (
+                    <div
+                      key={query.value}
+                      data-seq-row
+                      style={{ "--seq-row": i } as CSSProperties}
+                      className="relative text-center"
+                    >
                       <span className="mb-3 flex justify-center">
                         <NodeDot />
                       </span>
@@ -313,7 +347,11 @@ export default function ConnectedEvidence() {
 
                 <Converge />
 
-                <div className="relative text-center">
+                <div
+                  data-seq-row
+                  style={{ "--seq-row": 2 } as CSSProperties}
+                  className="relative text-center"
+                >
                   <span className="mb-3 flex justify-center">
                     <NodeDot />
                   </span>
@@ -326,12 +364,14 @@ export default function ConnectedEvidence() {
                 <Fork />
 
                 <div className="grid grid-cols-3 items-stretch gap-14">
-                  {CANDIDATES.map((item) => (
+                  {CANDIDATES.map((item, i) => (
                     <div key={item.domain} className="flex flex-col">
                       <span className="mb-4 flex justify-center">
                         <NodeDot tone={item.cause ? "cause" : "dead"} />
                       </span>
                       <article
+                        data-seq-row
+                        style={{ "--seq-row": i + 3 } as CSSProperties}
                         className={
                           item.cause
                             ? "relative flex flex-1 flex-col gap-3.5 border border-signal/70 bg-signal/[0.08] px-5 py-5"
@@ -379,7 +419,8 @@ export default function ConnectedEvidence() {
                 <div className="border border-signal/45 bg-signal/[0.05] px-6 py-5 text-center">
                   <StepLabel>Proposed change</StepLabel>
                   <p className="mt-2.5 text-[17px] font-medium leading-[1.5] text-white/94">
-                    Add the commuting use case to the returned jacket product pages.
+                    Add the commuting use case to the returned jacket product
+                    pages.
                   </p>
                   <p className="mt-3 font-mono text-[10.5px] font-semibold uppercase tracking-[0.08em] text-white/62">
                     You approve → Beseam applies it → Check again
@@ -388,7 +429,7 @@ export default function ConnectedEvidence() {
               </div>
             </div>
           </div>
-        </Reveal>
+        </SequenceReveal>
       </div>
     </section>
   );

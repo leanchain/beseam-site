@@ -2,6 +2,11 @@
  * Logo exploration — one hero, one alternate. The bar: a double reading, the
  * FedEx-arrow test. Not used in production.
  *
+ * REJECTED direction — kept only as a record, do not revive. Both concepts are
+ * built on needle-and-thread imagery, and the sewing read was ruled out for the
+ * brand: it implies fabric/tailoring, not AI shopping visibility. The shipped
+ * mark in `./logo.tsx` dropped its stitch marks for the same reason.
+ *
  * Hero · Seam-stitch B: a drawn grotesque B that is literally two pieces of
  * material sewn together — the split is a true zigzag stitch (computed, even
  * pitch), ink above, terracotta below. Reads as a solid two-tone B at 16px;

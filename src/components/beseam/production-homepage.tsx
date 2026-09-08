@@ -14,10 +14,12 @@ import WhatBeseamDoes from "@/components/beseam/what-beseam-does";
 /**
  * Section order is the argument:
  *
- * claim → credibility → signature evidence trace → breadth → proposed work →
- * truthful measurement mechanism → published research → ways to start
+ * claim → credibility → signature evidence trace → breadth → published
+ * research → proposed work → truthful measurement mechanism → ways to start
  *
- * The most ownable proof now arrives before the capability catalogue.
+ * The most ownable proof arrives before the capability catalogue, and the
+ * published benchmarks sit after "How Beseam works" rather than ahead of it:
+ * the report corroborates the claim, it does not open with it.
  *
  * Hero copy is ruled, not iterated: visibility-first (tracker §Canonical
  * landing-page audit, 2026-09-05), frozen until 2026-10-05 except for bugs or
@@ -81,9 +83,9 @@ export default function ProductionHomepage() {
       </section>
 
       <CredibilityRail />
-      <CategoryBenchmarksSection />
       <ConnectedEvidence />
       <WhatBeseamDoes />
+      <CategoryBenchmarksSection />
       <EvidenceToWork />
       <MeasureImpact />
       <FirstMonthPromise />

@@ -13,7 +13,22 @@ import { ArrowRight, Check, TrendingUp } from "lucide-react";
  * screens; the accent is the landing signal rather than the app's own primary.
  *
  * The real queue is wider. This marketing view keeps only the columns needed to
- * understand the decision: opportunity, booked sales, effort, and next step.
+ * understand the decision: the change, the share of booked sales it touches,
+ * effort, and status.
+ *
+ * It carries no column-label row at all. A merchant counted three stacked
+ * header rows back to us before any content -- a section label, a screen
+ * chrome row, and the labels themselves -- and asked for the table to be
+ * simplified, so all three went. That is a deliberate trade: a marketing
+ * table can drop its labels only while every value says what it is. The
+ * `band` column is the one that could not, so it names itself in the data
+ * ("Top 5% of your booked sales", "Top quarter of booked sales"); change,
+ * effort, and status read from their own values. Any new column has to be
+ * self-describing the same way, or the label row comes back.
+ *
+ * This applies everywhere `ActionsScreen` is used -- /#actions, the platform,
+ * marketing-detail, buying-decision and playbook pages all render the same
+ * unlabelled table.
  *
  * All figures in these reconstructed product views are illustrative.
  *
@@ -38,7 +53,7 @@ const QUEUE_ROWS = [
   {
     title: "Explain how Urban Shell fits over everyday layers.",
     why: "The shopper opened the size guide, and fit over layers is still unanswered at the decision point.",
-    band: "Top quarter",
+    band: "Top quarter of booked sales",
     effort: "Quick",
     step: "In motion",
     lead: false,
@@ -97,18 +112,6 @@ export function ActionsScreen({ compact = false }: { compact?: boolean } = {}) {
   if (compact) {
     return (
       <div className="border border-black/16 bg-white">
-        <div className="flex items-center justify-between gap-4 border-b border-black/12 bg-ground px-3 py-2.5">
-          <p className="text-[13px] font-semibold text-ink-deep">Growth plan</p>
-          <p className="font-mono text-[9px] uppercase tracking-[0.1em] text-black/46">
-            3 changes · 2 moving
-          </p>
-        </div>
-        <div className="grid grid-cols-[minmax(0,1fr)_6.5rem_4rem_4.5rem] gap-2 border-b border-black/12 px-3 py-1.5 font-mono text-[9px] font-semibold uppercase tracking-[0.08em] text-black/46">
-          <span>Opportunity and change</span>
-          <span>Booked sales</span>
-          <span>Effort</span>
-          <span>Status</span>
-        </div>
         {QUEUE_ROWS.map((row) => (
           <div
             key={row.title}
@@ -136,39 +139,17 @@ export function ActionsScreen({ compact = false }: { compact?: boolean } = {}) {
             </span>
           </div>
         ))}
+        <p className="border-t border-black/10 px-3 py-2 text-[11px] leading-[1.5] text-black/50">
+          Illustrative example · not customer results.
+        </p>
       </div>
     );
   }
 
   return (
     <div className="border border-black/16 bg-white">
-      <ScreenChrome
-        title="Growth plan"
-        meta="Illustrative · changes in progress"
-      />
-
       <div className="relative overflow-x-auto">
         <div className="min-w-[60rem]">
-          <div
-            className="grid gap-4 border-b border-black/12 px-4 py-2 sm:px-5"
-            style={{
-              gridTemplateColumns: "minmax(0,1fr) 9rem 4.5rem 7.5rem",
-            }}
-          >
-            <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.1em] text-black/50">
-              Opportunity and change
-            </p>
-            <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.1em] text-black/50">
-              Booked sales
-            </p>
-            <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.1em] text-black/50">
-              Effort
-            </p>
-            <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.1em] text-black/50">
-              Status
-            </p>
-          </div>
-
           {QUEUE_ROWS.map((row) => (
             <div
               key={row.title}
@@ -226,6 +207,10 @@ export function ActionsScreen({ compact = false }: { compact?: boolean } = {}) {
       <p className="border-t border-black/12 bg-ground px-4 py-2.5 text-[11px] leading-[1.5] text-black/54 sm:px-5">
         Every change keeps what Beseam found, the owner, status, and what to
         check afterward together.
+      </p>
+
+      <p className="border-t border-black/10 px-4 py-2 text-[11px] leading-[1.5] text-black/50 sm:px-5">
+        Illustrative example · not customer results.
       </p>
     </div>
   );

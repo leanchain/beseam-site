@@ -14,7 +14,23 @@ import {
 import { ChannelIcon } from "@/components/beseam/channel-icon";
 import ProductArt from "@/components/beseam/product-art";
 import { Reveal } from "@/components/beseam/reveal";
+import {
+  SequenceReveal,
+  SequenceRevealFallback,
+} from "@/components/beseam/sequence-reveal";
 
+/**
+ * The four-step flow: a shopper asks a buying question, the assistant either
+ * names you or does not, the shopper lands on the product page, looks for the
+ * one thing they need to know, and leaves when it is not there.
+ *
+ * Two things a merchant told us shaped this. The panels used to draw their
+ * labels at 7.5px, which she could not read without leaning in ("it's so
+ * small"), so nothing in this section goes below 11px and the panels are a
+ * third taller. And all four used to appear at once on mount, which she asked
+ * to be dealt one after another -- hence `SequenceReveal` rather than
+ * `Reveal` on the grid, and only here.
+ */
 const DOMAINS = [
   {
     title: "Get found",
@@ -46,18 +62,18 @@ function DiscoveryVignette() {
   return (
     <div
       aria-hidden="true"
-      className="flex h-[7.25rem] flex-col bg-white p-3 ring-1 ring-black/10"
+      className="flex h-[11rem] flex-col bg-white p-3.5 ring-1 ring-black/10"
     >
-      <div className="flex items-center gap-2 border-b border-black/10 pb-2">
-        <span className="shrink-0 font-mono text-[7.5px] font-semibold uppercase tracking-[0.08em] text-black/38">
+      <div className="flex flex-col gap-1 border-b border-black/10 pb-2.5">
+        <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-black/60">
           Buying question
         </span>
-        <span className="min-w-0 truncate text-[9px] font-medium text-ink-deep">
+        <span className="min-w-0 truncate text-[12px] font-medium text-ink-deep">
           best waterproof jacket for commuting
         </span>
       </div>
 
-      <div className="flex flex-1 flex-col justify-center gap-2">
+      <div className="flex flex-1 flex-col justify-center gap-2.5">
         {(
           [
             ["openai", "ChatGPT", true],
@@ -68,14 +84,14 @@ function DiscoveryVignette() {
           <div key={brand} className="flex items-center gap-2">
             <ChannelIcon
               brand={brand}
-              className={`h-4 w-4 ${named ? "text-ink-deep/70" : "text-black/30"}`}
+              className={`h-[18px] w-[18px] shrink-0 ${named ? "text-ink-deep/70" : "text-black/30"}`}
             />
-            <span className="font-mono text-[9px] font-semibold uppercase tracking-[0.06em] text-black/52">
+            <span className="font-mono text-[12px] font-semibold uppercase tracking-[0.06em] text-black/56">
               {name}
             </span>
             <span className="h-px min-w-3 flex-1 bg-black/10" />
             <span
-              className={`font-mono text-[9px] font-semibold uppercase tracking-[0.06em] ${
+              className={`shrink-0 font-mono text-[12px] font-semibold uppercase tracking-[0.06em] ${
                 named ? "text-[#1a6b43]" : "text-signal-ink"
               }`}
             >
@@ -92,28 +108,32 @@ function StoreVignette() {
   return (
     <div
       aria-hidden="true"
-      className="flex h-[7.25rem] overflow-hidden bg-white ring-1 ring-black/10"
+      className="flex h-[11rem] overflow-hidden bg-white ring-1 ring-black/10"
     >
-      <div className="flex w-[38%] min-w-0 flex-col items-center justify-center bg-ground/60 px-2">
-        <ProductArt kind="shell" className="h-12 w-12" />
-        <span className="mt-1 text-[9px] font-semibold text-ink-deep">City Shell</span>
-        <span className="mt-0.5 font-mono text-[7px] text-black/42">20,000 mm</span>
+      <div className="flex w-[36%] min-w-0 flex-col items-center justify-center bg-ground/60 px-2">
+        <ProductArt kind="shell" className="h-14 w-14" />
+        <span className="mt-1.5 text-[11px] font-semibold text-ink-deep">
+          City Shell
+        </span>
+        <span className="mt-0.5 font-mono text-[11px] text-black/60">
+          20,000 mm
+        </span>
       </div>
 
-      <div className="flex min-w-0 flex-1 flex-col justify-center border-l border-black/10 px-3">
-        <span className="font-mono text-[7.5px] font-semibold uppercase tracking-[0.08em] text-black/38">
+      <div className="flex min-w-0 flex-1 flex-col justify-center border-l border-black/10 px-3.5">
+        <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-black/60">
           What blocks the choice
         </span>
-        <p className="mt-2 text-[10px] font-semibold leading-tight text-ink-deep">
+        <p className="mt-2 text-[12.5px] font-semibold leading-[1.3] text-ink-deep">
           Breathable enough for commuting?
         </p>
-        <div className="mt-1.5 flex items-center gap-1.5 text-signal-ink">
-          <X className="h-3 w-3 shrink-0" />
-          <span className="font-mono text-[9px] font-semibold uppercase tracking-[0.06em]">
+        <div className="mt-2 flex items-center gap-1.5 text-signal-ink">
+          <X className="h-3.5 w-3.5 shrink-0" />
+          <span className="font-mono text-[12px] font-semibold uppercase tracking-[0.06em]">
             No answer
           </span>
         </div>
-        <p className="mt-2 font-mono text-[7px] leading-[1.35] text-black/38">
+        <p className="mt-2 font-mono text-[11px] leading-[1.4] text-black/60">
           Question not answered on the page
         </p>
       </div>
@@ -125,29 +145,29 @@ function PersonalizationVignette() {
   return (
     <div
       aria-hidden="true"
-      className="flex h-[7.25rem] flex-col bg-white p-3 ring-1 ring-black/10"
+      className="flex h-[11rem] flex-col bg-white p-3.5 ring-1 ring-black/10"
     >
-      <div className="flex items-center gap-2">
-        <span className="shrink-0 font-mono text-[8px] font-semibold uppercase tracking-[0.09em] text-black/38">
+      <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5">
+        <span className="shrink-0 font-mono text-[11px] font-semibold uppercase tracking-[0.09em] text-black/60">
           Shopper wants
         </span>
         <span className="h-px min-w-3 flex-1 bg-black/10" />
-        <span className="shrink-0 bg-ground px-1.5 py-0.5 font-mono text-[8px] text-black/58 ring-1 ring-black/8">
+        <span className="shrink-0 bg-ground px-1.5 py-0.5 font-mono text-[11px] text-black/60 ring-1 ring-black/8">
           waterproof
         </span>
-        <span className="shrink-0 bg-signal-ink/[0.06] px-1.5 py-0.5 font-mono text-[8px] font-semibold text-signal-ink ring-1 ring-signal-ink/18">
+        <span className="shrink-0 bg-signal-ink/[0.06] px-1.5 py-0.5 font-mono text-[11px] font-semibold text-signal-ink ring-1 ring-signal-ink/18">
           commuting
         </span>
       </div>
 
-      <div className="mt-2 flex min-h-0 flex-1 overflow-hidden ring-1 ring-black/10">
+      <div className="mt-2.5 flex min-h-0 flex-1 overflow-hidden ring-1 ring-black/10">
         <div className="flex w-[42%] min-w-0 items-center gap-2.5 bg-ground/65 px-2.5">
-          <ProductArt kind="shell" className="h-10 w-10 shrink-0" />
+          <ProductArt kind="shell" className="h-11 w-11 shrink-0" />
           <div className="min-w-0">
-            <p className="font-mono text-[7.5px] uppercase tracking-[0.08em] text-black/38">
+            <p className="font-mono text-[11px] uppercase tracking-[0.08em] text-black/60">
               You’re viewing
             </p>
-            <p className="mt-0.5 truncate text-[10.5px] font-semibold text-ink-deep">
+            <p className="mt-0.5 truncate text-[12px] font-semibold text-ink-deep">
               City Shell
             </p>
           </div>
@@ -155,16 +175,16 @@ function PersonalizationVignette() {
 
         <div className="flex min-w-0 flex-1 flex-col justify-center border-l border-black/10 bg-signal-ink/[0.045] px-3">
           <div className="flex items-center gap-1.5">
-            <WandSparkles className="h-3 w-3 shrink-0 text-signal-ink" />
-            <span className="font-mono text-[7.5px] font-semibold uppercase tracking-[0.08em] text-signal-ink">
+            <WandSparkles className="h-3.5 w-3.5 shrink-0 text-signal-ink" />
+            <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-signal-ink">
               Helpful context
             </span>
           </div>
-          <div className="mt-1.5 flex flex-wrap gap-1.5">
-            <span className="bg-white px-1.5 py-0.5 font-mono text-[7.5px] text-black/58 ring-1 ring-black/8">
+          <div className="mt-2 flex flex-wrap gap-1.5">
+            <span className="bg-white px-1.5 py-0.5 font-mono text-[11px] text-black/60 ring-1 ring-black/8">
               Commuting use case
             </span>
-            <span className="bg-white px-1.5 py-0.5 font-mono text-[7.5px] font-semibold text-ink-deep ring-1 ring-signal-ink/16">
+            <span className="bg-white px-1.5 py-0.5 font-mono text-[11px] font-semibold text-ink-deep ring-1 ring-signal-ink/16">
               Breathable shell
             </span>
           </div>
@@ -178,32 +198,31 @@ function RevenueVignette() {
   return (
     <div
       aria-hidden="true"
-      className="flex h-[7.25rem] flex-col bg-white p-3 ring-1 ring-black/10"
+      className="flex h-[11rem] flex-col bg-white p-3.5 ring-1 ring-black/10"
     >
-      <div className="flex items-center justify-between gap-2 border-b border-black/10 pb-2">
-        <span className="font-mono text-[7.5px] font-semibold uppercase tracking-[0.08em] text-black/38">
+      <div className="flex items-center justify-between gap-2 border-b border-black/10 pb-2.5">
+        <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-black/60">
           After the approved change
         </span>
-        <span className="font-mono text-[7px] text-black/34">
-          same question · same segment
+        <span className="shrink-0 font-mono text-[11px] text-black/60">
+          before → after
         </span>
       </div>
 
-      <div className="flex flex-1 flex-col justify-center gap-2">
-        {(["AI appearances", "Product visits", "Add to cart"] as const).map((label) => (
-          <div key={label} className="flex items-center gap-2">
-            <span className="truncate font-mono text-[8px] uppercase tracking-[0.05em] text-black/46">
-              {label}
-            </span>
-            <span className="h-px min-w-2 flex-1 bg-black/10" />
-            <span className="shrink-0 font-mono text-[8.5px] text-black/42">
-              before → after
-            </span>
-            <span className="w-[4.4rem] shrink-0 text-right font-mono text-[8.5px] font-semibold uppercase tracking-[0.04em] text-signal-ink">
-              Checked again
-            </span>
-          </div>
-        ))}
+      <div className="flex flex-1 flex-col justify-center gap-2.5">
+        {(["AI appearances", "Product visits", "Add to cart"] as const).map(
+          (label) => (
+            <div key={label} className="flex items-center gap-2">
+              <span className="truncate font-mono text-[12px] uppercase tracking-[0.05em] text-black/52">
+                {label}
+              </span>
+              <span className="h-px min-w-2 flex-1 bg-black/10" />
+              <span className="shrink-0 font-mono text-[12px] font-semibold uppercase tracking-[0.04em] text-signal-ink">
+                Checked again
+              </span>
+            </div>
+          ),
+        )}
       </div>
     </div>
   );
@@ -224,6 +243,18 @@ const LOOP = [
   { label: "Check and repeat", Icon: RefreshCw },
 ] as const;
 
+/**
+ * The grid drops to four across only at `xl`. Between 1024px and 1280px four
+ * panels squeezed each one under 15rem, which is the width at which the labels
+ * stopped being readable in the first place.
+ */
+const CELL_RULES = [
+  "sm:pl-0",
+  "sm:border-l",
+  "sm:pl-0 xl:border-l xl:pl-5",
+  "sm:border-l",
+] as const;
+
 export default function WhatBeseamDoes() {
   return (
     <section id="one-system" className="scroll-mt-24 bg-ground">
@@ -239,79 +270,86 @@ export default function WhatBeseamDoes() {
               </h2>
             </div>
             <p className="max-w-[50ch] text-[16px] leading-[1.7] text-black/64">
-              Beseam follows the shopper from discovery to purchase to find where
-              confidence drops, questions go unanswered, or the journey stops.
+              Beseam follows the shopper from discovery to purchase to find
+              where confidence drops, questions go unanswered, or the journey
+              stops.
             </p>
           </div>
         </Reveal>
 
-        <Reveal delay={0.05}>
-          <div className="mt-12 grid border-t-2 border-ink-deep sm:grid-cols-2 lg:mt-16 lg:grid-cols-4">
-            {DOMAINS.map((domain, index) => {
-              const Vignette = VIGNETTES[index];
-              return (
-                <article
-                  key={domain.title}
-                  className={`relative border-b border-black/14 py-5 sm:px-5 sm:py-6 lg:border-b-0 ${
-                    [
-                      "sm:pl-0",
-                      "sm:border-l",
-                      "sm:pl-0 lg:border-l lg:pl-5",
-                      "sm:border-l",
-                    ][index]
-                  }`}
-                >
+        <SequenceRevealFallback />
+        <div className="mt-12 grid border-t-2 border-ink-deep sm:grid-cols-2 lg:mt-16 xl:grid-cols-4">
+          {DOMAINS.map((domain, index) => {
+            const Vignette = VIGNETTES[index];
+            return (
+              <SequenceReveal
+                key={domain.title}
+                index={index}
+                className={`relative border-b border-black/14 py-5 sm:px-5 sm:py-6 xl:border-b-0 ${CELL_RULES[index]}`}
+              >
+                <article>
                   <div className="flex items-start gap-3">
-                    <span className="flex h-8 w-8 shrink-0 items-center justify-center bg-signal-ink text-white">
-                      <domain.Icon aria-hidden="true" className="h-4 w-4" strokeWidth={1.8} />
+                    <span className="flex h-9 w-9 shrink-0 items-center justify-center bg-signal-ink text-white">
+                      <domain.Icon
+                        aria-hidden="true"
+                        className="h-[18px] w-[18px]"
+                        strokeWidth={1.8}
+                      />
                     </span>
                     <div className="min-w-0">
-                      <h3 className="text-[16px] font-semibold leading-[1.25] text-ink-deep">
+                      <h3 className="text-[17px] font-semibold leading-[1.25] text-ink-deep">
                         {domain.title}
                       </h3>
-                      <p className="mt-1.5 font-mono text-[9.5px] font-semibold uppercase leading-[1.35] tracking-[0.07em] text-black/42">
+                      <p className="mt-1.5 font-mono text-[11px] font-semibold uppercase leading-[1.35] tracking-[0.07em] text-black/46">
                         {domain.scope}
                       </p>
                     </div>
                     {index < DOMAINS.length - 1 ? (
                       <ArrowRight
                         aria-hidden="true"
-                        className="hidden h-3.5 w-3.5 shrink-0 text-signal-ink lg:absolute lg:-right-2 lg:top-7 lg:z-10 lg:block lg:bg-ground"
+                        className="hidden h-3.5 w-3.5 shrink-0 text-signal-ink xl:absolute xl:-right-2 xl:top-7 xl:z-10 xl:block xl:bg-ground"
                       />
                     ) : null}
                   </div>
                   <div className="mt-4">
                     <Vignette />
                   </div>
-                  <p className="mt-3.5 max-w-[31ch] text-[13.5px] leading-[1.5] text-black/64">
+                  <p className="mt-3.5 max-w-[33ch] text-[14.5px] leading-[1.55] text-black/64">
                     {domain.detail}
                   </p>
                 </article>
-              );
-            })}
-          </div>
-        </Reveal>
+              </SequenceReveal>
+            );
+          })}
+        </div>
 
         <Reveal delay={0.08}>
           <div className="mt-5 border-y border-white/10 bg-ink-deep px-5 py-3.5 text-white sm:px-6 lg:px-8">
             <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:gap-8">
-              <p className="shrink-0 font-mono text-[9.5px] font-semibold uppercase tracking-[0.12em] text-signal">
+              <p className="shrink-0 font-mono text-[11px] font-semibold uppercase tracking-[0.12em] text-signal">
                 Continuous loop
               </p>
-              <ol className="relative grid flex-1 gap-y-3 sm:grid-cols-5 sm:gap-0 before:absolute before:left-5 before:right-5 before:top-3.5 before:hidden before:h-px before:bg-white/16 sm:before:block">
+              <ol className="relative grid flex-1 gap-y-3 before:absolute before:left-5 before:right-5 before:top-3.5 before:hidden before:h-px before:bg-white/16 sm:grid-cols-5 sm:gap-0 sm:before:block">
                 {LOOP.map(({ label, Icon }, index) => (
                   <li
                     key={label}
                     className="relative z-10 flex items-center gap-2.5 sm:flex-col sm:items-start sm:gap-2 sm:px-3"
                   >
                     <span className="flex h-7 w-7 shrink-0 items-center justify-center bg-ink-deep text-signal ring-1 ring-white/18">
-                      <Icon className="h-3.5 w-3.5" strokeWidth={1.8} aria-hidden="true" />
+                      <Icon
+                        className="h-3.5 w-3.5"
+                        strokeWidth={1.8}
+                        aria-hidden="true"
+                      />
                     </span>
-                    <span className="text-[11px] font-semibold leading-[1.3] text-white/82">
+                    <span className="text-[12px] font-semibold leading-[1.3] text-white/82">
                       {label}
                     </span>
                     {index < LOOP.length - 1 ? (
-                      <ArrowRight className="ml-auto h-3.5 w-3.5 text-signal sm:hidden" aria-hidden="true" />
+                      <ArrowRight
+                        className="ml-auto h-3.5 w-3.5 text-signal sm:hidden"
+                        aria-hidden="true"
+                      />
                     ) : null}
                   </li>
                 ))}

@@ -1,10 +1,10 @@
-import Image from "next/image";
 import Link from "next/link";
 
 import { ArrowRight } from "lucide-react";
 import type { Metadata } from "next";
 
 import FirstMonthPromise from "@/components/beseam/first-month-promise";
+import LoopDiagram from "@/components/beseam/loop-diagram";
 import { Reveal } from "@/components/beseam/reveal";
 
 const MANIFESTO_URL = "https://beseam.com/manifesto";
@@ -150,7 +150,8 @@ export default function ManifestoPage() {
       {
         "@type": "Article",
         "@id": `${MANIFESTO_URL}#article`,
-        headline: "Shopping is moving from finding products to choosing products.",
+        headline:
+          "Shopping is moving from finding products to choosing products.",
         description:
           "Beseam keeps watching what shoppers see, choose, and buy, finds what to improve, and keeps each conclusion tied to the facts behind it.",
         image: {
@@ -239,13 +240,22 @@ export default function ManifestoPage() {
 
       <section className="border-b border-black/18">
         <div className="mx-auto max-w-[92rem] px-5 py-20 sm:px-8 sm:py-24 lg:px-10 lg:py-32">
-          <Reveal className="grid gap-12 lg:grid-cols-[minmax(0,0.72fr)_minmax(0,1.28fr)] lg:items-end lg:gap-20">
+          <Reveal className="grid gap-12 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] lg:items-end lg:gap-20">
             <div>
               <p className="font-mono text-[12px] font-semibold uppercase tracking-[0.14em] text-signal-ink">
                 The Beseam manifesto
               </p>
-              <h1 className="mt-7 max-w-[18ch] font-serif text-[clamp(2.8rem,6.1vw,4.5rem)] font-normal leading-[1] tracking-[-0.02em] text-ink-deep">
-                Shopping is moving from finding products to choosing products.
+              {/* The sentence is a contrast, so the contrast is drawn rather
+                  than left for the reader to find: the old job in receding
+                  ink, the new one in the signal colour. */}
+              <h1 className="mt-7 max-w-[19ch] text-balance font-serif text-[clamp(2.8rem,6.1vw,4rem)] font-normal leading-[1] tracking-[-0.02em] text-ink-deep">
+                Shopping is moving from{" "}
+                <span className="whitespace-nowrap text-black/42">finding</span>{" "}
+                products to{" "}
+                <span className="whitespace-nowrap text-signal-ink">
+                  choosing
+                </span>{" "}
+                products.
               </h1>
             </div>
             <div className="max-w-2xl self-end">
@@ -280,8 +290,8 @@ export default function ManifestoPage() {
             <div>
               <p className="max-w-2xl text-[18px] leading-[1.72] text-black/68">
                 You should not need the organization of a global retailer to
-                operate like one. And if you are a global retailer, you should not
-                need more organizational complexity to move faster.
+                operate like one. And if you are a global retailer, you should
+                not need more organizational complexity to move faster.
               </p>
               <div className="mt-10 border-t border-black/22">
                 {[
@@ -338,8 +348,8 @@ export default function ManifestoPage() {
                 what did the shopper want, which choices did they see, what
                 questions remained, what did they choose or where did they stop,
                 what may explain it, what could Beseam change under the
-                merchant&rsquo;s rules, and what happened afterward. The evidence should stay attached all the
-                way through.
+                merchant&rsquo;s rules, and what happened afterward. The
+                evidence should stay attached all the way through.
               </p>
               <div className="mt-10 border-t border-black/22">
                 {PROBLEM.map(([title, body], index) => (
@@ -365,36 +375,7 @@ export default function ManifestoPage() {
       </section>
 
       <section className="border-b border-black/18 bg-ink-deep text-white">
-        <div className="mx-auto grid max-w-[92rem] gap-14 px-5 py-20 sm:px-8 sm:py-24 lg:grid-cols-[20rem_minmax(0,1fr)] lg:items-start lg:gap-20 lg:px-10 lg:py-28">
-          <Reveal>
-            <figure>
-              <div className="relative aspect-[4/5] overflow-hidden border border-white/18 bg-white/5">
-                <Image
-                  src="/images/about/pankaj-kumar.jpg"
-                  alt="Pankaj Kumar, founder of Beseam"
-                  fill
-                  sizes="(min-width: 1024px) 20rem, 80vw"
-                  className="object-cover object-center"
-                  priority
-                />
-              </div>
-              <figcaption className="border-x border-b border-white/18 px-4 py-4">
-                <p className="text-[14px] font-semibold text-white">
-                  Pankaj Kumar
-                </p>
-                <p className="mt-1 font-mono text-[12px] uppercase tracking-[0.09em] text-white/72">
-                  Founder, Beseam
-                </p>
-                <p className="mt-1 font-mono text-[12px] uppercase tracking-[0.09em] text-white/72">
-                  Ex-Google - 10 Years
-                </p>
-                <p className="mt-1 font-mono text-[12px] uppercase tracking-[0.09em] text-white/72">
-                  Ex-Amazon - 3 Years
-                </p>
-              </figcaption>
-            </figure>
-          </Reveal>
-
+        <div className="mx-auto max-w-[64rem] px-5 py-20 sm:px-8 sm:py-24 lg:px-10 lg:py-28">
           <Reveal delay={0.06}>
             <h2 className="max-w-[18ch] font-serif text-[clamp(2.2rem,4.6vw,3.5rem)] font-normal leading-[1.04] tracking-[-0.02em]">
               The important gap is between being considered and being chosen.
@@ -419,8 +400,8 @@ export default function ManifestoPage() {
                 failure somewhere else.
               </p>
               <p>
-                That is why I am building Beseam: to keep observing,
-                understanding, acting, and learning in one continuous loop, with
+                That is why I am building Beseam: to keep finding, preparing,
+                approving, applying, and measuring in one continuous loop, with
                 the evidence behind each step still attached.
               </p>
             </div>
@@ -439,9 +420,14 @@ export default function ManifestoPage() {
         <div className="mx-auto max-w-[92rem] px-5 py-20 sm:px-8 sm:py-24 lg:px-10 lg:py-28">
           <Reveal className="grid gap-12 lg:grid-cols-[minmax(0,0.72fr)_minmax(0,1.28fr)] lg:gap-20">
             <div>
-              <h2 className="max-w-[18ch] font-serif text-[clamp(2.2rem,4.4vw,3.5rem)] font-normal leading-[1.04] tracking-[-0.02em]">
+              <h2 className="max-w-[18ch] text-balance font-serif text-[clamp(2.2rem,4.4vw,3.5rem)] font-normal leading-[1.04] tracking-[-0.02em]">
                 Facts first. Approval before change. Measure after.
               </h2>
+              <p className="mt-7 max-w-[34ch] text-[16px] leading-[1.7] text-black/62">
+                Not a checklist that ends. Five steps that keep handing the work
+                to each other.
+              </p>
+              <LoopDiagram className="mt-9" />
             </div>
             <div className="border-t border-black/22">
               {PRINCIPLES.map((principle, index) => (

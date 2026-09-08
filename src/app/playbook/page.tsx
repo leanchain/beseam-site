@@ -30,7 +30,7 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-type Status = "Homepage" | "Used elsewhere" | "Unused" | "Foundation";
+type Status = "Homepage" | "Used elsewhere" | "Unused" | "Foundation" | "Rejected";
 
 type InventoryItem = { name: string; status: Status; note: string };
 
@@ -51,7 +51,7 @@ const INVENTORY: readonly InventoryItem[] = [
   { name: "footer", status: "Foundation", note: "Global site footer" },
   { name: "hero-surface-shift", status: "Homepage", note: "Hero knowledge graph" },
   { name: "logo", status: "Foundation", note: "Beseam brand mark" },
-  { name: "logo-concepts", status: "Unused", note: "Logo exploration: seam-stitch B (hero), needle b (alt)" },
+  { name: "logo-concepts", status: "Rejected", note: "Sewing direction, ruled out — implies fabric/tailoring, not AI shopping visibility" },
   { name: "marketing-detail-page", status: "Used elsewhere", note: "Shared marketing-page template" },
   { name: "markets-section", status: "Unused", note: "Previous market-differences section" },
   { name: "measure-impact", status: "Homepage", note: "Standalone Impact-ledger section" },
@@ -75,6 +75,8 @@ const STATUS_CLASS: Record<Status, string> = {
   "Used elsewhere": "border-[#2e5da6]/25 bg-[#2e5da6]/[0.07] text-[#2e5da6]",
   Unused: "border-signal-ink/25 bg-signal-ink/[0.07] text-signal-ink",
   Foundation: "border-black/16 bg-black/[0.04] text-black/58",
+  // Ruled out, not merely idle. Distinct from Unused so nobody revives it.
+  Rejected: "border-[#8f3416]/30 bg-[#8f3416]/[0.08] text-[#8f3416] line-through decoration-[#8f3416]/40",
 };
 
 function PreviewHeader({ name, status, note }: InventoryItem) {
@@ -119,7 +121,7 @@ export default function PlaybookPage() {
       acc[item.status] += 1;
       return acc;
     },
-    { Homepage: 0, "Used elsewhere": 0, Unused: 0, Foundation: 0 },
+    { Homepage: 0, "Used elsewhere": 0, Unused: 0, Foundation: 0, Rejected: 0 },
   );
 
   return (
@@ -208,7 +210,11 @@ export default function PlaybookPage() {
       </section>
 
       <section id="component-logo-concepts" className="scroll-mt-20 border-b border-black/14 bg-white">
-        <PreviewHeader name="logo-concepts" status="Unused" note="Logo exploration: seam-stitch B (hero), needle b (alt)" />
+        <PreviewHeader
+          name="logo-concepts"
+          status="Rejected"
+          note="Sewing direction, ruled out — implies fabric/tailoring, not AI shopping visibility. The shipped mark dropped its stitches for the same reason; kept here only as a record."
+        />
         <LogoConcepts />
       </section>
 

@@ -4,8 +4,7 @@
 Construction:
 - one geometric B silhouette;
 - one S ribbon drawn on top;
-- 20 zipper teeth total: 10 independently spaced along each S boundary;
-- the two tracks are spaced by their own arc length so tight curves never cram;
+- no ornament along the S boundary (stitches were removed in review);
 - the upper and lower terminals remain sharp;
 - all non-terminal joins are C1-smooth cubic Hermite curves.
 """
@@ -185,106 +184,20 @@ def build_s_path() -> str:
     return f"{left} {right} Z"
 
 
-def boundary_track(
-    offset_fn: Callable[[float], tuple[float, float]],
-    *,
-    t_start: float = 0.12,
-    t_end: float = 0.88,
-    samples: int = 1800,
-) -> list[tuple[float, float]]:
-    """Sample one S boundary as (t, cumulative arc length)."""
-    result: list[tuple[float, float]] = []
-    total = 0.0
-    previous: tuple[float, float] | None = None
-    for i in range(samples + 1):
-        t = t_start + (t_end - t_start) * i / samples
-        (x, y), _ = boundary(t, offset_fn)
-        if previous is not None:
-            total += math.hypot(x - previous[0], y - previous[1])
-        result.append((t, total))
-        previous = (x, y)
-    return result
-
-
-def boundary_ts_by_count(
-    offset_fn: Callable[[float], tuple[float, float]],
-    *,
-    count: int,
-    phase: float,
-    margin: float = 20.0,
-) -> list[float]:
-    """Place an exact tooth count independently by arc length on one edge."""
-    track = boundary_track(offset_fn)
-    total = track[-1][1]
-    usable = total - 2.0 * margin
-    step = usable / count
-    targets = [margin + step * (i + 0.5 + phase) for i in range(count)]
-    targets = [min(total - margin, max(margin, target)) for target in targets]
-
-    result: list[float] = []
-    j = 1
-    for target in targets:
-        while j < len(track) and track[j][1] < target:
-            j += 1
-        prev_t, prev_s = track[j - 1]
-        next_t, next_s = track[j]
-        ratio = 0.0 if next_s == prev_s else (target - prev_s) / (next_s - prev_s)
-        result.append(prev_t + (next_t - prev_t) * ratio)
-    return result
-
-
-def boundary_tooth(
-    t: float,
-    offset_fn: Callable[[float], tuple[float, float]],
-    *,
-    fill: str,
-    depth: float = 28.0,
-    thickness: float = 16.0,
-) -> str:
-    """Build one zipper tooth extending outward from an S boundary."""
-    (x, y), (dx, dy) = boundary(t, offset_fn)
-    speed = math.hypot(dx, dy)
-    tx, ty = dx / speed, dy / speed
-    nx, ny = -ty, tx
-
-    cx = center_x(t)
-    cy = y_at(t)
-    if nx * (x - cx) + ny * (y - cy) < 0:
-        nx, ny = -nx, -ny
-
-    inner_x = x - nx * 3.0
-    inner_y = y - ny * 3.0
-    outer_x = x + nx * depth
-    outer_y = y + ny * depth
-    half = thickness / 2.0
-    points = [
-        (inner_x - tx * half, inner_y - ty * half),
-        (outer_x - tx * half, outer_y - ty * half),
-        (outer_x + tx * half, outer_y + ty * half),
-        (inner_x + tx * half, inner_y + ty * half),
-    ]
-    encoded = " ".join(f"{px:.2f},{py:.2f}" for px, py in points)
-    return f'<polygon points="{encoded}" fill="{fill}"/>'
-
-
-def build_zip_teeth(fill: str) -> str:
-    """20 teeth = 5 operating stages × 4 commerce surfaces."""
-    teeth: list[str] = []
-    for t in boundary_ts_by_count(left_offset, count=10, phase=-0.08):
-        teeth.append(boundary_tooth(t, left_offset, fill=fill))
-    for t in boundary_ts_by_count(right_offset, count=10, phase=0.08):
-        teeth.append(boundary_tooth(t, right_offset, fill=fill))
-    return "".join(teeth)
-
-
 def render_svg(*, b_fill: str, s_fill: str, title: str) -> str:
+    """Render the mark: an S inlaid in a B, and nothing else.
+
+    The mark used to carry 20 zipper teeth along the S boundary, read as
+    stitching. In review it was read as a worm and then a centipede, and it
+    dragged in a needle-and-thread association that misdescribes an AI
+    discovery product. The teeth are gone; the clip path that trimmed them at
+    the B's edge went with them.
+    """
     s_path = build_s_path()
     return f"""<svg xmlns="http://www.w3.org/2000/svg" viewBox="{VIEWBOX_X} {VIEWBOX_Y} {VIEWBOX_W} {VIEWBOX_H}" role="img" aria-labelledby="title">
   <title id="title">{title}</title>
-  <defs><clipPath id="b-clip"><path d="{B_PATH}"/></clipPath></defs>
   <path d="{B_PATH}" fill="{b_fill}"/>
   <path d="{s_path}" fill="{s_fill}"/>
-  <g clip-path="url(#b-clip)">{build_zip_teeth(s_fill)}</g>
 </svg>
 """
 

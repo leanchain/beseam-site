@@ -718,6 +718,11 @@ html.theme-transition::view-transition-new(root) {
   animation: marketing-reveal 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
+.sequence-reveal.is-playing [data-seq-row] {
+  animation: marketing-reveal 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(var(--seq-base, 0s) + var(--seq-row, 0) * 0.12s);
+}
+
 /* Connected system map: a selected signal traces its wire to the decision. */
 @keyframes signal-wire-draw {
   from {

@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 
 import { BookReviewCta } from "@/components/beseam/book-review-cta";
 import FirstMonthPromise from "@/components/beseam/first-month-promise";
+import LoopDiagram from "@/components/beseam/loop-diagram";
 import { Reveal } from "@/components/beseam/reveal";
 import { buildPublicMetadata } from "@/lib/seo";
 
@@ -109,7 +110,8 @@ export default function HowWeWorkPage() {
                   worth changing, gets your approval, applies the change, and
                   checks what happened next.
                 </p>
-                <ol className="mt-10 grid border-t border-white/16 md:grid-cols-4">
+                <LoopDiagram tone="dark" className="mt-10" />
+                <ol className="mt-10 grid border-t border-white/16 md:grid-cols-5">
                   {LOOP.map(([number, title, body], index) => (
                     <li
                       key={number}

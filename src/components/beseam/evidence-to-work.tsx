@@ -43,15 +43,14 @@ export default function EvidenceToWork() {
               </div>
             </div>
 
-            <div className="min-w-0 border-t-2 border-ink-deep pt-4">
-              <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
-                <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.11em] text-black/44">
-                  Merchant view
-                </p>
-                <p className="font-mono text-[10px] uppercase tracking-[0.1em] text-signal-ink">
-                  Finding → change → apply → check
-                </p>
-              </div>
+            {/* No label row anywhere above the rows. This beat used to stack
+                three of them before any content -- "Merchant view",
+                "Finding -> change -> apply -> check", and the table's own
+                column labels -- which a merchant counted back to us and asked
+                us to simplify. All three are gone. Residual risk: the table
+                names none of its columns, so `ActionsScreen`'s values have to
+                stay self-describing (see the docstring in app-screens.tsx). */}
+            <div className="min-w-0">
               <div className="sm:hidden">
                 <ActionsScreen compact />
               </div>

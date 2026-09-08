@@ -16,7 +16,21 @@ export const metadata: Metadata = buildPublicMetadata({
   path: "/about",
 });
 
-const ADVISORS = [
+/**
+ * `image` and `linkedin` are optional because an advisor can join before the
+ * headshot and the profile link arrive. A missing photo renders as initials
+ * rather than a stock face, and a missing profile drops the link instead of
+ * pointing somewhere invented.
+ */
+type Advisor = {
+  name: string;
+  role: string;
+  bio: string;
+  image?: string;
+  linkedin?: string;
+};
+
+const ADVISORS: readonly Advisor[] = [
   {
     name: "Bettina Gimenez",
     role: "E-commerce expert & DTC founder",
@@ -31,7 +45,22 @@ const ADVISORS = [
     bio: "Founder of OLEYVO. Former Key Partner Growth Manager at Too Good To Go. Lecturer in start-up and entrepreneurship at STF.",
     linkedin: "https://www.linkedin.com/in/fabrizio-metzler/",
   },
+  {
+    // Everything here is what Laura confirmed and nothing more. No company
+    // name, no headshot, no quote until she supplies them.
+    name: "Laura Plobner",
+    role: "Marketing & business development",
+    bio: "Works in marketing and business development. Previously product owner of a B2B soft-skill coaching platform. Runs her own Swiss ecommerce brand.",
+  },
 ];
+
+function initials(name: string) {
+  return name
+    .split(" ")
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase())
+    .join("");
+}
 
 export default function AboutPage() {
   const jsonLd = {
@@ -104,7 +133,8 @@ export default function AboutPage() {
             <p className="max-w-[64ch] text-[19px] leading-[1.72] text-black/66">
               Beseam follows a simple question: what did shoppers want, what did
               they see, what made them hesitate, what changed, and what happened
-              next. That is what Observe, Understand, Act, and Learn means.
+              next. That is what Find, Prepare, Approve, Apply, and Measure
+              means.
             </p>
           </Reveal>
         </div>
@@ -203,20 +233,29 @@ export default function AboutPage() {
             </p>
           </Reveal>
 
-          <div className="grid md:grid-cols-2">
+          <div className="grid md:grid-cols-3">
             {ADVISORS.map((advisor, index) => (
               <Reveal
                 key={advisor.name}
                 delay={index * 0.06}
-                className="grid gap-5 border-b border-black/18 py-8 md:grid-cols-[5rem_1fr] md:border-r md:px-8 md:first:pl-0 md:last:border-r-0 md:last:pr-0"
+                className="grid gap-5 border-b border-black/18 py-8 md:border-r md:px-6 md:first:pl-0 md:last:border-r-0 md:last:pr-0 lg:grid-cols-[5rem_1fr] lg:px-8"
               >
-                <Image
-                  src={advisor.image}
-                  alt={advisor.name}
-                  width={80}
-                  height={80}
-                  className="h-20 w-20 border border-black/18 object-cover"
-                />
+                {advisor.image ? (
+                  <Image
+                    src={advisor.image}
+                    alt={advisor.name}
+                    width={80}
+                    height={80}
+                    className="h-20 w-20 border border-black/18 object-cover"
+                  />
+                ) : (
+                  <span
+                    aria-hidden="true"
+                    className="flex h-20 w-20 items-center justify-center border border-black/18 bg-white font-mono text-[20px] font-semibold tracking-[0.04em] text-black/45"
+                  >
+                    {initials(advisor.name)}
+                  </span>
+                )}
                 <div>
                   <h3 className="text-[17px] font-semibold text-ink-deep">
                     {advisor.name}
@@ -227,16 +266,21 @@ export default function AboutPage() {
                   <p className="mt-4 text-[14px] leading-relaxed text-black/64">
                     {advisor.bio}
                   </p>
-                  <a
-                    href={advisor.linkedin}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mt-4 inline-flex min-h-11 items-center gap-1.5 text-[13px] font-semibold text-signal-ink underline decoration-black/20 underline-offset-5"
-                  >
-                    <Linkedin className="h-3.5 w-3.5" aria-hidden="true" />
-                    LinkedIn
-                    <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
-                  </a>
+                  {advisor.linkedin ? (
+                    <a
+                      href={advisor.linkedin}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-4 inline-flex min-h-11 items-center gap-1.5 text-[13px] font-semibold text-signal-ink underline decoration-black/20 underline-offset-5"
+                    >
+                      <Linkedin className="h-3.5 w-3.5" aria-hidden="true" />
+                      LinkedIn
+                      <ArrowUpRight
+                        className="h-3.5 w-3.5"
+                        aria-hidden="true"
+                      />
+                    </a>
+                  ) : null}
                 </div>
               </Reveal>
             ))}
