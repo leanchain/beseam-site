@@ -331,42 +331,41 @@ export default function WhatBeseamDoes() {
               ),
             };
           })}
-        />
-
-        <Reveal delay={0.08}>
-          <div className="mt-5 border-y border-white/10 bg-ink-deep px-5 py-3.5 text-white sm:px-6 lg:px-8">
-            <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:gap-8">
-              <p className="shrink-0 font-mono text-[11px] font-semibold uppercase tracking-[0.12em] text-signal">
-                Continuous loop
-              </p>
-              <ol className="relative grid flex-1 gap-y-3 before:absolute before:left-5 before:right-5 before:top-3.5 before:hidden before:h-px before:bg-white/16 sm:grid-cols-5 sm:gap-0 sm:before:block">
-                {LOOP.map(({ label, Icon }, index) => (
-                  <li
-                    key={label}
-                    className="relative z-10 flex items-center gap-2.5 sm:flex-col sm:items-start sm:gap-2 sm:px-3"
-                  >
-                    <span className="flex h-7 w-7 shrink-0 items-center justify-center bg-ink-deep text-signal ring-1 ring-white/18">
-                      <Icon
-                        className="h-3.5 w-3.5"
-                        strokeWidth={1.8}
-                        aria-hidden="true"
-                      />
-                    </span>
-                    <span className="text-[12px] font-semibold leading-[1.3] text-white/82">
-                      {label}
-                    </span>
-                    {index < LOOP.length - 1 ? (
-                      <ArrowRight
-                        className="ml-auto h-3.5 w-3.5 text-signal sm:hidden"
-                        aria-hidden="true"
-                      />
-                    ) : null}
-                  </li>
-                ))}
-              </ol>
+          footer={
+            <div className="mt-5 border-y border-white/10 bg-ink-deep px-5 py-3.5 text-white sm:px-6 lg:px-8">
+              <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:gap-8">
+                <p className="shrink-0 font-mono text-[11px] font-semibold uppercase tracking-[0.12em] text-signal">
+                  Continuous loop
+                </p>
+                <ol className="relative grid flex-1 gap-y-3 before:absolute before:left-5 before:right-5 before:top-3.5 before:hidden before:h-px before:bg-white/16 sm:grid-cols-5 sm:gap-0 sm:before:block">
+                  {LOOP.map(({ label, Icon }, index) => (
+                    <li
+                      key={label}
+                      className="relative z-10 flex items-center gap-2.5 sm:flex-col sm:items-start sm:gap-2 sm:px-3"
+                    >
+                      <span className="flex h-7 w-7 shrink-0 items-center justify-center bg-ink-deep text-signal ring-1 ring-white/18">
+                        <Icon
+                          className="h-3.5 w-3.5"
+                          strokeWidth={1.8}
+                          aria-hidden="true"
+                        />
+                      </span>
+                      <span className="text-[12px] font-semibold leading-[1.3] text-white/82">
+                        {label}
+                      </span>
+                      {index < LOOP.length - 1 ? (
+                        <ArrowRight
+                          className="ml-auto h-3.5 w-3.5 text-signal sm:hidden"
+                          aria-hidden="true"
+                        />
+                      ) : null}
+                    </li>
+                  ))}
+                </ol>
+              </div>
             </div>
-          </div>
-        </Reveal>
+          }
+        />
       </div>
     </section>
   );

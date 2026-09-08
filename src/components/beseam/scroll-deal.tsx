@@ -44,11 +44,19 @@ export function ScrollDeal({
   className,
   cells,
   header,
+  footer,
 }: {
   className?: string;
   cells: DealCell[];
   /** Kept inside the pinned panel, so the section holds together while it deals. */
   header?: ReactNode;
+  /**
+   * Dealt last, as one more beat of the same sequence -- a closing line lands
+   * under the finished row while the section is still held, rather than being
+   * scrolled up into view once the pin has already let go. It fades without
+   * the rise: by then nothing else on screen is moving.
+   */
+  footer?: ReactNode;
 }) {
   const stageRef = useRef<HTMLDivElement | null>(null);
   const panelRef = useRef<HTMLDivElement | null>(null);
@@ -116,8 +124,12 @@ export function ScrollDeal({
       panels.forEach((panel, index) => {
         const step = Math.min(Math.max((dealt - index) / 0.6, 0), 1);
         panel.style.opacity = String(step);
-        panel.style.transform =
-          step === 1 ? "none" : `translateY(${((1 - step) * 14).toFixed(2)}px)`;
+        if (panel.dataset.dealFade === undefined) {
+          panel.style.transform =
+            step === 1
+              ? "none"
+              : `translateY(${((1 - step) * 14).toFixed(2)}px)`;
+        }
       });
 
       arrows.forEach((arrow, index) => {
@@ -159,6 +171,7 @@ export function ScrollDeal({
 
   /** The pre-deal state, also what the server sends. */
   const hidden: CSSProperties = { opacity: 0, transform: "translateY(14px)" };
+  const steps = cells.length + (footer ? 1 : 0);
 
   return (
     <div
@@ -166,7 +179,7 @@ export function ScrollDeal({
       className="deal-stage relative"
       style={
         {
-          "--deal-stage-height": `calc(100vh + ${cells.length * 40}vh)`,
+          "--deal-stage-height": `calc(100vh + ${steps * 40}vh)`,
         } as CSSProperties
       }
     >
@@ -184,6 +197,11 @@ export function ScrollDeal({
             </div>
           ))}
         </div>
+        {footer ? (
+          <div data-deal-panel data-deal-fade style={{ opacity: 0 }}>
+            {footer}
+          </div>
+        ) : null}
       </div>
     </div>
   );
