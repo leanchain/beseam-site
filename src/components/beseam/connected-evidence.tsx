@@ -366,8 +366,12 @@ export default function ConnectedEvidence() {
               <p className="font-mono text-[12px] font-semibold uppercase tracking-[0.14em] text-signal">
                 See Beseam work
               </p>
+              {/* The heading counts the trace below it and nothing else:
+                  three candidate explanations in `CANDIDATES`, two of them
+                  ending on a cross. Change that array and this number is
+                  wrong -- which is the point of stating it here. */}
               <h2 className="mt-7 max-w-[16ch] text-balance font-display text-[clamp(2.25rem,3.4vw,3.5rem)] font-normal leading-[1.05] tracking-[-0.02em]">
-                See what gets in the way of the choice.
+                Three explanations. Beseam rules out two.
               </h2>
             </div>
             <div className="max-w-[50ch] text-[16px] leading-[1.75] text-white/72">

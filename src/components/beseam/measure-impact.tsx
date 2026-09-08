@@ -22,8 +22,8 @@ export default function MeasureImpact() {
               <p className="font-mono text-[12px] font-semibold uppercase tracking-[0.14em] text-signal">
                 The outcome
               </p>
-              <h2 className="mt-6 max-w-[13ch] text-balance font-display text-[clamp(2.25rem,3.4vw,3.5rem)] font-normal leading-[1.05] tracking-[-0.02em]">
-                It only matters if the outcome moves.
+              <h2 className="mt-6 max-w-[15ch] text-balance font-display text-[clamp(2.25rem,3.4vw,3.5rem)] font-normal leading-[1.05] tracking-[-0.02em]">
+                Ask the same question again. That is the whole proof.
               </h2>
               <p className="mt-5 max-w-[32ch] text-[14.5px] leading-[1.7] text-white/64">
                 After a change, Beseam asks the same shopper questions again —

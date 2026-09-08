@@ -27,7 +27,7 @@ export default function EvidenceToWork() {
             From finding to change
           </p>
           <h2 className="mt-5 max-w-[26ch] text-balance font-display text-[clamp(2.2rem,3.3vw,3.4rem)] font-normal leading-[1.04] tracking-[-0.02em] text-ink-deep">
-            Beseam finds what to improve next.
+            Everything Beseam watched. One change to approve first.
           </h2>
 
           {/* No label row anywhere above the rows. This beat used to stack

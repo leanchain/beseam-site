@@ -10,6 +10,7 @@ import HeroScrollCue from "@/components/beseam/hero-scroll-cue";
 import HeroSurfaceShift from "@/components/beseam/hero-surface-shift";
 import HeroViewportFit from "@/components/beseam/hero-viewport-fit";
 import MeasureImpact from "@/components/beseam/measure-impact";
+import NotAScore from "@/components/beseam/not-a-score";
 import { Reveal } from "@/components/beseam/reveal";
 import SystemTiles from "@/components/beseam/system-tiles";
 import WhatBeseamDoes from "@/components/beseam/what-beseam-does";
@@ -18,7 +19,12 @@ import WhatBeseamDoes from "@/components/beseam/what-beseam-does";
  * Section order is the argument:
  *
  * claim → credibility → signature evidence trace → breadth → published
- * research → proposed work → truthful measurement mechanism → ways to start
+ * research → the stance → proposed work → truthful measurement mechanism →
+ * ways to start
+ *
+ * `#not-a-score` is the one beat with no artifact under it. It sits where it
+ * does because the reader has just been given data and is about to be given
+ * work, and the sentence between the two says what the work is for.
  *
  * The most ownable proof arrives before the capability catalogue, and the
  * published benchmarks sit after "How Beseam works" rather than ahead of it:
@@ -92,6 +98,7 @@ export default function ProductionHomepage() {
       <ConnectedEvidence />
       <WhatBeseamDoes />
       <CategoryBenchmarksSection />
+      <NotAScore />
       <EvidenceToWork />
       <MeasureImpact />
       <SystemTiles />

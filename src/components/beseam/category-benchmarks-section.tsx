@@ -75,17 +75,20 @@ export default function CategoryBenchmarksSection() {
               <p className="font-mono text-[12px] font-semibold uppercase tracking-[0.14em] text-signal-ink">
                 AI Shopping Report
               </p>
-              <h2 className="mt-6 max-w-[18ch] text-balance font-display text-[clamp(2.2rem,3.6vw,3.6rem)] font-normal leading-[1.04] tracking-[-0.02em] text-ink-deep">
-                Products can be visible in one place and missed in another.
+              {/* Every number here is read off `BENCHMARK_RUN`, so the
+                  heading cannot drift from the run it describes. It used to
+                  be a sentence about visibility with the finding buried in
+                  the paragraph below; the finding is the headline. */}
+              <h2 className="mt-6 max-w-[20ch] text-balance font-display text-[clamp(2.2rem,3.6vw,3.6rem)] font-normal leading-[1.04] tracking-[-0.02em] text-ink-deep">
+                {BENCHMARK_RUN.questions} questions,{" "}
+                {BENCHMARK_RUN.engines.length} assistants. {SOLO_SHARE}% of
+                brands were named by only one.
               </h2>
               <p className="mt-6 max-w-[48ch] text-[16px] leading-[1.7] text-black/64">
                 Beseam asks the same buying questions across AI assistants to
                 find where your products appear, where they are missed, and how
-                those results differ. In the latest run,{" "}
-                <strong className="font-semibold text-ink-deep">
-                  {SOLO_SHARE}% of brand appearances occurred on only one
-                  assistant.
-                </strong>
+                those results differ. Being visible in one place is not the same
+                as being found.
               </p>
               <Link
                 href="/benchmarks"

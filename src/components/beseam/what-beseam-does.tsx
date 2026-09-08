@@ -494,8 +494,12 @@ export default function WhatBeseamDoes() {
                   <p className="font-mono text-[12px] font-semibold uppercase tracking-[0.14em] text-signal-ink">
                     From being considered to being chosen
                   </p>
+                  {/* Nine is the answer in the first panel: three matches
+                      named plus the six it says it did not have room for.
+                      The panel labels itself EXAMPLE; the heading is reading
+                      that illustration, not a measurement of anyone's store. */}
                   <h2 className="mt-7 max-w-[18ch] text-balance font-display text-[clamp(2.3rem,3.8vw,3.9rem)] font-normal leading-[1.03] tracking-[-0.02em] text-ink-deep">
-                    Being considered doesn’t mean being chosen.
+                    Nine stores in that answer. Yours is not one of them.
                   </h2>
                 </div>
                 <p className="max-w-[50ch] text-[16px] leading-[1.7] text-black/64">
