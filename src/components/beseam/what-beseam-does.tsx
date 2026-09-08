@@ -403,20 +403,29 @@ export default function WhatBeseamDoes() {
                         {domain.title}
                       </h3>
                     </div>
-                    {index < DOMAINS.length - 1 ? (
+                    {/* The hand-off between tiles: one mark, centred on the
+                        rule that divides them and on the cell's own height,
+                        so it lands in the gutter beside the vignettes rather
+                        than tacked to a heading.
+
+                        It hangs off the receiving cell's left edge, not the
+                        leaving cell's right edge, because that rule is the
+                        receiving cell's own `border-l`: a child paints over
+                        its parent's border, so the ground fill cuts a clean
+                        gap in the line instead of having the line run
+                        straight through the arrow. DOM order is unchanged,
+                        so `data-deal-arrow` still wipes each one in after the
+                        panel it leaves. */}
+                    {index > 0 ? (
                       <span
                         data-deal-arrow
                         aria-hidden="true"
-                        className="hidden items-center text-signal-ink xl:absolute xl:-right-[1.35rem] xl:top-[1.6rem] xl:z-10 xl:flex xl:bg-ground"
+                        className="hidden xl:absolute xl:-left-4 xl:top-1/2 xl:z-10 xl:flex xl:h-8 xl:w-8 xl:-translate-y-1/2 xl:items-center xl:justify-center xl:bg-ground xl:text-signal-ink"
                       >
-                        {/* Overlaps the head: the icon draws its own shaft
-                            from 3px inside its box, so a line stopping at the
-                            box edge leaves a visible break in the connector. */}
-                        <span
-                          className="h-px w-8 bg-signal-ink/70"
-                          style={{ marginRight: -4 }}
+                        <ArrowRight
+                          className="h-[18px] w-[18px] shrink-0"
+                          strokeWidth={2.25}
                         />
-                        <ArrowRight className="h-3.5 w-3.5 shrink-0" />
                       </span>
                     ) : null}
                   </div>
