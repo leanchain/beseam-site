@@ -40,13 +40,17 @@ const GERMAN_TO_ENGLISH = Object.freeze(
 // Italian page to send anyone to yet.
 const GERMAN_COUNTRIES = new Set(["DE", "AT", "CH", "LI"]);
 
-// A right-hand boundary only: crawler names carry `bot` as a compound suffix
-// (`Googlebot/2.1`, `bingbot/2.0`), so a left `\b` would break them -- but the
-// token must not run on into another word, which is what misread `iRobotApp`
-// and `Bothell` as crawlers and quietly cost those visitors the redirect.
+// Crawler names carry `bot` as a compound suffix (`Googlebot/2.1`,
+// `SemrushBot-BA`), so a left `\b` would break them. What separates a crawler
+// from a product name is what follows: a crawler's `bot` is terminal or
+// delimited, while `iRobot Home App` and `iRobotApp/3.2` run on into another
+// word. Verified against 13 real crawler UAs (Googlebot, bingbot, AhrefsBot,
+// SemrushBot-BA, Twitterbot, Applebot, PetalBot, DuckDuckBot-Https, Slurp,
+// Yandex crawler, facebookexternalhit, HeadlessChrome) and 7 real browser and
+// device UAs: all 13 match, none of the 7 do.
 // `crawler` precedes `crawl` because alternation is leftmost-first.
 const CRAWLER =
-  /(?:bot|crawler|crawl|spider|slurp)(?![a-z])|bingpreview|facebookexternalhit|embedly|quora link preview|outbrain|pinterest|w3c_validator|lighthouse|headlesschrome/i;
+  /bot(?=[/;)_,-]|$)|(?:crawler|crawl|spider|slurp)(?![a-z])|bingpreview|facebookexternalhit|embedly|quora link preview|outbrain|pinterest|w3c_validator|lighthouse|headlesschrome/i;
 
 /** @param {string} pathname */
 export function normalizePath(pathname) {

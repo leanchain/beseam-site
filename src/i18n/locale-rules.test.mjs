@@ -97,32 +97,40 @@ test("prefersGerman covers the DACH countries and German speakers abroad", () =>
 });
 
 test("isCrawler matches the common bots and not a real browser", () => {
-  assert.equal(
-    isCrawler(
-      "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
-    ),
-    true,
-  );
-  assert.equal(isCrawler("Mozilla/5.0 (compatible; bingbot/2.0)"), true);
-  assert.equal(isCrawler("facebookexternalhit/1.1"), true);
-  assert.equal(
-    isCrawler("Mozilla/5.0 Chrome/140.0.0.0 HeadlessChrome/140.0.0.0"),
-    true,
-  );
-  assert.equal(
-    isCrawler(
-      "Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)",
-    ),
-    true,
-  );
-  assert.equal(isCrawler("Mozilla/5.0 (compatible; Yandex crawler)"), true);
-  assert.equal(
-    isCrawler("Mozilla/5.0 (Macintosh) Chrome/140.0.0.0 Safari/537.36"),
-    false,
-  );
-  assert.equal(isCrawler("Mozilla/5.0 (Linux; U; iRobotApp/3.2)"), false);
-  assert.equal(isCrawler("Mozilla/5.0 (Bothell County Library Kiosk)"), false);
-  assert.equal(isCrawler("Mozilla/5.0 RobotShop/1.0"), false);
+  const crawlers = [
+    "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
+    "Mozilla/5.0 (compatible; bingbot/2.0)",
+    "Mozilla/5.0 (compatible; AhrefsBot/7.0; +http://ahrefs.com/robot/)",
+    "Mozilla/5.0 (compatible; SemrushBot-BA)",
+    "Mozilla/5.0 (compatible; PetalBot;+https://aspiegel.com/petalbot)",
+    "Mozilla/5.0 (compatible; DuckDuckBot-Https/1.1)",
+    "Mozilla/5.0 (compatible; SomeBot)",
+    "Twitterbot/1.0",
+    "Applebot/0.1",
+    "Slurp",
+    "Mozilla/5.0 (compatible; Yandex crawler)",
+    "facebookexternalhit/1.1",
+    "Mozilla/5.0 Chrome/140 HeadlessChrome/140",
+  ];
+
+  for (const ua of crawlers) {
+    assert.equal(isCrawler(ua), true, `Expected crawler: ${ua}`);
+  }
+
+  const browsers = [
+    "Mozilla/5.0 iRobot Home App",
+    "Mozilla/5.0 (Linux; U; iRobotApp/3.2)",
+    "Mozilla/5.0 (Bothell County Library Kiosk)",
+    "Mozilla/5.0 RobotShop/1.0",
+    "Mozilla/5.0 (Macintosh) Chrome/140.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (X11; CrOS x86_64) AppleWebKit/537.36 Chrome/140",
+    "Mozilla/5.0 (Windows NT 10.0; Xbox; Xbox One)",
+  ];
+
+  for (const ua of browsers) {
+    assert.equal(isCrawler(ua), false, `Expected non-crawler: ${ua}`);
+  }
+
   assert.equal(isCrawler(null), false);
 });
 
