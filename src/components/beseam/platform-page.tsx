@@ -119,6 +119,7 @@ export default function PlatformPageContent({
       </section>
 
       <DecisionBridge
+        surfaceClassName="bg-ground-2"
         eyebrow="How the platform fits together"
         heading="Follow the shopper before, during, and after the visit."
         body="AI discovery, product pages, shopper behavior, and revenue show different parts of the same journey. Pick one to see what Beseam checks, what it may change, and what it measures afterward."
@@ -140,8 +141,8 @@ export default function PlatformPageContent({
               <p className="max-w-[52ch] text-[16px] leading-[1.75] text-black/64">
                 Beseam does not ask you to manage every tool yourself. It keeps
                 finding what is worth improving and prepares customer-facing
-                changes for your approval. Results shows what happened after each
-                change.
+                changes for your approval. Results shows what happened after
+                each change.
               </p>
             </div>
           </Reveal>
@@ -211,6 +212,9 @@ export default function PlatformPageContent({
         </div>
       </section>
 
+      {/* After the dark act the page runs three light beats before the
+          oxblood close. They step down the ground ramp rather than repeating
+          one value, so each boundary is visible without a rule doing the work. */}
       <section className="border-y border-rule bg-panel-white">
         <div className="mx-auto grid max-w-[92rem] gap-10 px-5 py-16 sm:px-8 sm:py-20 lg:grid-cols-[minmax(0,0.7fr)_minmax(0,1.3fr)] lg:gap-20 lg:px-10 lg:py-24">
           <div>
@@ -234,7 +238,7 @@ export default function PlatformPageContent({
         </div>
       </section>
 
-      <section className="border-b border-rule bg-ground">
+      <section className="border-b border-rule bg-ground-2">
         <div className="mx-auto grid max-w-[92rem] gap-10 px-5 py-16 sm:px-8 sm:py-20 lg:grid-cols-[minmax(0,0.65fr)_minmax(0,1.35fr)] lg:gap-20 lg:px-10 lg:py-24">
           <div>
             <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.1em] text-signal-ink">
@@ -269,7 +273,7 @@ export default function PlatformPageContent({
       </section>
 
       {page.related.length > 0 ? (
-        <section className="border-b border-rule bg-panel-white">
+        <section className="border-b border-rule bg-ground-3">
           <div className="mx-auto max-w-[92rem] px-5 py-14 sm:px-8 sm:py-16 lg:px-10 lg:py-20">
             <div className="grid gap-8 lg:grid-cols-[minmax(14rem,0.45fr)_minmax(0,1fr)] lg:gap-16">
               <div>
