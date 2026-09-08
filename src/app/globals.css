@@ -818,6 +818,41 @@ html.theme-transition::view-transition-new(root) {
   opacity: 1;
   pointer-events: auto;
 }
+
+/* #one-system holds still while its four steps are dealt one at a time. The
+ * stage is a screen taller than the panel for every step; the panel sticks to
+ * the middle of it, so the scroll spent against the stage deals the next step
+ * instead of moving the section. When the stage runs out the page carries on
+ * normally -- nothing is intercepted, there is no scroll lock, and the release
+ * needs no handoff. `--deal-stage-height` is set per instance from the panel
+ * count in scroll-deal.tsx, which also drives the deal off the same geometry.
+ *
+ * Pinning is opt-in per viewport, never opt-out: only a screen wide enough for
+ * the row to be one line and tall enough to hold the panel gets it. Anywhere
+ * else -- phones, short windows, reduced motion -- the stage is its own height
+ * and the panels are dealt by the section's own travel through the viewport. */
+.deal-stage {
+  height: auto;
+}
+
+.deal-panel {
+  position: static;
+}
+
+@media (min-width: 1024px) and (min-height: 700px) and (prefers-reduced-motion: no-preference) {
+  .deal-stage {
+    height: var(--deal-stage-height);
+  }
+
+  .deal-panel {
+    position: sticky;
+    top: 0;
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+    justify-content: center;
+  }
+}
 .marketing-wash {
   background: color-mix(in srgb, var(--brand) 18%, transparent);
   filter: blur(110px);

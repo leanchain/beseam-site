@@ -265,27 +265,28 @@ export default function WhatBeseamDoes() {
   return (
     <section id="one-system" className="scroll-mt-24 bg-ground">
       <div className="mx-auto max-w-[92rem] px-5 py-16 sm:px-8 sm:py-24 lg:px-10 lg:py-28">
-        <Reveal>
-          <div className="grid gap-8 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:items-end lg:gap-16">
-            <div>
-              <p className="font-mono text-[12px] font-semibold uppercase tracking-[0.14em] text-signal-ink">
-                From being considered to being chosen
-              </p>
-              <h2 className="mt-7 max-w-[18ch] text-balance font-display text-[clamp(2.3rem,3.8vw,3.9rem)] font-normal leading-[1.03] tracking-[-0.02em] text-ink-deep">
-                Being considered doesn’t mean being chosen.
-              </h2>
-            </div>
-            <p className="max-w-[50ch] text-[16px] leading-[1.7] text-black/64">
-              Beseam follows the shopper from discovery to purchase to find
-              where confidence drops, questions go unanswered, or the journey
-              stops.
-            </p>
-          </div>
-        </Reveal>
-
         <ScrollDealFallback />
         <ScrollDeal
           className="mt-12 grid border-t-2 border-ink-deep sm:grid-cols-2 lg:mt-16 xl:grid-cols-4"
+          header={
+            <Reveal>
+              <div className="grid gap-8 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:items-end lg:gap-16">
+                <div>
+                  <p className="font-mono text-[12px] font-semibold uppercase tracking-[0.14em] text-signal-ink">
+                    From being considered to being chosen
+                  </p>
+                  <h2 className="mt-7 max-w-[18ch] text-balance font-display text-[clamp(2.3rem,3.8vw,3.9rem)] font-normal leading-[1.03] tracking-[-0.02em] text-ink-deep">
+                    Being considered doesn’t mean being chosen.
+                  </h2>
+                </div>
+                <p className="max-w-[50ch] text-[16px] leading-[1.7] text-black/64">
+                  Beseam follows the shopper from discovery to purchase to find
+                  where confidence drops, questions go unanswered, or the
+                  journey stops.
+                </p>
+              </div>
+            </Reveal>
+          }
           cells={DOMAINS.map((domain, index) => {
             const Vignette = VIGNETTES[index];
             return {
