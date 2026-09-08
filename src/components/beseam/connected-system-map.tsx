@@ -182,6 +182,14 @@ const USE_CASES: readonly {
   },
 ];
 
+/** Card-width names for the signals a use case reads. */
+const SHORT: Record<SignalId, string> = {
+  discovery: "Discovery",
+  store: "Store",
+  behavior: "Behavior",
+  revenue: "Revenue",
+};
+
 /** Signal wires: a 3.5rem track as tall as the map row, drawn in real pixels. */
 const TRACK_W = 56;
 
@@ -331,6 +339,12 @@ export default function ConnectedSystemMap({
             {SIGNALS.map((signal, index) => {
               const Icon = signal.Icon;
               const selected = signal.id === activeId;
+              // An unselected row still earns its space: it says how much of
+              // the right-hand column it feeds, which is the one fact the
+              // grid cannot show until you pick it.
+              const feeds = USE_CASES.filter((item) =>
+                item.uses.includes(signal.id),
+              ).length;
               return (
                 <button
                   key={signal.id}
@@ -347,7 +361,10 @@ export default function ConnectedSystemMap({
                   } ${selected ? "" : "hover:bg-black/[0.025]"}`}
                   style={
                     selected
-                      ? { backgroundColor: `${signal.hue}0f` }
+                      ? {
+                          backgroundColor: `${signal.hue}17`,
+                          boxShadow: `inset 3px 0 0 0 ${signal.hue}`,
+                        }
                       : undefined
                   }
                 >
@@ -383,9 +400,26 @@ export default function ConnectedSystemMap({
                       {signal.layer}
                     </span>
                   </div>
-                  <p className="mt-2.5 max-w-[32ch] text-[12px] leading-[1.5] text-black/60">
-                    {signal.scope}
-                  </p>
+                  {/* One slot, fixed height, two states: the sentence when the
+                      signal is chosen, its share of the grid when it is not.
+                      Fixed so the four rows never change height. */}
+                  <div className="relative mt-2.5 min-h-[2.25rem]">
+                    <p
+                      className={`max-w-[32ch] text-[12px] leading-[1.5] text-black/70 transition-opacity duration-300 ${
+                        selected ? "opacity-100" : "opacity-0"
+                      }`}
+                    >
+                      {signal.scope}
+                    </p>
+                    <p
+                      aria-hidden={selected}
+                      className={`absolute inset-x-0 top-0 font-mono text-[11px] uppercase tracking-[0.08em] text-black/45 transition-opacity duration-300 ${
+                        selected ? "opacity-0" : "opacity-100"
+                      }`}
+                    >
+                      Feeds {feeds} of {USE_CASES.length}
+                    </p>
+                  </div>
                   <span
                     aria-hidden="true"
                     className="absolute bottom-0 right-0 top-0 hidden w-px transition-colors lg:block"
@@ -468,6 +502,8 @@ export default function ConnectedSystemMap({
                   {active.inputs.join(", ")}
                 </p>
               </div>
+              {/* The scope line stays: it is the only place on the page that
+                  says what Beseam does not read. */}
               <p className="mt-2 text-[11.5px] leading-[1.5] text-black/58">
                 {active.caveat}
               </p>
@@ -483,14 +519,7 @@ export default function ConnectedSystemMap({
                   What will this shopper choose?
                 </p>
               </div>
-              <p className="mt-2.5 text-[12.5px] leading-[1.6] text-black/62">
-                Connected evidence. Reviewed, governed actions.
-              </p>
             </div>
-
-            <p className="font-mono text-[11.5px] leading-[1.5] text-black/55">
-              output: what a shopper sees next, and evidence of what changed.
-            </p>
           </div>
         </div>
 
@@ -584,7 +613,7 @@ export default function ConnectedSystemMap({
                     ref={(node) => {
                       cardRefs.current[index] = node;
                     }}
-                    className={`relative rounded-md border px-3.5 py-3 transition-[background-color,border-color,box-shadow] duration-300 sm:px-4 ${
+                    className={`relative rounded-md border px-3.5 py-2.5 transition-[background-color,border-color,box-shadow] duration-300 sm:px-4 ${
                       related ? "bg-white" : "bg-ground"
                     }`}
                     style={{
@@ -623,7 +652,7 @@ export default function ConnectedSystemMap({
                       .
                     </span>
                     <p
-                      className={`mt-2.5 text-[13px] font-semibold leading-[1.3] transition-colors duration-300 ${
+                      className={`mt-2 text-[13px] font-semibold leading-[1.3] transition-colors duration-300 ${
                         related ? "text-ink-deep" : "text-black/64"
                       }`}
                     >
@@ -634,17 +663,27 @@ export default function ConnectedSystemMap({
                         </span>
                       ) : null}
                     </p>
-                    {/* At rest the grid is a list of names; the sentence is
-                        what selection buys you. Kept in the DOM and only
-                        faded, so card heights never change and the wires
-                        measured against them stay put. */}
-                    <p
-                      className={`mt-1 hidden text-[11.5px] leading-[1.45] text-black/62 transition-opacity duration-300 sm:block ${
-                        related ? "opacity-100" : "opacity-0"
-                      }`}
-                    >
-                      {item.detail}
-                    </p>
+                    {/* One slot, two states, fixed height: the sentence when
+                        the card is lit, the signals it reads when it is not.
+                        Height is fixed so the wires measured against these
+                        cards stay put. */}
+                    <div className="relative mt-1 hidden min-h-[2.05rem] sm:block">
+                      <p
+                        className={`text-[11.5px] leading-[1.45] text-black/62 transition-opacity duration-300 ${
+                          related ? "opacity-100" : "opacity-0"
+                        }`}
+                      >
+                        {item.detail}
+                      </p>
+                      <p
+                        aria-hidden="true"
+                        className={`absolute inset-x-0 top-0 font-mono text-[10.5px] uppercase tracking-[0.08em] text-black/42 transition-opacity duration-300 ${
+                          related ? "opacity-0" : "opacity-100"
+                        }`}
+                      >
+                        {item.uses.map((use) => SHORT[use]).join(" · ")}
+                      </p>
+                    </div>
                   </li>
                 );
               })}
