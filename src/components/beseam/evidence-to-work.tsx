@@ -13,15 +13,14 @@ import { Reveal } from "@/components/beseam/reveal";
  * step in both. The rail is gone; only the eyebrow and the headline stay, and
  * the table gets the full measure.
  *
- * The container is narrower than its sibling sections (64rem, not 92rem) on
- * purpose: `ActionsScreen`'s desktop table is `min-w-[60rem]`, so this is the
- * tightest measure that never puts the queue behind a horizontal scroll while
- * keeping the row from stretching into dead space.
+ * Same 92rem measure and padding as every other section on the page, so the
+ * queue lines up with the beats above and below it rather than sitting in its
+ * own inset column.
  */
 export default function EvidenceToWork() {
   return (
     <section id="actions" className="scroll-mt-24 bg-white">
-      <div className="mx-auto max-w-[64rem] px-5 py-16 sm:px-8 sm:py-24 lg:px-10 lg:py-28">
+      <div className="mx-auto max-w-[92rem] px-5 py-16 sm:px-8 sm:py-24 lg:px-10 lg:py-28">
         <Reveal>
           <p className="font-mono text-[12px] font-semibold uppercase tracking-[0.14em] text-signal-ink">
             From finding to change

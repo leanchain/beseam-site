@@ -164,7 +164,7 @@ export function ActionsScreen({ compact = false }: { compact?: boolean } = {}) {
                 row.lead ? "bg-signal-ink/[0.06]" : ""
               }`}
               style={{
-                gridTemplateColumns: "minmax(0,1fr) 9rem 4.5rem 7.5rem",
+                gridTemplateColumns: "minmax(0,1fr) 11rem 5rem 8.5rem",
               }}
             >
               <div>
@@ -177,7 +177,7 @@ export function ActionsScreen({ compact = false }: { compact?: boolean } = {}) {
                 >
                   {row.title}
                 </p>
-                <p className="mt-1 max-w-[46ch] text-[12px] leading-[1.55] text-black/54">
+                <p className="mt-1 max-w-[68ch] text-[12px] leading-[1.55] text-black/54">
                   {row.why}
                 </p>
               </div>
