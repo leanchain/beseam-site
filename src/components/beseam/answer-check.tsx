@@ -57,6 +57,19 @@ export function isScanInFlight(result: AnswerCheckResult) {
   );
 }
 
+// A cached row is worth rendering on its own only when its free stage actually
+// produced something, or is still producing it. A row whose sample failed, or
+// never started, is an empty card — the arrival re-runs the scan instead of
+// showing it.
+export function hasUsableFreeStage(result: AnswerCheckResult) {
+  if (result.reject_reason) return true;
+  if ((result.page_audits ?? []).length > 0) return true;
+  if (PENDING_PAGE_AUDIT_STATUSES.has(result.page_audits_status ?? "")) {
+    return true;
+  }
+  return LIVE_STATUSES.has(result.status) || result.status === "ready";
+}
+
 function faviconHost(raw: string | null | undefined): string | null {
   const value = (raw ?? "").trim().toLowerCase();
   if (!value) return null;
@@ -3084,13 +3097,23 @@ export default function AnswerCheck({
     setDomain(fromUrl);
     void load(fromUrl).then((payload) => {
       // A cached scan renders immediately — this is the path back from the
-      // emailed link. Nothing cached means nobody has scanned this domain yet;
-      // the arrival cannot start one on its own any more, because starting a
-      // scan now requires an email address the URL does not carry. Leaving the
-      // domain prefilled puts the visitor one field from the same result.
-      if (payload) setResult(payload);
+      // emailed link. Nothing usable cached means the free stage never produced
+      // anything for this domain, so the arrival starts it on the domain alone:
+      // the hero promised a scan, and a page that only re-asks for the domain
+      // does not deliver one. The address is asked once the store is on screen.
+      if (payload && hasUsableFreeStage(payload)) {
+        setResult(payload);
+        return;
+      }
+      if (handOffTo) return;
+      trackEvent({
+        action: "answer_check_started",
+        category: "conversion",
+        label: placement,
+      });
+      void runScan(fromUrl, "");
     });
-  }, [load]);
+  }, [load, runScan, handOffTo, placement, trackEvent]);
   // Poll while either the free PDP sample or the verified live probe is running.
   // The budget is finite, so the exhausted case has to say so: silently ceasing
   // to poll leaves a progress row spinning forever with nothing to act on.
@@ -3122,16 +3145,10 @@ export default function AnswerCheck({
       return;
     }
 
-    // The scan is not started until there is somewhere to send it. Asked here
-    // rather than after the findings render, because the paid stage is
-    // authorized by clicking the emailed link either way — asking twice only
-    // made the visitor pass the same gate in two sittings.
-    const address = handOffTo ? "" : email.trim();
-    if (!handOffTo && !address) {
-      setError("Enter the email we should send your scan to.");
-      return;
-    }
-
+    // The domain alone starts the scan. The free stage needs no address, and
+    // asking for one before anything has run puts the gate in front of the
+    // evidence: the visitor pays before seeing what they are paying for. The
+    // email is asked while the scan is on screen, doing its work.
     trackEvent({
       action: "answer_check_started",
       category: "conversion",
@@ -3152,7 +3169,7 @@ export default function AnswerCheck({
       return;
     }
 
-    await runScan(target, address);
+    await runScan(target, "");
   };
 
   const onVerificationSubmit = async (event: FormEvent) => {
@@ -3168,16 +3185,32 @@ export default function AnswerCheck({
 
     setVerificationSubmitting(true);
     try {
-      const response = await fetch("/api/answer-check", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({
-          domain: result.domain,
-          email: address,
-          source: placement,
-          website,
-        }),
-      });
+      const send = () =>
+        fetch("/api/answer-check", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({
+            domain: result.domain,
+            email: address,
+            source: placement,
+            website,
+          }),
+        });
+
+      // The arrival spent this IP's burst slot seconds ago starting the scan.
+      // A 429 here is the two-step flow working as designed, not a refusal:
+      // hold the sending state and try once more when the window has cleared.
+      let response = await send();
+      if (response.status === 429) {
+        const retryAfter = Number(response.headers.get("retry-after"));
+        const waitMs =
+          Number.isFinite(retryAfter) && retryAfter > 0
+            ? Math.min(retryAfter, 60) * 1000
+            : 30_000;
+        await new Promise((resolve) => setTimeout(resolve, waitMs));
+        response = await send();
+      }
+
       const payload = await response.json();
       if (!response.ok) {
         setVerificationError(
@@ -3207,21 +3240,16 @@ export default function AnswerCheck({
   const inputClass =
     "h-12 w-full border border-black/22 bg-white px-4 text-left text-[15px] text-ink-deep placeholder:text-black/40 focus:border-signal-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal-ink";
 
-  // One button, two jobs: on a surface that hands off it starts the journey, on
-  // the page that owns the result it posts the scan.
+  // One button, one job on every surface now: start the scan. The hero routes
+  // to the page that owns the result and the page posts it, but the promise
+  // the visitor reads is the same in both places.
   const submitButton = (
     <button
       type="submit"
       disabled={submitting}
-      className={`group inline-flex min-h-12 items-center justify-center gap-2 bg-signal-ink px-6 text-[15px] font-semibold text-white disabled:opacity-70 ${handOffTo ? "" : "w-full"}`}
+      className="group inline-flex min-h-12 items-center justify-center gap-2 bg-signal-ink px-6 text-[15px] font-semibold text-white disabled:opacity-70"
     >
-      {submitting
-        ? handOffTo
-          ? "Reading your store…"
-          : "Sending…"
-        : handOffTo
-          ? "Scan my store"
-          : "Email me my scan"}
+      {submitting ? "Reading your store…" : "Scan my store"}
       <ArrowRight
         aria-hidden="true"
         className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
@@ -3229,12 +3257,26 @@ export default function AnswerCheck({
     </button>
   );
 
-  // While the link is in their inbox there is nothing to watch and nothing to
-  // read here: the audit is the thing behind the link.
   const showProgress = Boolean(
-    !verificationSent &&
-    (submitting || (result && isScanInFlight(result) && !result.reject_reason)),
+    submitting || (result && isScanInFlight(result) && !result.reject_reason),
   );
+
+  // The address is asked on the surface that owns the result, once the store
+  // read has landed and the free sample is still filling in. `rejected` never
+  // asks: there is no audit to send. Anything past `awaiting_verification` has
+  // already been through the emailed link.
+  const showEmailAsk = Boolean(
+    !handOffTo &&
+    result &&
+    !result.reject_reason &&
+    result.status === "awaiting_verification",
+  );
+
+  const focusEmailField = () => {
+    const field = document.getElementById("answer-check-email");
+    field?.scrollIntoView({ block: "center", behavior: "smooth" });
+    (field as HTMLInputElement | null)?.focus({ preventScroll: true });
+  };
 
   return (
     <div>
@@ -3251,13 +3293,7 @@ export default function AnswerCheck({
         className="mx-auto w-full max-w-3xl border border-black/18 bg-white p-3 sm:p-4"
       >
         <div className="grid gap-3">
-          <div
-            className={
-              handOffTo
-                ? "grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto]"
-                : "grid gap-3 sm:grid-cols-2"
-            }
-          >
+          <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto]">
             <div>
               <label className="sr-only" htmlFor="answer-check-domain">
                 Store domain
@@ -3282,35 +3318,13 @@ export default function AnswerCheck({
                 }
               />
             </div>
-            {handOffTo ? (
-              submitButton
-            ) : (
-              <div>
-                <label className="sr-only" htmlFor="answer-check-scan-email">
-                  Email for your scan
-                </label>
-                <input
-                  id="answer-check-scan-email"
-                  type="email"
-                  autoComplete="email"
-                  value={email}
-                  onChange={(event) => {
-                    setEmail(event.target.value);
-                    if (error) setError("");
-                  }}
-                  placeholder="you@company.com"
-                  aria-invalid={Boolean(error)}
-                  className={inputClass}
-                />
-              </div>
-            )}
+            {submitButton}
           </div>
-          {handOffTo ? null : submitButton}
         </div>
         {handOffTo ? null : (
           <p className="mt-2.5 max-w-[62ch] text-[12.5px] leading-relaxed text-black/58">
-            We read your store, then email you the link to your audit. No
-            account, no card.
+            We start reading your store now. No account, no card. You give us an
+            email once the findings are on screen, so we can send you the audit.
           </p>
         )}
         <label className="sr-only" aria-hidden="true">
@@ -3358,33 +3372,106 @@ export default function AnswerCheck({
         </div>
       ) : null}
 
-      {verificationSent ? (
+      {/* The one place the address is asked. It sits directly under the
+          progress rail, so the visitor hands it over while the scan is visibly
+          working for them rather than before anything has run. Sending does not
+          replace the page: progress keeps animating and findings keep landing
+          while the link sits in the inbox. */}
+      {showEmailAsk ? (
         <div className="mx-auto mt-6 w-full max-w-3xl border border-black/18 bg-white p-5 sm:p-6">
-          <p className="flex items-center gap-2 text-[13px] font-semibold text-[#1a6b43]">
-            <Check className="h-4 w-4" aria-hidden="true" />
-            Check your email
-          </p>
-          <p className="mt-2.5 text-[18px] font-semibold tracking-[-0.01em] text-ink-deep">
-            Your scan is on its way to {email.trim()}.
-          </p>
-          <p className="mt-1.5 max-w-[54ch] text-[13.5px] leading-relaxed text-[#5f5a55]">
-            We have already read {result?.domain ?? "your store"}. Open the link
-            in that email and we ask the assistants about your products, then
-            show you the whole audit.
-          </p>
-          {/* A sent state with no exit strands anyone who mistyped their
-              address or never received the mail. */}
-          <button
-            type="button"
-            onClick={() => setVerificationSent(false)}
-            className="mt-4 inline-flex min-h-11 items-center text-[13px] font-semibold text-ink-deep underline decoration-black/30 underline-offset-4 transition-colors hover:text-signal-ink hover:decoration-signal-ink"
-          >
-            Send it to a different email
-          </button>
+          {verificationSent ? (
+            <>
+              <p className="flex items-center gap-2 text-[13px] font-semibold text-[#1a6b43]">
+                <MailCheck className="h-4 w-4" aria-hidden="true" />
+                Sent to {email.trim()}
+              </p>
+              <p className="mt-2.5 text-[18px] font-semibold tracking-[-0.01em] text-ink-deep">
+                One click in your inbox and we keep going.
+              </p>
+              <p className="mt-1.5 max-w-[54ch] text-[13.5px] leading-relaxed text-[#5f5a55]">
+                Nothing on this page goes away in the meantime. Open the link
+                and we ask the assistants about your products, then show you the
+                whole audit.
+              </p>
+              {/* A sent state with no exit strands anyone who mistyped their
+                  address or never received the mail. */}
+              <button
+                type="button"
+                onClick={() => setVerificationSent(false)}
+                className="mt-4 inline-flex min-h-11 items-center text-[13px] font-semibold text-ink-deep underline decoration-black/30 underline-offset-4 transition-colors hover:text-signal-ink hover:decoration-signal-ink"
+              >
+                Send it to a different email
+              </button>
+            </>
+          ) : (
+            <form onSubmit={onVerificationSubmit} noValidate>
+              <label
+                className="text-[16px] font-semibold tracking-[-0.01em] text-ink-deep"
+                htmlFor="answer-check-email"
+              >
+                Where do we send your audit?
+              </label>
+              <p className="mt-1.5 max-w-[54ch] text-[13px] leading-relaxed text-[#5f5a55]">
+                We are reading {result?.domain ?? "your store"} now. Leave an
+                address and we send one link — click it and we also ask the
+                assistants about your products.
+              </p>
+              <div className="mt-3.5 grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto]">
+                <input
+                  id="answer-check-email"
+                  type="email"
+                  autoComplete="email"
+                  value={email}
+                  onChange={(event) => {
+                    setEmail(event.target.value);
+                    if (verificationError) setVerificationError("");
+                  }}
+                  placeholder="you@company.com"
+                  aria-invalid={Boolean(verificationError)}
+                  className={inputClass}
+                />
+                <button
+                  type="submit"
+                  disabled={verificationSubmitting}
+                  className="group inline-flex min-h-12 items-center justify-center gap-2 bg-signal-ink px-6 text-[15px] font-semibold text-white disabled:opacity-70"
+                >
+                  {verificationSubmitting ? "Sending…" : "Send it"}
+                  <ArrowRight
+                    aria-hidden="true"
+                    className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
+                  />
+                </button>
+              </div>
+              <p className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[12.5px] font-medium text-[#3b3833]">
+                {["No account", "No card", "One email, no marketing list"].map(
+                  (item) => (
+                    <span
+                      key={item}
+                      className="inline-flex items-center gap-1.5"
+                    >
+                      <Check
+                        aria-hidden="true"
+                        className="h-3.5 w-3.5 text-[#1f7a4d]"
+                      />
+                      {item}
+                    </span>
+                  ),
+                )}
+              </p>
+              {verificationError ? (
+                <p
+                  role="alert"
+                  className="mt-3 text-[13px] leading-relaxed text-[#b3261e]"
+                >
+                  {verificationError}
+                </p>
+              ) : null}
+            </form>
+          )}
         </div>
       ) : null}
 
-      {result && !verificationSent ? (
+      {result ? (
         <div className="mx-auto mt-10 max-w-[72rem]">
           {/* The poll budget ran out with work still outstanding. Name what did
               finish, so the evidence already on the card is not thrown into
@@ -3452,41 +3539,29 @@ export default function AnswerCheck({
                     </div>
                   </div>
                 ) : (
-                  <form onSubmit={onVerificationSubmit} noValidate>
-                    <label
-                      className="text-[15px] font-semibold tracking-[-0.01em] text-ink-deep"
-                      htmlFor="answer-check-email"
-                    >
-                      Confirm your email to continue
-                    </label>
+                  <div>
+                    <p className="text-[15px] font-semibold tracking-[-0.01em] text-ink-deep">
+                      Confirm your email to open both
+                    </p>
                     <p className="mt-1.5 max-w-[52ch] text-[13px] leading-relaxed text-[#5f5a55]">
                       We send one link. Click it and both open up: no account,
                       no card, no marketing list.
                     </p>
-                    <div className="mt-3.5 grid gap-3">
-                      <input
-                        id="answer-check-email"
-                        type="email"
-                        autoComplete="email"
-                        value={email}
-                        onChange={(event) => {
-                          setEmail(event.target.value);
-                          if (verificationError) setVerificationError("");
-                        }}
-                        placeholder="you@company.com"
-                        aria-invalid={Boolean(verificationError)}
-                        className={inputClass}
+                    {/* One address field on the page, never two. The ask lives
+                        under the progress rail where the visitor met it first;
+                        this returns them to it rather than raising a rival
+                        input for the same value. */}
+                    <button
+                      type="button"
+                      onClick={focusEmailField}
+                      className="group mt-3.5 inline-flex min-h-12 items-center justify-center gap-2 bg-signal-ink px-6 text-[14px] font-semibold text-white"
+                    >
+                      Add your email
+                      <ArrowRight
+                        aria-hidden="true"
+                        className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
                       />
-                      <button
-                        type="submit"
-                        disabled={verificationSubmitting}
-                        className="inline-flex min-h-12 items-center justify-center gap-2 bg-signal-ink px-6 text-[14px] font-semibold text-white disabled:opacity-70"
-                      >
-                        {verificationSubmitting
-                          ? "Sending…"
-                          : "Send me the link"}
-                      </button>
-                    </div>
+                    </button>
                     <p className="mt-2.5 max-w-[52ch] text-[12px] leading-relaxed text-[#5f5a55]">
                       See our{" "}
                       <a
@@ -3497,15 +3572,7 @@ export default function AnswerCheck({
                       </a>
                       .
                     </p>
-                    {verificationError ? (
-                      <p
-                        role="alert"
-                        className="mt-3 text-[13px] leading-relaxed text-[#b3261e]"
-                      >
-                        {verificationError}
-                      </p>
-                    ) : null}
-                  </form>
+                  </div>
                 )
               ) : undefined
             }

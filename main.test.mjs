@@ -230,3 +230,65 @@ test("/scan/verify returns a PDP verification to the originating report", async 
     "https://app.beseam.com/report/3909086518540540",
   );
 });
+
+test("a domain-only scan reaches the API with a null email", async () => {
+  const calls = [];
+  const response = await withFetch(
+    async (url, init) => {
+      calls.push({ url, init });
+      return new Response(
+        JSON.stringify({
+          domain: "shop.example",
+          status: "awaiting_verification",
+        }),
+        { status: 200, headers: { "content-type": "application/json" } },
+      );
+    },
+    () =>
+      worker.fetch(
+        new Request("https://beseam.com/api/answer-check", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ domain: "shop.example", source: "scan_page" }),
+        }),
+        { ...TREVRA_ENV, API_BASE_URL: "https://api.beseam.test/api" },
+      ),
+  );
+
+  assert.equal(response.status, 200);
+  assert.equal(calls.length, 1);
+  assert.deepEqual(JSON.parse(calls[0].init.body), {
+    domain: "shop.example",
+    email: null,
+    source: "scan_page",
+    website: null,
+  });
+});
+
+test("a rate-limited scan keeps its status and its Retry-After", async () => {
+  const response = await withFetch(
+    async () =>
+      new Response(
+        JSON.stringify({ detail: "Rate limit exceeded", retry_after: 30 }),
+        {
+          status: 429,
+          headers: { "content-type": "application/json", "retry-after": "30" },
+        },
+      ),
+    () =>
+      worker.fetch(
+        new Request("https://beseam.com/api/answer-check", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({
+            domain: "shop.example",
+            email: "buyer@shop.example",
+          }),
+        }),
+        { ...TREVRA_ENV, API_BASE_URL: "https://api.beseam.test/api" },
+      ),
+  );
+
+  assert.equal(response.status, 429);
+  assert.equal(response.headers.get("retry-after"), "30");
+});

@@ -588,12 +588,18 @@ async function forwardJson(target, init) {
   try {
     const response = await fetch(target, init);
     const body = await response.text();
+    const headers = {
+      "content-type": "application/json; charset=utf-8",
+      "cache-control": "no-store",
+    };
+    // The scan is two POSTs seconds apart (domain, then address), so a 429 on
+    // the second is a window the page can simply wait out. Rebuilding the
+    // headers from scratch would swallow how long that wait is.
+    const retryAfter = response.headers.get("retry-after");
+    if (retryAfter) headers["retry-after"] = retryAfter;
     return new Response(body, {
       status: response.status,
-      headers: {
-        "content-type": "application/json; charset=utf-8",
-        "cache-control": "no-store",
-      },
+      headers,
     });
   } catch {
     return json({ error: "The scan service is unavailable right now." }, 502);

@@ -53,9 +53,9 @@ export default function ScanPage() {
               `FreeScanPromise` directly above the field — repeating it here put
               the same paragraph on the page twice. */}
           <p className="mx-auto mt-7 max-w-[58ch] text-[17px] leading-[1.7] text-black/64">
-            Enter your domain and your email. We read your public store the way
-            a search engine or an AI assistant reads it, then email you the link
-            to your audit.
+            Enter your domain and the scan starts. We read your public store the
+            way a search engine or an AI assistant reads it, and the findings
+            land on this page as they arrive.
           </p>
         </div>
 
