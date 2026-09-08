@@ -42,6 +42,7 @@ const SIGNAL = "Got the same jackets back, then left without opening one.";
 const CANDIDATES = [
   {
     domain: "Onsite search",
+    verdict: "Search works",
     claim: "The refinement returned nothing at all.",
     cause: false,
     why: "It still returns the waterproof jackets.",
@@ -54,11 +55,14 @@ const CANDIDATES = [
   },
   {
     domain: "Availability",
+    verdict: "Stock is fine",
     claim: "The jackets it returned are out of stock.",
     cause: false,
     why: "Almost all are in stock in the shopper’s market.",
   },
 ] as const;
+
+type RuledOut = Extract<(typeof CANDIDATES)[number], { cause: false }>;
 
 const MOBILE_FINDINGS = [
   {
@@ -196,32 +200,63 @@ function Fork() {
   );
 }
 
-/** Two branches stop at a cap. Only the observed one carries on. */
+/**
+ * The two ruled-out branches already end on the cross in their own chip, so
+ * nothing carries past them here. Only the observed one runs on to the change.
+ */
 function Tails() {
   return (
     <div aria-hidden="true" className="relative hidden h-14 lg:block">
       <span
-        className="absolute top-0 h-6 border-l border-dashed border-white/28"
-        style={{ left: BRANCH_EDGE }}
-      />
-      <X
-        aria-hidden="true"
-        className="absolute top-6 h-3.5 w-3.5 -translate-x-1/2 -translate-y-1/2 text-white/40"
-        style={{ left: BRANCH_EDGE }}
-      />
-      <span
-        className="absolute top-0 h-6 border-l border-dashed border-white/28"
-        style={{ right: BRANCH_EDGE }}
-      />
-      <X
-        aria-hidden="true"
-        className="absolute top-6 h-3.5 w-3.5 translate-x-1/2 -translate-y-1/2 text-white/40"
-        style={{ right: BRANCH_EDGE }}
-      />
-      <span
         className="trace-flow-down absolute inset-y-0 left-1/2 w-px"
         style={{ backgroundColor: ACCENT_RAIL }}
       />
+    </div>
+  );
+}
+
+/**
+ * A ruled-out branch collapses to its verdict.
+ *
+ * Three equal cards asked a first-time reader to take in three explanations
+ * before knowing which one mattered, and the two that did not matter were the
+ * longest to read. The chip states the verdict; the hypothesis and the evidence
+ * that killed it are one hover -- or one tap, which is why the chip is a button
+ * and `.branch-detail` answers to `:focus-within` too -- away. Nothing is
+ * deleted: the fork still shows that two explanations were checked and closed.
+ *
+ * The panel is absolutely positioned so opening it cannot move the graph.
+ */
+function RuledOutBranch({ item, seqRow }: { item: RuledOut; seqRow: number }) {
+  return (
+    <div
+      data-seq-row
+      style={{ "--seq-row": seqRow } as CSSProperties}
+      className="branch relative"
+    >
+      <button
+        type="button"
+        className="flex w-full items-center gap-2.5 border border-dashed border-white/25 px-4 py-3 text-left transition-colors hover:border-white/45 focus-visible:border-white/60 focus-visible:outline-none"
+      >
+        <X aria-hidden="true" className="h-3.5 w-3.5 shrink-0 text-white/40" />
+        <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.1em] text-white/44">
+          {item.domain}
+        </span>
+        <span className="ml-auto text-[14px] leading-[1.4] text-white/60">
+          {item.verdict}
+        </span>
+      </button>
+      <div className="branch-detail absolute inset-x-0 top-full z-10 mt-2 border border-white/16 bg-ink-deep px-4 py-3.5">
+        <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.1em] text-white/44">
+          Ruled out
+        </p>
+        <p className="mt-2 text-[13px] leading-[1.5] text-white/52 line-through decoration-white/28">
+          {item.claim}
+        </p>
+        <p className="mt-1.5 text-[13px] leading-[1.6] text-white/72">
+          {item.why}
+        </p>
+      </div>
     </div>
   );
 }
@@ -398,55 +433,40 @@ export default function ConnectedEvidence() {
                 <Fork />
 
                 <div className="grid grid-cols-3 items-stretch gap-14">
-                  {CANDIDATES.map((item, i) => (
-                    <div key={item.domain} className="flex flex-col">
-                      <span className="mb-4 flex justify-center">
-                        <NodeDot tone={item.cause ? "cause" : "dead"} />
-                      </span>
-                      <article
-                        data-seq-row
-                        style={{ "--seq-row": i + 3 } as CSSProperties}
-                        className={
-                          item.cause
-                            ? "relative flex flex-1 flex-col gap-3.5 border border-signal/70 bg-signal/[0.08] px-5 py-5"
-                            : "relative flex flex-1 flex-col gap-3 border border-dashed border-white/25 px-5 py-5"
-                        }
-                      >
-                        <p
-                          className={`font-mono text-[11px] font-semibold uppercase tracking-[0.1em] ${
-                            item.cause ? "text-white/64" : "text-white/44"
-                          }`}
+                  {CANDIDATES.map((item, i) =>
+                    item.cause ? (
+                      <div key={item.domain} className="flex flex-col">
+                        <span className="mb-4 flex justify-center">
+                          <NodeDot tone="cause" />
+                        </span>
+                        <article
+                          data-seq-row
+                          style={{ "--seq-row": i + 3 } as CSSProperties}
+                          className="relative flex flex-1 flex-col gap-3.5 border border-signal/70 bg-signal/[0.08] px-5 py-5"
                         >
-                          {item.domain}
-                        </p>
-                        <p
-                          className={
-                            item.cause
-                              ? "text-[17px] font-medium leading-[1.4] text-white"
-                              : "text-[15px] leading-[1.5] text-white/54 line-through decoration-white/28"
-                          }
-                        >
-                          {item.claim}
-                        </p>
-                        <p
-                          className={`self-start px-2 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.1em] ${
-                            item.cause
-                              ? "bg-signal text-[#16110e]"
-                              : "bg-white/[0.07] text-white/60"
-                          }`}
-                        >
-                          {item.cause ? "Strongest evidence" : "Ruled out"}
-                        </p>
-                        <p
-                          className={`mt-auto pt-1 text-[13px] leading-[1.6] ${
-                            item.cause ? "text-white/78" : "text-white/50"
-                          }`}
-                        >
-                          {item.why}
-                        </p>
-                      </article>
-                    </div>
-                  ))}
+                          <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.1em] text-white/64">
+                            {item.domain}
+                          </p>
+                          <p className="text-[17px] font-medium leading-[1.4] text-white">
+                            {item.claim}
+                          </p>
+                          <p className="self-start bg-signal px-2 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.1em] text-[#16110e]">
+                            Strongest evidence
+                          </p>
+                          <p className="mt-auto pt-1 text-[13px] leading-[1.6] text-white/78">
+                            {item.why}
+                          </p>
+                        </article>
+                      </div>
+                    ) : (
+                      <div key={item.domain} className="flex flex-col">
+                        <span className="mb-4 flex justify-center">
+                          <NodeDot tone="dead" />
+                        </span>
+                        <RuledOutBranch item={item} seqRow={i + 3} />
+                      </div>
+                    ),
+                  )}
                 </div>
 
                 <Tails />

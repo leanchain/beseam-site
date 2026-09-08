@@ -797,6 +797,27 @@ html.theme-transition::view-transition-new(root) {
 .trace-flow-back {
   animation-direction: reverse;
 }
+
+/* Evidence trace, ruled-out branch: the chip carries the verdict, the panel
+ * behind it carries the hypothesis and the evidence that closed it. Written by
+ * hand rather than as `group-hover:` utilities because the panel has to answer
+ * to hover and focus-within together -- a tap on a touch device focuses the
+ * chip, it does not hover it -- and because the equivalent group-* visibility
+ * utilities did not survive this project's build. The panel keeps pointer
+ * events only while open, so the reader can move onto it to read. */
+.branch-detail {
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 150ms ease-out;
+}
+
+.branch:hover > .branch-detail,
+.branch:focus-within > .branch-detail {
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
+}
 .marketing-wash {
   background: color-mix(in srgb, var(--brand) 18%, transparent);
   filter: blur(110px);
@@ -856,7 +877,6 @@ html.theme-transition::view-transition-new(root) {
     font-size: clamp(1.375rem, 2vw, 1.875rem);
     line-height: 1.16;
     letter-spacing: -0.02em;
-    text-wrap: balance;
   }
   .editorial-body {
     font-size: clamp(1.0625rem, 0.6vw + 0.95rem, 1.25rem);
