@@ -12,7 +12,9 @@
     "brand:assets": "bash scripts/generate-brand-assets.sh",
     "test:worker": "node --test main.test.mjs",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test:i18n": "node --test src/i18n/locale-rules.test.mjs",
+    "test": "npm run test:worker && npm run test:i18n"
   },
   "dependencies": {
     "@calcom/embed-react": "^1.5.3",
