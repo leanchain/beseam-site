@@ -182,25 +182,36 @@ export default function ResourcesPage() {
 
       <section className="border-b border-black/18 bg-ground-2">
         <div className="mx-auto grid max-w-[92rem] sm:grid-cols-2 lg:grid-cols-3">
-          {SECTIONS.map(({ title, href, description, icon: Icon }) => (
-            <Link
-              key={href}
-              href={href}
-              className="group border-b border-black/16 p-7 transition-colors hover:bg-panel-white sm:border-r lg:min-h-[18rem] lg:p-9"
-            >
-              <Icon className="h-5 w-5 text-signal-ink" strokeWidth={1.6} />
-              <h2 className="mt-9 font-serif text-[30px] tracking-[-0.02em] text-ink-deep">
-                {title}
-              </h2>
-              <p className="mt-4 max-w-sm text-[13px] leading-relaxed text-black/62">
-                {description}
-              </p>
-              <span className="mt-7 inline-flex items-center gap-2 text-[12px] font-semibold text-signal-ink">
-                Browse section{" "}
-                <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
-              </span>
-            </Link>
-          ))}
+          {SECTIONS.map(({ title, href, description, icon: Icon }, index) => {
+            // Seven tiles in a three-column grid left the last one alone with
+            // the row's rules running on across two empty cells. The odd one
+            // out takes the rest of the row instead, and it is the right tile
+            // for it: contributing is not browsing.
+            const spans = index === SECTIONS.length - 1;
+            return (
+              <Link
+                key={href}
+                href={href}
+                className={`group border-b border-black/16 p-7 transition-colors hover:bg-panel-white lg:p-9 ${
+                  spans
+                    ? "sm:col-span-2 lg:col-span-3"
+                    : "sm:border-r lg:min-h-[18rem]"
+                }`}
+              >
+                <Icon className="h-5 w-5 text-signal-ink" strokeWidth={1.6} />
+                <h2 className="mt-9 font-serif text-[30px] tracking-[-0.02em] text-ink-deep">
+                  {title}
+                </h2>
+                <p className="mt-4 max-w-sm text-[13px] leading-relaxed text-black/62">
+                  {description}
+                </p>
+                <span className="mt-7 inline-flex items-center gap-2 text-[12px] font-semibold text-signal-ink">
+                  Browse section{" "}
+                  <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+                </span>
+              </Link>
+            );
+          })}
         </div>
       </section>
 

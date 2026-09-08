@@ -254,14 +254,17 @@ export default function ComparePage() {
 
       <section className="border-b border-black/18 bg-ink-deep text-white">
         <div className="mx-auto max-w-[92rem] px-5 py-20 sm:px-8 sm:py-24 lg:px-10">
-          <div className="grid gap-12 lg:grid-cols-[minmax(0,0.75fr)_minmax(0,1.25fr)] lg:gap-20">
+          {/* Five steps, so the loop gets the full measure and one row of its
+              own. Held in a 0.75/1.25 split it ran as 4 + 1, and the column
+              rules carried on across the two empty cells. */}
+          <div>
             <div>
               <h2 className="max-w-[18ch] font-serif text-[clamp(2.2rem,4.6vw,3.5rem)] font-normal leading-[1.04] tracking-[-0.02em]">
                 See the problem. Understand it. Change it. Check again.
               </h2>
             </div>
 
-            <div className="grid border-y border-white/22 md:grid-cols-2 lg:grid-cols-4">
+            <div className="mt-12 grid border-y border-white/22 md:grid-cols-2 lg:grid-cols-5">
               {[
                 [
                   "Find",
