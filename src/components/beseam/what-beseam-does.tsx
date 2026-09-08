@@ -71,6 +71,28 @@ const vig = (index: number, base?: string): CSSProperties =>
  * watches, and a row of chips says "these, specifically" where a dot-separated
  * line read as a caption to be skipped.
  */
+/**
+ * The discovery panel used to answer its own question with three verdict
+ * words -- ChatGPT NAMED, Gemini NAMED, Perplexity NOT NAMED. That is the
+ * scoreboard, not the result: a merchant reading it still has to take our
+ * word for what the assistant actually said, and the thing that stings --
+ * seeing three other stores in the answer and not yours -- never appears.
+ *
+ * So the panel shows the answer instead. It is an illustration, not a
+ * capture: the stores below are invented and the panel says EXAMPLE where a
+ * date would go, because the one thing this product must never show is
+ * manufactured evidence dressed as a finding. The real, dated, cross-engine
+ * runs are two sections down in #benchmarks and on /benchmarks, with brands
+ * the assistants genuinely named. Keep it that way -- if these names ever
+ * need to be real, take them from `category-benchmarks.ts` and print the
+ * engine and date with them.
+ */
+const ANSWER_PICKS = [
+  "Northvale Outfitters",
+  "Storm & Spoke",
+  "Halden Rainwear",
+] as const;
+
 const DOMAINS = [
   {
     title: "Get found",
@@ -98,55 +120,62 @@ function DiscoveryVignette() {
       aria-hidden="true"
       className="flex h-[11rem] flex-col bg-white p-3.5 ring-1 ring-black/10"
     >
-      <div className="flex flex-col gap-1 border-b border-black/10 pb-2.5">
+      <div className="flex shrink-0 items-center justify-between gap-2 border-b border-black/10 pb-2">
         <span className="vig-step font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-black/60">
           Buying question
         </span>
-        {/* Typed, because a shopper types it. Thirty-six characters, which is
-            the count `steps(36)` in globals.css is pacing -- edit the string
-            and the timing function has to move with it. */}
-        <span
-          className="vig-type max-w-full text-[12px] font-medium text-ink-deep"
-          style={{ "--vig-chars": 36 } as CSSProperties}
-        >
-          best waterproof jacket for commuting
-        </span>
+        {/* The engine mark and the word EXAMPLE travel together, in the panel's
+            own frame: this is what an assistant answer looks like, and it is
+            not a capture. A real one would carry a date here instead. */}
+        <div className="flex shrink-0 items-center gap-1.5">
+          <ChannelIcon
+            brand="openai"
+            className="h-[15px] w-[15px] shrink-0 text-ink-deep/55"
+          />
+          <span className="border border-black/15 px-1.5 py-px font-mono text-[11px] font-semibold uppercase tracking-[0.09em] text-black/45">
+            Example
+          </span>
+        </div>
       </div>
 
-      <div className="flex flex-1 flex-col justify-center gap-2.5">
-        {(
-          [
-            ["openai", "ChatGPT", true],
-            ["gemini", "Gemini", true],
-            ["perplexity", "Perplexity", false],
-          ] as const
-        ).map(([brand, name, named], index) => (
-          <div
-            key={brand}
-            className="vig-step flex items-center gap-2"
+      {/* Typed, because a shopper types it. Thirty-six characters, which is
+          the count `steps(36)` in globals.css is pacing -- edit the string
+          and the timing function has to move with it. */}
+      <span
+        className="vig-type mt-2 max-w-full shrink-0 text-[12.5px] font-semibold leading-[1.3] text-ink-deep"
+        style={{ "--vig-chars": 36 } as CSSProperties}
+      >
+        best waterproof jacket for commuting
+      </span>
+
+      {/* The answer, not the scoreboard. Three stores arrive one at a time,
+          the way an assistant lists them, and the reader watches the list
+          finish without their own store in it. */}
+      <ol className="mt-2 flex min-h-0 flex-1 flex-col justify-center gap-1">
+        {ANSWER_PICKS.map((store, index) => (
+          <li
+            key={store}
+            className="vig-step flex items-baseline gap-1.5"
             style={vig(index, "0.95s")}
           >
-            <ChannelIcon
-              brand={brand}
-              className={`h-[18px] w-[18px] shrink-0 ${named ? "text-ink-deep/70" : "text-black/30"}`}
-            />
-            <span className="font-mono text-[12px] font-semibold uppercase tracking-[0.06em] text-black/56">
-              {name}
+            <span className="shrink-0 font-mono text-[11px] text-black/40">
+              {index + 1}.
             </span>
-            <span className="h-px min-w-3 flex-1 bg-black/10" />
-            {/* The verdict lands after the assistant it belongs to, so the row
-                reads as a question going out and an answer coming back rather
-                than as a table that was always there. */}
-            <span
-              className={`vig-step shrink-0 font-mono text-[12px] font-semibold uppercase tracking-[0.06em] ${
-                named ? "text-[#1a6b43]" : "text-signal-ink"
-              }`}
-              style={vig(index, "1.45s")}
-            >
-              {named ? "Named" : "Not named"}
+            <span className="min-w-0 truncate text-[12px] font-medium text-ink-deep">
+              {store}
             </span>
-          </div>
+          </li>
         ))}
+      </ol>
+
+      <div
+        className="vig-step vig-stamp mt-1.5 flex shrink-0 items-center gap-1.5 border-t border-black/10 pt-2 text-signal-ink"
+        style={vig(3, "1.05s")}
+      >
+        <X className="h-3.5 w-3.5 shrink-0" />
+        <span className="font-mono text-[12px] font-semibold uppercase tracking-[0.06em]">
+          Your store, not named
+        </span>
       </div>
     </div>
   );
