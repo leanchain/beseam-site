@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 import {
   ArrowRight,
   CheckCircle2,
@@ -11,7 +13,6 @@ import {
 } from "lucide-react";
 
 import { ChannelIcon } from "@/components/beseam/channel-icon";
-import ProductArt from "@/components/beseam/product-art";
 import { Reveal } from "@/components/beseam/reveal";
 import {
   ScrollDeal,
@@ -36,6 +37,21 @@ import {
  * connector arrow draws out of the panel that just landed before the next one
  * rises, and scrolling back plays it backwards. The reader sets the pace.
  */
+/**
+ * A real garment, not a drawing: the panels are showing a merchant's product
+ * page, and a shopper never sees an illustration there. Cut out on a
+ * transparent ground so it sits on the panel's own paper.
+ *
+ * Source: "Windbreaker Jacket, Hood Outside Transparency.png" by Ingolfson,
+ * Wikimedia Commons, CC0 -- no attribution required, kept here because the
+ * next person to touch this file will want to know where it came from.
+ */
+const PRODUCT_PHOTO = {
+  src: "/images/city-shell.webp",
+  width: 520,
+  height: 456,
+} as const;
+
 const DOMAINS = [
   {
     title: "Get found",
@@ -110,7 +126,13 @@ function StoreVignette() {
       className="flex h-[11rem] overflow-hidden bg-white ring-1 ring-black/10"
     >
       <div className="flex w-[36%] min-w-0 flex-col items-center justify-center bg-ground/60 px-2">
-        <ProductArt kind="shell" className="h-14 w-14" />
+        <Image
+          src={PRODUCT_PHOTO.src}
+          alt=""
+          width={PRODUCT_PHOTO.width}
+          height={PRODUCT_PHOTO.height}
+          className="h-[3.9rem] w-auto object-contain"
+        />
         <span className="mt-1.5 text-[11px] font-semibold text-ink-deep">
           City Shell
         </span>
@@ -161,7 +183,13 @@ function PersonalizationVignette() {
 
       <div className="mt-2.5 flex min-h-0 flex-1 overflow-hidden ring-1 ring-black/10">
         <div className="flex w-[42%] min-w-0 items-center gap-2.5 bg-ground/65 px-2.5">
-          <ProductArt kind="shell" className="h-11 w-11 shrink-0" />
+          <Image
+            src={PRODUCT_PHOTO.src}
+            alt=""
+            width={PRODUCT_PHOTO.width}
+            height={PRODUCT_PHOTO.height}
+            className="h-11 w-auto shrink-0 object-contain"
+          />
           <div className="min-w-0">
             <p className="font-mono text-[11px] uppercase tracking-[0.08em] text-black/60">
               You’re viewing
@@ -188,6 +216,18 @@ function PersonalizationVignette() {
             </span>
           </div>
         </div>
+      </div>
+
+      {/* The panel is about the shopper choosing, so it ends where choosing
+          ends. Green, because nothing else in this section is. */}
+      <div className="mt-2 flex items-center gap-1.5 bg-[#1a6b43]/[0.07] px-2 py-1.5 ring-1 ring-[#1a6b43]/20">
+        <CheckCircle2
+          className="h-3.5 w-3.5 shrink-0 text-[#1a6b43]"
+          strokeWidth={2}
+        />
+        <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.07em] text-[#1a6b43]">
+          Added to cart
+        </span>
       </div>
     </div>
   );
@@ -304,8 +344,17 @@ export default function WhatBeseamDoes() {
                 <p className="shrink-0 font-mono text-[11px] font-semibold uppercase tracking-[0.12em] text-signal lg:pt-1.5">
                   Continuous loop
                 </p>
-                <div className="flex-1">
-                  <ol className="relative grid gap-y-3 before:absolute before:left-5 before:right-5 before:top-3.5 before:hidden before:h-px before:bg-white/16 sm:grid-cols-5 sm:gap-0 sm:before:block">
+                {/* The rail runs between the steps, not past them: it starts on
+                    the first icon's centre and stops on the last one's, which
+                    is 26px into a column (12px of padding, half of a 28px
+                    icon) and a fifth of the row from the right edge. */}
+                <div className="relative flex-1">
+                  <span
+                    aria-hidden="true"
+                    className="absolute hidden h-px bg-white/16 sm:block"
+                    style={{ left: 26, right: "calc(20% - 26px)", top: 14 }}
+                  />
+                  <ol className="relative grid gap-y-3 sm:grid-cols-5 sm:gap-0">
                     {LOOP.map(({ label, Icon }, index) => (
                       <li
                         key={label}
@@ -341,12 +390,12 @@ export default function WhatBeseamDoes() {
                   >
                     <span
                       className="absolute top-0 block h-4 rounded-b-[14px] border-b border-l border-r border-white/18"
-                      style={{ left: 20, right: 20 }}
+                      style={{ left: 26, right: "calc(20% - 26px)" }}
                     />
                     <span
                       className="absolute top-0 block h-2 w-2 border-l border-t border-signal"
                       style={{
-                        left: 20,
+                        left: 26,
                         transform: "translate(-50%, -50%) rotate(45deg)",
                       }}
                     />
