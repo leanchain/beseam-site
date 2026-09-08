@@ -104,21 +104,37 @@ const PARSED = [
   { label: "Price", value: "Under €200" },
 ] as const;
 
+/**
+ * The two listings the answer leads with, shown the way an assistant shows
+ * them: a picture, the product, the store and the price.
+ *
+ * Both photographs are of the same jacket, and that is deliberate rather than
+ * lazy. Every product in this section is invented -- the frame says EXAMPLE --
+ * so the honest options were a stock photo of some real brand's jacket sold
+ * under a made-up name, or free-licensed pictures of one anonymous windbreaker
+ * standing in for the category. These are the second, both cropped to the same
+ * band so they read as two listings rather than two photographs:
+ * `commuter-shell.webp` from "Windbreaker Jacket, Hood Stowed" (public domain,
+ * Wikimedia Commons) and `rain-jacket.webp` from "Windbreaker Jacket, Hood
+ * Outside Transparency" (CC0, Ingolfson, Wikimedia Commons), the same cutout
+ * the merchant's own product uses two tiles along.
+ *
+ * No match score. The mock this follows carried "97% MATCH" per card, which is
+ * a number Beseam never computed -- the same rule that keeps a projected lift
+ * off the Actions queue.
+ */
 const ANSWER_PICKS = [
   {
     product: "Ridgeline Commuter Shell",
     store: "Northvale Outfitters",
     price: "€168",
+    image: "/images/picks/commuter-shell.webp",
   },
   {
     product: "Halden 3-Layer Rain Jacket",
     store: "Halden Rainwear",
     price: "€142",
-  },
-  {
-    product: "Spoke Packable Waterproof",
-    store: "Storm & Spoke",
-    price: "€119",
+    image: "/images/picks/rain-jacket.webp",
   },
 ] as const;
 
@@ -231,40 +247,49 @@ function DiscoveryVignette() {
         ))}
       </dl>
 
-      {/* The answer, not the scoreboard. The matches arrive one at a time, the
-          way an assistant lists them, and the reader watches the list finish
-          without their own store in it. */}
-      <ol className="mt-2.5 flex min-h-0 flex-1 flex-col justify-center gap-2">
+      {/* The answer, not the scoreboard: the assistant's own cards, dealt one
+          at a time, and the reader watches the answer finish without their
+          own store in it. */}
+      <ol className="mt-2.5 grid shrink-0 grid-cols-2 gap-2">
         {ANSWER_PICKS.map((pick, index) => (
           <li
             key={pick.product}
-            className="vig-step flex items-baseline gap-2"
+            className="vig-step flex min-w-0 flex-col border border-black/12"
             style={vig(index + 4, "1.25s")}
           >
-            <span className="shrink-0 font-mono text-[11px] text-black/40">
-              {index + 1}.
+            <span className="flex h-[3.5rem] shrink-0 items-center justify-center overflow-hidden bg-[#f4f1ed]">
+              {/* Unoptimised on purpose: two 60px-tall thumbnails inside an
+                  animated panel are not worth a second network round trip
+                  through the image route. */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={pick.image}
+                alt=""
+                className="h-full w-full object-cover"
+              />
             </span>
-            <span className="min-w-0 flex-1 truncate text-[12px] font-medium text-ink-deep">
+            <span className="min-w-0 truncate px-2 pt-1.5 text-[11.5px] font-medium leading-[1.25] text-ink-deep">
               {pick.product}
             </span>
-            <span className="shrink-0 font-mono text-[11px] text-black/50">
+            <span className="min-w-0 truncate px-2 pb-1.5 font-mono text-[10.5px] text-black/50">
               {pick.store} · {pick.price}
             </span>
           </li>
         ))}
-        {/* The answer did not stop at three. Saying so is the difference
-            between a short list and a place the merchant is missing from. */}
-        <li
-          className="vig-step pl-4 font-mono text-[11px] text-black/40"
-          style={vig(7, "1.25s")}
-        >
-          and six more, none of them yours
-        </li>
       </ol>
 
+      {/* The answer did not stop at two. Saying so is the difference between
+          a short list and a place the merchant is missing from. */}
+      <p
+        className="vig-step mt-2 shrink-0 font-mono text-[11px] text-black/40"
+        style={vig(6, "1.25s")}
+      >
+        and seven more, none of them yours
+      </p>
+
       <div
-        className="vig-step vig-stamp mt-2.5 flex shrink-0 items-center gap-1.5 border-t border-black/10 pt-2.5 text-signal-ink"
-        style={vig(8, "1.35s")}
+        className="vig-step vig-stamp mt-auto flex shrink-0 items-center gap-1.5 border-t border-black/10 pt-2 text-signal-ink"
+        style={vig(7, "1.35s")}
       >
         <X className="h-3.5 w-3.5 shrink-0" />
         <span className="font-mono text-[12px] font-semibold uppercase tracking-[0.06em]">
