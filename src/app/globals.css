@@ -929,14 +929,14 @@ html.theme-transition::view-transition-new(root) {
 
 /* Typed, not printed. The box is capped at the string's own length so its
  * right edge -- which carries the caret -- sits at the last character rather
- * than at the end of the column. `steps()` counts the same 36 characters as
+ * than at the end of the column. `steps()` counts the same 51 characters as
  * `--vig-chars` on the element: change the string and both move together. */
 @keyframes vig-type {
   from {
     max-width: 0;
   }
   to {
-    max-width: calc(var(--vig-chars, 36) * 1ch);
+    max-width: calc(var(--vig-chars, 51) * 1ch);
   }
 }
 
@@ -973,8 +973,8 @@ html.theme-transition::view-transition-new(root) {
 
 [data-dealt] .vig-type {
   animation:
-    vig-type 880ms steps(36) both,
-    vig-caret-off 880ms step-end both;
+    vig-type 1100ms steps(51) both,
+    vig-caret-off 1100ms step-end both;
 }
 
 .marketing-wash {
