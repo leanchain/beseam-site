@@ -20,6 +20,11 @@ export const STORE_HEALTH_FAQS = [
       "You choose the rules. Beseam prepares customer-facing changes and applies them only after the required approval. Changes that need brand judgment stop for review. Where the system supports rollback, Beseam keeps the previous state.",
   },
   {
+    question: "How often does Beseam check?",
+    answer:
+      "It keeps running after the first scan. Beseam re-asks a rotating sample of your shopper questions every day, so an answer that changes is caught when it changes, and a weekly email tells you what moved, what is waiting for your approval, and what to fix next. You do not have to open it every day.",
+  },
+  {
     question: "How does Beseam measure whether a change helped?",
     answer:
       "Beseam asks the same shopper questions again after the change and shows whether the answers now name your store. The before-and-after stays with the change, and Beseam does not claim the change caused something the data cannot prove.",

@@ -29,7 +29,7 @@ export default function HeroScrollCue() {
       <span className="flex h-8 w-5 items-start justify-center rounded-full border border-black/25 p-1.5">
         <span className="motion-safe-only h-1.5 w-1 rounded-full bg-black/45 hero-scroll-wheel" />
       </span>
-      <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.14em] text-black/45">
+      <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.14em] text-black/45">
         Scroll
       </span>
     </div>

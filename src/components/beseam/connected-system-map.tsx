@@ -165,7 +165,8 @@ const USE_CASES: readonly {
   },
   {
     name: "Revenue and attribution",
-    detail: "Actual revenue, observed changes, attribution, and estimates stay separate.",
+    detail:
+      "Actual revenue, observed changes, attribution, and estimates stay separate.",
     uses: ["revenue"],
   },
   {
@@ -189,6 +190,13 @@ const WORK = [
 
 /** Signal wires: a 3.5rem track as tall as the map row, drawn in real pixels. */
 const TRACK_W = 56;
+
+/**
+ * Where the use-case wires stop: the 3.5rem gutter the grid reserves for them
+ * (`lg:pl-14`). Wires live in the margin; the cards themselves say which ones
+ * are lit with their own border.
+ */
+const FAN_GUTTER = 56;
 
 const hair = (value: number) => Math.round(value) + 0.5;
 
@@ -225,7 +233,7 @@ function ColumnHead({ children }: { children?: React.ReactNode }) {
 
 function HeadLabel({ children }: { children: React.ReactNode }) {
   return (
-    <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-black/58">
+    <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.12em] text-black/58">
       {children}
     </p>
   );
@@ -233,7 +241,7 @@ function HeadLabel({ children }: { children: React.ReactNode }) {
 
 function MonoNote({ children }: { children: React.ReactNode }) {
   return (
-    <p className="whitespace-nowrap font-mono text-[9px] uppercase tracking-[0.1em] text-black/55">
+    <p className="whitespace-nowrap font-mono text-[11px] uppercase tracking-[0.1em] text-black/55">
       {children}
     </p>
   );
@@ -352,7 +360,7 @@ export default function ConnectedSystemMap({
                   <div className="flex items-center justify-between gap-3">
                     <div className="flex min-w-0 items-center gap-2.5">
                       <span
-                        className="flex h-7 w-7 shrink-0 items-center justify-center border transition-colors"
+                        className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md border transition-colors"
                         style={
                           selected
                             ? {
@@ -373,7 +381,7 @@ export default function ConnectedSystemMap({
                       </p>
                     </div>
                     <span
-                      className="shrink-0 font-mono text-[9px] font-semibold uppercase tracking-[0.08em] transition-colors"
+                      className="shrink-0 font-mono text-[11px] font-semibold uppercase tracking-[0.08em] transition-colors"
                       style={{
                         color: selected ? signal.hue : "rgba(0,0,0,0.58)",
                       }}
@@ -461,7 +469,7 @@ export default function ConnectedSystemMap({
 
             <div>
               <MonoNote>Input — what {active.label} reads</MonoNote>
-              <div className="mt-2 border border-black/14 bg-ground px-4 py-3">
+              <div className="mt-2 rounded-md border border-black/14 bg-ground px-4 py-3">
                 <p className="font-mono text-[11.5px] leading-[1.7] text-ink-deep">
                   {active.inputs.join(", ")}
                 </p>
@@ -475,7 +483,7 @@ export default function ConnectedSystemMap({
               <MonoNote>Platform</MonoNote>
               <div
                 ref={platformRef}
-                className="mt-2 border-2 border-ink-deep px-5 py-5"
+                className="mt-2 rounded-md border-2 border-ink-deep px-5 py-5"
               >
                 <p className="font-display text-[clamp(1.4rem,1.9vw,1.85rem)] leading-[1.1] tracking-[-0.02em] text-ink-deep">
                   What will this shopper choose?
@@ -486,7 +494,7 @@ export default function ConnectedSystemMap({
               </p>
             </div>
 
-            <p className="font-mono text-[10.5px] leading-[1.5] text-black/55">
+            <p className="font-mono text-[11.5px] leading-[1.5] text-black/55">
               output: what a shopper sees next, and evidence of what changed.
             </p>
           </div>
@@ -526,23 +534,42 @@ export default function ConnectedSystemMap({
                 height={fan.h}
                 className="pointer-events-none absolute inset-0 z-10 hidden h-full w-full lg:block"
               >
-                {USE_CASES.map((item, index) => {
-                  const card = fan.cards[index];
-                  if (!item.uses.includes(activeId) || !card) return null;
+                {(() => {
+                  // One wire per lit row, and every wire stops in the gutter
+                  // the grid already reserves (`lg:pl-14`). They used to be
+                  // drawn to each card's own left edge, which for the right
+                  // -hand column meant crossing the left-hand card to get
+                  // there -- a line through a sentence, on the section whose
+                  // whole claim is that the trace is legible.
                   const origin = nodeY ?? fan.h / 2;
-                  return (
-                    <path
-                      key={`${activeId}-${item.name}`}
-                      d={curve(origin, card.y, card.x)}
-                      fill="none"
-                      pathLength={1}
-                      strokeDasharray={1}
-                      strokeWidth={1.25}
-                      stroke={active.hue}
-                      className="signal-wire-draw"
-                    />
-                  );
-                })}
+                  const drawn = new Set<number>();
+                  return USE_CASES.map((item, index) => {
+                    const card = fan.cards[index];
+                    if (!item.uses.includes(activeId) || !card) return null;
+                    const row = Math.round(card.y);
+                    if (drawn.has(row)) return null;
+                    drawn.add(row);
+                    return (
+                      <g key={`${activeId}-${item.name}`}>
+                        <path
+                          d={curve(origin, card.y, FAN_GUTTER)}
+                          fill="none"
+                          pathLength={1}
+                          strokeDasharray={1}
+                          strokeWidth={1.25}
+                          stroke={active.hue}
+                          className="signal-wire-draw"
+                        />
+                        <circle
+                          cx={FAN_GUTTER}
+                          cy={hair(card.y)}
+                          r={2}
+                          fill={active.hue}
+                        />
+                      </g>
+                    );
+                  });
+                })()}
               </svg>
             ) : null}
             <span
@@ -563,13 +590,15 @@ export default function ConnectedSystemMap({
                     ref={(node) => {
                       cardRefs.current[index] = node;
                     }}
-                    className={`relative border px-3.5 py-3 transition-[background-color,border-color,box-shadow] duration-300 sm:px-4 ${
+                    className={`relative rounded-md border px-3.5 py-3 transition-[background-color,border-color,box-shadow] duration-300 sm:px-4 ${
                       related ? "bg-white" : "bg-ground"
                     }`}
                     style={{
-                      borderColor: related ? active.hue : "rgba(0,0,0,0.12)",
+                      borderColor: related ? active.hue : "rgba(0,0,0,0.10)",
+                      // Lit cards lift off the ground; the rest stay flat on
+                      // it, so the difference reads before any text does.
                       boxShadow: related
-                        ? `0 0 0 1px ${active.hue}`
+                        ? `0 0 0 1px ${active.hue}, 0 6px 16px -12px rgba(0,0,0,0.5)`
                         : undefined,
                     }}
                   >
@@ -584,7 +613,7 @@ export default function ConnectedSystemMap({
                           style={{
                             backgroundColor: related
                               ? HUE[use]
-                              : "rgba(0,0,0,0.13)",
+                              : "rgba(0,0,0,0.09)",
                           }}
                         />
                       ))}
@@ -606,14 +635,14 @@ export default function ConnectedSystemMap({
                     >
                       {item.name}
                       {item.live ? (
-                        <span className="ml-1.5 inline-block whitespace-nowrap bg-ink-deep px-1.5 py-[1px] align-[2px] font-mono text-[8px] font-semibold uppercase tracking-[0.08em] text-white">
+                        <span className="ml-1.5 inline-block whitespace-nowrap rounded-md bg-ink-deep px-1.5 py-[1px] align-[2px] font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-white">
                           Served live
                         </span>
                       ) : null}
                     </p>
                     <p
                       className={`mt-1 hidden text-[11.5px] leading-[1.45] transition-colors duration-300 sm:block ${
-                        related ? "text-black/62" : "text-black/55"
+                        related ? "text-black/62" : "text-black/48"
                       }`}
                     >
                       {item.detail}
@@ -621,20 +650,14 @@ export default function ConnectedSystemMap({
                   </li>
                 );
               })}
-              <li className="border border-black/12 bg-ground px-3.5 py-3 sm:px-4">
-                <span aria-hidden="true" className="flex h-[3px] w-full">
-                  {SIGNALS.map((signal) => (
-                    <span
-                      key={signal.id}
-                      className="h-full flex-1 opacity-40"
-                      style={{ backgroundColor: signal.hue }}
-                    />
-                  ))}
-                </span>
-                <p className="mt-2.5 text-[13px] font-semibold leading-[1.3] text-black/62">
+              {/* Not a capability, so not a card: the overflow note is dashed
+                  and rule-less, which stops the eye counting it as a
+                  fourteenth thing the platform does. */}
+              <li className="rounded-md border border-dashed border-black/16 px-3.5 py-3 sm:px-4">
+                <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.1em] text-black/45">
                   + more
                 </p>
-                <p className="mt-1 text-[11.5px] leading-[1.45] text-black/58">
+                <p className="mt-2 text-[11.5px] leading-[1.45] text-black/55">
                   Campaigns, reliability, experiments, segments, media studio,
                   marketplaces, fit. Not every capability is enabled for every
                   store.
@@ -662,7 +685,7 @@ export default function ConnectedSystemMap({
             </span>
           ))}
         </div>
-        <p className="font-mono text-[9px] font-semibold uppercase tracking-[0.1em] text-black/58">
+        <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.1em] text-black/58">
           Select a signal to light what it feeds
         </p>
       </div>

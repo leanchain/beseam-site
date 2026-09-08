@@ -42,7 +42,7 @@ function SpecimenFrame({
         <span className="flex items-center gap-2 font-mono text-[11px] font-semibold uppercase tracking-[0.1em] text-black/58">
           {label}
         </span>
-        <span className="shrink-0 bg-black/[0.06] px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-[0.1em] text-black/58">
+        <span className="shrink-0 bg-black/[0.06] px-2 py-0.5 font-mono text-[11px] font-semibold uppercase tracking-[0.1em] text-black/58">
           Example
         </span>
       </figcaption>
@@ -53,7 +53,7 @@ function SpecimenFrame({
 
 function SpecimenLabel({ children }: { children: ReactNode }) {
   return (
-    <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-black/58">
+    <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.12em] text-black/58">
       {children}
     </p>
   );
@@ -302,7 +302,7 @@ function CheckoutSpecimen() {
                     {step}
                   </span>
                   {stop ? (
-                    <span className="ml-auto shrink-0 bg-signal-ink px-2 py-0.5 font-mono text-[9px] font-semibold uppercase tracking-[0.08em] text-white">
+                    <span className="ml-auto shrink-0 bg-signal-ink px-2 py-0.5 font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-white">
                       Stops here
                     </span>
                   ) : null}
@@ -405,10 +405,7 @@ export default function ShopperLoss() {
         <Reveal>
           <div className="grid gap-8 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] lg:items-end lg:gap-16">
             <div>
-              <p className="font-mono text-[12px] font-semibold uppercase tracking-[0.14em] text-signal-ink">
-                Where choices are lost
-              </p>
-              <h2 className="mt-7 max-w-[22ch] text-balance font-display text-[clamp(2.3rem,3.8vw,3.9rem)] font-normal leading-[1.03] tracking-[-0.02em] text-ink-deep">
+              <h2 className="max-w-[22ch] text-balance font-display text-[clamp(2.3rem,3.8vw,3.9rem)] font-normal leading-[1.03] tracking-[-0.02em] text-ink-deep">
                 Three places a sale quietly disappears.
               </h2>
             </div>

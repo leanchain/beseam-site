@@ -8,14 +8,14 @@ import {
   CheckCircle2,
   MousePointer2,
   Radar,
-  RefreshCw,
-  Send,
   ShoppingBag,
+  Star,
   WandSparkles,
   X,
 } from "lucide-react";
 
 import { ChannelIcon } from "@/components/beseam/channel-icon";
+import LoopDiagram from "@/components/beseam/loop-diagram";
 import { Reveal } from "@/components/beseam/reveal";
 import {
   ScrollDeal,
@@ -195,7 +195,7 @@ function DiscoveryVignette() {
   return (
     <div
       aria-hidden="true"
-      className="flex h-[23rem] flex-col bg-white p-3.5 ring-1 ring-black/10"
+      className="flex h-[23rem] flex-col rounded-md bg-white p-3.5 ring-1 ring-black/10"
     >
       <div className="flex shrink-0 items-center justify-between gap-2 border-b border-black/10 pb-2">
         <span className="vig-step font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-black/60">
@@ -243,7 +243,7 @@ function DiscoveryVignette() {
         {PARSED.map((field, index) => (
           <li
             key={field.label}
-            className="vig-step shrink-0 whitespace-nowrap border border-black/12 px-1.5 py-0.5 text-[11px] font-medium text-ink-deep"
+            className="vig-step shrink-0 whitespace-nowrap rounded-md border border-black/12 px-1.5 py-0.5 text-[11px] font-medium text-ink-deep"
             style={vig(index, "1.15s")}
           >
             {field.value}
@@ -258,7 +258,7 @@ function DiscoveryVignette() {
         {ANSWER_PICKS.map((pick, index) => (
           <li
             key={pick.product}
-            className="vig-step flex min-w-0 flex-col border border-black/12"
+            className="vig-step flex min-w-0 flex-col overflow-hidden rounded-md border border-black/12"
             style={vig(index + 4, "1.25s")}
           >
             <span className="flex h-[8.5rem] shrink-0 items-center justify-center overflow-hidden bg-[#f4f1ed]">
@@ -275,7 +275,7 @@ function DiscoveryVignette() {
             <span className="min-w-0 truncate px-2 pt-1.5 text-[11.5px] font-medium leading-[1.25] text-ink-deep">
               {pick.product}
             </span>
-            <span className="min-w-0 truncate px-2 pb-1.5 font-mono text-[10.5px] text-black/50">
+            <span className="min-w-0 truncate px-2 pb-1.5 font-mono text-[11.5px] text-black/50">
               {pick.store} · {pick.price}
             </span>
           </li>
@@ -304,57 +304,125 @@ function DiscoveryVignette() {
   );
 }
 
+const SIZES = ["S", "M", "L", "XL"] as const;
+
 function StoreVignette() {
   return (
     <div
       aria-hidden="true"
-      className="flex h-[23rem] overflow-hidden bg-white ring-1 ring-black/10"
+      className="flex h-[23rem] flex-col overflow-hidden rounded-md bg-white ring-1 ring-black/10"
     >
-      {/* The gallery: the photograph only. The name and the price moved to
-          the right, where a product page actually puts them -- next to the
-          questions, not under the picture. */}
-      <div className="flex w-[31%] min-w-0 items-center justify-center bg-ground/60 px-2">
-        <Image
-          src={PRODUCT_PHOTO.src}
-          alt=""
-          width={PRODUCT_PHOTO.width}
-          height={PRODUCT_PHOTO.height}
-          className="h-[9.5rem] w-auto object-contain"
-        />
-      </div>
-
-      {/* The page put next to the questions it is supposed to answer. A tick
-          is not the interesting row -- the two crosses are, and they are the
-          ones the last panel picks up. */}
-      <div className="flex min-w-0 flex-1 flex-col border-l border-black/10 px-3.5 py-3.5">
-        <div
-          className="vig-step flex items-baseline justify-between gap-3 border-b border-black/10 pb-2"
-          style={vig(0, "0.2s")}
-        >
-          <span className="min-w-0 truncate text-[14px] font-semibold leading-[1.25] text-ink-deep">
+      {/* A product page opens the way a product page opens: the trail, then
+          the name, then the price -- full width, above the gallery, because
+          the tile is showing a page and a page's title is not a caption to
+          the photograph beside it. */}
+      <div
+        className="vig-step shrink-0 border-b border-black/10 px-3.5 pb-2 pt-2.5"
+        style={vig(0, "0.2s")}
+      >
+        <p className="truncate font-mono text-[11.5px] uppercase tracking-[0.07em] text-black/55">
+          Home / Jackets / {PRODUCT.name}
+        </p>
+        <div className="mt-1 flex items-baseline justify-between gap-3">
+          <span className="min-w-0 truncate text-[15px] font-semibold leading-[1.2] text-ink-deep">
             {PRODUCT.name}
           </span>
-          <span className="shrink-0 font-mono text-[12px] text-black/60">
+          <span className="shrink-0 text-[15px] font-semibold text-ink-deep">
             {PRODUCT.price}
           </span>
         </div>
+      </div>
 
+      {/* Gallery and buy box -- the half of the page the shopper is actually
+          looking at when the questions start. It is here so the panel reads
+          as a page rather than as a checklist with a photograph stapled to
+          it; the size the shopper asked for two tiles back is the one
+          selected. */}
+      <div
+        className="vig-step flex shrink-0 gap-3 px-3.5 py-3"
+        style={vig(1, "0.2s")}
+      >
+        <span className="flex w-[35%] shrink-0 items-center justify-center bg-ground/60 ring-1 ring-black/8">
+          <Image
+            src={PRODUCT_PHOTO.src}
+            alt=""
+            width={PRODUCT_PHOTO.width}
+            height={PRODUCT_PHOTO.height}
+            className="h-[6.5rem] w-auto object-contain"
+          />
+        </span>
+
+        <div className="flex min-w-0 flex-1 flex-col">
+          <span className="flex items-center gap-1.5">
+            <span className="flex items-center gap-px">
+              {[0, 1, 2, 3, 4].map((star) => (
+                <Star
+                  key={star}
+                  className={`h-3 w-3 shrink-0 ${
+                    star < 4
+                      ? "fill-ink-deep/70 text-ink-deep/70"
+                      : "fill-black/12 text-black/12"
+                  }`}
+                  strokeWidth={0}
+                />
+              ))}
+            </span>
+            <span className="truncate font-mono text-[11.5px] text-black/45">
+              128 reviews
+            </span>
+          </span>
+
+          <div className="mt-2.5 flex items-center gap-1.5">
+            <span className="shrink-0 font-mono text-[11.5px] uppercase tracking-[0.07em] text-black/45">
+              Size
+            </span>
+            {SIZES.map((size) => (
+              <span
+                key={size}
+                className={`flex h-[1.35rem] w-[1.35rem] shrink-0 items-center justify-center text-[11.5px] font-medium ${
+                  size === "M"
+                    ? "bg-ink-deep text-white"
+                    : "text-black/50 ring-1 ring-black/12"
+                }`}
+              >
+                {size}
+              </span>
+            ))}
+          </div>
+
+          {/* The call to action is the page's, so it is the page's colour:
+              ink, not signal. Signal in this section means the thing that is
+              wrong, and a rust-coloured buy button would outshout the two
+              crosses the panel exists to show. */}
+          <span className="mt-2.5 flex items-center justify-center bg-ink-deep py-[7px] font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-white">
+            Add to cart
+          </span>
+          <span className="mt-1.5 truncate font-mono text-[11.5px] text-black/55">
+            In stock · ships tomorrow
+          </span>
+        </div>
+      </div>
+
+      {/* The questions run the full width of the page, under the buy box,
+          where a product page keeps its details: a tick is not the
+          interesting row -- the two crosses are, and they are the ones the
+          last panel picks up. */}
+      <div className="flex min-h-0 flex-1 flex-col border-t border-black/10 px-3.5 pb-3 pt-2">
         <span
-          className="vig-step mt-2.5 font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-black/60"
-          style={vig(0, "0.2s")}
+          className="vig-step shrink-0 font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-black/60"
+          style={vig(1, "0.2s")}
         >
           What shoppers ask here
         </span>
 
-        {/* The rows share the column: four questions spread over the height
-            the panel actually has, rather than bunched under the title with
-            the verdict stranded at the bottom of a white field. */}
-        <ul className="mt-2.5 flex flex-1 flex-col">
+        {/* The rows share the height the block has, rather than bunching
+            under the label with the verdict stranded below them. */}
+        <ul className="mt-1.5 flex min-h-0 flex-1 flex-col">
           {PAGE_QUESTIONS.map((row, index) => (
             <li
               key={row.question}
-              className="vig-step flex flex-1 items-center gap-2 border-b border-black/8 py-1.5 last:border-0"
-              style={vig(index + 1, "0.2s")}
+              className="vig-step flex flex-1 items-center gap-2 border-b border-black/8 last:border-0"
+              style={vig(index + 2, "0.2s")}
             >
               {row.answered ? (
                 <Check className="h-3.5 w-3.5 shrink-0 text-black/35" />
@@ -376,12 +444,10 @@ function StoreVignette() {
         </ul>
 
         {/* The verdict is the panel, so it stamps rather than drifts in. It
-            counts the crosses directly above it and nothing else. Held at the
-            foot of the panel: the questions read from the title down, and the
-            verdict closes the page rather than floating in the middle of it. */}
+            counts the crosses directly above it and nothing else. */}
         <div
-          className="vig-step vig-stamp mt-2.5 flex shrink-0 items-center gap-1.5 border-t border-black/10 pt-2.5 text-signal-ink"
-          style={vig(5, "0.2s")}
+          className="vig-step vig-stamp mt-2 flex shrink-0 items-center gap-1.5 border-t border-black/10 pt-2 text-signal-ink"
+          style={vig(6, "0.2s")}
         >
           <X className="h-3.5 w-3.5 shrink-0" />
           <span className="font-mono text-[12px] font-semibold uppercase tracking-[0.06em]">
@@ -393,106 +459,198 @@ function StoreVignette() {
   );
 }
 
+/**
+ * The four rows as the shopper finds them once Beseam has filled the gaps:
+ * `PAGE_QUESTIONS` is the page, `ADDED_CONTEXT` is what was added, and the
+ * match is made here rather than by hand. Break the pairing and the last
+ * panel prints "Not answered" in green, which is exactly the kind of drift
+ * that should be visible instead of quietly plausible.
+ */
+const ANSWERED_PAGE = PAGE_QUESTIONS.map((row) => {
+  const added = ADDED_CONTEXT.find((entry) => entry.question === row.question);
+  return {
+    question: row.question,
+    answer: added ? added.answer : row.answer,
+    added: Boolean(added),
+  };
+});
+
+/** What the shopper asked for in panel one, carried onto the page. */
+const SHOPPER_WANTS = ["waterproof", "size M", "commuting"] as const;
+
+/** The one green in the section: the colour of the shopper deciding. */
+const CHOSE = "#1a6b43";
+
+/**
+ * The same product page as the middle panel, after the fix -- same frame,
+ * same four rows, same buy box. A differently drawn panel would have the
+ * reader comparing two layouts; this one has them comparing the two rows
+ * that flipped, which is the argument the section is making.
+ */
 function PersonalizationVignette() {
   return (
     <div
       aria-hidden="true"
-      className="flex h-[23rem] flex-col bg-white p-3.5 ring-1 ring-black/10"
+      className="flex h-[23rem] flex-col overflow-hidden rounded-md bg-white ring-1 ring-black/10"
     >
-      <div className="flex shrink-0 flex-wrap items-center gap-x-2 gap-y-1.5">
-        <span
-          className="vig-step shrink-0 font-mono text-[11px] font-semibold uppercase tracking-[0.09em] text-black/60"
-          style={vig(0, "0.2s")}
-        >
-          Shopper wants
-        </span>
-        <span className="h-px min-w-3 flex-1 bg-black/10" />
-        <span
-          className="vig-step shrink-0 bg-ground px-1.5 py-0.5 font-mono text-[11px] text-black/60 ring-1 ring-black/8"
-          style={vig(1, "0.2s")}
-        >
-          waterproof
-        </span>
-        <span
-          className="vig-step shrink-0 bg-ground px-1.5 py-0.5 font-mono text-[11px] text-black/60 ring-1 ring-black/8"
-          style={vig(2, "0.2s")}
-        >
-          size M
-        </span>
-        <span
-          className="vig-step shrink-0 bg-signal-ink/[0.06] px-1.5 py-0.5 font-mono text-[11px] font-semibold text-signal-ink ring-1 ring-signal-ink/18"
-          style={vig(3, "0.2s")}
-        >
-          commuting
-        </span>
-      </div>
-
-      <div className="mt-2.5 flex shrink-0 items-center gap-2.5 bg-ground/65 px-2.5 py-2 ring-1 ring-black/10">
-        <Image
-          src={PRODUCT_PHOTO.src}
-          alt=""
-          width={PRODUCT_PHOTO.width}
-          height={PRODUCT_PHOTO.height}
-          className="h-[4.5rem] w-auto shrink-0 object-contain"
-        />
-        <div className="min-w-0 flex-1">
-          <p className="font-mono text-[11px] uppercase tracking-[0.08em] text-black/60">
-            You’re viewing
-          </p>
-          <p className="mt-0.5 truncate text-[12.5px] font-semibold text-ink-deep">
+      <div
+        className="vig-step shrink-0 border-b border-black/10 px-3.5 pb-2 pt-2.5"
+        style={vig(0, "0.2s")}
+      >
+        <p className="truncate font-mono text-[11.5px] uppercase tracking-[0.07em] text-black/55">
+          Home / Jackets / {PRODUCT.name}
+        </p>
+        <div className="mt-1 flex items-baseline justify-between gap-3">
+          <span className="min-w-0 truncate text-[15px] font-semibold leading-[1.2] text-ink-deep">
             {PRODUCT.name}
-          </p>
-        </div>
-        <span className="shrink-0 font-mono text-[11px] text-black/60">
-          {PRODUCT.price}
-        </span>
-      </div>
-
-      {/* The fix arriving, and it is the same two questions the middle panel
-          left with a cross. Answers, not tags: a chip saying "breathable"
-          would not have told the shopper anything they could act on. */}
-      <div className="mt-2.5 flex min-h-0 flex-1 flex-col bg-signal-ink/[0.045] px-3 py-3 ring-1 ring-signal-ink/12">
-        <div className="flex shrink-0 items-center gap-1.5">
-          <WandSparkles className="h-3.5 w-3.5 shrink-0 text-signal-ink" />
-          <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-signal-ink">
-            Helpful context added
+          </span>
+          <span className="shrink-0 text-[15px] font-semibold text-ink-deep">
+            {PRODUCT.price}
           </span>
         </div>
-        {/* The two answers share the block's height, the same way the middle
-            panel's questions share theirs -- the pair reads as one table
-            across the two tiles rather than as content floating in a tinted
-            box. */}
-        <dl className="mt-2 flex flex-1 flex-col">
-          {ADDED_CONTEXT.map((row, index) => (
-            <div
-              key={row.question}
-              className="vig-step flex flex-1 items-center gap-2 border-b border-signal-ink/12 last:border-0"
-              style={vig(index + 5, "0.2s")}
-            >
-              <dt className="min-w-0 flex-1 truncate text-[12px] text-ink-deep">
-                {row.question}
-              </dt>
-              <dd className="shrink-0 font-mono text-[11px] font-semibold text-ink-deep">
-                {row.answer}
-              </dd>
-            </div>
-          ))}
-        </dl>
       </div>
 
-      {/* The panel is about the shopper choosing, so it ends where choosing
-          ends. Green, because nothing else in this section is. */}
+      {/* The page knows who is reading it: the shopper's own words from the
+          first panel, on the page they landed on. */}
       <div
-        className="vig-step vig-stamp mt-auto flex shrink-0 items-center gap-1.5 bg-[#1a6b43]/[0.07] px-2 py-2 ring-1 ring-[#1a6b43]/20"
-        style={vig(8, "0.2s")}
+        className="vig-step flex shrink-0 flex-wrap items-center gap-1.5 border-b border-black/10 bg-ground/50 px-3.5 py-1.5"
+        style={vig(1, "0.2s")}
       >
-        <CheckCircle2
-          className="h-3.5 w-3.5 shrink-0 text-[#1a6b43]"
-          strokeWidth={2}
-        />
-        <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.07em] text-[#1a6b43]">
-          Added to cart
+        <span className="shrink-0 font-mono text-[11.5px] uppercase tracking-[0.07em] text-black/45">
+          For this shopper
         </span>
+        {SHOPPER_WANTS.map((want) => (
+          <span
+            key={want}
+            className="shrink-0 rounded-sm bg-white px-1.5 py-px font-mono text-[11.5px] text-black/55 ring-1 ring-black/10"
+          >
+            {want}
+          </span>
+        ))}
+      </div>
+
+      <div
+        className="vig-step flex shrink-0 gap-3 px-3.5 py-2.5"
+        style={vig(2, "0.2s")}
+      >
+        <span className="flex w-[35%] shrink-0 items-center justify-center bg-ground/60 ring-1 ring-black/8">
+          <Image
+            src={PRODUCT_PHOTO.src}
+            alt=""
+            width={PRODUCT_PHOTO.width}
+            height={PRODUCT_PHOTO.height}
+            className="h-[5.25rem] w-auto object-contain"
+          />
+        </span>
+
+        <div className="flex min-w-0 flex-1 flex-col">
+          <span className="flex items-center gap-1.5">
+            <span className="flex items-center gap-px">
+              {[0, 1, 2, 3, 4].map((star) => (
+                <Star
+                  key={star}
+                  className={`h-3 w-3 shrink-0 ${
+                    star < 4
+                      ? "fill-ink-deep/70 text-ink-deep/70"
+                      : "fill-black/12 text-black/12"
+                  }`}
+                  strokeWidth={0}
+                />
+              ))}
+            </span>
+            <span className="truncate font-mono text-[11.5px] text-black/45">
+              128 reviews
+            </span>
+          </span>
+
+          <div className="mt-2 flex items-center gap-1.5">
+            <span className="shrink-0 font-mono text-[11.5px] uppercase tracking-[0.07em] text-black/45">
+              Size
+            </span>
+            {SIZES.map((size) => (
+              <span
+                key={size}
+                className={`flex h-[1.35rem] w-[1.35rem] shrink-0 items-center justify-center text-[11.5px] font-medium ${
+                  size === "M"
+                    ? "bg-ink-deep text-white"
+                    : "text-black/50 ring-1 ring-black/12"
+                }`}
+              >
+                {size}
+              </span>
+            ))}
+          </div>
+
+          {/* The same button as the middle panel, in the only state this
+              section spends green on: the shopper went through with it. */}
+          <span
+            className="vig-stamp mt-2 flex items-center justify-center gap-1.5 py-[7px] font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-white"
+            style={{ backgroundColor: CHOSE }}
+          >
+            <CheckCircle2 className="h-3.5 w-3.5 shrink-0" strokeWidth={2} />
+            Added to cart
+          </span>
+        </div>
+      </div>
+
+      {/* The same four rows, in the same order, at the same size. Two of them
+          now carry an answer instead of a cross -- and they say what the
+          answer is, because a chip reading "breathable" would not have told
+          the shopper anything they could act on. */}
+      <div className="flex min-h-0 flex-1 flex-col border-t border-black/10 px-3.5 pb-3 pt-2">
+        <div
+          className="vig-step flex shrink-0 items-center justify-between gap-2"
+          style={vig(2, "0.2s")}
+        >
+          <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-black/60">
+            What shoppers ask here
+          </span>
+          <span
+            className="flex shrink-0 items-center gap-1 font-mono text-[11.5px] font-semibold uppercase tracking-[0.07em]"
+            style={{ color: CHOSE }}
+          >
+            <WandSparkles className="h-3 w-3 shrink-0" />
+            Two added
+          </span>
+        </div>
+
+        <ul className="mt-1.5 flex min-h-0 flex-1 flex-col">
+          {ANSWERED_PAGE.map((row, index) => (
+            <li
+              key={row.question}
+              className="vig-step flex flex-1 items-center gap-2 border-b border-black/8 last:border-0"
+              style={vig(index + 3, "0.2s")}
+            >
+              <Check
+                className="h-3.5 w-3.5 shrink-0"
+                style={{ color: row.added ? CHOSE : "rgba(0,0,0,0.35)" }}
+              />
+              <span className="min-w-0 flex-1 truncate text-[12px] text-ink-deep">
+                {row.question}
+              </span>
+              <span
+                className={`shrink-0 truncate font-mono text-[11px] ${
+                  row.added ? "font-semibold" : "text-black/50"
+                }`}
+                style={row.added ? { color: CHOSE } : undefined}
+              >
+                {row.answer}
+              </span>
+            </li>
+          ))}
+        </ul>
+
+        {/* The verdict the middle panel earned, answered. It counts the same
+            four rows that panel counted. */}
+        <div
+          className="vig-step vig-stamp mt-2 flex shrink-0 items-center gap-1.5 border-t border-black/10 pt-2"
+          style={{ ...vig(7, "0.2s"), color: CHOSE }}
+        >
+          <CheckCircle2 className="h-3.5 w-3.5 shrink-0" strokeWidth={2} />
+          <span className="font-mono text-[12px] font-semibold uppercase tracking-[0.06em]">
+            All four answered
+          </span>
+        </div>
       </div>
     </div>
   );
@@ -502,14 +660,6 @@ const VIGNETTES = [
   DiscoveryVignette,
   StoreVignette,
   PersonalizationVignette,
-] as const;
-
-const LOOP = [
-  { label: "Find what to improve", Icon: Radar },
-  { label: "Prepare the change", Icon: WandSparkles },
-  { label: "You approve", Icon: CheckCircle2 },
-  { label: "Beseam applies it", Icon: Send },
-  { label: "Check and repeat", Icon: RefreshCw },
 ] as const;
 
 /**
@@ -538,10 +688,7 @@ export default function WhatBeseamDoes() {
             <Reveal>
               <div className="grid gap-8 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:items-end lg:gap-16">
                 <div>
-                  <p className="font-mono text-[12px] font-semibold uppercase tracking-[0.14em] text-signal-ink">
-                    From being considered to being chosen
-                  </p>
-                  <h2 className="mt-7 max-w-[18ch] text-balance font-display text-[clamp(2.3rem,3.8vw,3.9rem)] font-normal leading-[1.03] tracking-[-0.02em] text-ink-deep">
+                  <h2 className="max-w-[18ch] text-balance font-display text-[clamp(2.3rem,3.8vw,3.9rem)] font-normal leading-[1.03] tracking-[-0.02em] text-ink-deep">
                     Being considered doesn’t mean being chosen.
                   </h2>
                 </div>
@@ -632,74 +779,46 @@ export default function WhatBeseamDoes() {
             };
           })}
           footer={
-            <div className="mt-5 border-y border-white/10 bg-ink-deep px-5 py-3.5 text-white sm:px-6 lg:px-8">
-              <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:gap-8">
-                <p className="shrink-0 font-mono text-[11px] font-semibold uppercase tracking-[0.12em] text-signal lg:pt-1.5">
-                  Continuous loop
-                </p>
-                {/* The rail runs between the steps, not past them: it starts on
-                    the first icon's centre and stops on the last one's, which
-                    is 26px into a column (12px of padding, half of a 28px
-                    icon) and a fifth of the row from the right edge. */}
-                <div className="relative flex-1">
-                  <span
-                    aria-hidden="true"
-                    className="absolute hidden h-px bg-white/16 sm:block"
-                    style={{ left: 26, right: "calc(20% - 26px)", top: 14 }}
-                  />
-                  <ol className="relative grid gap-y-3 sm:grid-cols-5 sm:gap-0">
-                    {LOOP.map(({ label, Icon }, index) => (
-                      <li
-                        key={label}
-                        className="relative z-10 flex items-center gap-2.5 sm:flex-col sm:items-start sm:gap-2 sm:px-3"
-                      >
-                        <span className="flex h-7 w-7 shrink-0 items-center justify-center bg-ink-deep text-signal ring-1 ring-white/18">
-                          <Icon
-                            className="h-3.5 w-3.5"
-                            strokeWidth={1.8}
-                            aria-hidden="true"
-                          />
-                        </span>
-                        <span className="text-[12px] font-semibold leading-[1.3] text-white/82">
-                          {label}
-                        </span>
-                        {index < LOOP.length - 1 ? (
-                          <ArrowRight
-                            className="ml-auto h-3.5 w-3.5 text-signal sm:hidden"
-                            aria-hidden="true"
-                          />
-                        ) : null}
-                      </li>
-                    ))}
-                  </ol>
+            <div className="mt-5 border-y border-white/10 bg-ink-deep px-5 py-6 text-white sm:px-6 sm:py-7 lg:px-8">
+              {/* The loop, drawn as a loop.
 
-                  {/* The return path. Five steps on a straight rail read as a
-                      list that ends; the rail now turns down after the last
-                      step and comes back under the row into the first, which
-                      is the shape of the thing the words claim. */}
-                  <div
-                    aria-hidden="true"
-                    className="relative mt-2 hidden h-4 sm:block"
-                  >
-                    <span
-                      className="absolute top-0 block h-4 rounded-b-[14px] border-b border-l border-r border-white/18"
-                      style={{ left: 26, right: "calc(20% - 26px)" }}
-                    />
-                    <span
-                      className="absolute top-0 block h-2 w-2 border-l border-t border-signal"
-                      style={{
-                        left: 26,
-                        transform: "translate(-50%, -50%) rotate(45deg)",
-                      }}
-                    />
-                  </div>
+                  This band used to carry the five steps as a rail of chips
+                  with a return path drawn under it. The words were right and
+                  the return path was already there, but a rail still reads
+                  left-to-right first and closes second -- the same shape the
+                  manifesto was called out for. `LoopDiagram` is the picture
+                  that sentence was promising, and it is the figure already
+                  serving /how-we-work and /manifesto, so the homepage is
+                  reusing the drawing rather than owning a second one.
 
-                  <p className="mt-2.5 font-mono text-[11px] uppercase leading-[1.5] tracking-[0.1em] text-white/45">
-                    <span className="text-signal">Before → after</span> · the
-                    same journey — AI appearances, product visits, add to cart —
-                    checked again after every approved change
+                  Cost, stated because it is real: the figure is roughly 380px
+                  tall against the rail's ~100px, and it gives up the
+                  full-measure footer rule under the panels. The right column
+                  is never narrower than the svg's own 32rem cap at any
+                  breakpoint, so no label is scaled below its 11px floor --
+                  do not wrap it in anything tighter. */}
+              <div className="grid gap-6 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:items-center lg:gap-12">
+                {/* This column used to restate the five steps as a sentence,
+                    under an eyebrow reading "Continuous loop" -- which the
+                    ring's own centre also says. Three tellings of one idea in
+                    one band. It now carries only what the ring cannot draw:
+                    who holds the gate, and what "measure" is measured
+                    against. */}
+                <div>
+                  <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.12em] text-signal">
+                    Nothing ships without you
+                  </p>
+                  <p className="mt-3 max-w-[38ch] text-[15px] leading-[1.65] text-white/72">
+                    Every customer-facing change waits at step 03 until you
+                    approve it.
+                  </p>
+                  <p className="mt-5 max-w-[40ch] border-t border-white/12 pt-4 text-[14px] leading-[1.6] text-white/56">
+                    And step 05 checks the same journey it started from — AI
+                    appearances, product visits, add to cart — so a change is
+                    measured against the state it changed.
                   </p>
                 </div>
+                <LoopDiagram tone="dark" detail animate />
               </div>
             </div>
           }

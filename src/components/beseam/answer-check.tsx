@@ -659,7 +659,7 @@ function FindingRow({
           </span>
 
           <div className="min-w-0">
-            <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[10.5px] font-semibold uppercase tracking-[0.08em]">
+            <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[11.5px] font-semibold uppercase tracking-[0.08em]">
               <span className="text-black/44">{findingGroup(finding)}</span>
               <span aria-hidden="true" className="text-black/20">
                 ·
@@ -1357,7 +1357,7 @@ function AiVisibilityWorkspace({ result }: { result: AnswerCheckResult }) {
                   <p className="font-mono text-[13px] font-semibold text-ink-deep">
                     {engine.wins}/{engine.total}
                   </p>
-                  <p className="mt-0.5 text-[10.5px] text-black/44">
+                  <p className="mt-0.5 text-[11.5px] text-black/44">
                     named you
                   </p>
                 </div>
@@ -1852,7 +1852,7 @@ function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
                       <dt className="text-[11px] text-black/50">
                         {label}
                         {DISCOVERY_FILE_NOTES[String(label)] ? (
-                          <span className="mt-0.5 block text-[10.5px] leading-snug text-black/38">
+                          <span className="mt-0.5 block text-[11.5px] leading-snug text-black/38">
                             {DISCOVERY_FILE_NOTES[String(label)]}
                           </span>
                         ) : null}
@@ -2621,7 +2621,7 @@ function VisibilityDisclosure({ result }: { result: AnswerCheckResult }) {
                 Open a question to see what each assistant answered
               </p>
               {questionLanguageBadge(result) ? (
-                <span className="shrink-0 rounded-full border border-black/16 px-2 py-0.5 text-[10.5px] font-medium text-black/58">
+                <span className="shrink-0 rounded-full border border-black/16 px-2 py-0.5 text-[11.5px] font-medium text-black/58">
                   Asked in {questionLanguageBadge(result)}
                 </span>
               ) : null}

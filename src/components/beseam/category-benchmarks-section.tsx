@@ -130,7 +130,7 @@ export default function CategoryBenchmarksSection() {
                   {AGREEMENT_BANDS.map((band) => (
                     <div
                       key={band.label}
-                      className="flex min-w-0 items-center gap-2 font-mono text-[10.5px] tabular-nums"
+                      className="flex min-w-0 items-center gap-2 font-mono text-[11.5px] tabular-nums"
                     >
                       <span
                         className="h-2 w-2 shrink-0 rounded-[2px]"
@@ -157,7 +157,7 @@ export default function CategoryBenchmarksSection() {
 
               <div className="mt-6 border-t-2 border-ink-deep">
                 <div
-                  className="grid items-end gap-x-2 border-b border-black/12 px-1 py-2.5 font-mono text-[9px] font-semibold uppercase tracking-[0.08em] text-black/46 sm:gap-x-4"
+                  className="grid items-end gap-x-2 border-b border-black/12 px-1 py-2.5 font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-black/46 sm:gap-x-4"
                   style={{
                     gridTemplateColumns: "8.5rem minmax(0, 1fr) 7.5rem",
                   }}
@@ -175,7 +175,7 @@ export default function CategoryBenchmarksSection() {
                         gridTemplateColumns: "8.5rem minmax(0, 1fr) 7.5rem",
                       }}
                     >
-                      <span className="min-w-0 truncate whitespace-nowrap font-mono text-[10px] font-semibold uppercase tracking-[0.1em] text-signal-ink">
+                      <span className="min-w-0 truncate whitespace-nowrap font-mono text-[11px] font-semibold uppercase tracking-[0.1em] text-signal-ink">
                         {benchmark.category}
                       </span>
 

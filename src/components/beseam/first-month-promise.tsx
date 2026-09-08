@@ -58,10 +58,7 @@ export default function FirstMonthPromise({
         <Reveal>
           <div className="grid gap-8 lg:grid-cols-[minmax(0,0.72fr)_minmax(0,1.28fr)] lg:items-end lg:gap-16">
             <div>
-              <p className="font-mono text-[12px] font-semibold uppercase tracking-[0.14em] text-signal-ink">
-                The offer
-              </p>
-              <h2 className="mt-5 max-w-[20ch] text-balance font-display text-[clamp(2.2rem,3.3vw,3.4rem)] font-normal leading-[1.04] tracking-[-0.02em] text-ink-deep">
+              <h2 className="max-w-[20ch] text-balance font-display text-[clamp(2.2rem,3.3vw,3.4rem)] font-normal leading-[1.04] tracking-[-0.02em] text-ink-deep">
                 <span className="block">Start free.</span>
                 <span className="block">Pay when it proves its value.</span>
               </h2>

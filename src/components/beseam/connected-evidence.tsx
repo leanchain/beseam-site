@@ -239,7 +239,7 @@ function RuledOutBranch({ item, seqRow }: { item: RuledOut; seqRow: number }) {
         className="flex w-full items-center gap-2.5 border border-dashed border-white/25 px-4 py-3 text-left transition-colors hover:border-white/45 focus-visible:border-white/60 focus-visible:outline-none"
       >
         <X aria-hidden="true" className="h-3.5 w-3.5 shrink-0 text-white/40" />
-        <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.1em] text-white/44">
+        <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.1em] text-white/44">
           {item.domain}
         </span>
         <span className="ml-auto text-[14px] leading-[1.4] text-white/60">
@@ -247,7 +247,7 @@ function RuledOutBranch({ item, seqRow }: { item: RuledOut; seqRow: number }) {
         </span>
       </button>
       <div className="branch-detail absolute inset-x-0 top-full z-10 mt-2 border border-white/16 bg-ink-deep px-4 py-3.5">
-        <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.1em] text-white/44">
+        <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.1em] text-white/44">
           Ruled out
         </p>
         <p className="mt-2 text-[13px] leading-[1.5] text-white/52 line-through decoration-white/28">
@@ -270,7 +270,7 @@ function MobileTrace() {
       <div className="border-y border-white/14">
         <div className="py-5">
           <div className="flex items-baseline gap-3">
-            <span className="font-mono text-[10px] font-semibold tabular-nums text-signal">
+            <span className="font-mono text-[11px] font-semibold tabular-nums text-signal">
               01
             </span>
             <StepLabel>What the shopper did</StepLabel>
@@ -294,7 +294,7 @@ function MobileTrace() {
 
         <div className="border-t border-white/14 py-5">
           <div className="flex items-baseline gap-3">
-            <span className="font-mono text-[10px] font-semibold tabular-nums text-signal">
+            <span className="font-mono text-[11px] font-semibold tabular-nums text-signal">
               02
             </span>
             <StepLabel>Strongest evidence</StepLabel>
@@ -303,7 +303,7 @@ function MobileTrace() {
             {ruledOut.map((item) => (
               <span
                 key={item.domain}
-                className="bg-white/[0.05] px-2 py-1 text-[10px] text-white/48"
+                className="bg-white/[0.05] px-2 py-1 text-[11px] text-white/48"
               >
                 {item.finding}
               </span>
@@ -311,7 +311,7 @@ function MobileTrace() {
           </div>
           {issue ? (
             <div className="mt-3 border-l-2 border-signal bg-signal/[0.07] px-4 py-3.5">
-              <p className="font-mono text-[9px] font-semibold uppercase tracking-[0.1em] text-signal">
+              <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.1em] text-signal">
                 {issue.domain}
               </p>
               <p className="mt-1.5 text-[16px] font-medium leading-[1.4] text-white">
@@ -326,7 +326,7 @@ function MobileTrace() {
 
         <div className="border-t border-white/14 py-5">
           <div className="flex items-baseline gap-3">
-            <span className="font-mono text-[10px] font-semibold tabular-nums text-signal">
+            <span className="font-mono text-[11px] font-semibold tabular-nums text-signal">
               03
             </span>
             <StepLabel>Proposed change</StepLabel>
@@ -363,10 +363,7 @@ export default function ConnectedEvidence() {
         <Reveal>
           <div className="grid gap-8 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:items-end lg:gap-16">
             <div>
-              <p className="font-mono text-[12px] font-semibold uppercase tracking-[0.14em] text-signal">
-                See Beseam work
-              </p>
-              <h2 className="mt-7 max-w-[16ch] text-balance font-display text-[clamp(2.25rem,3.4vw,3.5rem)] font-normal leading-[1.05] tracking-[-0.02em]">
+              <h2 className="max-w-[16ch] text-balance font-display text-[clamp(2.25rem,3.4vw,3.5rem)] font-normal leading-[1.05] tracking-[-0.02em]">
                 See what gets in the way of the choice.
               </h2>
             </div>
@@ -450,7 +447,7 @@ export default function ConnectedEvidence() {
                           <p className="text-[17px] font-medium leading-[1.4] text-white">
                             {item.claim}
                           </p>
-                          <p className="self-start bg-signal px-2 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.1em] text-[#16110e]">
+                          <p className="self-start bg-signal px-2 py-1 font-mono text-[11px] font-semibold uppercase tracking-[0.1em] text-[#16110e]">
                             Strongest evidence
                           </p>
                           <p className="mt-auto pt-1 text-[13px] leading-[1.6] text-white/78">
@@ -476,7 +473,7 @@ export default function ConnectedEvidence() {
                     Add the commuting use case to the returned jacket product
                     pages.
                   </p>
-                  <p className="mt-3 font-mono text-[10.5px] font-semibold uppercase tracking-[0.08em] text-white/62">
+                  <p className="mt-3 font-mono text-[11.5px] font-semibold uppercase tracking-[0.08em] text-white/62">
                     You approve → Beseam applies it → Check again
                   </p>
                 </div>

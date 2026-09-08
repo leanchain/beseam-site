@@ -163,7 +163,7 @@
   --warning-900: #78350f;
   --warning-950: #451a03;
 
-  --radius: 0.625rem;
+  --radius: 0.1875rem;
   --sidebar: #eef1f7;
   --sidebar-foreground: #111827;
   --sidebar-primary: #e8612d;
@@ -369,11 +369,14 @@
   --color-ink-deep: var(--ink-deep);
   --color-signal: var(--signal);
   --color-signal-ink: var(--signal-ink);
-  --radius: 0.625rem;
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
+  /* 3px, the same anchor the app uses. The mark's letters are round, so the
+     surfaces under them are not perfectly square either. Kept small enough
+     that the page still reads as hairline-editorial rather than as a card UI. */
+  --radius: 0.1875rem;
+  --radius-sm: 0.125rem;
+  --radius-md: 0.1875rem;
+  --radius-lg: 0.25rem;
+  --radius-xl: 0.375rem;
 
   --tracking-normal: 0em;
   --tracking-tighter: calc(var(--tracking-normal) - 0.05em);
@@ -516,6 +519,24 @@
 
   button:disabled {
     @apply cursor-not-allowed;
+  }
+
+  /* Controls take the 3px brand radius. Plain element selectors, not
+     `:where()`: Tailwind's preflight already sets `border-radius: 0` on
+     button/input/select/textarea at (0,0,1), and a zero-specificity rule
+     loses to it. Staying inside the base layer is what keeps every
+     `rounded-*` utility winning -- the pills (scroll cue, badges), the dots
+     and the deliberate `rounded-none` on the navbar are untouched, because
+     the utilities layer is ordered after this one. On a link with no
+     background or border the radius is invisible, which is why the selector
+     can stay this broad. */
+  a,
+  button,
+  input,
+  textarea,
+  select,
+  [role="button"] {
+    border-radius: var(--radius);
   }
 }
 
@@ -802,6 +823,30 @@ html.theme-transition::view-transition-new(root) {
 /* Same wire, other way: an edge that feeds the centre from the right. */
 .trace-flow-back {
   animation-direction: reverse;
+}
+
+/* Operating loop (#one-system): the ring carries a current, in the same
+ * language as the evidence trace above it -- an 8px dash on a 22px cycle at
+ * one speed for every arc, so the two figures read as the same system rather
+ * than two illustrations. The keyframe travels exactly one cycle; change the
+ * dash pattern without the offset and the loop visibly jumps.
+ *
+ * Each arc is phase-shifted by its place in the ring (`--loop-i`, negative so
+ * it starts mid-cycle rather than waiting), which is what makes five separate
+ * arcs read as one current travelling round instead of five blinking
+ * together. The global prefers-reduced-motion rule above lands this on a
+ * static dashed ring, which still reads correctly -- the dashes are the
+ * picture, the motion is the emphasis. */
+@keyframes loop-current {
+  to {
+    stroke-dashoffset: -22;
+  }
+}
+
+.loop-current {
+  stroke-dasharray: 8 14;
+  animation: loop-current 1.5s linear infinite;
+  animation-delay: calc(var(--loop-i, 0) * -0.3s);
 }
 
 /* Hero scroll cue: the wheel drifts down and fades, signalling "more below"

@@ -16,19 +16,21 @@ import { ArrowRight, Check, TrendingUp } from "lucide-react";
  * understand the decision: the change, the share of booked sales it touches,
  * effort, and status.
  *
- * It carries no column-label row at all. A merchant counted three stacked
- * header rows back to us before any content -- a section label, a screen
- * chrome row, and the labels themselves -- and asked for the table to be
- * simplified, so all three went. That is a deliberate trade: a marketing
- * table can drop its labels only while every value says what it is. The
- * `band` column is the one that could not, so it names itself in the data
- * ("Top 5% of your booked sales", "Top quarter of booked sales"); change,
- * effort, and status read from their own values. Any new column has to be
- * self-describing the same way, or the label row comes back.
+ * The wide table carries one column-label row: Change / Sales share / Effort
+ * / Status. It was dropped once, when a merchant counted three stacked header
+ * rows back to us before any content -- a section label, a screen chrome row,
+ * and the labels themselves. The other two are still gone; the labels are
+ * back because a four-column table reads as a table, and its columns should
+ * say what they hold. Values stay self-describing anyway (the `band` column
+ * names itself in the data: "Top 5% of your booked sales"), so the labels
+ * confirm rather than carry the meaning.
+ *
+ * The compact (mobile) view has no label row: it is stacked cards, not
+ * columns.
  *
  * This applies everywhere `ActionsScreen` is used -- /#actions, the platform,
  * marketing-detail, buying-decision and playbook pages all render the same
- * unlabelled table.
+ * table.
  *
  * All figures in these reconstructed product views are illustrative.
  *
@@ -97,7 +99,7 @@ function ScreenChrome({
         {title}
       </p>
       <p
-        className={`font-mono text-[10px] uppercase tracking-[0.1em] ${
+        className={`font-mono text-[11px] uppercase tracking-[0.1em] ${
           dark ? "text-white/50" : "text-black/50"
         }`}
       >
@@ -111,7 +113,7 @@ function ScreenChrome({
 export function ActionsScreen({ compact = false }: { compact?: boolean } = {}) {
   if (compact) {
     return (
-      <div className="border border-black/16 bg-white">
+      <div className="overflow-hidden rounded-md border border-black/16 bg-white">
         {QUEUE_ROWS.map((row) => (
           <div
             key={row.title}
@@ -129,7 +131,7 @@ export function ActionsScreen({ compact = false }: { compact?: boolean } = {}) {
             </p>
             <div className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1.5">
               <span
-                className={`inline-flex shrink-0 items-center rounded-md px-2 py-0.5 text-[10px] font-semibold ${
+                className={`inline-flex shrink-0 items-center rounded-md px-2 py-0.5 text-[11px] font-semibold ${
                   row.lead
                     ? "bg-[var(--secondary)] text-[var(--secondary-foreground)]"
                     : "border border-black/18 bg-white text-[#3f3f3f]"
@@ -137,7 +139,7 @@ export function ActionsScreen({ compact = false }: { compact?: boolean } = {}) {
               >
                 {row.step}
               </span>
-              <span className="inline-flex shrink-0 items-center rounded-md border border-[#1f7a4d]/35 bg-[#1f7a4d]/[0.08] px-1.5 py-0.5 text-[10px] font-semibold text-[#1a6b43]">
+              <span className="inline-flex shrink-0 items-center rounded-md border border-[#1f7a4d]/35 bg-[#1f7a4d]/[0.08] px-1.5 py-0.5 text-[11px] font-semibold text-[#1a6b43]">
                 {row.effort}
               </span>
               <span className="text-[11px] leading-[1.35] text-black/58">
@@ -154,9 +156,21 @@ export function ActionsScreen({ compact = false }: { compact?: boolean } = {}) {
   }
 
   return (
-    <div className="border border-black/16 bg-white">
+    <div className="overflow-hidden rounded-md border border-black/16 bg-white">
       <div className="relative overflow-x-auto">
         <div className="min-w-[60rem]">
+          <div
+            className="grid items-baseline gap-4 border-b border-black/12 bg-ground px-4 py-2.5 font-mono text-[11px] font-semibold uppercase tracking-[0.1em] text-black/50 sm:px-5"
+            style={{
+              gridTemplateColumns: "minmax(0,1fr) 11rem 5rem 8.5rem",
+            }}
+          >
+            <span>Change</span>
+            <span>Sales share</span>
+            <span>Effort</span>
+            <span>Status</span>
+          </div>
+
           {QUEUE_ROWS.map((row) => (
             <div
               key={row.title}

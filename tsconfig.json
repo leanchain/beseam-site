@@ -41,9 +41,14 @@
     ".next-v8/types/**/*.ts",
     ".next-vB/types/**/*.ts",
     ".next-vD/types/**/*.ts",
+    ".next-vE/types/**/*.ts",
+    ".next-vF/types/**/*.ts",
+    ".next-vG/types/**/*.ts",
+    ".next-vH/types/**/*.ts",
+    ".next-vI/types/**/*.ts",
     ".next/types/**/*.ts",
     "next-env.d.ts",
-    ".next-vE/types/**/*.ts"
+    ".next-dev-verify/types/**/*.ts"
   ],
   "exclude": [
     "node_modules",

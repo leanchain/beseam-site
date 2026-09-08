@@ -29,13 +29,13 @@ export default function EvidenceToWork() {
             Beseam finds what to improve next.
           </h2>
 
-          {/* No label row anywhere above the rows. This beat used to stack
+          {/* No section label row above the table. This beat used to stack
               three of them before any content -- "Merchant view",
               "Finding -> change -> apply -> check", and the table's own
               column labels -- which a merchant counted back to us and asked
-              us to simplify. All three are gone. Residual risk: the table
-              names none of its columns, so `ActionsScreen`'s values have to
-              stay self-describing (see the docstring in app-screens.tsx). */}
+              us to simplify. The first two stay gone; the table's own column
+              labels are back inside `ActionsScreen`, where they name the
+              four columns rather than repeat the beat. */}
           <div className="mt-9 min-w-0 sm:mt-11">
             <div className="sm:hidden">
               <ActionsScreen compact />

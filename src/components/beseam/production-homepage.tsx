@@ -4,6 +4,7 @@ import LiveAnswerCheck from "@/components/beseam/answer-check";
 import CategoryBenchmarksSection from "@/components/beseam/category-benchmarks-section";
 import ConnectedEvidence from "@/components/beseam/connected-evidence";
 import CredibilityRail from "@/components/beseam/credibility-rail";
+import DecisionBridge from "@/components/beseam/decision-bridge";
 import EvidenceToWork from "@/components/beseam/evidence-to-work";
 import FirstMonthPromise from "@/components/beseam/first-month-promise";
 import HeroScrollCue from "@/components/beseam/hero-scroll-cue";
@@ -11,14 +12,23 @@ import HeroSurfaceShift from "@/components/beseam/hero-surface-shift";
 import HeroViewportFit from "@/components/beseam/hero-viewport-fit";
 import MeasureImpact from "@/components/beseam/measure-impact";
 import { Reveal } from "@/components/beseam/reveal";
-import SystemTiles from "@/components/beseam/system-tiles";
 import WhatBeseamDoes from "@/components/beseam/what-beseam-does";
 
 /**
  * Section order is the argument:
  *
  * claim → credibility → signature evidence trace → breadth → published
- * research → proposed work → truthful measurement mechanism → ways to start
+ * research → proposed work → one record the work reads from → truthful
+ * measurement mechanism → ways to start
+ *
+ * The "one record" beat sits between the proposed work and the measurement,
+ * not earlier: everything above it is the shopper's story, and dropping a
+ * system-architecture claim into that stretch breaks the subject twice. Here
+ * it does real work, joining the plan to the proof that follows it. It reuses
+ * `DecisionBridge` -- the same connected-system beat /platform already runs --
+ * rather than a second component making the same argument in tiles, which is
+ * also what keeps the homepage clear of the product-suite grid the
+ * landing-page ruling in AI_COMMERCE_CONTROL_PLANE_TRACKER.md forbids.
  *
  * The most ownable proof arrives before the capability catalogue, and the
  * published benchmarks sit after "How Beseam works" rather than ahead of it:
@@ -93,8 +103,13 @@ export default function ProductionHomepage() {
       <WhatBeseamDoes />
       <CategoryBenchmarksSection />
       <EvidenceToWork />
+      <DecisionBridge
+        id="system"
+        eyebrow=""
+        heading="The whole store, seen together."
+        body="What AI answers about you, what your pages say, and what shoppers do. Apart they are separate reports; together they show what moved and what moved with it."
+      />
       <MeasureImpact />
-      <SystemTiles />
       <FirstMonthPromise />
     </div>
   );

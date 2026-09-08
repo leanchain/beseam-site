@@ -2,6 +2,12 @@ import ConnectedSystemMap from "@/components/beseam/connected-system-map";
 import { Reveal } from "@/components/beseam/reveal";
 
 type DecisionBridgeProps = {
+  /**
+   * The homepage already carries `#one-system` on `WhatBeseamDoes`, so a
+   * second mount there has to anchor under its own id. Defaulted, not
+   * required, because /platform and /playbook are single-mount pages.
+   */
+  id?: string;
   eyebrow?: string;
   heading?: string;
   body?: string;
@@ -17,23 +23,27 @@ type DecisionBridgeProps = {
  * on /platform without linking back to itself.
  */
 export default function DecisionBridge({
+  id = "one-system",
   eyebrow = "Shopping is moving from finding products to choosing products",
   heading = "See the whole shopper journey in one place.",
-  body =
-    "AI discovery, product pages, shopper behavior, and revenue should not live in separate dashboards. Beseam keeps them together, finds what to improve, prepares the change, and checks what happened afterward. You approve customer-facing changes.",
+  body = "AI discovery, product pages, shopper behavior, and revenue should not live in separate dashboards. Beseam keeps them together, finds what to improve, prepares the change, and checks what happened afterward. You approve customer-facing changes.",
   exploreHref = "/platform",
   exploreLabel = "Explore the platform",
 }: DecisionBridgeProps) {
   return (
-    <section id="one-system" className="scroll-mt-24 bg-ground">
+    <section id={id} className="scroll-mt-24 bg-ground">
       <div className="mx-auto max-w-[92rem] px-5 py-20 sm:px-8 sm:py-24 lg:px-10 lg:py-28">
         <Reveal>
           <div className="grid gap-8 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:items-end lg:gap-16">
             <div>
-              <p className="font-mono text-[12px] font-semibold uppercase tracking-[0.14em] text-signal-ink">
-                {eyebrow}
-              </p>
-              <h2 className="mt-7 max-w-[18ch] text-balance font-display text-[clamp(2.3rem,3.8vw,3.9rem)] font-normal leading-[1.03] tracking-[-0.02em] text-ink-deep">
+              {eyebrow ? (
+                <p className="font-mono text-[12px] font-semibold uppercase tracking-[0.14em] text-signal-ink">
+                  {eyebrow}
+                </p>
+              ) : null}
+              <h2
+                className={`${eyebrow ? "mt-7 " : ""}max-w-[18ch] text-balance font-display text-[clamp(2.3rem,3.8vw,3.9rem)] font-normal leading-[1.03] tracking-[-0.02em] text-ink-deep`}
+              >
                 {heading}
               </h2>
             </div>

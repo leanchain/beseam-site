@@ -25,10 +25,7 @@ export default function MeasureImpact() {
               column widths. */}
           <div className="grid gap-10 lg:grid-cols-[minmax(0,0.72fr)_minmax(0,1.28fr)] lg:items-center lg:gap-16">
             <div>
-              <p className="font-mono text-[12px] font-semibold uppercase tracking-[0.14em] text-signal">
-                The outcome
-              </p>
-              <h2 className="mt-6 max-w-[18ch] text-balance font-display text-[clamp(2.25rem,3.4vw,3.5rem)] font-normal leading-[1.05] tracking-[-0.02em]">
+              <h2 className="max-w-[18ch] text-balance font-display text-[clamp(2.25rem,3.4vw,3.5rem)] font-normal leading-[1.05] tracking-[-0.02em]">
                 It only matters if the outcome moves.
               </h2>
               <p className="mt-5 max-w-[44ch] text-[15px] leading-[1.7] text-white/64">
