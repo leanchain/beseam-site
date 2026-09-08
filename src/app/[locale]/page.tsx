@@ -8,19 +8,24 @@ import { getDictionary } from "@/i18n";
 import { HOME_SOCIAL_IMAGE, buildPublicMetadata } from "@/lib/seo";
 import { homeJsonLd } from "@/lib/seo-json-ld";
 
-const LOCALE = "en" as const;
+const LOCALE = "de" as const;
 const t = getDictionary(LOCALE);
+
+export const dynamicParams = false;
+export function generateStaticParams() {
+  return [{ locale: "de" }];
+}
 
 export const metadata: Metadata = buildPublicMetadata({
   title: t.meta.home.title,
   description: t.meta.home.description,
-  path: "/",
+  path: "/de",
   image: HOME_SOCIAL_IMAGE,
   imageAlt: t.meta.home.imageAlt,
   languages: { en: "/", de: "/de", "x-default": "/" },
 });
 
-export default function Home() {
+export default function GermanHome() {
   return (
     <>
       <script

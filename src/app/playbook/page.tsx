@@ -165,7 +165,7 @@ export default function PlaybookPage() {
       <MajorPreview name="measure-impact" status="Homepage" note="Standalone Impact-ledger section"><MeasureImpact /></MajorPreview>
       <MajorPreview name="category-benchmarks-section" status="Homepage" note="AI Shopping Report ledger on the homepage"><CategoryBenchmarksSection /></MajorPreview>
       <MajorPreview name="first-month-promise" status="Homepage" note="Current scan / continuous-loop start section"><FirstMonthPromise /></MajorPreview>
-      <MajorPreview name="faq-section" status="Homepage" note="Current homepage FAQ"><FaqSection /></MajorPreview>
+      <MajorPreview name="faq-section" status="Homepage" note="Current homepage FAQ"><FaqSection locale="en" /></MajorPreview>
 
       <div className="border-b border-black/14 bg-[#faf1eb] px-5 py-3 text-center font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-signal-ink">Used elsewhere</div>
       <MajorPreview name="decision-bridge" status="Used elsewhere" note="Connected-system architecture on /platform"><DecisionBridge /></MajorPreview>

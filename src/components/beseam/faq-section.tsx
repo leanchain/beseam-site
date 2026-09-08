@@ -1,6 +1,8 @@
+import type { Locale } from "@/i18n/locale-rules.mjs";
 import { STORE_HEALTH_FAQS } from "@/lib/store-health-faqs";
 
-export default function FaqSection() {
+export default function FaqSection({ locale }: { locale: Locale }) {
+  void locale;
   return (
     <section id="faq" className="scroll-mt-24 bg-ground-2">
       <div className="mx-auto grid max-w-[92rem] gap-12 px-5 py-20 sm:px-8 sm:py-24 lg:grid-cols-[minmax(0,0.72fr)_minmax(0,1.28fr)] lg:gap-20 lg:px-10 lg:py-28">

@@ -13,6 +13,7 @@ import HeroViewportFit from "@/components/beseam/hero-viewport-fit";
 import MeasureImpact from "@/components/beseam/measure-impact";
 import { Reveal } from "@/components/beseam/reveal";
 import WhatBeseamDoes from "@/components/beseam/what-beseam-does";
+import type { Locale } from "@/i18n/locale-rules.mjs";
 
 /**
  * Section order is the argument:
@@ -44,7 +45,8 @@ const SCAN_RETURNS = [
   "What to fix first",
 ] as const;
 
-export default function ProductionHomepage() {
+export default function ProductionHomepage({ locale }: { locale: Locale }) {
+  void locale;
   return (
     <div className="bg-ground text-[#151515]">
       <section id="home-hero" className="relative isolate overflow-hidden">

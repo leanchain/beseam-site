@@ -18,6 +18,7 @@ export function buildPublicMetadata({
   modifiedTime,
   section,
   tags,
+  languages,
 }: {
   title: string;
   description: string;
@@ -29,6 +30,7 @@ export function buildPublicMetadata({
   modifiedTime?: string;
   section?: string;
   tags?: string[];
+  languages?: Record<string, string>;
 }): Metadata {
   const common = {
     title,
@@ -49,7 +51,7 @@ export function buildPublicMetadata({
   return {
     title: { absolute: title },
     description,
-    alternates: { canonical: path },
+    alternates: { canonical: path, ...(languages ? { languages } : {}) },
     ...(noIndex ? { robots: { index: false, follow: true } } : {}),
     openGraph:
       type === "article"
