@@ -41,6 +41,11 @@ export default function LanguageSwitcher({
     if (returnFocus) triggerRef.current?.focus();
   }, []);
 
+  const openMenu = useCallback(() => {
+    setOpen(true);
+    setActiveIndex(LOCALES.indexOf(locale));
+  }, [locale]);
+
   useEffect(() => {
     if (!open) return;
     const onPointerDown = (event: PointerEvent) => {
@@ -96,8 +101,7 @@ export default function LanguageSwitcher({
       (event.key === "ArrowDown" || event.key === "Enter" || event.key === " ")
     ) {
       event.preventDefault();
-      setOpen(true);
-      setActiveIndex(LOCALES.indexOf(locale));
+      openMenu();
       return;
     }
     if (!open) return;
@@ -137,7 +141,10 @@ export default function LanguageSwitcher({
         aria-activedescendant={
           open ? `${listboxId}-${LOCALES[activeIndex]}` : undefined
         }
-        onClick={() => setOpen((v) => !v)}
+        onClick={() => {
+          if (open) close(false);
+          else openMenu();
+        }}
         className="inline-flex min-h-11 items-center gap-1.5 px-2 text-[14px] font-semibold text-black/62 transition-colors hover:text-signal-ink focus-visible:ring-2 focus-visible:ring-signal-ink"
       >
         <Globe aria-hidden="true" className="h-4 w-4" />

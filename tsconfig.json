@@ -35,6 +35,9 @@
     ".next-arrow2/types/**/*.ts",
     ".next-base/types/**/*.ts",
     ".next-dev-b/types/**/*.ts",
+    ".next-dev-v2/types/**/*.ts",
+    ".next-dev-v3/types/**/*.ts",
+    ".next-dev-verify/types/**/*.ts",
     ".next-dev/types/**/*.ts",
     ".next-v6/types/**/*.ts",
     ".next-v7/types/**/*.ts",
@@ -48,7 +51,7 @@
     ".next-vI/types/**/*.ts",
     ".next/types/**/*.ts",
     "next-env.d.ts",
-    ".next-dev-verify/types/**/*.ts"
+    ".next-dev-v4/types/**/*.ts"
   ],
   "exclude": [
     "node_modules",
