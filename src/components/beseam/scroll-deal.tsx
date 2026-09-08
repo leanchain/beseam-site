@@ -23,9 +23,9 @@ export type DealCell = {
  * of position, never a queue that has already fired.
  *
  * On a screen with room for it the section also holds still while this happens:
- * the stage is a screen taller than the panel for every step, the panel is
- * `position: sticky` in the middle of it, and the scroll that would have moved
- * the page deals the next panel instead. Once the row is whole the stage runs
+ * the stage is a screen taller than the panel for every step, the panel sticks
+ * to the top of the screen inside it, and the scroll that would have moved the
+ * page deals the next panel instead. Once the row is whole the stage runs
  * out and the page carries on down. Nothing is intercepted -- there is no
  * wheel handler and no scroll lock, the page is simply scrolling a tall element
  * whose contents do not move, so a trackpad fling, a scrollbar drag and a

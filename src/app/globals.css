@@ -798,6 +798,26 @@ html.theme-transition::view-transition-new(root) {
   animation-direction: reverse;
 }
 
+/* Hero scroll cue: the wheel drifts down and fades, signalling "more below"
+ * without competing with the scan form above it. Hidden outright (not just
+ * frozen) under reduced motion via .motion-safe-only, since a static dot in
+ * an empty pill reads as a UI bug rather than an affordance. */
+@keyframes hero-scroll-wheel {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(6px);
+    opacity: 0.35;
+  }
+}
+
+.hero-scroll-wheel {
+  animation: hero-scroll-wheel 1.6s ease-in-out infinite;
+}
+
 /* Evidence trace, ruled-out branch: the chip carries the verdict, the panel
  * behind it carries the hypothesis and the evidence that closed it. Written by
  * hand rather than as `group-hover:` utilities because the panel has to answer
@@ -830,7 +850,14 @@ html.theme-transition::view-transition-new(root) {
  * Pinning is opt-in per viewport, never opt-out: only a screen wide enough for
  * the row to be one line and tall enough to hold the panel gets it. Anywhere
  * else -- phones, short windows, reduced motion -- the stage is its own height
- * and the panels are dealt by the section's own travel through the viewport. */
+ * and the panels are dealt by the section's own travel through the viewport.
+ *
+ * The panel fills the screen so the pin has a stable ground under it, but the
+ * heading starts near the top of that screen rather than centred in it: true
+ * centring puts half of a tall display's leftover height above the first line,
+ * which on a large monitor is most of a screen of nothing before the section
+ * says anything. The room that is left over falls below the row instead, where
+ * it reads as space rather than as a gap. */
 .deal-stage {
   height: auto;
 }
@@ -850,7 +877,8 @@ html.theme-transition::view-transition-new(root) {
     display: flex;
     min-height: 100vh;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
+    padding-top: clamp(0px, 4vh, 3rem);
   }
 }
 .marketing-wash {
