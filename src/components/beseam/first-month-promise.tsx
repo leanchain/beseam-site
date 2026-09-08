@@ -24,6 +24,27 @@ import { APP_REGISTER_URL } from "@/lib/app-urls";
  * against 1.28fr of copy, 4rem apart (`measure-impact.tsx`,
  * `category-benchmarks-section.tsx`) -- so the last section lines up with the
  * two above it instead of inventing a closing layout of its own.
+ *
+ * The offer is three short sentences in one line of thought: what the other
+ * tools do, what Beseam does instead, what it costs to find out. No asides,
+ * no em-dash clause, no list of what the plan includes -- an earlier draft
+ * carried all three and read as branching. The category contrast is load
+ * bearing: the AI-visibility tools price by tracked prompts, models and
+ * projects (`comparisons.ts`, Peec AI row), so watching is their meter, and
+ * Beseam's claim is that watching was never the product.
+ *
+ * The headline is two block spans, not one balanced line: the sentences must
+ * not merge mid-thought. What is deliberately absent is the
+ * `sm:whitespace-nowrap` the second span used to carry -- it forced a break
+ * after "Beseam", which is the break a merchant read back to us as random.
+ *
+ * The second sentence says "it", not "Beseam", for the same reason. At the
+ * width this column actually has on a laptop (~480px, 0.72fr of the shared
+ * split) "Pay when Beseam proves its value." wraps to "Pay when Beseam /
+ * proves its value." -- the exact line she was reading. "Pay when it proves
+ * its value." wraps to "Pay when it / proves its value.", a phrase boundary,
+ * and the copy beside it names Beseam twice so the pronoun has an antecedent.
+ * Measured in the browser at 480px and 350px, not guessed.
  */
 export default function FirstMonthPromise({
   showManifestoLink = true,
@@ -39,22 +60,18 @@ export default function FirstMonthPromise({
           <div className="grid gap-8 lg:grid-cols-[minmax(0,0.72fr)_minmax(0,1.28fr)] lg:items-end lg:gap-16">
             <div>
               <p className="font-mono text-[12px] font-semibold uppercase tracking-[0.14em] text-signal-ink">
-                Your first 30 days
+                The offer
               </p>
-              {/* One balanced sentence at the shared section clamp. The
-                  headline used to be two spans, the second held on one line by
-                  `sm:whitespace-nowrap`, and it promised "Pay when Beseam
-                  proves its value" -- a condition -- above an eyebrow that
-                  promised a 30-day clock. The clock is the offer; it is stated
-                  once, in the eyebrow and the copy beside it. */}
-              <h2 className="mt-5 max-w-[18ch] text-balance font-display text-[clamp(2.2rem,3.3vw,3.4rem)] font-normal leading-[1.04] tracking-[-0.02em] text-ink-deep">
-                See what Beseam finds before you pay.
+              <h2 className="mt-5 max-w-[20ch] text-balance font-display text-[clamp(2.2rem,3.3vw,3.4rem)] font-normal leading-[1.04] tracking-[-0.02em] text-ink-deep">
+                <span className="block">Start free.</span>
+                <span className="block">Pay when it proves its value.</span>
               </h2>
             </div>
             <div>
-              <p className="max-w-[50ch] text-[17px] leading-[1.72] text-black/64">
-                Use Beseam free for 30 days. See what it finds, approve the
-                changes that need your judgment, and see what moved.
+              <p className="max-w-[48ch] text-[17px] leading-[1.72] text-black/64">
+                Other tools watch and report. Beseam watches, makes the change
+                you approve, and shows you what moved. Your first 30 days are
+                free.
               </p>
               <TrackedLink
                 href={APP_REGISTER_URL}
