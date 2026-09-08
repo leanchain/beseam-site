@@ -1,6 +1,5 @@
 import {
   ArrowRight,
-  BarChart3,
   CheckCircle2,
   MousePointer2,
   Radar,
@@ -55,12 +54,6 @@ const DOMAINS = [
     scope: "Recommendations · personalization",
     detail: "Add the missing information that helps the shopper choose.",
     Icon: ShoppingBag,
-  },
-  {
-    title: "See what changed",
-    scope: "Conversion · orders · revenue",
-    detail: "Check the same journey again and see what improved.",
-    Icon: BarChart3,
   },
 ] as const;
 
@@ -200,45 +193,10 @@ function PersonalizationVignette() {
   );
 }
 
-function RevenueVignette() {
-  return (
-    <div
-      aria-hidden="true"
-      className="flex h-[11rem] flex-col bg-white p-3.5 ring-1 ring-black/10"
-    >
-      <div className="flex items-center justify-between gap-2 border-b border-black/10 pb-2.5">
-        <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-black/60">
-          After the approved change
-        </span>
-        <span className="shrink-0 font-mono text-[11px] text-black/60">
-          before → after
-        </span>
-      </div>
-
-      <div className="flex flex-1 flex-col justify-center gap-2.5">
-        {(["AI appearances", "Product visits", "Add to cart"] as const).map(
-          (label) => (
-            <div key={label} className="flex items-center gap-2">
-              <span className="truncate font-mono text-[12px] uppercase tracking-[0.05em] text-black/52">
-                {label}
-              </span>
-              <span className="h-px min-w-2 flex-1 bg-black/10" />
-              <span className="shrink-0 font-mono text-[12px] font-semibold uppercase tracking-[0.04em] text-signal-ink">
-                Checked again
-              </span>
-            </div>
-          ),
-        )}
-      </div>
-    </div>
-  );
-}
-
 const VIGNETTES = [
   DiscoveryVignette,
   StoreVignette,
   PersonalizationVignette,
-  RevenueVignette,
 ] as const;
 
 const LOOP = [
@@ -250,45 +208,46 @@ const LOOP = [
 ] as const;
 
 /**
- * The grid drops to four across only at `xl`. Between 1024px and 1280px four
- * panels squeezed each one under 15rem, which is the width at which the labels
- * stopped being readable in the first place.
+ * Three panels, not four. The fourth was "See what changed" -- which is what
+ * the loop bar underneath already promises, in the same words. Folding it down
+ * there leaves the row as the shopper's journey (found, hesitating, choosing)
+ * and buys each panel another 3rem of width to say it in.
  */
 const CELL_RULES = [
   "sm:pl-0",
   "sm:border-l",
   "sm:pl-0 xl:border-l xl:pl-5",
-  "sm:border-l",
 ] as const;
 
 export default function WhatBeseamDoes() {
   return (
     <section id="one-system" className="scroll-mt-24 bg-ground">
       <div className="mx-auto max-w-[92rem] px-5 py-16 sm:px-8 sm:py-24 lg:px-10 lg:py-28">
-        {/* Outside the stage on purpose: the pin holds the row, not the
-            heading. Pinning from the heading down put its eyebrow under the
-            sticky site header and held a screen that was mostly type. */}
-        <Reveal>
-          <div className="grid gap-8 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:items-end lg:gap-16">
-            <div>
-              <p className="font-mono text-[12px] font-semibold uppercase tracking-[0.14em] text-signal-ink">
-                From being considered to being chosen
-              </p>
-              <h2 className="mt-7 max-w-[18ch] text-balance font-display text-[clamp(2.3rem,3.8vw,3.9rem)] font-normal leading-[1.03] tracking-[-0.02em] text-ink-deep">
-                Being considered doesn’t mean being chosen.
-              </h2>
-            </div>
-            <p className="max-w-[50ch] text-[16px] leading-[1.7] text-black/64">
-              Beseam follows the shopper from discovery to purchase to find
-              where confidence drops, questions go unanswered, or the journey
-              stops.
-            </p>
-          </div>
-        </Reveal>
-
+        {/* Heading, row and loop bar are one pinned panel: the scroll stops
+            where the section starts, under the sticky site header, and what it
+            holds still is the whole section rather than a slice of it. */}
         <ScrollDealFallback />
         <ScrollDeal
-          className="mt-12 grid border-t-2 border-ink-deep sm:grid-cols-2 lg:mt-16 xl:grid-cols-4"
+          className="mt-12 grid border-t-2 border-ink-deep sm:grid-cols-2 lg:mt-16 xl:grid-cols-3"
+          header={
+            <Reveal>
+              <div className="grid gap-8 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:items-end lg:gap-16">
+                <div>
+                  <p className="font-mono text-[12px] font-semibold uppercase tracking-[0.14em] text-signal-ink">
+                    From being considered to being chosen
+                  </p>
+                  <h2 className="mt-7 max-w-[18ch] text-balance font-display text-[clamp(2.3rem,3.8vw,3.9rem)] font-normal leading-[1.03] tracking-[-0.02em] text-ink-deep">
+                    Being considered doesn’t mean being chosen.
+                  </h2>
+                </div>
+                <p className="max-w-[50ch] text-[16px] leading-[1.7] text-black/64">
+                  Beseam follows the shopper from discovery to purchase to find
+                  where confidence drops, questions go unanswered, or the
+                  journey stops.
+                </p>
+              </div>
+            </Reveal>
+          }
           cells={DOMAINS.map((domain, index) => {
             const Vignette = VIGNETTES[index];
             return {
@@ -341,35 +300,64 @@ export default function WhatBeseamDoes() {
           })}
           footer={
             <div className="mt-5 border-y border-white/10 bg-ink-deep px-5 py-3.5 text-white sm:px-6 lg:px-8">
-              <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:gap-8">
-                <p className="shrink-0 font-mono text-[11px] font-semibold uppercase tracking-[0.12em] text-signal">
+              <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:gap-8">
+                <p className="shrink-0 font-mono text-[11px] font-semibold uppercase tracking-[0.12em] text-signal lg:pt-1.5">
                   Continuous loop
                 </p>
-                <ol className="relative grid flex-1 gap-y-3 before:absolute before:left-5 before:right-5 before:top-3.5 before:hidden before:h-px before:bg-white/16 sm:grid-cols-5 sm:gap-0 sm:before:block">
-                  {LOOP.map(({ label, Icon }, index) => (
-                    <li
-                      key={label}
-                      className="relative z-10 flex items-center gap-2.5 sm:flex-col sm:items-start sm:gap-2 sm:px-3"
-                    >
-                      <span className="flex h-7 w-7 shrink-0 items-center justify-center bg-ink-deep text-signal ring-1 ring-white/18">
-                        <Icon
-                          className="h-3.5 w-3.5"
-                          strokeWidth={1.8}
-                          aria-hidden="true"
-                        />
-                      </span>
-                      <span className="text-[12px] font-semibold leading-[1.3] text-white/82">
-                        {label}
-                      </span>
-                      {index < LOOP.length - 1 ? (
-                        <ArrowRight
-                          className="ml-auto h-3.5 w-3.5 text-signal sm:hidden"
-                          aria-hidden="true"
-                        />
-                      ) : null}
-                    </li>
-                  ))}
-                </ol>
+                <div className="flex-1">
+                  <ol className="relative grid gap-y-3 before:absolute before:left-5 before:right-5 before:top-3.5 before:hidden before:h-px before:bg-white/16 sm:grid-cols-5 sm:gap-0 sm:before:block">
+                    {LOOP.map(({ label, Icon }, index) => (
+                      <li
+                        key={label}
+                        className="relative z-10 flex items-center gap-2.5 sm:flex-col sm:items-start sm:gap-2 sm:px-3"
+                      >
+                        <span className="flex h-7 w-7 shrink-0 items-center justify-center bg-ink-deep text-signal ring-1 ring-white/18">
+                          <Icon
+                            className="h-3.5 w-3.5"
+                            strokeWidth={1.8}
+                            aria-hidden="true"
+                          />
+                        </span>
+                        <span className="text-[12px] font-semibold leading-[1.3] text-white/82">
+                          {label}
+                        </span>
+                        {index < LOOP.length - 1 ? (
+                          <ArrowRight
+                            className="ml-auto h-3.5 w-3.5 text-signal sm:hidden"
+                            aria-hidden="true"
+                          />
+                        ) : null}
+                      </li>
+                    ))}
+                  </ol>
+
+                  {/* The return path. Five steps on a straight rail read as a
+                      list that ends; the rail now turns down after the last
+                      step and comes back under the row into the first, which
+                      is the shape of the thing the words claim. */}
+                  <div
+                    aria-hidden="true"
+                    className="relative mt-2 hidden h-4 sm:block"
+                  >
+                    <span
+                      className="absolute top-0 block h-4 rounded-b-[14px] border-b border-l border-r border-white/18"
+                      style={{ left: 20, right: 20 }}
+                    />
+                    <span
+                      className="absolute top-0 block h-2 w-2 border-l border-t border-signal"
+                      style={{
+                        left: 20,
+                        transform: "translate(-50%, -50%) rotate(45deg)",
+                      }}
+                    />
+                  </div>
+
+                  <p className="mt-2.5 font-mono text-[11px] uppercase leading-[1.5] tracking-[0.1em] text-white/45">
+                    <span className="text-signal">Before → after</span> · the
+                    same journey — AI appearances, product visits, add to cart —
+                    checked again after every approved change
+                  </p>
+                </div>
               </div>
             </div>
           }

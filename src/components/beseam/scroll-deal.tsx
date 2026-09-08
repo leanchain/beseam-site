@@ -43,10 +43,17 @@ export type DealCell = {
 export function ScrollDeal({
   className,
   cells,
+  header,
   footer,
 }: {
   className?: string;
   cells: DealCell[];
+  /**
+   * Held with the row. The pin starts where the section does, so the reader
+   * keeps the heading that says what they are looking at -- and the sticky site
+   * header, which the panel clears rather than hides under, keeps its own line.
+   */
+  header?: ReactNode;
   /**
    * Dealt last, as one more beat of the same sequence -- a closing line lands
    * under the finished row while the section is still held, rather than being
@@ -182,6 +189,7 @@ export function ScrollDeal({
       }
     >
       <div ref={panelRef} className="deal-panel">
+        {header}
         <div className={className}>
           {cells.map((cell) => (
             <div

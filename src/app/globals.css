@@ -854,7 +854,8 @@ html.theme-transition::view-transition-new(root) {
  * count in scroll-deal.tsx, which also drives the deal off the same geometry.
  *
  * Pinning is opt-in per viewport, never opt-out: only a screen wide enough for
- * the row to be one line and tall enough to hold the panel gets it. Anywhere
+ * the row to be one line (the grid goes three across at `xl`) and tall enough
+ * to hold heading, row and loop bar under the site header at once gets it. Anywhere
  * else -- phones, short windows, reduced motion -- the stage is its own height
  * and the panels are dealt by the section's own travel through the viewport.
  *
@@ -875,7 +876,7 @@ html.theme-transition::view-transition-new(root) {
   position: static;
 }
 
-@media (min-width: 1024px) and (min-height: 700px) and (prefers-reduced-motion: no-preference) {
+@media (min-width: 1280px) and (min-height: 880px) and (prefers-reduced-motion: no-preference) {
   .deal-stage {
     height: var(--deal-stage-height);
   }
