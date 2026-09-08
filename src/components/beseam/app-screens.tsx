@@ -115,31 +115,38 @@ export function ActionsScreen({ compact = false }: { compact?: boolean } = {}) {
         {QUEUE_ROWS.map((row) => (
           <div
             key={row.title}
-            className={`grid grid-cols-[minmax(0,1fr)_6.5rem_4rem_4.5rem] items-center gap-2 border-b border-black/10 px-3 py-2 last:border-b-0 ${
+            className={`border-b border-black/10 px-3.5 py-3 last:border-b-0 ${
               row.lead ? "bg-signal-ink/[0.06]" : "bg-white"
             }`}
           >
-            <p className="text-[12.5px] font-medium leading-[1.3] text-[#151515]">
+            {/* Stacked, not four columns. At 390px the four-column grid left
+                the change itself about 130px wide -- one or two words a line,
+                eight lines deep -- while the badges sat in air. The title
+                takes the full width and the three values read as one meta
+                line under it. */}
+            <p className="text-[13px] font-medium leading-[1.35] text-[#151515]">
               {row.title}
             </p>
-            <span className="text-[9.5px] leading-[1.3] text-black/62">
-              {row.band}
-            </span>
-            <span className="inline-flex w-fit shrink-0 rounded-md border border-[#1f7a4d]/35 bg-[#1f7a4d]/[0.08] px-1.5 py-0.5 text-[9.5px] font-semibold text-[#1a6b43]">
-              {row.effort}
-            </span>
-            <span
-              className={`inline-flex w-fit shrink-0 items-center rounded-md px-2 py-1 text-[10px] font-semibold ${
-                row.lead
-                  ? "bg-[var(--secondary)] text-[var(--secondary-foreground)]"
-                  : "border border-black/18 bg-white text-[#3f3f3f]"
-              }`}
-            >
-              {row.step}
-            </span>
+            <div className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1.5">
+              <span
+                className={`inline-flex shrink-0 items-center rounded-md px-2 py-0.5 text-[10px] font-semibold ${
+                  row.lead
+                    ? "bg-[var(--secondary)] text-[var(--secondary-foreground)]"
+                    : "border border-black/18 bg-white text-[#3f3f3f]"
+                }`}
+              >
+                {row.step}
+              </span>
+              <span className="inline-flex shrink-0 items-center rounded-md border border-[#1f7a4d]/35 bg-[#1f7a4d]/[0.08] px-1.5 py-0.5 text-[10px] font-semibold text-[#1a6b43]">
+                {row.effort}
+              </span>
+              <span className="text-[11px] leading-[1.35] text-black/58">
+                {row.band}
+              </span>
+            </div>
           </div>
         ))}
-        <p className="border-t border-black/10 px-3 py-2 text-[11px] leading-[1.5] text-black/50">
+        <p className="border-t border-black/10 px-3.5 py-2 text-[11px] leading-[1.5] text-black/50">
           Illustrative example · not customer results.
         </p>
       </div>
@@ -204,14 +211,18 @@ export function ActionsScreen({ compact = false }: { compact?: boolean } = {}) {
         </div>
       </div>
 
-      <p className="border-t border-black/12 bg-ground px-4 py-2.5 text-[11px] leading-[1.5] text-black/54 sm:px-5">
-        Every change keeps what Beseam found, the owner, status, and what to
-        check afterward together.
-      </p>
-
-      <p className="border-t border-black/10 px-4 py-2 text-[11px] leading-[1.5] text-black/50 sm:px-5">
-        Illustrative example · not customer results.
-      </p>
+      {/* One footer row, not two stacked ones: the standing note and the
+          illustrative stamp were two full-width bars of grey type under a
+          three-row table. */}
+      <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 border-t border-black/12 bg-ground px-4 py-2.5 text-[11px] leading-[1.5] sm:px-5">
+        <p className="text-black/54">
+          Every change keeps what Beseam found, the owner, status, and what to
+          check afterward together.
+        </p>
+        <p className="shrink-0 text-black/50">
+          Illustrative example · not customer results.
+        </p>
+      </div>
     </div>
   );
 }
