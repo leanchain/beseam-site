@@ -5,12 +5,13 @@ import { Reveal } from "@/components/beseam/reveal";
  * The measured outcome beat: keep the original signal, approved change, and
  * before/after result visibly attached without presenting examples as customer proof.
  *
- * The two columns are top-aligned, not centred. A merchant read this section
- * back to us as "a really random layout" and pointed at the positioning of
- * the items: with `lg:items-center` the eyebrow started 11-20px below the
- * Results panel's top edge at every desktop width, so the row had two top
- * edges and no rule saying which one was the row's. `lg:items-start` gives it
- * one, the same way the two `#promise` cards share one.
+ * The two columns are centred on the row axis, matching the AI Shopping
+ * Report section. This was top-aligned for a while: at the old 0.5fr/1.5fr
+ * split the copy column was much shorter than the panel, so centring left the
+ * eyebrow floating 11-20px under the panel's top edge and a merchant read the
+ * row as having two top edges. On the shared 0.72fr/1.28fr split the two
+ * columns are close enough in height that centring reads as one row, and it
+ * keeps this beat aligned with the section it sits under.
  */
 export default function MeasureImpact() {
   return (
@@ -22,7 +23,7 @@ export default function MeasureImpact() {
               1.28fr of evidence, 4rem apart. Two adjacent sections that both
               put text beside a panel should not each invent their own
               column widths. */}
-          <div className="grid gap-10 lg:grid-cols-[minmax(0,0.72fr)_minmax(0,1.28fr)] lg:items-start lg:gap-16">
+          <div className="grid gap-10 lg:grid-cols-[minmax(0,0.72fr)_minmax(0,1.28fr)] lg:items-center lg:gap-16">
             <div>
               <p className="font-mono text-[12px] font-semibold uppercase tracking-[0.14em] text-signal">
                 The outcome
