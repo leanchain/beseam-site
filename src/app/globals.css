@@ -737,6 +737,66 @@ html.theme-transition::view-transition-new(root) {
   animation: signal-wire-draw 560ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
+/* Evidence trace (#proof): the wires carry a current, so the graph reads as
+ * something running rather than a picture of something that ran. Each edge is
+ * a dimmed rail with dashes marching along it. Only the straight runs animate;
+ * the 1rem elbows stay rail, so a dash slides into a corner and comes out the
+ * far side, which is cheaper than stroking the corner and reads the same at
+ * this size.
+ *
+ * `--trace-cycle` is both the dash period and the background tile, and the
+ * keyframe travels exactly one tile: change one without the other and the loop
+ * visibly jumps. Every segment shares the cycle and the duration, which is what
+ * keeps a single speed across the whole path -- override `--trace-color` per
+ * edge, never the speed. The global prefers-reduced-motion rule below lands
+ * these on a static dashed rail.
+ */
+@keyframes trace-flow-down {
+  to {
+    background-position: 0 var(--trace-cycle);
+  }
+}
+
+@keyframes trace-flow-right {
+  to {
+    background-position: var(--trace-cycle) 0;
+  }
+}
+
+.trace-flow-down,
+.trace-flow-right {
+  --trace-cycle: 22px;
+  --trace-dash: 8px;
+  --trace-color: #e8653a;
+  --trace-speed: 1.5s;
+}
+
+.trace-flow-down {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    var(--trace-color) 0 var(--trace-dash),
+    transparent var(--trace-dash) var(--trace-cycle)
+  );
+  background-repeat: repeat-y;
+  background-size: 100% var(--trace-cycle);
+  animation: trace-flow-down var(--trace-speed) linear infinite;
+}
+
+.trace-flow-right {
+  background-image: repeating-linear-gradient(
+    to right,
+    var(--trace-color) 0 var(--trace-dash),
+    transparent var(--trace-dash) var(--trace-cycle)
+  );
+  background-repeat: repeat-x;
+  background-size: var(--trace-cycle) 100%;
+  animation: trace-flow-right var(--trace-speed) linear infinite;
+}
+
+/* Same wire, other way: an edge that feeds the centre from the right. */
+.trace-flow-back {
+  animation-direction: reverse;
+}
 .marketing-wash {
   background: color-mix(in srgb, var(--brand) 18%, transparent);
   filter: blur(110px);

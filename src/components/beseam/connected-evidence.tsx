@@ -90,6 +90,18 @@ const QUERY_EDGE = "calc((100% - 1.5rem) / 4)";
 const BRANCH_EDGE = "calc((100% - 7rem) / 6)";
 const ACCENT = "#e8653a";
 
+/**
+ * Every edge is drawn twice: a dimmed rail that holds the shape, and dashes
+ * that march along it (`.trace-flow-*` in globals.css) so the graph reads as a
+ * run in progress rather than a finished picture. The flow overlays cover the
+ * straight runs only and stop `ELBOW` short of each corner, which is the
+ * `rounded-*-2xl` radius -- change the radius and the `-4` insets move with it.
+ */
+const ACCENT_RAIL = `color-mix(in srgb, ${ACCENT} 34%, transparent)`;
+const DEAD_RAIL = "rgb(255 255 255 / 0.14)";
+const DEAD_FLOW = "rgb(255 255 255 / 0.42)";
+const DEAD_STYLE = { "--trace-color": DEAD_FLOW } as CSSProperties;
+
 function StepLabel({ children }: { children: ReactNode }) {
   return (
     <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.1em] text-white/56">
@@ -124,39 +136,63 @@ function Converge() {
     <div aria-hidden="true" className="relative hidden h-14 lg:block">
       <span
         className="absolute bottom-6 top-0 rounded-bl-2xl border-b border-l"
-        style={{ left: QUERY_EDGE, right: "50%", borderColor: ACCENT }}
-      />
+        style={{ left: QUERY_EDGE, right: "50%", borderColor: ACCENT_RAIL }}
+      >
+        <span className="trace-flow-down absolute -left-px bottom-4 top-0 w-px" />
+        <span className="trace-flow-right absolute -bottom-px left-4 right-0 h-px" />
+      </span>
       <span
         className="absolute bottom-6 top-0 rounded-br-2xl border-b border-r"
-        style={{ left: "50%", right: QUERY_EDGE, borderColor: ACCENT }}
-      />
+        style={{ left: "50%", right: QUERY_EDGE, borderColor: ACCENT_RAIL }}
+      >
+        <span className="trace-flow-down absolute -right-px bottom-4 top-0 w-px" />
+        <span className="trace-flow-right trace-flow-back absolute -bottom-px left-0 right-4 h-px" />
+      </span>
       <span
-        className="absolute bottom-0 left-1/2 top-8 w-px"
-        style={{ background: ACCENT }}
+        className="trace-flow-down absolute bottom-0 left-1/2 top-8 w-px"
+        style={{ backgroundColor: ACCENT_RAIL }}
       />
     </div>
   );
 }
 
-/** One node in, three explanations out. */
+/** One node in, three explanations out. All three get checked. */
 function Fork() {
   return (
     <div aria-hidden="true" className="relative hidden h-16 lg:block">
       <span
-        className="absolute left-1/2 top-0 h-7 w-px"
-        style={{ background: ACCENT }}
+        className="trace-flow-down absolute left-1/2 top-0 h-7 w-px"
+        style={{ backgroundColor: ACCENT_RAIL }}
       />
       <span
-        className="absolute bottom-0 top-7 rounded-tl-2xl border-l border-t border-dashed border-white/28"
-        style={{ left: BRANCH_EDGE, right: "50%" }}
-      />
+        className="absolute bottom-0 top-7 rounded-tl-2xl border-l border-t"
+        style={{ left: BRANCH_EDGE, right: "50%", borderColor: DEAD_RAIL }}
+      >
+        <span
+          className="trace-flow-right trace-flow-back absolute -top-px left-4 right-0 h-px"
+          style={DEAD_STYLE}
+        />
+        <span
+          className="trace-flow-down absolute -left-px bottom-0 top-4 w-px"
+          style={DEAD_STYLE}
+        />
+      </span>
       <span
-        className="absolute bottom-0 top-7 rounded-tr-2xl border-r border-t border-dashed border-white/28"
-        style={{ left: "50%", right: BRANCH_EDGE }}
-      />
+        className="absolute bottom-0 top-7 rounded-tr-2xl border-r border-t"
+        style={{ left: "50%", right: BRANCH_EDGE, borderColor: DEAD_RAIL }}
+      >
+        <span
+          className="trace-flow-right absolute -top-px left-0 right-4 h-px"
+          style={DEAD_STYLE}
+        />
+        <span
+          className="trace-flow-down absolute -right-px bottom-0 top-4 w-px"
+          style={DEAD_STYLE}
+        />
+      </span>
       <span
-        className="absolute bottom-0 left-1/2 top-7 w-px"
-        style={{ background: ACCENT }}
+        className="trace-flow-down absolute bottom-0 left-1/2 top-7 w-px"
+        style={{ backgroundColor: ACCENT_RAIL }}
       />
     </div>
   );
@@ -167,8 +203,14 @@ function Tails() {
   return (
     <div aria-hidden="true" className="relative hidden h-14 lg:block">
       <span
-        className="absolute top-0 h-6 border-l border-dashed border-white/28"
-        style={{ left: BRANCH_EDGE }}
+        className="trace-flow-down absolute top-0 h-6 w-px"
+        style={
+          {
+            left: BRANCH_EDGE,
+            backgroundColor: DEAD_RAIL,
+            ...DEAD_STYLE,
+          } as CSSProperties
+        }
       />
       <X
         aria-hidden="true"
@@ -176,8 +218,14 @@ function Tails() {
         style={{ left: BRANCH_EDGE }}
       />
       <span
-        className="absolute top-0 h-6 border-l border-dashed border-white/28"
-        style={{ right: BRANCH_EDGE }}
+        className="trace-flow-down absolute top-0 h-6 w-px"
+        style={
+          {
+            right: BRANCH_EDGE,
+            backgroundColor: DEAD_RAIL,
+            ...DEAD_STYLE,
+          } as CSSProperties
+        }
       />
       <X
         aria-hidden="true"
@@ -185,8 +233,8 @@ function Tails() {
         style={{ right: BRANCH_EDGE }}
       />
       <span
-        className="absolute inset-y-0 left-1/2 w-px"
-        style={{ background: ACCENT }}
+        className="trace-flow-down absolute inset-y-0 left-1/2 w-px"
+        style={{ backgroundColor: ACCENT_RAIL }}
       />
     </div>
   );
