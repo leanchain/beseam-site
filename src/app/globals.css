@@ -852,12 +852,14 @@ html.theme-transition::view-transition-new(root) {
  * else -- phones, short windows, reduced motion -- the stage is its own height
  * and the panels are dealt by the section's own travel through the viewport.
  *
- * The panel fills the screen so the pin has a stable ground under it, but the
- * heading starts near the top of that screen rather than centred in it: true
- * centring puts half of a tall display's leftover height above the first line,
- * which on a large monitor is most of a screen of nothing before the section
- * says anything. The room that is left over falls below the row instead, where
- * it reads as space rather than as a gap. */
+ * The panel is exactly as tall as what it holds, and sticks a little below the
+ * top of the screen. It deliberately does not fill the viewport: a panel padded
+ * out to `100vh` centres nicely on a laptop but on a tall monitor carries half
+ * a screen of nothing above the heading, or -- once that is anchored to the top
+ * instead -- half a screen of nothing between the last tile and whatever the
+ * section says next. The stage behind it already paints the same ground, so a
+ * content-height panel looks identical while pinned and leaves no gap when it
+ * lets go. */
 .deal-stage {
   height: auto;
 }
@@ -873,12 +875,7 @@ html.theme-transition::view-transition-new(root) {
 
   .deal-panel {
     position: sticky;
-    top: 0;
-    display: flex;
-    min-height: 100vh;
-    flex-direction: column;
-    justify-content: flex-start;
-    padding-top: clamp(0px, 4vh, 3rem);
+    top: clamp(0px, 4vh, 3rem);
   }
 }
 .marketing-wash {

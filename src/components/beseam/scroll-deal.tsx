@@ -23,9 +23,9 @@ export type DealCell = {
  * of position, never a queue that has already fired.
  *
  * On a screen with room for it the section also holds still while this happens:
- * the stage is a screen taller than the panel for every step, the panel sticks
- * to the top of the screen inside it, and the scroll that would have moved the
- * page deals the next panel instead. Once the row is whole the stage runs
+ * the stage is taller than the panel by the scroll the deal is worth, the panel
+ * sticks near the top of the screen inside it, and the scroll that would have
+ * moved the page deals the next panel instead. Once the row is whole the stage runs
  * out and the page carries on down. Nothing is intercepted -- there is no
  * wheel handler and no scroll lock, the page is simply scrolling a tall element
  * whose contents do not move, so a trackpad fling, a scrollbar drag and a
@@ -88,19 +88,22 @@ export function ScrollDeal({
       const rect = stage.getBoundingClientRect();
       const viewport = window.innerHeight || 1;
 
-      // Pinned, the stage is taller than the screen and the panel stands still
-      // inside it: how far the stage has passed the top IS the progress. Where
-      // the CSS declines to pin, fall back to the row's own travel through the
-      // viewport, so a phone still gets the panels one at a time.
-      const pinned = window.getComputedStyle(panel).position === "sticky";
+      // Pinned, the panel stands still between the moment the stage's top meets
+      // its sticky offset and the moment the panel's bottom meets the stage's:
+      // that span is the whole deal, so measure against it rather than against
+      // the screen. Where the CSS declines to pin, fall back to the row's own
+      // travel through the viewport, so a phone still gets them one at a time.
+      const style = window.getComputedStyle(panel);
+      const pinned = style.position === "sticky";
+      const offset = pinned ? parseFloat(style.top) || 0 : 0;
       const travel = pinned
-        ? stage.offsetHeight - viewport
+        ? stage.offsetHeight - panel.offsetHeight
         : Math.max(rect.height * 0.6, viewport * 0.35);
       if (travel <= 0) {
         settle();
         return;
       }
-      const entered = pinned ? -rect.top : viewport * 0.85 - rect.top;
+      const entered = pinned ? offset - rect.top : viewport * 0.85 - rect.top;
       const progress = Math.min(Math.max(entered / travel, 0), 1);
 
       // Pinned, the last panel lands a little before the release, so the row is
@@ -127,14 +130,30 @@ export function ScrollDeal({
       if (!frame) frame = window.requestAnimationFrame(paint);
     };
 
-    paint();
+    // The stage is the panel plus the scroll the deal is worth -- a screen's
+    // worth of scroll every two and a half panels. Sized here rather than in CSS
+    // because only the measured panel counts: a stage sized off `100vh` would
+    // pin for however much taller than the panel the screen happens to be.
+    const resize = () => {
+      if (window.getComputedStyle(panel).position === "sticky") {
+        const height = Math.round(
+          panel.offsetHeight + panels.length * (window.innerHeight || 1) * 0.4,
+        );
+        stage.style.setProperty("--deal-stage-height", `${height}px`);
+      } else {
+        stage.style.removeProperty("--deal-stage-height");
+      }
+      paint();
+    };
+
+    resize();
     window.addEventListener("scroll", schedule, { passive: true });
-    window.addEventListener("resize", schedule);
+    window.addEventListener("resize", resize);
 
     return () => {
       if (frame) window.cancelAnimationFrame(frame);
       window.removeEventListener("scroll", schedule);
-      window.removeEventListener("resize", schedule);
+      window.removeEventListener("resize", resize);
     };
   }, []);
 
