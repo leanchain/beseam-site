@@ -118,6 +118,15 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${figtree.variable} ${lora.variable} antialiased`}>
+        {/* `Reveal` waits for the viewport before it plays, so without
+            scripting its sections would stay at opacity 0 forever. Twenty-odd
+            call sites, one fallback. */}
+        <noscript
+          dangerouslySetInnerHTML={{
+            __html:
+              "<style>.marketing-stage{opacity:1!important;transform:none!important}</style>",
+          }}
+        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(siteJsonLd) }}

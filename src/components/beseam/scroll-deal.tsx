@@ -82,6 +82,7 @@ export function ScrollDeal({
       for (const panel of panels) {
         panel.style.opacity = "1";
         panel.style.transform = "none";
+        panel.setAttribute("data-dealt", "");
       }
       for (const arrow of arrows) arrow.style.clipPath = "none";
     };
@@ -134,6 +135,14 @@ export function ScrollDeal({
               ? "none"
               : `translateY(${((1 - step) * 14).toFixed(2)}px)`;
         }
+
+        // A panel that has landed plays whatever flow it holds -- see
+        // `.vig-step` in globals.css. The flag comes off again on the way back
+        // up, so scrolling away and returning replays the flow rather than
+        // leaving a panel frozen on its last frame. Same rule as everything
+        // else here: state is a function of position, never a queue.
+        if (step === 1) panel.setAttribute("data-dealt", "");
+        else panel.removeAttribute("data-dealt");
       });
 
       arrows.forEach((arrow, index) => {
@@ -221,7 +230,7 @@ export function ScrollDealFallback() {
     <noscript
       dangerouslySetInnerHTML={{
         __html:
-          "<style>.deal-stage{height:auto!important}.deal-panel{position:static!important;min-height:0!important}[data-deal-panel]{opacity:1!important;transform:none!important}[data-deal-arrow]{clip-path:none!important}</style>",
+          "<style>.deal-stage{height:auto!important}.deal-panel{position:static!important;min-height:0!important}[data-deal-panel]{opacity:1!important;transform:none!important}[data-deal-arrow]{clip-path:none!important}.vig-step{opacity:1!important;transform:none!important}.vig-type{max-width:none!important;border-right-color:transparent!important}</style>",
       }}
     />
   );

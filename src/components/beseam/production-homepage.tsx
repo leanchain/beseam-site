@@ -11,6 +11,7 @@ import HeroSurfaceShift from "@/components/beseam/hero-surface-shift";
 import HeroViewportFit from "@/components/beseam/hero-viewport-fit";
 import MeasureImpact from "@/components/beseam/measure-impact";
 import { Reveal } from "@/components/beseam/reveal";
+import SystemTiles from "@/components/beseam/system-tiles";
 import WhatBeseamDoes from "@/components/beseam/what-beseam-does";
 
 /**
@@ -93,6 +94,7 @@ export default function ProductionHomepage() {
       <CategoryBenchmarksSection />
       <EvidenceToWork />
       <MeasureImpact />
+      <SystemTiles />
       <FirstMonthPromise />
     </div>
   );
