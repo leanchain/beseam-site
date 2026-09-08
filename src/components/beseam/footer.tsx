@@ -3,7 +3,25 @@
 import Link from "next/link";
 
 import Logo from "@/components/beseam/logo";
+import type { Dictionary } from "@/i18n";
 import { useDictionary } from "@/i18n/use-locale";
+
+type FooterGroupKey = keyof Dictionary["footer"]["groups"];
+
+// A per-key mapped type, indexed by the union itself, so each member's
+// `links[].key` is checked against *that same* group's dictionary shape --
+// not the shape of any of the other three groups. This is what lets
+// `as const satisfies` below catch a key typo (or a key borrowed from the
+// wrong group) at this declaration, rather than only at render time.
+type FooterGroup = {
+  [K in FooterGroupKey]: {
+    key: K;
+    links: readonly {
+      key: keyof Dictionary["footer"]["groups"][K]["links"] & string;
+      href: string;
+    }[];
+  };
+}[FooterGroupKey];
 
 const FOOTER_GROUPS = [
   {
@@ -35,7 +53,7 @@ const FOOTER_GROUPS = [
     key: "fieldbook",
     links: [{ key: "fieldbook", href: "/resources" }],
   },
-] as const;
+] as const satisfies readonly FooterGroup[];
 
 export default function BeseamFooter() {
   const t = useDictionary();
@@ -88,12 +106,18 @@ export default function BeseamFooter() {
                   </p>
                   <ul className="mt-4 space-y-1.5">
                     {group.links.map((link) => {
-                      // Each footer group has a differently-shaped `links`
-                      // record, so mapping over the flattened FOOTER_GROUPS
-                      // union loses the per-group key correlation TS would
-                      // otherwise verify. The cast is scoped to this one
-                      // lookup; the exhaustiveness guarantee still comes from
-                      // `de: Dictionary` requiring every one of these keys.
+                      // `FOOTER_GROUPS` is checked against `FooterGroup`
+                      // above (a mapped type indexed by the union itself),
+                      // so a key typo -- or a key borrowed from the wrong
+                      // group -- is already a compile error at that
+                      // declaration. What's left here is a plain TypeScript
+                      // limitation: `.map` over a union of differently-shaped
+                      // arrays widens `link.key` to the union of *all* groups'
+                      // keys, and indexed access can't re-correlate it back to
+                      // this one iteration's `groupCopy` without an explicit
+                      // switch on `group.key`. The cast below only bridges
+                      // that gap; it grants no new typo safety, because the
+                      // `satisfies` check already owns that job.
                       const groupLinks = groupCopy.links as Record<
                         string,
                         string

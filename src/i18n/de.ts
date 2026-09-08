@@ -24,8 +24,8 @@ export const de: Dictionary = {
   footer: {
     homeAriaLabel: "Beseam Startseite",
     tagline: {
-      before: "Produkte leichter zu",
-      highlight: "finden, auswählen und kaufen",
+      before: "Machen Sie es leichter, Produkte zu",
+      highlight: "finden, auszuwählen und zu kaufen",
     },
     description:
       "Beseam beobachtet fortlaufend die Kaufreise, findet, was sich zu verbessern lohnt, setzt genehmigte Änderungen um, wo dies unterstützt wird, und misst, was sich verändert hat.",
@@ -39,10 +39,10 @@ export const de: Dictionary = {
         },
       },
       aiShoppingAgents: {
-        label: "KI-Einkaufsassistenten",
+        label: "KI-Einkaufsagenten",
         links: {
           aiShoppingData: "KI-Shopping-Daten",
-          forShoppingAgents: "Für Shopping-Agenten",
+          forShoppingAgents: "Für Einkaufsagenten",
           report: "AI Shopping Report",
         },
       },
