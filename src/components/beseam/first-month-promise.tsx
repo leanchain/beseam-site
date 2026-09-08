@@ -25,13 +25,12 @@ import { APP_REGISTER_URL } from "@/lib/app-urls";
  * `category-benchmarks-section.tsx`) -- so the last section lines up with the
  * two above it instead of inventing a closing layout of its own.
  *
- * The offer is three short sentences in one line of thought: what the other
- * tools do, what Beseam does instead, what it costs to find out. No asides,
- * no em-dash clause, no list of what the plan includes -- an earlier draft
- * carried all three and read as branching. The category contrast is load
- * bearing: the AI-visibility tools price by tracked prompts, models and
- * projects (`comparisons.ts`, Peec AI row), so watching is their meter, and
- * Beseam's claim is that watching was never the product.
+ * The offer runs in one line of thought: what Beseam does, what it replaces,
+ * what it costs to find out. The "one subscription instead of a tool plus an
+ * agency" clause is load bearing -- the AI-visibility tools price by tracked
+ * prompts, models and projects (`comparisons.ts`, Peec AI row), so watching is
+ * their meter, and Beseam's claim is that watching was never the product. No
+ * fixed trial length is stated, because none is configured in billing.
  *
  * The headline is two block spans, not one balanced line: the sentences must
  * not merge mid-thought. What is deliberately absent is the
@@ -68,10 +67,11 @@ export default function FirstMonthPromise({
               </h2>
             </div>
             <div>
-              <p className="max-w-[48ch] text-[17px] leading-[1.72] text-black/64">
-                Other tools watch and report. Beseam watches, makes the change
-                you approve, and shows you what moved. Your first 30 days are
-                free.
+              <p className="max-w-[52ch] text-[17px] leading-[1.72] text-black/64">
+                Beseam watches, prepares the change, applies it once you
+                approve, and shows you what moved, one subscription instead of a
+                tool plus an agency. Try for free to see the impact before you
+                pay anything.
               </p>
               <TrackedLink
                 href={APP_REGISTER_URL}
