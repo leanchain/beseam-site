@@ -108,16 +108,16 @@ const PARSED = [
  * The two listings the answer leads with, shown the way an assistant shows
  * them: a picture, the product, the store and the price.
  *
- * Both photographs are of the same jacket, and that is deliberate rather than
- * lazy. Every product in this section is invented -- the frame says EXAMPLE --
- * so the honest options were a stock photo of some real brand's jacket sold
- * under a made-up name, or free-licensed pictures of one anonymous windbreaker
- * standing in for the category. These are the second, both cropped to the same
+ * Two different jackets, both free-licensed, both cropped to the same card
  * band so they read as two listings rather than two photographs:
- * `commuter-shell.webp` from "Windbreaker Jacket, Hood Stowed" (public domain,
- * Wikimedia Commons) and `rain-jacket.webp` from "Windbreaker Jacket, Hood
- * Outside Transparency" (CC0, Ingolfson, Wikimedia Commons), the same cutout
- * the merchant's own product uses two tiles along.
+ * `commuter-shell.webp` is a crop of "red-jacket" (CC0, StockSnap, no
+ * attribution required) and `rain-jacket.webp` a crop of "Windbreaker Jacket,
+ * Hood Outside Transparency" (CC0, Ingolfson, Wikimedia Commons) -- the same
+ * cutout the merchant's own product uses two tiles along.
+ *
+ * No real brand's product photo stands in for an invented listing: everything
+ * here is an anonymous garment under a made-up name, and the frame says
+ * EXAMPLE.
  *
  * No match score. The mock this follows carried "97% MATCH" per card, which is
  * a number Beseam never computed -- the same rule that keeps a projected lift
