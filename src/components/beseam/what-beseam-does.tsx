@@ -195,7 +195,7 @@ function DiscoveryVignette() {
   return (
     <div
       aria-hidden="true"
-      className="flex h-[21rem] flex-col bg-white p-3.5 ring-1 ring-black/10"
+      className="flex h-[23rem] flex-col bg-white p-3.5 ring-1 ring-black/10"
     >
       <div className="flex shrink-0 items-center justify-between gap-2 border-b border-black/10 pb-2">
         <span className="vig-step font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-black/60">
@@ -261,7 +261,7 @@ function DiscoveryVignette() {
             className="vig-step flex min-w-0 flex-col border border-black/12"
             style={vig(index + 4, "1.25s")}
           >
-            <span className="flex h-[4.75rem] shrink-0 items-center justify-center overflow-hidden bg-[#f4f1ed]">
+            <span className="flex h-[8.5rem] shrink-0 items-center justify-center overflow-hidden bg-[#f4f1ed]">
               {/* Unoptimised on purpose: two 60px-tall thumbnails inside an
                   animated panel are not worth a second network round trip
                   through the image route. */}
@@ -308,30 +308,39 @@ function StoreVignette() {
   return (
     <div
       aria-hidden="true"
-      className="flex h-[21rem] overflow-hidden bg-white ring-1 ring-black/10"
+      className="flex h-[23rem] overflow-hidden bg-white ring-1 ring-black/10"
     >
-      <div className="flex w-[31%] min-w-0 flex-col items-center justify-center bg-ground/60 px-2">
+      {/* The gallery: the photograph only. The name and the price moved to
+          the right, where a product page actually puts them -- next to the
+          questions, not under the picture. */}
+      <div className="flex w-[31%] min-w-0 items-center justify-center bg-ground/60 px-2">
         <Image
           src={PRODUCT_PHOTO.src}
           alt=""
           width={PRODUCT_PHOTO.width}
           height={PRODUCT_PHOTO.height}
-          className="h-[5.5rem] w-auto object-contain"
+          className="h-[9.5rem] w-auto object-contain"
         />
-        <span className="mt-2.5 text-center text-[12.5px] font-semibold text-ink-deep">
-          {PRODUCT.name}
-        </span>
-        <span className="mt-1 font-mono text-[11px] text-black/60">
-          {PRODUCT.price}
-        </span>
       </div>
 
       {/* The page put next to the questions it is supposed to answer. A tick
           is not the interesting row -- the two crosses are, and they are the
           ones the last panel picks up. */}
-      <div className="flex min-w-0 flex-1 flex-col justify-center border-l border-black/10 px-3.5 py-3.5">
+      <div className="flex min-w-0 flex-1 flex-col border-l border-black/10 px-3.5 py-3.5">
+        <div
+          className="vig-step flex items-baseline justify-between gap-3 border-b border-black/10 pb-2"
+          style={vig(0, "0.2s")}
+        >
+          <span className="min-w-0 truncate text-[14px] font-semibold leading-[1.25] text-ink-deep">
+            {PRODUCT.name}
+          </span>
+          <span className="shrink-0 font-mono text-[12px] text-black/60">
+            {PRODUCT.price}
+          </span>
+        </div>
+
         <span
-          className="vig-step font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-black/60"
+          className="vig-step mt-2.5 font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-black/60"
           style={vig(0, "0.2s")}
         >
           What shoppers ask here
@@ -364,9 +373,11 @@ function StoreVignette() {
         </ul>
 
         {/* The verdict is the panel, so it stamps rather than drifts in. It
-            counts the crosses directly above it and nothing else. */}
+            counts the crosses directly above it and nothing else. Held at the
+            foot of the panel: the questions read from the title down, and the
+            verdict closes the page rather than floating in the middle of it. */}
         <div
-          className="vig-step vig-stamp mt-3 flex items-center gap-1.5 text-signal-ink"
+          className="vig-step vig-stamp mt-auto flex items-center gap-1.5 border-t border-black/10 pt-3 text-signal-ink"
           style={vig(5, "0.2s")}
         >
           <X className="h-3.5 w-3.5 shrink-0" />
@@ -383,7 +394,7 @@ function PersonalizationVignette() {
   return (
     <div
       aria-hidden="true"
-      className="flex h-[21rem] flex-col bg-white p-3.5 ring-1 ring-black/10"
+      className="flex h-[23rem] flex-col bg-white p-3.5 ring-1 ring-black/10"
     >
       <div className="flex shrink-0 flex-wrap items-center gap-x-2 gap-y-1.5">
         <span

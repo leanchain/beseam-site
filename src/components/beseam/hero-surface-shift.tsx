@@ -56,7 +56,7 @@ const LAYER = "380ms cubic-bezier(.22,.61,.36,1)";
 // starts moving on its own -- a mouse still in motion means the visitor is
 // reading/scanning, and starting motion under an active cursor reads as
 // competing for attention rather than demonstrating the product.
-const AUTO_JOURNEY_IDLE_DELAY_MS = 1200;
+const AUTO_JOURNEY_IDLE_DELAY_MS = 10000;
 const HUBS: readonly Hub[] = [
   {
     id: "ai",
@@ -270,7 +270,7 @@ const HUBS: readonly Hub[] = [
     satellites: [
       ["orders", "184"],
       ["CVR", "3.6%"],
-      ["AOV", "$84"],
+      ["AOV", "€84"],
       ["impact", "+8.4%"],
     ],
     metrics: [
