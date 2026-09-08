@@ -133,7 +133,7 @@ export function ActionsScreen({ compact = false }: { compact?: boolean } = {}) {
               <span
                 className={`inline-flex shrink-0 items-center rounded-md px-2 py-0.5 text-[11px] font-semibold ${
                   row.lead
-                    ? "bg-[var(--secondary)] text-[var(--secondary-foreground)]"
+                    ? "bg-ink-deep text-white"
                     : "border border-black/18 bg-white text-[#3f3f3f]"
                 }`}
               >
@@ -200,8 +200,10 @@ export function ActionsScreen({ compact = false }: { compact?: boolean } = {}) {
                 {row.band}
               </span>
 
+              {/* `justify-self-start`, or a grid item stretches to its column
+                  and a badge starts reading as an input field. */}
               <span
-                className={`inline-flex shrink-0 items-center rounded-md border px-1.5 py-0.5 text-[11px] font-medium ${
+                className={`inline-flex shrink-0 items-center justify-self-start rounded-md border px-1.5 py-0.5 text-[11px] font-medium ${
                   EFFORT_TONE[row.effort] ?? EFFORT_TONE.Hard
                 }`}
               >
@@ -209,9 +211,9 @@ export function ActionsScreen({ compact = false }: { compact?: boolean } = {}) {
               </span>
 
               <span
-                className={`inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-md px-2 py-1 text-[11px] font-semibold ${
+                className={`inline-flex shrink-0 items-center gap-1 justify-self-start whitespace-nowrap rounded-md px-2 py-1 text-[11px] font-semibold ${
                   row.lead
-                    ? "bg-[var(--secondary)] text-[var(--secondary-foreground)]"
+                    ? "bg-ink-deep text-white"
                     : "border border-black/20 text-black/70"
                 }`}
               >

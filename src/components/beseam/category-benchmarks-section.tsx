@@ -159,7 +159,7 @@ export default function CategoryBenchmarksSection() {
                 <div
                   className="grid items-end gap-x-2 border-b border-black/12 px-1 py-2.5 font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-black/46 sm:gap-x-4"
                   style={{
-                    gridTemplateColumns: "8.5rem minmax(0, 1fr) 7.5rem",
+                    gridTemplateColumns: "10.25rem minmax(0, 1fr) 7.5rem",
                   }}
                 >
                   <span>Category</span>
@@ -172,7 +172,7 @@ export default function CategoryBenchmarksSection() {
                       key={benchmark.slug}
                       className="group grid items-center gap-x-2 border-b border-black/12 px-1 py-2.5 transition-colors hover:bg-black/[0.025] sm:gap-x-4"
                       style={{
-                        gridTemplateColumns: "8.5rem minmax(0, 1fr) 7.5rem",
+                        gridTemplateColumns: "10.25rem minmax(0, 1fr) 7.5rem",
                       }}
                     >
                       <span className="min-w-0 truncate whitespace-nowrap font-mono text-[11px] font-semibold uppercase tracking-[0.1em] text-signal-ink">
