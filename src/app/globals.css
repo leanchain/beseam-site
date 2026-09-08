@@ -718,24 +718,6 @@ html.theme-transition::view-transition-new(root) {
   animation: marketing-reveal 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-/* The connector between two dealt panels draws out of the one that just landed,
- * before the next one rises: `--seq-base` is that panel's own queue position, so
- * one rule times every arrow in the row. Reduced motion collapses the draw to
- * its end state via the global rule below, which leaves the arrow simply there. */
-@keyframes seq-arrow-draw {
-  from {
-    clip-path: inset(0 100% 0 0);
-  }
-  to {
-    clip-path: inset(0 0 0 0);
-  }
-}
-
-.sequence-reveal.is-playing [data-seq-arrow] {
-  animation: seq-arrow-draw 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
-  animation-delay: calc(var(--seq-base, 0s) + 0.15s);
-}
-
 .sequence-reveal.is-playing [data-seq-row] {
   animation: marketing-reveal 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
   animation-delay: calc(var(--seq-base, 0s) + var(--seq-row, 0) * 0.12s);

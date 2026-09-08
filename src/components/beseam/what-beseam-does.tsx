@@ -15,9 +15,9 @@ import { ChannelIcon } from "@/components/beseam/channel-icon";
 import ProductArt from "@/components/beseam/product-art";
 import { Reveal } from "@/components/beseam/reveal";
 import {
-  SequenceReveal,
-  SequenceRevealFallback,
-} from "@/components/beseam/sequence-reveal";
+  ScrollDeal,
+  ScrollDealFallback,
+} from "@/components/beseam/scroll-deal";
 
 /**
  * The four-step flow: a shopper asks a buying question, the assistant either
@@ -27,16 +27,15 @@ import {
  * Two things a merchant told us shaped this. The panels used to draw their
  * labels at 7.5px, which she could not read without leaning in ("it's so
  * small"), so nothing in this section goes below 11px and the panels are a
- * third taller. And all four used to appear at once on mount, which she asked
- * to be dealt one after another -- hence `SequenceReveal` rather than
- * `Reveal` on the grid, and only here.
+ * third taller. And all four used to appear at once, which she asked to be
+ * dealt one after another.
  *
- * The first cut dealt them 0.18s apart, which is not a deal at all: four panels
- * landing inside half a second still read as one block. The gap is 0.5s now,
- * and the connector arrow draws out of the panel that just landed before the
- * next one rises, so the row reads left to right as one chain rather than four
- * things appearing. That is roughly two seconds for the full row, which is the
- * budget a landing page has for a graphic someone is deciding whether to read.
+ * A timed stagger did not carry that -- four panels landing inside half a
+ * second still read as one block, and a slower timer only makes a fast reader
+ * wait. `ScrollDeal` paces the row by scroll position instead: each panel is
+ * dealt across its own slice of the row's travel through the viewport, the
+ * connector arrow draws out of the panel that just landed before the next one
+ * rises, and scrolling back plays it backwards. The reader sets the pace.
  */
 const DOMAINS = [
   {
@@ -284,17 +283,15 @@ export default function WhatBeseamDoes() {
           </div>
         </Reveal>
 
-        <SequenceRevealFallback />
-        <div className="mt-12 grid border-t-2 border-ink-deep sm:grid-cols-2 lg:mt-16 xl:grid-cols-4">
-          {DOMAINS.map((domain, index) => {
+        <ScrollDealFallback />
+        <ScrollDeal
+          className="mt-12 grid border-t-2 border-ink-deep sm:grid-cols-2 lg:mt-16 xl:grid-cols-4"
+          cells={DOMAINS.map((domain, index) => {
             const Vignette = VIGNETTES[index];
-            return (
-              <SequenceReveal
-                key={domain.title}
-                index={index}
-                gap={0.5}
-                className={`relative border-b border-black/14 py-5 sm:px-5 sm:py-6 xl:border-b-0 ${CELL_RULES[index]}`}
-              >
+            return {
+              key: domain.title,
+              className: `relative border-b border-black/14 py-5 sm:px-5 sm:py-6 xl:border-b-0 ${CELL_RULES[index]}`,
+              content: (
                 <article>
                   <div className="flex items-start gap-3">
                     <span className="flex h-9 w-9 shrink-0 items-center justify-center bg-signal-ink text-white">
@@ -314,7 +311,7 @@ export default function WhatBeseamDoes() {
                     </div>
                     {index < DOMAINS.length - 1 ? (
                       <span
-                        data-seq-arrow
+                        data-deal-arrow
                         aria-hidden="true"
                         className="hidden items-center gap-1 text-signal-ink xl:absolute xl:-right-[1.35rem] xl:top-[1.6rem] xl:z-10 xl:flex xl:bg-ground xl:px-1"
                       >
@@ -330,10 +327,10 @@ export default function WhatBeseamDoes() {
                     {domain.detail}
                   </p>
                 </article>
-              </SequenceReveal>
-            );
+              ),
+            };
           })}
-        </div>
+        />
 
         <Reveal delay={0.08}>
           <div className="mt-5 border-y border-white/10 bg-ink-deep px-5 py-3.5 text-white sm:px-6 lg:px-8">
