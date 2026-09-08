@@ -977,6 +977,27 @@ html.theme-transition::view-transition-new(root) {
     vig-caret-off 1100ms step-end both;
 }
 
+/* The one authored moment on /preview/pyor: the rule under the hero's
+ * accent draws itself once, on arrival. Nothing else on that page moves. */
+@keyframes pyor-underline {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.pyor-underline {
+  animation: pyor-underline 720ms cubic-bezier(0.16, 1, 0.3, 1) 220ms both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pyor-underline {
+    animation: none;
+  }
+}
+
 .marketing-wash {
   background: color-mix(in srgb, var(--brand) 18%, transparent);
   filter: blur(110px);
