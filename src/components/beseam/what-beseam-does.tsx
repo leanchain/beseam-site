@@ -4,6 +4,7 @@ import Image from "next/image";
 
 import {
   ArrowRight,
+  Check,
   CheckCircle2,
   MousePointer2,
   Radar,
@@ -114,6 +115,43 @@ const ANSWER_PICKS = [
     store: "Halden Rainwear",
     price: "$142",
   },
+  {
+    product: "Spoke Packable Waterproof",
+    store: "Storm & Spoke",
+    price: "$119",
+  },
+] as const;
+
+/** The merchant's own product, so the last two panels have something to sell. */
+const PRODUCT = { name: "City Shell", price: "$149" } as const;
+
+/**
+ * The four things a shopper wants to know before buying this jacket, and what
+ * the product page says back. Two are answered, two are not.
+ *
+ * `ADDED_CONTEXT` below answers those same two, by name. That is the whole
+ * argument of the row -- panel two finds the gap, panel three closes it -- so
+ * the two lists have to keep matching. Change a question here and change it
+ * there, or the section stops being one story and becomes three drawings.
+ */
+const PAGE_QUESTIONS = [
+  { question: "Waterproof rating", answer: "20,000 mm", answered: true },
+  {
+    question: "Breathable for commuting",
+    answer: "Not answered",
+    answered: false,
+  },
+  {
+    question: "Fits over a suit jacket",
+    answer: "Not answered",
+    answered: false,
+  },
+  { question: "Return window", answer: "60 days", answered: true },
+] as const;
+
+const ADDED_CONTEXT = [
+  { question: "Breathable for commuting", answer: "3-layer shell, pit zips" },
+  { question: "Fits over a suit jacket", answer: "Regular cut, size up" },
 ] as const;
 
 const DOMAINS = [
@@ -141,7 +179,7 @@ function DiscoveryVignette() {
   return (
     <div
       aria-hidden="true"
-      className="flex h-[14rem] flex-col bg-white p-3.5 ring-1 ring-black/10"
+      className="flex h-[18rem] flex-col bg-white p-3.5 ring-1 ring-black/10"
     >
       <div className="flex shrink-0 items-center justify-between gap-2 border-b border-black/10 pb-2">
         <span className="vig-step font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-black/60">
@@ -196,7 +234,7 @@ function DiscoveryVignette() {
       {/* The answer, not the scoreboard. The matches arrive one at a time, the
           way an assistant lists them, and the reader watches the list finish
           without their own store in it. */}
-      <ol className="mt-2 flex min-h-0 flex-1 flex-col justify-center gap-1.5">
+      <ol className="mt-2.5 flex min-h-0 flex-1 flex-col justify-center gap-2">
         {ANSWER_PICKS.map((pick, index) => (
           <li
             key={pick.product}
@@ -214,11 +252,19 @@ function DiscoveryVignette() {
             </span>
           </li>
         ))}
+        {/* The answer did not stop at three. Saying so is the difference
+            between a short list and a place the merchant is missing from. */}
+        <li
+          className="vig-step pl-4 font-mono text-[11px] text-black/40"
+          style={vig(7, "1.25s")}
+        >
+          and six more, none of them yours
+        </li>
       </ol>
 
       <div
-        className="vig-step vig-stamp mt-1.5 flex shrink-0 items-center gap-1.5 border-t border-black/10 pt-2 text-signal-ink"
-        style={vig(6, "1.35s")}
+        className="vig-step vig-stamp mt-2.5 flex shrink-0 items-center gap-1.5 border-t border-black/10 pt-2.5 text-signal-ink"
+        style={vig(8, "1.35s")}
       >
         <X className="h-3.5 w-3.5 shrink-0" />
         <span className="font-mono text-[12px] font-semibold uppercase tracking-[0.06em]">
@@ -233,53 +279,72 @@ function StoreVignette() {
   return (
     <div
       aria-hidden="true"
-      className="flex h-[14rem] overflow-hidden bg-white ring-1 ring-black/10"
+      className="flex h-[18rem] overflow-hidden bg-white ring-1 ring-black/10"
     >
-      <div className="flex w-[36%] min-w-0 flex-col items-center justify-center bg-ground/60 px-2">
+      <div className="flex w-[31%] min-w-0 flex-col items-center justify-center bg-ground/60 px-2">
         <Image
           src={PRODUCT_PHOTO.src}
           alt=""
           width={PRODUCT_PHOTO.width}
           height={PRODUCT_PHOTO.height}
-          className="h-[3.9rem] w-auto object-contain"
+          className="h-[5.5rem] w-auto object-contain"
         />
-        <span className="mt-1.5 text-[11px] font-semibold text-ink-deep">
-          City Shell
+        <span className="mt-2.5 text-center text-[12.5px] font-semibold text-ink-deep">
+          {PRODUCT.name}
         </span>
-        <span className="mt-0.5 font-mono text-[11px] text-black/60">
-          20,000 mm
+        <span className="mt-1 font-mono text-[11px] text-black/60">
+          {PRODUCT.price}
         </span>
       </div>
 
-      <div className="flex min-w-0 flex-1 flex-col justify-center border-l border-black/10 px-3.5">
+      {/* The page put next to the questions it is supposed to answer. A tick
+          is not the interesting row -- the two crosses are, and they are the
+          ones the last panel picks up. */}
+      <div className="flex min-w-0 flex-1 flex-col justify-center border-l border-black/10 px-3.5 py-3.5">
         <span
           className="vig-step font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-black/60"
           style={vig(0, "0.2s")}
         >
-          What blocks the choice
+          What shoppers ask here
         </span>
-        <p
-          className="vig-step mt-2 text-[12.5px] font-semibold leading-[1.3] text-ink-deep"
-          style={vig(1, "0.2s")}
-        >
-          Breathable enough for commuting?
-        </p>
-        {/* The verdict is the panel, so it stamps rather than drifts in. */}
+
+        <ul className="mt-2.5 flex flex-col">
+          {PAGE_QUESTIONS.map((row, index) => (
+            <li
+              key={row.question}
+              className="vig-step flex items-baseline gap-2 border-b border-black/8 py-1.5 last:border-0"
+              style={vig(index + 1, "0.2s")}
+            >
+              {row.answered ? (
+                <Check className="h-3.5 w-3.5 shrink-0 translate-y-[2px] text-black/35" />
+              ) : (
+                <X className="h-3.5 w-3.5 shrink-0 translate-y-[2px] text-signal-ink" />
+              )}
+              <span className="min-w-0 flex-1 truncate text-[12px] text-ink-deep">
+                {row.question}
+              </span>
+              <span
+                className={`shrink-0 font-mono text-[11px] ${
+                  row.answered ? "text-black/50" : "text-signal-ink"
+                }`}
+              >
+                {row.answer}
+              </span>
+            </li>
+          ))}
+        </ul>
+
+        {/* The verdict is the panel, so it stamps rather than drifts in. It
+            counts the crosses directly above it and nothing else. */}
         <div
-          className="vig-step vig-stamp mt-2 flex items-center gap-1.5 text-signal-ink"
-          style={vig(3, "0.2s")}
+          className="vig-step vig-stamp mt-3 flex items-center gap-1.5 text-signal-ink"
+          style={vig(5, "0.2s")}
         >
           <X className="h-3.5 w-3.5 shrink-0" />
           <span className="font-mono text-[12px] font-semibold uppercase tracking-[0.06em]">
-            No answer
+            Two questions unanswered
           </span>
         </div>
-        <p
-          className="vig-step mt-2 font-mono text-[11px] leading-[1.4] text-black/60"
-          style={vig(4, "0.2s")}
-        >
-          Question not answered on the page
-        </p>
       </div>
     </div>
   );
@@ -289,9 +354,9 @@ function PersonalizationVignette() {
   return (
     <div
       aria-hidden="true"
-      className="flex h-[14rem] flex-col bg-white p-3.5 ring-1 ring-black/10"
+      className="flex h-[18rem] flex-col bg-white p-3.5 ring-1 ring-black/10"
     >
-      <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5">
+      <div className="flex shrink-0 flex-wrap items-center gap-x-2 gap-y-1.5">
         <span
           className="vig-step shrink-0 font-mono text-[11px] font-semibold uppercase tracking-[0.09em] text-black/60"
           style={vig(0, "0.2s")}
@@ -306,63 +371,73 @@ function PersonalizationVignette() {
           waterproof
         </span>
         <span
-          className="vig-step shrink-0 bg-signal-ink/[0.06] px-1.5 py-0.5 font-mono text-[11px] font-semibold text-signal-ink ring-1 ring-signal-ink/18"
+          className="vig-step shrink-0 bg-ground px-1.5 py-0.5 font-mono text-[11px] text-black/60 ring-1 ring-black/8"
           style={vig(2, "0.2s")}
+        >
+          size M
+        </span>
+        <span
+          className="vig-step shrink-0 bg-signal-ink/[0.06] px-1.5 py-0.5 font-mono text-[11px] font-semibold text-signal-ink ring-1 ring-signal-ink/18"
+          style={vig(3, "0.2s")}
         >
           commuting
         </span>
       </div>
 
-      <div className="mt-2.5 flex min-h-0 flex-1 overflow-hidden ring-1 ring-black/10">
-        <div className="flex w-[42%] min-w-0 items-center gap-2.5 bg-ground/65 px-2.5">
-          <Image
-            src={PRODUCT_PHOTO.src}
-            alt=""
-            width={PRODUCT_PHOTO.width}
-            height={PRODUCT_PHOTO.height}
-            className="h-11 w-auto shrink-0 object-contain"
-          />
-          <div className="min-w-0">
-            <p className="font-mono text-[11px] uppercase tracking-[0.08em] text-black/60">
-              You’re viewing
-            </p>
-            <p className="mt-0.5 truncate text-[12px] font-semibold text-ink-deep">
-              City Shell
-            </p>
-          </div>
+      <div className="mt-2.5 flex shrink-0 items-center gap-2.5 bg-ground/65 px-2.5 py-2 ring-1 ring-black/10">
+        <Image
+          src={PRODUCT_PHOTO.src}
+          alt=""
+          width={PRODUCT_PHOTO.width}
+          height={PRODUCT_PHOTO.height}
+          className="h-12 w-auto shrink-0 object-contain"
+        />
+        <div className="min-w-0 flex-1">
+          <p className="font-mono text-[11px] uppercase tracking-[0.08em] text-black/60">
+            You’re viewing
+          </p>
+          <p className="mt-0.5 truncate text-[12.5px] font-semibold text-ink-deep">
+            {PRODUCT.name}
+          </p>
         </div>
+        <span className="shrink-0 font-mono text-[11px] text-black/60">
+          {PRODUCT.price}
+        </span>
+      </div>
 
-        <div className="flex min-w-0 flex-1 flex-col justify-center border-l border-black/10 bg-signal-ink/[0.045] px-3">
-          <div className="flex items-center gap-1.5">
-            <WandSparkles className="h-3.5 w-3.5 shrink-0 text-signal-ink" />
-            <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-signal-ink">
-              Helpful context
-            </span>
-          </div>
-          {/* The two chips are the fix arriving: they fill in after the
-              shopper's wants have been read, one then the other. */}
-          <div className="mt-2 flex flex-wrap gap-1.5">
-            <span
-              className="vig-step bg-white px-1.5 py-0.5 font-mono text-[11px] text-black/60 ring-1 ring-black/8"
-              style={vig(4, "0.2s")}
-            >
-              Commuting use case
-            </span>
-            <span
-              className="vig-step bg-white px-1.5 py-0.5 font-mono text-[11px] font-semibold text-ink-deep ring-1 ring-signal-ink/16"
-              style={vig(5, "0.2s")}
-            >
-              Breathable shell
-            </span>
-          </div>
+      {/* The fix arriving, and it is the same two questions the middle panel
+          left with a cross. Answers, not tags: a chip saying "breathable"
+          would not have told the shopper anything they could act on. */}
+      <div className="mt-2.5 flex min-h-0 flex-1 flex-col justify-center bg-signal-ink/[0.045] px-3 py-2.5 ring-1 ring-signal-ink/12">
+        <div className="flex items-center gap-1.5">
+          <WandSparkles className="h-3.5 w-3.5 shrink-0 text-signal-ink" />
+          <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-signal-ink">
+            Helpful context added
+          </span>
         </div>
+        <dl className="mt-2 flex flex-col gap-1.5">
+          {ADDED_CONTEXT.map((row, index) => (
+            <div
+              key={row.question}
+              className="vig-step flex items-baseline gap-2"
+              style={vig(index + 5, "0.2s")}
+            >
+              <dt className="min-w-0 flex-1 truncate text-[12px] text-ink-deep">
+                {row.question}
+              </dt>
+              <dd className="shrink-0 font-mono text-[11px] font-semibold text-ink-deep">
+                {row.answer}
+              </dd>
+            </div>
+          ))}
+        </dl>
       </div>
 
       {/* The panel is about the shopper choosing, so it ends where choosing
           ends. Green, because nothing else in this section is. */}
       <div
-        className="vig-step vig-stamp mt-2 flex items-center gap-1.5 bg-[#1a6b43]/[0.07] px-2 py-1.5 ring-1 ring-[#1a6b43]/20"
-        style={vig(7, "0.2s")}
+        className="vig-step vig-stamp mt-2.5 flex shrink-0 items-center gap-1.5 bg-[#1a6b43]/[0.07] px-2 py-1.5 ring-1 ring-[#1a6b43]/20"
+        style={vig(8, "0.2s")}
       >
         <CheckCircle2
           className="h-3.5 w-3.5 shrink-0 text-[#1a6b43]"
