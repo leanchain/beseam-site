@@ -1,3 +1,5 @@
+import type { CSSProperties } from "react";
+
 import Image from "next/image";
 
 import {
@@ -52,22 +54,61 @@ const PRODUCT_PHOTO = {
   height: 456,
 } as const;
 
+/**
+ * A beat inside a vignette's flow: `--vig-i` is its place in the order,
+ * `--vig-base` the moment the panel's flow starts. Both are read by the
+ * `.vig-step` rule in globals.css, which is where the timing lives.
+ */
+const vig = (index: number, base?: string): CSSProperties =>
+  ({
+    "--vig-i": index,
+    ...(base ? { "--vig-base": base } : {}),
+  }) as CSSProperties;
+
+/**
+ * `capabilities` replaced a single "AI · search · feeds" line under the title.
+ * Same words, boxed: a shopper-journey stage is a set of surfaces Beseam
+ * watches, and a row of chips says "these, specifically" where a dot-separated
+ * line read as a caption to be skipped.
+ */
+/**
+ * The discovery panel used to answer its own question with three verdict
+ * words -- ChatGPT NAMED, Gemini NAMED, Perplexity NOT NAMED. That is the
+ * scoreboard, not the result: a merchant reading it still has to take our
+ * word for what the assistant actually said, and the thing that stings --
+ * seeing three other stores in the answer and not yours -- never appears.
+ *
+ * So the panel shows the answer instead. It is an illustration, not a
+ * capture: the stores below are invented and the panel says EXAMPLE where a
+ * date would go, because the one thing this product must never show is
+ * manufactured evidence dressed as a finding. The real, dated, cross-engine
+ * runs are two sections down in #benchmarks and on /benchmarks, with brands
+ * the assistants genuinely named. Keep it that way -- if these names ever
+ * need to be real, take them from `category-benchmarks.ts` and print the
+ * engine and date with them.
+ */
+const ANSWER_PICKS = [
+  "Northvale Outfitters",
+  "Storm & Spoke",
+  "Halden Rainwear",
+] as const;
+
 const DOMAINS = [
   {
     title: "Get found",
-    scope: "AI · search · feeds",
+    capabilities: ["AI answers", "Search", "Product feeds"],
     detail: "If shoppers never see you, they cannot choose you.",
     Icon: Radar,
   },
   {
     title: "See why shoppers hesitate",
-    scope: "Product pages · search · behavior",
+    capabilities: ["Product pages", "On-site search", "Behavior"],
     detail: "Find the unanswered question that makes the shopper hesitate.",
     Icon: MousePointer2,
   },
   {
     title: "Help shoppers choose",
-    scope: "Recommendations · personalization",
+    capabilities: ["Recommendations", "Personalization"],
     detail: "Add the missing information that helps the shopper choose.",
     Icon: ShoppingBag,
   },
@@ -79,41 +120,62 @@ function DiscoveryVignette() {
       aria-hidden="true"
       className="flex h-[11rem] flex-col bg-white p-3.5 ring-1 ring-black/10"
     >
-      <div className="flex flex-col gap-1 border-b border-black/10 pb-2.5">
-        <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-black/60">
+      <div className="flex shrink-0 items-center justify-between gap-2 border-b border-black/10 pb-2">
+        <span className="vig-step font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-black/60">
           Buying question
         </span>
-        <span className="min-w-0 truncate text-[12px] font-medium text-ink-deep">
-          best waterproof jacket for commuting
-        </span>
+        {/* The engine mark and the word EXAMPLE travel together, in the panel's
+            own frame: this is what an assistant answer looks like, and it is
+            not a capture. A real one would carry a date here instead. */}
+        <div className="flex shrink-0 items-center gap-1.5">
+          <ChannelIcon
+            brand="openai"
+            className="h-[15px] w-[15px] shrink-0 text-ink-deep/55"
+          />
+          <span className="border border-black/15 px-1.5 py-px font-mono text-[11px] font-semibold uppercase tracking-[0.09em] text-black/45">
+            Example
+          </span>
+        </div>
       </div>
 
-      <div className="flex flex-1 flex-col justify-center gap-2.5">
-        {(
-          [
-            ["openai", "ChatGPT", true],
-            ["gemini", "Gemini", true],
-            ["perplexity", "Perplexity", false],
-          ] as const
-        ).map(([brand, name, named]) => (
-          <div key={brand} className="flex items-center gap-2">
-            <ChannelIcon
-              brand={brand}
-              className={`h-[18px] w-[18px] shrink-0 ${named ? "text-ink-deep/70" : "text-black/30"}`}
-            />
-            <span className="font-mono text-[12px] font-semibold uppercase tracking-[0.06em] text-black/56">
-              {name}
+      {/* Typed, because a shopper types it. Thirty-six characters, which is
+          the count `steps(36)` in globals.css is pacing -- edit the string
+          and the timing function has to move with it. */}
+      <span
+        className="vig-type mt-2 max-w-full shrink-0 text-[12.5px] font-semibold leading-[1.3] text-ink-deep"
+        style={{ "--vig-chars": 36 } as CSSProperties}
+      >
+        best waterproof jacket for commuting
+      </span>
+
+      {/* The answer, not the scoreboard. Three stores arrive one at a time,
+          the way an assistant lists them, and the reader watches the list
+          finish without their own store in it. */}
+      <ol className="mt-2 flex min-h-0 flex-1 flex-col justify-center gap-1">
+        {ANSWER_PICKS.map((store, index) => (
+          <li
+            key={store}
+            className="vig-step flex items-baseline gap-1.5"
+            style={vig(index, "0.95s")}
+          >
+            <span className="shrink-0 font-mono text-[11px] text-black/40">
+              {index + 1}.
             </span>
-            <span className="h-px min-w-3 flex-1 bg-black/10" />
-            <span
-              className={`shrink-0 font-mono text-[12px] font-semibold uppercase tracking-[0.06em] ${
-                named ? "text-[#1a6b43]" : "text-signal-ink"
-              }`}
-            >
-              {named ? "Named" : "Not named"}
+            <span className="min-w-0 truncate text-[12px] font-medium text-ink-deep">
+              {store}
             </span>
-          </div>
+          </li>
         ))}
+      </ol>
+
+      <div
+        className="vig-step vig-stamp mt-1.5 flex shrink-0 items-center gap-1.5 border-t border-black/10 pt-2 text-signal-ink"
+        style={vig(3, "1.05s")}
+      >
+        <X className="h-3.5 w-3.5 shrink-0" />
+        <span className="font-mono text-[12px] font-semibold uppercase tracking-[0.06em]">
+          Your store, not named
+        </span>
       </div>
     </div>
   );
@@ -142,19 +204,32 @@ function StoreVignette() {
       </div>
 
       <div className="flex min-w-0 flex-1 flex-col justify-center border-l border-black/10 px-3.5">
-        <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-black/60">
+        <span
+          className="vig-step font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-black/60"
+          style={vig(0, "0.2s")}
+        >
           What blocks the choice
         </span>
-        <p className="mt-2 text-[12.5px] font-semibold leading-[1.3] text-ink-deep">
+        <p
+          className="vig-step mt-2 text-[12.5px] font-semibold leading-[1.3] text-ink-deep"
+          style={vig(1, "0.2s")}
+        >
           Breathable enough for commuting?
         </p>
-        <div className="mt-2 flex items-center gap-1.5 text-signal-ink">
+        {/* The verdict is the panel, so it stamps rather than drifts in. */}
+        <div
+          className="vig-step vig-stamp mt-2 flex items-center gap-1.5 text-signal-ink"
+          style={vig(3, "0.2s")}
+        >
           <X className="h-3.5 w-3.5 shrink-0" />
           <span className="font-mono text-[12px] font-semibold uppercase tracking-[0.06em]">
             No answer
           </span>
         </div>
-        <p className="mt-2 font-mono text-[11px] leading-[1.4] text-black/60">
+        <p
+          className="vig-step mt-2 font-mono text-[11px] leading-[1.4] text-black/60"
+          style={vig(4, "0.2s")}
+        >
           Question not answered on the page
         </p>
       </div>
@@ -169,14 +244,23 @@ function PersonalizationVignette() {
       className="flex h-[11rem] flex-col bg-white p-3.5 ring-1 ring-black/10"
     >
       <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5">
-        <span className="shrink-0 font-mono text-[11px] font-semibold uppercase tracking-[0.09em] text-black/60">
+        <span
+          className="vig-step shrink-0 font-mono text-[11px] font-semibold uppercase tracking-[0.09em] text-black/60"
+          style={vig(0, "0.2s")}
+        >
           Shopper wants
         </span>
         <span className="h-px min-w-3 flex-1 bg-black/10" />
-        <span className="shrink-0 bg-ground px-1.5 py-0.5 font-mono text-[11px] text-black/60 ring-1 ring-black/8">
+        <span
+          className="vig-step shrink-0 bg-ground px-1.5 py-0.5 font-mono text-[11px] text-black/60 ring-1 ring-black/8"
+          style={vig(1, "0.2s")}
+        >
           waterproof
         </span>
-        <span className="shrink-0 bg-signal-ink/[0.06] px-1.5 py-0.5 font-mono text-[11px] font-semibold text-signal-ink ring-1 ring-signal-ink/18">
+        <span
+          className="vig-step shrink-0 bg-signal-ink/[0.06] px-1.5 py-0.5 font-mono text-[11px] font-semibold text-signal-ink ring-1 ring-signal-ink/18"
+          style={vig(2, "0.2s")}
+        >
           commuting
         </span>
       </div>
@@ -207,11 +291,19 @@ function PersonalizationVignette() {
               Helpful context
             </span>
           </div>
+          {/* The two chips are the fix arriving: they fill in after the
+              shopper's wants have been read, one then the other. */}
           <div className="mt-2 flex flex-wrap gap-1.5">
-            <span className="bg-white px-1.5 py-0.5 font-mono text-[11px] text-black/60 ring-1 ring-black/8">
+            <span
+              className="vig-step bg-white px-1.5 py-0.5 font-mono text-[11px] text-black/60 ring-1 ring-black/8"
+              style={vig(4, "0.2s")}
+            >
               Commuting use case
             </span>
-            <span className="bg-white px-1.5 py-0.5 font-mono text-[11px] font-semibold text-ink-deep ring-1 ring-signal-ink/16">
+            <span
+              className="vig-step bg-white px-1.5 py-0.5 font-mono text-[11px] font-semibold text-ink-deep ring-1 ring-signal-ink/16"
+              style={vig(5, "0.2s")}
+            >
               Breathable shell
             </span>
           </div>
@@ -220,7 +312,10 @@ function PersonalizationVignette() {
 
       {/* The panel is about the shopper choosing, so it ends where choosing
           ends. Green, because nothing else in this section is. */}
-      <div className="mt-2 flex items-center gap-1.5 bg-[#1a6b43]/[0.07] px-2 py-1.5 ring-1 ring-[#1a6b43]/20">
+      <div
+        className="vig-step vig-stamp mt-2 flex items-center gap-1.5 bg-[#1a6b43]/[0.07] px-2 py-1.5 ring-1 ring-[#1a6b43]/20"
+        style={vig(7, "0.2s")}
+      >
         <CheckCircle2
           className="h-3.5 w-3.5 shrink-0 text-[#1a6b43]"
           strokeWidth={2}
@@ -307,9 +402,6 @@ export default function WhatBeseamDoes() {
                       <h3 className="text-[17px] font-semibold leading-[1.25] text-ink-deep">
                         {domain.title}
                       </h3>
-                      <p className="mt-1.5 font-mono text-[11px] font-semibold uppercase leading-[1.35] tracking-[0.07em] text-black/46">
-                        {domain.scope}
-                      </p>
                     </div>
                     {index < DOMAINS.length - 1 ? (
                       <span
@@ -334,6 +426,16 @@ export default function WhatBeseamDoes() {
                   <p className="mt-3.5 max-w-[33ch] text-[14.5px] leading-[1.55] text-black/64">
                     {domain.detail}
                   </p>
+                  <ul className="mt-3 flex flex-wrap gap-1.5">
+                    {domain.capabilities.map((capability) => (
+                      <li
+                        key={capability}
+                        className="bg-white px-2 py-1 font-mono text-[11px] font-medium uppercase tracking-[0.06em] text-black/56 ring-1 ring-black/12"
+                      >
+                        {capability}
+                      </li>
+                    ))}
+                  </ul>
                 </article>
               ),
             };

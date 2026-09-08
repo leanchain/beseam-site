@@ -886,6 +886,97 @@ html.theme-transition::view-transition-new(root) {
     top: 5.5rem;
   }
 }
+
+/* #one-system vignettes: the panel does not show a finished screenshot, it
+ * plays the flow it is describing. A shopper's question is typed, the three
+ * assistants come back one at a time, the verdict lands after the row it
+ * belongs to, and the panel's end state -- "No answer", "Added to cart" --
+ * stamps rather than fades, because it is the point of the panel.
+ *
+ * The trigger is `[data-dealt]`, set by scroll-deal.tsx on a panel the reader
+ * has actually dealt: nothing plays off screen, and scrolling back rewinds it.
+ * `--vig-i` is the beat within a panel and `--vig-base` the beat the panel's
+ * flow starts on, so a whole panel can be re-timed from one place.
+ *
+ * The pre-play state is the hidden one on purpose. A panel fading in with its
+ * contents already settled and then re-animating them reads as a glitch; this
+ * way the panel arrives holding the first frame of its own flow.
+ *
+ * Reduced motion is handled by the global rule further down (durations to
+ * 0.01ms, `both` fill lands every element on its end state) and scripting-off
+ * by `ScrollDealFallback`. */
+@keyframes vig-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes vig-stamp {
+  0% {
+    opacity: 0;
+    transform: scale(1.12);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Typed, not printed. The box is capped at the string's own length so its
+ * right edge -- which carries the caret -- sits at the last character rather
+ * than at the end of the column. `steps()` counts the same 36 characters as
+ * `--vig-chars` on the element: change the string and both move together. */
+@keyframes vig-type {
+  from {
+    max-width: 0;
+  }
+  to {
+    max-width: calc(var(--vig-chars, 36) * 1ch);
+  }
+}
+
+@keyframes vig-caret-off {
+  from {
+    border-right-color: currentColor;
+  }
+  to {
+    border-right-color: transparent;
+  }
+}
+
+.vig-step {
+  opacity: 0;
+}
+
+[data-dealt] .vig-step {
+  animation: vig-in 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(var(--vig-base, 0s) + var(--vig-i, 0) * 0.16s);
+}
+
+[data-dealt] .vig-step.vig-stamp {
+  animation-name: vig-stamp;
+  animation-duration: 360ms;
+}
+
+.vig-type {
+  display: inline-block;
+  max-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  border-right: 1px solid transparent;
+}
+
+[data-dealt] .vig-type {
+  animation:
+    vig-type 880ms steps(36) both,
+    vig-caret-off 880ms step-end both;
+}
+
 .marketing-wash {
   background: color-mix(in srgb, var(--brand) 18%, transparent);
   filter: blur(110px);
