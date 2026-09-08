@@ -468,7 +468,7 @@ function ScanProgress({
   return (
     <section
       aria-live="polite"
-      className="mx-auto w-full max-w-3xl border border-black/18 bg-white px-5 py-5 text-left sm:px-6"
+      className="mx-auto w-full border border-black/18 bg-white px-5 py-5 text-left sm:px-6"
     >
       {/* The mode, held in place for the whole run. Without it the step labels
           are the only clue to what kind of assessment this is, and they read
@@ -2959,6 +2959,7 @@ export function ResultCard({
 export default function AnswerCheck({
   placement = "homepage_hero",
   formNote,
+  preamble,
   showPromise = false,
   handOffTo,
   glowInput = false,
@@ -2978,6 +2979,13 @@ export default function AnswerCheck({
    * ask it is reassuring.
    */
   formNote?: ReactNode;
+  /**
+   * The case for running a scan, rendered above the field. It is true for a
+   * cold visitor and in the way the moment a real audit is on the page, so it
+   * retires as soon as the scan is the content: an argument for the thing has
+   * no business sitting on top of the thing.
+   */
+  preamble?: ReactNode;
   /**
    * Render the free-scan promise above the field. On by default nowhere: the
    * homepage hero already carries its own framing, while a visitor landing
@@ -3240,16 +3248,36 @@ export default function AnswerCheck({
   const inputClass =
     "h-12 w-full border border-black/22 bg-white px-4 text-left text-[15px] text-ink-deep placeholder:text-black/40 focus:border-signal-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal-ink";
 
-  // One button, one job on every surface now: start the scan. The hero routes
-  // to the page that owns the result and the page posts it, but the promise
-  // the visitor reads is the same in both places.
+  // Once the visitor has submitted, the page belongs to the result: the form,
+  // the progress rail, the address ask and the audit share one column so they
+  // read as a single surface instead of three cards of different widths
+  // floating over each other. A cold page keeps the narrow, focused field.
+  const inResultMode = Boolean(submitting || result);
+  const columnClass = inResultMode ? "max-w-[72rem]" : "max-w-3xl";
+
+  // One button, one job on every surface: start the scan. The hero routes to
+  // the page that owns the result and the page posts it, but the promise the
+  // visitor reads is the same in both places.
+  //
+  // Filled while it is the page's one action; quiet once a scan is on screen,
+  // where the address ask below owns the primary weight and this is only the
+  // way to point at a different store. Two filled buttons a gap apart is two
+  // primaries, which is none.
   const submitButton = (
     <button
       type="submit"
       disabled={submitting}
-      className="group inline-flex min-h-12 items-center justify-center gap-2 bg-signal-ink px-6 text-[15px] font-semibold text-white disabled:opacity-70"
+      className={`group inline-flex min-h-12 items-center justify-center gap-2 px-6 text-[15px] font-semibold disabled:opacity-70 ${
+        inResultMode
+          ? "border border-black/28 bg-white text-ink-deep transition-colors hover:border-signal-ink hover:text-signal-ink"
+          : "bg-signal-ink text-white"
+      }`}
     >
-      {submitting ? "Reading your store…" : "Scan my store"}
+      {submitting
+        ? "Reading your store…"
+        : inResultMode
+          ? "Scan another store"
+          : "Scan my store"}
       <ArrowRight
         aria-hidden="true"
         className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
@@ -3281,6 +3309,10 @@ export default function AnswerCheck({
 
   return (
     <div>
+      {preamble && !inResultMode ? (
+        <div className="mb-2">{preamble}</div>
+      ) : null}
+
       {showPromise && !result ? (
         <div className="mb-6">
           <FreeScanPromise />
@@ -3291,7 +3323,7 @@ export default function AnswerCheck({
         id="answer-check-form"
         onSubmit={onSubmit}
         noValidate
-        className="mx-auto w-full max-w-3xl border border-black/18 bg-white p-3 sm:p-4"
+        className={`mx-auto w-full border border-black/18 bg-white ${columnClass} ${inResultMode ? "p-2.5" : "p-3 sm:p-4"}`}
       >
         <div className="grid gap-3">
           <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto]">
@@ -3322,7 +3354,10 @@ export default function AnswerCheck({
             {submitButton}
           </div>
         </div>
-        {handOffTo ? null : (
+        {/* The promise belongs to a field nobody has used yet. Once the scan
+            has run it describes a future that already happened, directly above
+            an address ask that says otherwise. */}
+        {handOffTo || inResultMode ? null : (
           <p className="mt-2.5 max-w-[62ch] text-[12.5px] leading-relaxed text-black/58">
             We start reading your store now. No account, no card. You give us an
             email once the findings are on screen, so we can send you the audit.
@@ -3358,14 +3393,14 @@ export default function AnswerCheck({
         ) : null}
       </form>
 
-      {formNote}
+      {inResultMode ? null : formNote}
 
       {/* One progress surface, and only while something is genuinely
           outstanding. The storefront read happens inside the POST, so without
           the optimistic list the visitor watches a disabled button for several
           seconds with no idea what is happening. */}
       {showProgress ? (
-        <div className="mt-6">
+        <div className={`mx-auto mt-4 w-full ${columnClass}`}>
           <ScanProgress
             steps={result && !submitting ? result.steps : OPTIMISTIC_STEPS}
             domain={result?.domain ?? (domain.trim() || null)}
@@ -3378,8 +3413,13 @@ export default function AnswerCheck({
           working for them rather than before anything has run. Sending does not
           replace the page: progress keeps animating and findings keep landing
           while the link sits in the inbox. */}
+      {/* Generous above, seamed below: the ask is about the audit, so it reads
+          as that block's header strip rather than a card adrift between the
+          domain row and the findings. */}
       {showEmailAsk ? (
-        <div className="mx-auto mt-6 w-full max-w-3xl border border-black/18 bg-white p-5 sm:p-6">
+        <div
+          className={`mx-auto mt-8 w-full border border-black/18 bg-white p-5 sm:p-6 ${columnClass}`}
+        >
           {verificationSent ? (
             <>
               <p className="flex items-center gap-2 text-[13px] font-semibold text-[#1a6b43]">
@@ -3407,47 +3447,57 @@ export default function AnswerCheck({
               </button>
             </>
           ) : (
-            <form onSubmit={onVerificationSubmit} noValidate>
-              <label
-                className="text-[16px] font-semibold tracking-[-0.01em] text-ink-deep"
-                htmlFor="answer-check-email"
-              >
-                Where do we send your audit?
-              </label>
-              <p className="mt-1.5 max-w-[54ch] text-[13px] leading-relaxed text-[#5f5a55]">
-                {scanIsComplete
-                  ? `The audit for ${result?.domain ?? "your store"} is complete. Leave an address and we send you the link, so it is yours to open and keep.`
-                  : `We are reading ${result?.domain ?? "your store"} now. Leave an address and we send one link — click it and we also ask the assistants about your products.`}
-              </p>
-              <div className="mt-3.5 grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto]">
-                <input
-                  id="answer-check-email"
-                  type="email"
-                  autoComplete="email"
-                  value={email}
-                  onChange={(event) => {
-                    setEmail(event.target.value);
-                    if (verificationError) setVerificationError("");
-                  }}
-                  placeholder="you@company.com"
-                  aria-invalid={Boolean(verificationError)}
-                  className={inputClass}
-                />
-                <button
-                  type="submit"
-                  disabled={verificationSubmitting}
-                  className="group inline-flex min-h-12 items-center justify-center gap-2 bg-signal-ink px-6 text-[15px] font-semibold text-white disabled:opacity-70"
+            <form
+              onSubmit={onVerificationSubmit}
+              noValidate
+              className="grid items-start gap-x-10 gap-y-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,26rem)]"
+            >
+              <div>
+                <label
+                  className="text-[16px] font-semibold tracking-[-0.01em] text-ink-deep"
+                  htmlFor="answer-check-email"
                 >
-                  {verificationSubmitting ? "Sending…" : "Send it"}
-                  <ArrowRight
-                    aria-hidden="true"
-                    className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
-                  />
-                </button>
+                  Where do we send your audit?
+                </label>
+                <p className="mt-1.5 max-w-[54ch] text-[13px] leading-relaxed text-[#5f5a55]">
+                  {scanIsComplete
+                    ? `The audit for ${result?.domain ?? "your store"} is complete. Leave an address and we send you the link, so it is yours to open and keep.`
+                    : `We are reading ${result?.domain ?? "your store"} now. Leave an address and we send one link — click it and we also ask the assistants about your products.`}
+                </p>
               </div>
-              <p className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[12.5px] font-medium text-[#3b3833]">
-                {["No account", "No card", "One email, no marketing list"].map(
-                  (item) => (
+              <div>
+                <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto]">
+                  <input
+                    id="answer-check-email"
+                    type="email"
+                    autoComplete="email"
+                    value={email}
+                    onChange={(event) => {
+                      setEmail(event.target.value);
+                      if (verificationError) setVerificationError("");
+                    }}
+                    placeholder="you@company.com"
+                    aria-invalid={Boolean(verificationError)}
+                    className={inputClass}
+                  />
+                  <button
+                    type="submit"
+                    disabled={verificationSubmitting}
+                    className="group inline-flex min-h-12 items-center justify-center gap-2 bg-signal-ink px-6 text-[15px] font-semibold text-white disabled:opacity-70"
+                  >
+                    {verificationSubmitting ? "Sending…" : "Send it"}
+                    <ArrowRight
+                      aria-hidden="true"
+                      className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
+                    />
+                  </button>
+                </div>
+                <p className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[12.5px] font-medium text-[#3b3833]">
+                  {[
+                    "No account",
+                    "No card",
+                    "One email, no marketing list",
+                  ].map((item) => (
                     <span
                       key={item}
                       className="inline-flex items-center gap-1.5"
@@ -3458,24 +3508,26 @@ export default function AnswerCheck({
                       />
                       {item}
                     </span>
-                  ),
-                )}
-              </p>
-              {verificationError ? (
-                <p
-                  role="alert"
-                  className="mt-3 text-[13px] leading-relaxed text-[#b3261e]"
-                >
-                  {verificationError}
+                  ))}
                 </p>
-              ) : null}
+                {verificationError ? (
+                  <p
+                    role="alert"
+                    className="mt-3 text-[13px] leading-relaxed text-[#b3261e]"
+                  >
+                    {verificationError}
+                  </p>
+                ) : null}
+              </div>
             </form>
           )}
         </div>
       ) : null}
 
       {result ? (
-        <div className="mx-auto mt-10 max-w-[72rem]">
+        <div
+          className={`mx-auto max-w-[72rem] ${showEmailAsk ? "-mt-px" : "mt-4"}`}
+        >
           {/* The poll budget ran out with work still outstanding. Name what did
               finish, so the evidence already on the card is not thrown into
               doubt by one stalled stage. */}

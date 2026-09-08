@@ -43,64 +43,71 @@ const SCAN_CONTENTS = [
 export default function ScanPage() {
   return (
     <section className="min-h-screen bg-[#faf1eb] text-ink-deep">
-      <div className="mx-auto max-w-[92rem] px-5 py-20 sm:px-8 sm:py-24 lg:px-10 lg:py-28">
+      <div className="mx-auto max-w-[92rem] px-5 py-14 sm:px-8 sm:py-16 lg:px-10">
         <div className="mx-auto max-w-[72rem] text-center">
-          <h1 className="mx-auto max-w-[22ch] text-balance font-display text-[clamp(2.8rem,5vw,4.8rem)] font-normal leading-[1] tracking-[-0.025em]">
+          <h1 className="mx-auto max-w-[22ch] text-balance font-display text-[clamp(2.4rem,4.2vw,3.9rem)] font-normal leading-[1.02] tracking-[-0.025em]">
             See what may stop shoppers from buying.
           </h1>
-          {/* Name the assessment before anyone types, in one line. The full
-              "what this is / what it is not" wording lives once, in
-              `FreeScanPromise` directly above the field — repeating it here put
-              the same paragraph on the page twice. */}
-          <p className="mx-auto mt-7 max-w-[58ch] text-[17px] leading-[1.7] text-black/64">
-            Enter your domain and the scan starts. We read your public store the
-            way a search engine or an AI assistant reads it, and the findings
-            land on this page as they arrive.
-          </p>
         </div>
 
-        {/* What is actually in the audit, before anyone types. Naming the
-            groups of checks is the difference between "we read your store" and
-            a scope a merchant can judge -- and the last cell is honest that the
-            free read is one slice of the product. */}
-        <div className="mx-auto mt-12 max-w-[76rem]">
-          <div className="grid gap-px border border-black/12 bg-black/12 sm:grid-cols-2 lg:grid-cols-4">
-            {SCAN_CONTENTS.map((item) => (
-              <div key={item.label} className="bg-white p-5">
-                <p className="text-[13px] font-semibold text-ink-deep">
-                  {item.label}
-                </p>
-                <p className="mt-2 text-[12.5px] leading-[1.6] text-black/58">
-                  {item.detail}
-                </p>
-              </div>
-            ))}
-          </div>
-          <p className="mt-4 text-[13.5px] leading-[1.6] text-black/62">
-            Every finding names the products behind it and links to the pages we
-            read.{" "}
-            <a
-              href="#beyond-the-scan"
-              className="font-semibold text-ink-deep underline decoration-black/25 underline-offset-4 hover:decoration-signal-ink"
-            >
-              This is one read of what the app does continuously →
-            </a>
-          </p>
-        </div>
-
-        {/* The promise renders above the field, not beside the headline: a cold
-            visitor has to be able to answer “what will I get if I enter my URL?”
-            before they type anything. The boundary line sits with it, so the
-            one-off nature of the scan is known before a domain is typed rather
-            than discovered at the end of it. */}
-        <div className="mx-auto mt-12 max-w-[76rem]">
-          <p className="mx-auto mb-5 max-w-3xl text-left text-[14.5px] font-semibold leading-[1.55] tracking-[-0.01em] text-ink-deep">
-            This scan reads your store once. Beseam keeps checking, and proves
-            what changed.
-          </p>
+        {/* Everything that argues for the scan is a preamble: true for a cold
+            visitor, in the way the moment a real audit is on the page. It is
+            handed to the scan component so it can retire the case for the scan
+            the moment the scan itself is the content. */}
+        <div className="mx-auto mt-10 max-w-[76rem]">
           <LiveAnswerCheck
             placement="ai_discovery_scan"
             showPromise
+            preamble={
+              <>
+                {/* Name the assessment before anyone types, in one line. The
+                    full "what this is / what it is not" wording lives once, in
+                    `FreeScanPromise` directly above the field — repeating it
+                    here put the same paragraph on the page twice. */}
+                <p className="mx-auto max-w-[58ch] text-center text-[17px] leading-[1.7] text-black/64">
+                  Enter your domain and the scan starts. We read your public
+                  store the way a search engine or an AI assistant reads it, and
+                  the findings land on this page as they arrive.
+                </p>
+
+                {/* What is actually in the audit, before anyone types. Naming
+                    the groups of checks is the difference between "we read your
+                    store" and a scope a merchant can judge -- and the last cell
+                    is honest that the free read is one slice of the product. */}
+                <div className="mt-12">
+                  <div className="grid gap-px border border-black/12 bg-black/12 sm:grid-cols-2 lg:grid-cols-4">
+                    {SCAN_CONTENTS.map((item) => (
+                      <div key={item.label} className="bg-white p-5">
+                        <p className="text-[13px] font-semibold text-ink-deep">
+                          {item.label}
+                        </p>
+                        <p className="mt-2 text-[12.5px] leading-[1.6] text-black/58">
+                          {item.detail}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                  <p className="mt-4 text-[13.5px] leading-[1.6] text-black/62">
+                    Every finding names the products behind it and links to the
+                    pages we read.{" "}
+                    <a
+                      href="#beyond-the-scan"
+                      className="font-semibold text-ink-deep underline decoration-black/25 underline-offset-4 hover:decoration-signal-ink"
+                    >
+                      This is one read of what the app does continuously →
+                    </a>
+                  </p>
+                </div>
+
+                {/* The boundary line sits with the promise, so the one-off
+                    nature of the scan is known before a domain is typed rather
+                    than discovered at the end of it. */}
+                <p className="mx-auto mb-5 mt-12 max-w-3xl text-left text-[14.5px] font-semibold leading-[1.55] tracking-[-0.01em] text-ink-deep">
+                  This scan reads your store once. Beseam keeps checking, and
+                  proves what changed.
+                </p>
+              </>
+            }
             formNote={
               // Same reassurance the homepage hero used to carry, moved here:
               // it belongs between the field and the result, not the hero.
