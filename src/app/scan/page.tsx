@@ -44,27 +44,24 @@ export default function ScanPage() {
   return (
     <section className="min-h-screen bg-[#faf1eb] text-ink-deep">
       <div className="mx-auto max-w-[92rem] px-5 py-14 sm:px-8 sm:py-16 lg:px-10">
-        <div className="mx-auto max-w-[72rem] text-center">
-          <h1 className="mx-auto max-w-[22ch] text-balance font-display text-[clamp(2.4rem,4.2vw,3.9rem)] font-normal leading-[1.02] tracking-[-0.025em]">
-            See what may stop shoppers from buying.
-          </h1>
-        </div>
-
-        {/* Everything that argues for the scan is a preamble: true for a cold
-            visitor, in the way the moment a real audit is on the page. It is
-            handed to the scan component so it can retire the case for the scan
-            the moment the scan itself is the content. */}
-        <div className="mx-auto mt-10 max-w-[76rem]">
+        {/* The headline argues for running a scan, so it belongs to the
+            preamble and leaves with it. A shrunken version of it above a
+            finished audit is a second, weaker title for a card that already
+            names the store, the platform, the market and the run. */}
+        <div className="mx-auto max-w-[76rem]">
           <LiveAnswerCheck
             placement="ai_discovery_scan"
             showPromise
             preamble={
               <>
+                <h1 className="mx-auto max-w-[22ch] text-balance text-center font-display text-[clamp(2.8rem,5vw,4.8rem)] font-normal leading-[1] tracking-[-0.025em]">
+                  See what may stop shoppers from buying.
+                </h1>
                 {/* Name the assessment before anyone types, in one line. The
                     full "what this is / what it is not" wording lives once, in
                     `FreeScanPromise` directly above the field — repeating it
                     here put the same paragraph on the page twice. */}
-                <p className="mx-auto max-w-[58ch] text-center text-[17px] leading-[1.7] text-black/64">
+                <p className="mx-auto mt-7 max-w-[58ch] text-center text-[17px] leading-[1.7] text-black/64">
                   Enter your domain and the scan starts. We read your public
                   store the way a search engine or an AI assistant reads it, and
                   the findings land on this page as they arrive.

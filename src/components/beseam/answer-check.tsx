@@ -2862,9 +2862,12 @@ export function ResultCard({
               domain={result.domain}
               name={identity ?? result.brand ?? result.domain}
             />
-            <h2 className="text-[22px] font-semibold leading-snug tracking-[-0.02em] text-ink-deep">
+            {/* The page's heading once a result is on it: the marketing
+                headline is gone by then, and this names the store, so the
+                document is not left with no top-level title. */}
+            <h1 className="text-[22px] font-semibold leading-snug tracking-[-0.02em] text-ink-deep">
               {identity ?? result.brand ?? result.domain}
-            </h2>
+            </h1>
           </div>
           <p className="mt-1.5 text-[12.5px] text-[#5f5a55]">{identityLine}</p>
         </div>
@@ -3319,13 +3322,17 @@ export default function AnswerCheck({
         </div>
       ) : null}
 
-      <form
-        id="answer-check-form"
-        onSubmit={onSubmit}
-        noValidate
-        className={`mx-auto w-full border border-black/18 bg-white ${columnClass} ${inResultMode ? "p-2.5" : "p-3 sm:p-4"}`}
-      >
-        <div className="grid gap-3">
+      {/* A merchant owns one store. Once it has been read, the field they typed
+          it into is furniture: the audit's own header names the store, and a
+          live input inviting them to scan a different one answers a question
+          nobody asked. So the form exists to start a scan and then goes. */}
+      {inResultMode ? null : (
+        <form
+          id="answer-check-form"
+          onSubmit={onSubmit}
+          noValidate
+          className={`mx-auto w-full border border-black/18 bg-white p-3 sm:p-4 ${columnClass}`}
+        >
           <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto]">
             <div>
               <label className="sr-only" htmlFor="answer-check-domain">
@@ -3353,45 +3360,52 @@ export default function AnswerCheck({
             </div>
             {submitButton}
           </div>
-        </div>
-        {/* The promise belongs to a field nobody has used yet. Once the scan
-            has run it describes a future that already happened, directly above
-            an address ask that says otherwise. */}
-        {handOffTo || inResultMode ? null : (
-          <p className="mt-2.5 max-w-[62ch] text-[12.5px] leading-relaxed text-black/58">
-            We start reading your store now. No account, no card. You give us an
-            email once the findings are on screen, so we can send you the audit.
-          </p>
-        )}
-        <label className="sr-only" aria-hidden="true">
-          Website
-          <input
-            tabIndex={-1}
-            autoComplete="off"
-            value={website}
-            onChange={(event) => setWebsite(event.target.value)}
-          />
-        </label>
+          {handOffTo ? null : (
+            <p className="mt-2.5 max-w-[62ch] text-[12.5px] leading-relaxed text-black/58">
+              We start reading your store now. No account, no card. You give us
+              an email once the findings are on screen, so we can send you the
+              audit.
+            </p>
+          )}
+          <label className="sr-only" aria-hidden="true">
+            Website
+            <input
+              tabIndex={-1}
+              autoComplete="off"
+              value={website}
+              onChange={(event) => setWebsite(event.target.value)}
+            />
+          </label>
+        </form>
+      )}
 
-        <p
-          role={error ? "alert" : undefined}
-          className={`mt-3 text-[13px] leading-relaxed ${error ? "text-[#b3261e]" : "text-black/62"}`}
+      {/* Outside the form on purpose: a scan that fails after the form has gone
+          still has to say so, and still has to offer the retry. */}
+      {error ? (
+        <div
+          className={`mx-auto w-full ${columnClass} ${inResultMode ? "" : "mt-1"}`}
         >
-          {error}
-        </p>
-        {/* A failed scan is usually the API being briefly unavailable, so give
-            the visitor the retry instead of making them retype the domain. */}
-        {error && domain.trim() ? (
-          <button
-            type="submit"
-            disabled={submitting}
-            className="mt-3 inline-flex min-h-10 items-center gap-2 border border-black/36 bg-white px-4 text-[13px] font-semibold text-ink-deep transition-colors hover:border-signal-ink hover:text-signal-ink disabled:cursor-wait disabled:opacity-70"
+          <p
+            role="alert"
+            className="text-[13px] leading-relaxed text-[#b3261e]"
           >
-            <RefreshCw className="h-3.5 w-3.5" aria-hidden="true" />
-            {submitting ? "Retrying…" : "Try again"}
-          </button>
-        ) : null}
-      </form>
+            {error}
+          </p>
+          {/* A failed scan is usually the API being briefly unavailable, so give
+              the visitor the retry instead of making them retype the domain. */}
+          {domain.trim() ? (
+            <button
+              type="button"
+              disabled={submitting}
+              onClick={() => void runScan(domain.trim(), "")}
+              className="mt-3 inline-flex min-h-10 items-center gap-2 border border-black/36 bg-white px-4 text-[13px] font-semibold text-ink-deep transition-colors hover:border-signal-ink hover:text-signal-ink disabled:cursor-wait disabled:opacity-70"
+            >
+              <RefreshCw className="h-3.5 w-3.5" aria-hidden="true" />
+              {submitting ? "Retrying…" : "Try again"}
+            </button>
+          ) : null}
+        </div>
+      ) : null}
 
       {inResultMode ? null : formNote}
 
@@ -3541,10 +3555,12 @@ export default function AnswerCheck({
                 completed observations below are still useful; read the findings
                 as possibilities, not verdicts.
               </p>
+              {/* Drives the scan directly. It used to submit the domain form by
+                  id, which is not on the page any more once a result is. */}
               <button
-                type="submit"
-                form="answer-check-form"
+                type="button"
                 disabled={submitting}
+                onClick={() => void runScan(result.domain, "")}
                 className="inline-flex min-h-11 shrink-0 items-center gap-2 border border-black/36 bg-white px-4 text-[13px] font-semibold text-ink-deep transition-colors hover:border-signal-ink hover:text-signal-ink disabled:cursor-wait disabled:opacity-70"
               >
                 <RefreshCw className="h-3.5 w-3.5" aria-hidden="true" />
