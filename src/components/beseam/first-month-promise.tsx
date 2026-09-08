@@ -10,9 +10,9 @@ import {
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
-import { BookReviewCta } from "@/components/beseam/book-review-cta";
 import { Reveal } from "@/components/beseam/reveal";
 import TrackedLink from "@/components/beseam/tracked-link";
+import { APP_REGISTER_URL } from "@/lib/app-urls";
 
 /**
  * Two offers, one grid.
@@ -26,6 +26,13 @@ import TrackedLink from "@/components/beseam/tracked-link";
  * Both cards now share `StepRail`, mirror the same padding across the gutter,
  * and pin the button with `mt-auto` so the two calls to action sit on one line
  * whatever the copy above them does.
+ *
+ * Both calls to action enter the product: the free scan at `/scan`, and the
+ * 30-day start at `APP_REGISTER_URL` -- the same destination the mobile sticky
+ * CTA and both platform-page buttons use. The second button used to open the
+ * Cal.com booking modal under the label "Start my free 30 days", so the click
+ * did not do what it said. Booking a review stays where it belongs, on the
+ * scan result (`answer-check.tsx`).
  */
 type Step = { label: string; Icon: LucideIcon };
 
@@ -117,21 +124,26 @@ export default function FirstMonthPromise({
           <div className="grid gap-8 lg:grid-cols-[minmax(0,0.72fr)_minmax(0,1.28fr)] lg:items-end lg:gap-16">
             <div>
               <p className="font-mono text-[12px] font-semibold uppercase tracking-[0.14em] text-signal-ink">
-                30 days free
+                Ways to start
               </p>
-              {/* The phrase pairs are held together so the headline cannot
-                  break mid-thought at an unlucky viewport width. */}
-              <h2 className="mt-6 font-display text-[clamp(1.75rem,3.1vw,3rem)] font-normal leading-[1.03] tracking-[-0.02em] text-ink-deep">
-                <span className="block">Start free.</span>
-                <span className="block sm:whitespace-nowrap">
-                  Pay when Beseam proves its value.
-                </span>
+              {/* Sized and spaced like every other section headline on the
+                  page (`measure-impact.tsx`, `evidence-to-work.tsx`): one
+                  sentence, the same clamp and `mt-5`, and `text-balance`
+                  instead of the `whitespace-nowrap` span that forced an
+                  unbreakable line into the narrower of the two columns.
+
+                  The eyebrow names the beat rather than the offer. "30 days
+                  free" sat here while spanning both cards, and card 01 is a
+                  scan with no trial attached; the 30 days now appear once, in
+                  the lede, next to the card they belong to. */}
+              <h2 className="mt-5 max-w-[18ch] text-balance font-display text-[clamp(2.2rem,3.3vw,3.4rem)] font-normal leading-[1.04] tracking-[-0.02em] text-ink-deep">
+                See what Beseam finds before you pay.
               </h2>
             </div>
-            <p className="max-w-[46ch] text-[15.5px] leading-[1.7] text-black/62">
-              Use Beseam free for 30 days. See what it finds, approve the
-              changes that need your judgment, watch them get applied, and see
-              what moved before you pay.
+            <p className="max-w-[44ch] text-[15px] leading-[1.7] text-black/62">
+              Run a free scan, or use Beseam free for 30 days: see what it
+              finds, approve the changes that need your judgment, watch them get
+              applied, and see what moved.
             </p>
           </div>
         </Reveal>
@@ -170,12 +182,17 @@ export default function FirstMonthPromise({
               />
               <StepRail steps={GROWTH_STEPS} />
               <div className="mt-auto pt-7">
-                <BookReviewCta
-                  variant="primary"
-                  location="first_month_promise"
-                  label="Start my free 30 days"
-                  className="min-h-12 gap-2 px-6 py-0 text-[15px] font-semibold"
-                />
+                <TrackedLink
+                  href={APP_REGISTER_URL}
+                  eventName="marketing_primary_cta_clicked"
+                  eventCategory="conversion"
+                  placement="first_month_promise"
+                  preserveUtm
+                  className="group inline-flex min-h-12 items-center justify-center gap-2 bg-signal-ink px-6 text-[15px] font-semibold text-white transition-colors hover:bg-pigment"
+                >
+                  Start free
+                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                </TrackedLink>
               </div>
             </article>
           </div>
