@@ -41,14 +41,21 @@ export function SequenceReveal({
   const [phase, setPhase] = useState<"waiting" | "playing" | "static">(
     "waiting",
   );
+  const [stacked, setStacked] = useState(false);
 
   useEffect(() => {
     const node = ref.current;
     if (!node) return;
 
+    const hasMedia = typeof window.matchMedia === "function";
+
+    // Stacked layouts arrive one panel at a time on their own, so the queue
+    // position would only make the last one sit and wait after it is already
+    // on screen. The stagger is for panels that land together.
+    setStacked(hasMedia && window.matchMedia("(max-width: 1023px)").matches);
+
     const reduced =
-      typeof window.matchMedia === "function" &&
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      hasMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     if (reduced || typeof IntersectionObserver === "undefined") {
       setPhase("static");
@@ -69,12 +76,14 @@ export function SequenceReveal({
     return () => observer.disconnect();
   }, []);
 
+  const step = stacked ? 0 : index;
+
   const style: CSSProperties =
     phase === "playing"
       ? ({
           "--reveal-y": String(y) + "px",
-          "--seq-base": String(index * gap + 0.2) + "s",
-          animationDelay: String(index * gap) + "s",
+          "--seq-base": String(step * gap + 0.2) + "s",
+          animationDelay: String(step * gap) + "s",
         } as CSSProperties)
       : phase === "waiting"
         ? { opacity: 0 }

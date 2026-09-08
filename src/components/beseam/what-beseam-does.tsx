@@ -30,6 +30,13 @@ import {
  * third taller. And all four used to appear at once on mount, which she asked
  * to be dealt one after another -- hence `SequenceReveal` rather than
  * `Reveal` on the grid, and only here.
+ *
+ * The first cut dealt them 0.18s apart, which is not a deal at all: four panels
+ * landing inside half a second still read as one block. The gap is 0.5s now,
+ * and the connector arrow draws out of the panel that just landed before the
+ * next one rises, so the row reads left to right as one chain rather than four
+ * things appearing. That is roughly two seconds for the full row, which is the
+ * budget a landing page has for a graphic someone is deciding whether to read.
  */
 const DOMAINS = [
   {
@@ -285,6 +292,7 @@ export default function WhatBeseamDoes() {
               <SequenceReveal
                 key={domain.title}
                 index={index}
+                gap={0.5}
                 className={`relative border-b border-black/14 py-5 sm:px-5 sm:py-6 xl:border-b-0 ${CELL_RULES[index]}`}
               >
                 <article>
@@ -305,10 +313,14 @@ export default function WhatBeseamDoes() {
                       </p>
                     </div>
                     {index < DOMAINS.length - 1 ? (
-                      <ArrowRight
+                      <span
+                        data-seq-arrow
                         aria-hidden="true"
-                        className="hidden h-3.5 w-3.5 shrink-0 text-signal-ink xl:absolute xl:-right-2 xl:top-7 xl:z-10 xl:block xl:bg-ground"
-                      />
+                        className="hidden items-center gap-1 text-signal-ink xl:absolute xl:-right-[1.35rem] xl:top-[1.6rem] xl:z-10 xl:flex xl:bg-ground xl:px-1"
+                      >
+                        <span className="h-px w-4 bg-signal-ink/55" />
+                        <ArrowRight className="h-3.5 w-3.5 shrink-0" />
+                      </span>
                     ) : null}
                   </div>
                   <div className="mt-4">
