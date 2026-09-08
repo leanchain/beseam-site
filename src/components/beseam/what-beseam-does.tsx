@@ -314,9 +314,9 @@ export default function WhatBeseamDoes() {
                       <span
                         data-deal-arrow
                         aria-hidden="true"
-                        className="hidden items-center gap-1 text-signal-ink xl:absolute xl:-right-[1.35rem] xl:top-[1.6rem] xl:z-10 xl:flex xl:bg-ground xl:px-1"
+                        className="hidden items-center text-signal-ink xl:absolute xl:-right-[1.35rem] xl:top-[1.6rem] xl:z-10 xl:flex xl:bg-ground"
                       >
-                        <span className="h-px w-4 bg-signal-ink/55" />
+                        <span className="h-px w-7 bg-signal-ink/70" />
                         <ArrowRight className="h-3.5 w-3.5 shrink-0" />
                       </span>
                     ) : null}

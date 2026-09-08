@@ -142,14 +142,15 @@ export function ScrollDeal({
       if (!frame) frame = window.requestAnimationFrame(paint);
     };
 
-    // The stage is the panel plus the scroll the deal is worth -- a screen's
-    // worth of scroll every two and a half panels. Sized here rather than in CSS
-    // because only the measured panel counts: a stage sized off `100vh` would
-    // pin for however much taller than the panel the screen happens to be.
+    // The stage is the panel plus the scroll the deal is worth -- a third of a
+    // screen per panel, so five beats cost about a screen and a half rather than
+    // holding the reader for two. Sized here rather than in CSS because only the
+    // measured panel counts: a stage sized off `100vh` would pin for however
+    // much taller than the panel the screen happens to be.
     const resize = () => {
       if (window.getComputedStyle(panel).position === "sticky") {
         const height = Math.round(
-          panel.offsetHeight + panels.length * (window.innerHeight || 1) * 0.4,
+          panel.offsetHeight + panels.length * (window.innerHeight || 1) * 0.32,
         );
         stage.style.setProperty("--deal-stage-height", `${height}px`);
       } else {
