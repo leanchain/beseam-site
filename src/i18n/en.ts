@@ -29,6 +29,16 @@ const enDictionary = {
     listboxAriaLabel: "Language",
     names: { en: "English", de: "Deutsch" },
   },
+  // These three strings are German in BOTH dictionaries, deliberately: the
+  // notice only ever appears to someone who has just asked for German by
+  // switching to it or arriving with a German-language signal, so telling
+  // them in English that German is unavailable here defeats the purpose.
+  // Do not "fix" this by translating it back to English.
+  notice: {
+    text: "Diese Seite gibt es noch nicht auf Deutsch.",
+    link: "Zur deutschen Startseite",
+    dismiss: "Hinweis schließen",
+  },
   footer: {
     homeAriaLabel: "Beseam home",
     tagline: {

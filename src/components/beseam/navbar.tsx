@@ -8,7 +8,9 @@ import { usePathname } from "next/navigation";
 import { ArrowRight, Menu, X } from "lucide-react";
 
 import Logo from "@/components/beseam/logo";
+import LanguageSwitcher from "@/components/beseam/language-switcher";
 import TrackedLink from "@/components/beseam/tracked-link";
+import UntranslatedNotice from "@/components/beseam/untranslated-notice";
 import { useDictionary } from "@/i18n/use-locale";
 import { APP_LOGIN_URL } from "@/lib/app-urls";
 import { cn } from "@/lib/utils";
@@ -58,6 +60,8 @@ export default function BeseamNavbar() {
         {t.nav.skipToContent}
       </a>
 
+      <UntranslatedNotice />
+
       <div className="mx-auto max-w-[92rem] px-4 transition-all duration-200 sm:px-6 lg:px-8">
         <div
           className={cn(
@@ -98,6 +102,7 @@ export default function BeseamNavbar() {
               scrolled ? "gap-3" : "gap-5",
             )}
           >
+            <LanguageSwitcher placement="navbar" />
             <TrackedLink
               href={APP_LOGIN_URL}
               eventName="login_clicked"
@@ -164,6 +169,9 @@ export default function BeseamNavbar() {
                 </Link>
               ))}
             </nav>
+            <div className="mt-5">
+              <LanguageSwitcher placement="mobile_nav" className="w-full" />
+            </div>
             <div className="mt-5 grid gap-3 sm:grid-cols-2">
               <TrackedLink
                 href={APP_LOGIN_URL}

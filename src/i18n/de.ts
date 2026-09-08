@@ -21,6 +21,11 @@ export const de: Dictionary = {
     listboxAriaLabel: "Sprache",
     names: { en: "English", de: "Deutsch" },
   },
+  notice: {
+    text: "Diese Seite gibt es noch nicht auf Deutsch.",
+    link: "Zur deutschen Startseite",
+    dismiss: "Hinweis schließen",
+  },
   footer: {
     homeAriaLabel: "Beseam Startseite",
     tagline: {
