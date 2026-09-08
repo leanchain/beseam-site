@@ -13,6 +13,12 @@ type DecisionBridgeProps = {
   body?: string;
   exploreHref?: string | null;
   exploreLabel?: string;
+  /**
+   * Ground the section paints on. The homepage runs this beat as the last
+   * light step before the dark `#impact` act, so it takes the third act of
+   * the ramp; /platform keeps the primary ground its neighbours use.
+   */
+  surfaceClassName?: string;
 };
 
 /**
@@ -29,9 +35,13 @@ export default function DecisionBridge({
   body = "AI discovery, product pages, shopper behavior, and revenue should not live in separate dashboards. Beseam keeps them together, finds what to improve, prepares the change, and checks what happened afterward. You approve customer-facing changes.",
   exploreHref = "/platform",
   exploreLabel = "Explore the platform",
+  surfaceClassName = "bg-ground",
 }: DecisionBridgeProps) {
   return (
-    <section id={id} className="scroll-mt-24 bg-ground">
+    <section
+      id={id}
+      className={`scroll-mt-24 border-t border-black/10 ${surfaceClassName}`}
+    >
       <div className="mx-auto max-w-[92rem] px-5 py-20 sm:px-8 sm:py-24 lg:px-10 lg:py-28">
         <Reveal>
           <div className="grid gap-8 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:items-end lg:gap-16">

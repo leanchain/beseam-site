@@ -182,12 +182,6 @@ const USE_CASES: readonly {
   },
 ];
 
-const WORK = [
-  ["What we found", "kept with the source"],
-  ["Change", "approved, applied, tracked"],
-  ["Result", "the same questions, asked again"],
-] as const;
-
 /** Signal wires: a 3.5rem track as tall as the map row, drawn in real pixels. */
 const TRACK_W = 56;
 
@@ -640,9 +634,13 @@ export default function ConnectedSystemMap({
                         </span>
                       ) : null}
                     </p>
+                    {/* At rest the grid is a list of names; the sentence is
+                        what selection buys you. Kept in the DOM and only
+                        faded, so card heights never change and the wires
+                        measured against them stay put. */}
                     <p
-                      className={`mt-1 hidden text-[11.5px] leading-[1.45] transition-colors duration-300 sm:block ${
-                        related ? "text-black/62" : "text-black/48"
+                      className={`mt-1 hidden text-[11.5px] leading-[1.45] text-black/62 transition-opacity duration-300 sm:block ${
+                        related ? "opacity-100" : "opacity-0"
                       }`}
                     >
                       {item.detail}
@@ -668,23 +666,10 @@ export default function ConnectedSystemMap({
         </div>
       </div>
 
-      <div className="flex flex-wrap items-center justify-between gap-x-8 gap-y-3 border-t border-black/12 bg-ground px-4 py-3 sm:px-5">
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
-          {WORK.map(([label, detail], index) => (
-            <span key={label} className="flex items-center gap-3">
-              {index > 0 ? (
-                <ArrowRight
-                  aria-hidden="true"
-                  className="h-3 w-3 shrink-0 text-black/30"
-                />
-              ) : null}
-              <span className="text-[12px] leading-[1.5] text-black/60">
-                <span className="font-semibold text-ink-deep">{label}</span> —{" "}
-                {detail}
-              </span>
-            </span>
-          ))}
-        </div>
+      {/* The finding -> change -> result loop used to be restated here. It is
+          the whole subject of `#actions` directly above, so all this strip
+          keeps is the affordance: what to click, and what clicking does. */}
+      <div className="flex flex-wrap items-center justify-end gap-x-8 gap-y-3 border-t border-black/12 bg-ground px-4 py-3 sm:px-5">
         <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.1em] text-black/58">
           Select a signal to light what it feeds
         </p>

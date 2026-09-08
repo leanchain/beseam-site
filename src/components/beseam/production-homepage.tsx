@@ -105,6 +105,7 @@ export default function ProductionHomepage() {
       <EvidenceToWork />
       <DecisionBridge
         id="system"
+        surfaceClassName="bg-ground-3"
         eyebrow=""
         heading="The whole store, seen together."
         body="What AI answers about you, what your pages say, and what shoppers do. Apart they are separate reports; together they show what moved and what moved with it."
