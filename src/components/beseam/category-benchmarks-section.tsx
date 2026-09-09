@@ -5,6 +5,8 @@ import { ArrowRight } from "lucide-react";
 import { BENCHMARK_INK } from "@/components/beseam/category-benchmark";
 import { Reveal } from "@/components/beseam/reveal";
 import { BENCHMARK_RUN, CATEGORY_BENCHMARKS } from "@/data/category-benchmarks";
+import { getDictionary, type Dictionary } from "@/i18n";
+import type { Locale } from "@/i18n/locale-rules.mjs";
 
 const SCORED_BENCHMARKS = CATEGORY_BENCHMARKS.map((benchmark) => ({
   ...benchmark,
@@ -42,25 +44,45 @@ const SOLO_SHARE = Math.round(
   (BENCHMARK_RUN.singleEngineOnly / BENCHMARK_RUN.namings) * 100,
 );
 
-const AGREEMENT_BANDS = [
-  {
-    label: "One assistant only",
-    value: BENCHMARK_RUN.singleEngineOnly,
-    color: "#cbd5e1",
-  },
-  {
-    label: "Two assistants",
-    value: BENCHMARK_RUN.twoEngines,
-    color: "#94a3b8",
-  },
-  {
-    label: "Every assistant",
-    value: BENCHMARK_RUN.everyEngine,
-    color: BENCHMARK_INK.consensus,
-  },
-] as const;
+/**
+ * The counts and the data ink are the run's; only the band's name is copy.
+ * Category names and the benchmark questions below stay verbatim in every
+ * locale -- they are the questions that were actually asked, and a translated
+ * question is one nobody ran.
+ */
+function agreementBandsFor(t: Dictionary) {
+  const { bands } = t.sections.benchmarks;
+  return [
+    {
+      key: "one",
+      label: bands.one,
+      value: BENCHMARK_RUN.singleEngineOnly,
+      color: "#cbd5e1",
+    },
+    {
+      key: "two",
+      label: bands.two,
+      value: BENCHMARK_RUN.twoEngines,
+      color: "#94a3b8",
+    },
+    {
+      key: "every",
+      label: bands.every,
+      value: BENCHMARK_RUN.everyEngine,
+      color: BENCHMARK_INK.consensus,
+    },
+  ];
+}
 
-export default function CategoryBenchmarksSection() {
+export default function CategoryBenchmarksSection({
+  locale = "en",
+}: {
+  locale?: Locale;
+}) {
+  const t = getDictionary(locale);
+  const benchmarks = t.sections.benchmarks;
+  const agreementBands = agreementBandsFor(t);
+
   if (CATEGORY_BENCHMARKS.length === 0) return null;
 
   return (
@@ -73,30 +95,26 @@ export default function CategoryBenchmarksSection() {
           <div className="grid gap-10 lg:grid-cols-[minmax(0,0.72fr)_minmax(0,1.28fr)] lg:items-center lg:gap-16">
             <div>
               <p className="font-mono text-[12px] font-semibold uppercase tracking-[0.14em] text-signal-ink">
-                AI Shopping Report
+                {benchmarks.eyebrow}
               </p>
               <h2 className="mt-6 max-w-[18ch] text-balance font-display text-[clamp(2.2rem,3.6vw,3.6rem)] font-normal leading-[1.04] tracking-[-0.02em] text-ink-deep">
-                Products can be visible in one place and missed in another.
+                {benchmarks.heading}
               </h2>
               <p className="mt-6 max-w-[48ch] text-[16px] leading-[1.7] text-black/64">
-                Beseam asks the same buying questions across AI assistants to
-                find where your products appear, where they are missed, and how
-                those results differ. In the latest run,{" "}
+                {benchmarks.body}
                 <strong className="font-semibold text-ink-deep">
-                  {SOLO_SHARE}% of brand appearances occurred on only one
-                  assistant.
+                  {benchmarks.finding(SOLO_SHARE)}
                 </strong>
               </p>
               <Link
                 href="/benchmarks"
                 className="mt-7 inline-flex min-h-11 items-center gap-2 text-[14px] font-semibold text-ink-deep underline decoration-black/25 underline-offset-6 hover:decoration-signal-ink"
               >
-                See the report and method
+                {benchmarks.link}
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Link>
               <p className="mt-7 max-w-[38ch] border-l-2 border-signal-ink pl-4 text-[13.5px] font-medium leading-[1.55] text-black/68">
-                A readable catalog gets you considered. Beseam follows whether
-                you get chosen, and shows what changed.
+                {benchmarks.pullQuote}
               </p>
             </div>
 
@@ -104,18 +122,22 @@ export default function CategoryBenchmarksSection() {
               <figure className="border-t-2 border-ink-deep pt-4">
                 <figcaption className="flex flex-wrap items-center justify-between gap-2 font-mono text-[11px] uppercase tracking-[0.1em] text-black/52">
                   <span className="font-semibold text-black/62">
-                    How often assistants agreed
+                    {benchmarks.figureLabel}
                   </span>
-                  <span>{BENCHMARK_RUN.namings} brand appearances</span>
+                  <span>{benchmarks.appearances(BENCHMARK_RUN.namings)}</span>
                 </figcaption>
 
                 <div
                   className="mt-4 flex h-8 gap-[2px] border border-black/18 bg-white p-[3px]"
-                  aria-label={`${BENCHMARK_RUN.singleEngineOnly} brand appearances occurred on one assistant only, ${BENCHMARK_RUN.twoEngines} on two assistants, and ${BENCHMARK_RUN.everyEngine} on every assistant`}
+                  aria-label={benchmarks.agreementAriaLabel(
+                    BENCHMARK_RUN.singleEngineOnly,
+                    BENCHMARK_RUN.twoEngines,
+                    BENCHMARK_RUN.everyEngine,
+                  )}
                 >
-                  {AGREEMENT_BANDS.map((band) => (
+                  {agreementBands.map((band) => (
                     <span
-                      key={band.label}
+                      key={band.key}
                       className="h-full"
                       style={{
                         flexBasis: `${(band.value / BENCHMARK_RUN.namings) * 100}%`,
@@ -127,9 +149,9 @@ export default function CategoryBenchmarksSection() {
                 </div>
 
                 <dl className="mt-3 grid gap-3 sm:grid-cols-3">
-                  {AGREEMENT_BANDS.map((band) => (
+                  {agreementBands.map((band) => (
                     <div
-                      key={band.label}
+                      key={band.key}
                       className="flex min-w-0 items-center gap-2 font-mono text-[11.5px] tabular-nums"
                     >
                       <span
@@ -162,9 +184,9 @@ export default function CategoryBenchmarksSection() {
                     gridTemplateColumns: "10.25rem minmax(0, 1fr) 7.5rem",
                   }}
                 >
-                  <span>Category</span>
-                  <span>Where assistants disagreed most</span>
-                  <span className="text-right">Brands on one assistant</span>
+                  <span>{benchmarks.columns.category}</span>
+                  <span>{benchmarks.columns.question}</span>
+                  <span className="text-right">{benchmarks.columns.solo}</span>
                 </div>
                 <ul>
                   {HIGHLIGHTS.map((benchmark) => (
@@ -201,8 +223,7 @@ export default function CategoryBenchmarksSection() {
                         <span className="w-12 shrink-0 whitespace-nowrap text-right font-mono text-[12px] tabular-nums text-ink-deep">
                           {benchmark.singleEngineBrands}
                           <span className="text-black/40">
-                            {" "}
-                            of {benchmark.brands.length}
+                            {benchmarks.outOf(benchmark.brands.length)}
                           </span>
                         </span>
                       </span>
