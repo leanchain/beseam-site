@@ -833,10 +833,9 @@ const enDictionary = {
       signals: { label: "Signals", note: "Fixed set" },
       journey: { label: "One shopper journey", note: "Coverage" },
       useCases: {
-        label: "What teams run on it",
-        note: "The list keeps growing",
+        label: "What Beseam can do",
         /** Stands in for the explore link where the section links nowhere. */
-        noLinkNote: "Connected coverage",
+        noLinkNote: "Connected outcomes",
       },
     },
     /**
@@ -852,11 +851,9 @@ const enDictionary = {
     platformQuestion: "What will this shopper choose?",
     explore: "Explore the platform",
     signalsUsed: "Signals used:",
-    servedLive: "Served live",
     moreLabel: "+ more",
     moreDetail:
-      "Campaigns, reliability, experiments, segments, media studio, marketplaces, fit. Not every capability is enabled for every store.",
-    hint: "Select a signal to light what it feeds",
+      "Immersive product experiences, marketplaces, brand workflows, and other specialist capabilities as enabled.",
     /**
      * `scope` sits in a fixed 2.25rem slot and `caveat` under a 16rem column,
      * so both are two lines of a narrow measure: keep a locale's version close
@@ -896,81 +893,61 @@ const enDictionary = {
         does: "Impact and attribution",
       },
     },
-    /** Card-width names for the signals a use case reads. */
     short: {
       discovery: "Discovery",
       store: "Store",
       behavior: "Behavior",
       revenue: "Revenue",
     },
-    /** One entry per real surface in the product. */
+    /** Broad homepage outcomes; /platform carries the exhaustive capability list. */
     cards: {
-      aiAnswerVisibility: {
-        name: "AI answer visibility",
+      getDiscovered: {
+        name: "Get discovered",
         detail:
-          "Named for the questions that matter, and what supported the answer.",
+          "Find visibility gaps across AI and search, then strengthen the evidence behind the shortlist.",
       },
-      competitors: {
-        name: "Competitors chosen instead",
-        detail: "What appears in your place, tracked over time.",
-      },
-      agentReadiness: {
-        name: "Agent readiness",
-        detail: "Whether shopping agents can read the storefront at all.",
-      },
-      catalogTruth: {
-        name: "Catalog truth",
+      productsChoose: {
+        name: "Make products easier to choose",
         detail:
-          "Fields, variants, freshness, and stock as a shopper meets them.",
+          "Improve catalog truth, product pages, merchandising, and the evidence shoppers need to decide.",
       },
-      productPageEvidence: {
-        name: "Product page evidence",
-        detail: "What the page answers, and what it leaves open.",
-      },
-      storeHealth: {
-        name: "Store health and crawlability",
-        detail: "Indexability, structured facts, machine readability.",
-      },
-      brandClaims: {
-        name: "Brand claims and trust",
-        detail: "Claims with enough evidence behind them to reuse safely.",
-      },
-      personalizedSearch: {
-        name: "Personalized search and recommendations",
-        detail: "Ranked results and placements, served live and measured.",
-      },
-      whyBuyersLeave: {
-        name: "Why buyers leave",
-        detail: "Sessions, replay, heatmaps, and the friction they show.",
-      },
-      funnels: {
-        name: "Funnels, cohorts, journeys",
-        detail: "Where shoppers move forward, and who stops.",
-      },
-      revenueAttribution: {
-        name: "Revenue and attribution",
+      fitSizing: {
+        name: "Help shoppers get the right fit",
         detail:
-          "Actual revenue, observed changes, attribution, and estimates stay separate.",
+          "Use sizing guidance, measurement, fit recommendations, and product-specific overrides.",
       },
-      whatChanged: {
-        name: "What changed",
-        detail: "Before and after, tied to one completed change.",
-      },
-      oneChangeList: {
-        name: "One change list",
+      understandBehavior: {
+        name: "Understand shopper behavior",
         detail:
-          "Every proposed change with an owner, approval status, and a check afterward.",
+          "Connect analytics, journeys, replay, heatmaps, search behavior, and conversion signals.",
+      },
+      personalizeTest: {
+        name: "Personalize & test",
+        detail:
+          "Shape search, recommendations, merchandising, and experiments around shopper context.",
+      },
+      journeyHealth: {
+        name: "Keep the buying journey healthy",
+        detail:
+          "Catch performance problems, frontend errors, incidents, and reliability issues that interrupt purchase.",
+      },
+      creativeStudio: {
+        name: "Create content & product media",
+        detail:
+          "Prepare product content, creative assets, images, video, and richer product experiences.",
+      },
+      prioritizeMeasure: {
+        name: "Prioritize & measure what worked",
+        detail:
+          "Turn evidence into a ranked change queue and keep the before-and-after result attached.",
+      },
+      campaigns: {
+        name: "Launch & improve campaigns",
+        detail:
+          "Prepare, publish, and measure Google and Meta campaigns where campaign capabilities are enabled.",
       },
     },
   },
-
-  /**
-   * `app-screens.tsx` -- the two rebuilt product screens. Row order, which row
-   * leads, the effort tone and the column geometry stay in the component. The
-   * ledger's figures live here because they are illustrative, and how a figure
-   * is written is part of the locale: "1 in 12" is "1 von 12", and a delta has
-   * to stay inside a 4.75rem column in every language.
-   */
   appScreens: {
     illustrative: "Illustrative example · not customer results.",
     actions: {
@@ -1047,7 +1024,7 @@ const enDictionary = {
     // #proof -- connected-evidence.tsx
     proof: {
       heading: "See what gets in the way of the choice.",
-      body: "Beseam looks at what the shopper did, checks product, search, and stock data, rules out weaker explanations, then turns the strongest finding into a change you can approve and check again.",
+      body: "Beseam looks at what the shopper did, checks product, search, and stock data, rules out weaker explanations, then turns the strongest finding into a specific change.",
       traceLabel: "Example trace",
       traceScope: "Onsite discovery · schematic",
       queries: {
@@ -1262,8 +1239,25 @@ const enDictionary = {
     // #system -- the homepage's DecisionBridge mount. The component takes its
     // copy as props, so this is the only place the homepage's wording lives.
     system: {
-      heading: "The whole store, seen together.",
-      body: "What AI answers about you, what your pages say, and what shoppers do. Apart they are separate reports; together they show what moved and what moved with it.",
+      eyebrow: "One connected view",
+      heading: "One problem. All the evidence behind it.",
+      body: "A missed recommendation, a hesitant shopper, or a lost sale rarely lives in one tool. Beseam connects AI discovery, your store, shopper behavior, and outcomes so the next change starts with the full picture.",
+      compact: {
+        inputs: [
+          "AI & search",
+          "Product & store",
+          "Shopper behavior",
+          "Orders & revenue",
+        ] as Quad<string>,
+        center: "Beseam connects the evidence",
+        outputs: [
+          "What happened?",
+          "What is getting in the way?",
+          "What should change?",
+          "Did it work?",
+        ] as Quad<string>,
+        link: "Explore the platform",
+      },
     },
 
     // #impact -- measure-impact.tsx
@@ -1301,6 +1295,11 @@ const enDictionary = {
         question: "What do I need to connect to get started?",
         answer:
           "Start with your domain. Add store, analytics, search, behavior, or customer data only when it helps Beseam understand the problem or make an approved change.",
+      },
+      scanVsBeseam: {
+        question: "What's the difference between the free scan and Beseam?",
+        answer:
+          "The free scan is a one-time snapshot of your public storefront. Beseam keeps monitoring after that, connects your store and other useful signals, turns findings into proposed changes, applies supported changes after approval, and checks what happened afterward.",
       },
       priority: {
         question: "How does Beseam decide what to fix first?",
@@ -1350,13 +1349,13 @@ const enDictionary = {
         answers: "Checking how your products appear in discovery",
       },
       technical: (position: number, total: number) =>
-        `Technical discoverability · step ${position} of ${total}`,
+        `Scanning your store · step ${position} of ${total}`,
       readingDomain: (domain: string) => `Reading ${domain}`,
       readingStorefront: "Reading your storefront",
       resultsAsTheyArrive:
-        "Results appear below as soon as each part is done. You do not have to wait for all of it.",
+        "We show useful findings as soon as they are ready — you do not have to wait for everything.",
       questionsLater:
-        "Shopper questions come after this, and tracking them over time happens inside Beseam.",
+        "This first read is the snapshot. Beseam is where the checks keep running after it.",
       progress: (done: number, total: number) => `${done} of ${total}`,
       productsFound: (count: number) =>
         `${count} ${count === 1 ? "product" : "products"} found`,
@@ -1510,19 +1509,28 @@ const enDictionary = {
     },
     continue: {
       opportunities: (count: number): string =>
-        `${count} ${count === 1 ? "opportunity" : "opportunities"} found`,
-      nextLabel: "Next step",
-      once: "You found the gaps. Keep Beseam watching this store.",
-      body: "Turn this one-off scan into an ongoing loop: keep the same buying questions running, prepare the strongest fixes, approve what reaches customers, and measure what changed.",
+        count === 0
+          ? "No obvious gaps in this snapshot"
+          : `${count} ${count === 1 ? "opportunity" : "opportunities"} found`,
+      nextLabel: "Continue in Beseam",
+      once: (count: number): string =>
+        count === 0
+          ? "This scan is a snapshot. Beseam keeps watching what changes."
+          : "This scan found the gaps. Beseam keeps working on them.",
+      body: "Carry this store into Beseam. Keep discovery and store checks running, turn the strongest findings into prepared changes, approve before anything customer-facing changes, and recheck what moved.",
       benefits: [
-        "Keep discovery and store checks running",
+        "Keep the same store under watch",
         "Turn findings into prepared changes",
-        "Approve first, then recheck the evidence",
+        "Approve first, then measure again",
       ] as readonly [string, string, string],
       prepared: "Prepared by Beseam",
       approval: "Needs your approval",
       afterConnection: "Checked after connection",
-      start: "Start free with this store",
+      start: "Continue free with this store",
+      carryStore: (domain: string) =>
+        `${domain} is carried into setup — you will not start over.`,
+      closingEyebrow: "Seen enough?",
+      closingTitle: "Keep this store under watch in Beseam.",
       reviewWithFinding: "Prefer to walk through this with us?",
       reviewWithoutFinding: "Prefer to walk through this with us?",
       startingWith: (headline: string) => `Starting with “${headline}”`,
@@ -1718,9 +1726,10 @@ const enDictionary = {
       reportUnavailable: "Report unavailable",
     },
     deeper: {
-      title: "See what AI says about your products — and what to change.",
+      eyebrow: "Optional: get more proof first",
+      title: "Unlock the deeper scan before you decide.",
       intro:
-        "The public storefront read above is already yours. Confirm your email to unlock the slower, higher-value part: page-level recommendations plus real buying questions asked to ChatGPT and Google AI Mode.",
+        "Want more evidence before starting Beseam? Confirm one email and we run the slower checks: page-level recommendations plus real buying questions asked to ChatGPT and Google AI Mode.",
       assurances: [
         "Free",
         "No account",
@@ -1755,7 +1764,7 @@ const enDictionary = {
       placeholder: "you@company.com",
       sending: "Sending…",
       send: "Send it",
-      runningCta: "Continue free",
+      runningCta: "Unlock deeper scan",
       completeCta: "Email me the audit",
       assurances: [
         "No account",
@@ -1818,7 +1827,8 @@ const enDictionary = {
         "If the site is live in your browser, wait a moment and run it again.",
       ] as readonly [string, string],
       reported: (reason: string) => `What the scan reported: ${reason}`,
-      reviewCta: "See Beseam on my store",
+      continueCta: "Connect this store in Beseam",
+      reviewCta: "Get help with this store",
     },
   },
   scan: {

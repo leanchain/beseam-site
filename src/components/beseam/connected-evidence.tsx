@@ -328,19 +328,6 @@ function MobileTrace({ t }: { t: Dictionary }) {
           <p className="mt-3 text-[15px] font-medium leading-[1.5] text-white/90">
             {proof.change}
           </p>
-          <div className="mt-4 flex items-center gap-2 text-[11px] font-semibold text-white/80">
-            <span>{proof.approve}</span>
-            <ArrowRight
-              className="h-3 w-3 shrink-0 text-signal"
-              aria-hidden="true"
-            />
-            <span>{proof.applies}</span>
-            <ArrowRight
-              className="h-3 w-3 shrink-0 text-signal"
-              aria-hidden="true"
-            />
-            <span>{proof.checkAgain}</span>
-          </div>
         </div>
       </div>
     </div>
@@ -472,9 +459,6 @@ export default function ConnectedEvidence({
                   <StepLabel>{proof.proposedChange}</StepLabel>
                   <p className="mt-2.5 text-[17px] font-medium leading-[1.5] text-white/94">
                     {proof.change}
-                  </p>
-                  <p className="mt-3 font-mono text-[11.5px] font-semibold uppercase tracking-[0.08em] text-white/62">
-                    {`${proof.approve} → ${proof.applies} → ${proof.checkAgain}`}
                   </p>
                 </div>
               </div>

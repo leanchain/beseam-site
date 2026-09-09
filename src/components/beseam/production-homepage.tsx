@@ -103,18 +103,19 @@ export default function ProductionHomepage({ locale }: { locale: Locale }) {
       </section>
 
       <CredibilityRail locale={locale} />
-      <ConnectedEvidence locale={locale} />
       <WhatBeseamDoes locale={locale} />
-      <CategoryBenchmarksSection locale={locale} />
+      <ConnectedEvidence locale={locale} />
       <EvidenceToWork locale={locale} />
       <DecisionBridge
         id="system"
-        surfaceClassName="bg-ground-3"
+        surfaceClassName="bg-ground-2"
         eyebrow=""
         heading={t.sections.system.heading}
         body={t.sections.system.body}
+        compact={t.sections.system.compact}
       />
       <MeasureImpact locale={locale} />
+      <CategoryBenchmarksSection locale={locale} compact />
       <FirstMonthPromise locale={locale} />
     </div>
   );

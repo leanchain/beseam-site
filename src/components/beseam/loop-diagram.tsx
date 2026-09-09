@@ -97,6 +97,7 @@ export default function LoopDiagram({
   detail = false,
   animate = false,
   locale = "en",
+  size = "default",
 }: {
   className?: string;
   tone?: "light" | "dark";
@@ -109,16 +110,21 @@ export default function LoopDiagram({
   /** Defaulted because /how-we-work and /manifesto mount this propless and
    *  have no German route; the homepage hands it the page's own locale. */
   locale?: Locale;
+  /** `default` keeps the original 32rem cap. `lg` is the platform variant. */
+  size?: "default" | "lg";
 }) {
   const t = getDictionary(locale).loop;
 
   return (
-    <figure className={className}>
+    <figure
+      className={className}
+      style={size === "lg" ? { width: "35rem", maxWidth: "100%" } : undefined}
+    >
       <svg
         viewBox="26 26 462 340"
         role="img"
         aria-labelledby="beseam-loop-title beseam-loop-desc"
-        className={`h-auto w-full max-w-[32rem] ${
+        className={`h-auto w-full ${size === "lg" ? "max-w-none" : "max-w-[32rem]"} ${
           tone === "dark" ? "text-white" : "text-ink-deep"
         }`}
       >

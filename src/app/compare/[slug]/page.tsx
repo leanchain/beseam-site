@@ -6,6 +6,7 @@ import { ArrowLeft, ArrowRight, ExternalLink } from "lucide-react";
 import type { Metadata } from "next";
 
 import { BookReviewCta } from "@/components/beseam/book-review-cta";
+import FaqGrid from "@/components/beseam/faq-grid";
 import {
   COMPARISONS,
   getComparison,
@@ -432,35 +433,7 @@ export default async function ComparisonPage({
         </div>
       </section>
 
-      <section className="border-b border-black/18 bg-ground-2">
-        <div className="mx-auto max-w-[92rem] px-5 py-20 sm:px-8 sm:py-24 lg:px-10">
-          <div className="grid gap-12 lg:grid-cols-[18rem_minmax(0,1fr)] lg:gap-16">
-            <div>
-              <h2 className="max-w-[18ch] font-serif text-[38px] leading-[1.04] tracking-[-0.02em]">
-                Before you change the stack.
-              </h2>
-            </div>
-            <div className="border-t border-black/24">
-              {comparison.faqs.map((faq) => (
-                <details
-                  key={faq.question}
-                  className="group border-b border-black/18 py-6"
-                >
-                  <summary className="flex cursor-pointer list-none items-start justify-between gap-6 text-[16px] font-semibold">
-                    {faq.question}
-                    <span className="font-mono text-[15px] text-signal-ink group-open:rotate-45">
-                      +
-                    </span>
-                  </summary>
-                  <p className="max-w-[68ch] pt-4 text-[14px] leading-relaxed text-black/62">
-                    {faq.answer}
-                  </p>
-                </details>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
+      <FaqGrid heading="Before you change the stack." items={comparison.faqs} />
 
       <section className="border-b border-black/18">
         <div className="mx-auto max-w-[92rem] px-5 py-16 sm:px-8 sm:py-20 lg:px-10">

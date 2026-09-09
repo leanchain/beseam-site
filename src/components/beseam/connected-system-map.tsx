@@ -96,40 +96,25 @@ const HUE: Record<SignalId, string> = SIGNALS.reduce(
 const USE_CASES: readonly {
   id: keyof Dictionary["systemMap"]["cards"];
   uses: readonly SignalId[];
-  /** Runs in the storefront on every request, not as a report. */
-  live?: boolean;
 }[] = [
-  { id: "aiAnswerVisibility", uses: ["discovery"] },
-  { id: "competitors", uses: ["discovery"] },
-  { id: "agentReadiness", uses: ["discovery", "store"] },
-  { id: "catalogTruth", uses: ["store"] },
-  { id: "productPageEvidence", uses: ["store"] },
-  { id: "storeHealth", uses: ["store"] },
-  { id: "brandClaims", uses: ["store"] },
+  { id: "getDiscovered", uses: ["discovery", "store"] },
+  { id: "productsChoose", uses: ["discovery", "store"] },
+  { id: "fitSizing", uses: ["store", "behavior"] },
+  { id: "understandBehavior", uses: ["store", "behavior", "revenue"] },
+  { id: "personalizeTest", uses: ["store", "behavior", "revenue"] },
+  { id: "journeyHealth", uses: ["store", "behavior"] },
+  { id: "creativeStudio", uses: ["discovery", "store", "behavior"] },
   {
-    id: "personalizedSearch",
-    uses: ["store", "behavior", "revenue"],
-    live: true,
-  },
-  { id: "whyBuyersLeave", uses: ["behavior"] },
-  { id: "funnels", uses: ["behavior", "revenue"] },
-  { id: "revenueAttribution", uses: ["revenue"] },
-  { id: "whatChanged", uses: ["discovery", "revenue"] },
-  {
-    id: "oneChangeList",
+    id: "prioritizeMeasure",
     uses: ["discovery", "store", "behavior", "revenue"],
   },
+  { id: "campaigns", uses: ["discovery", "store", "revenue"] },
 ];
+
+type UseCaseId = (typeof USE_CASES)[number]["id"];
 
 /** Signal wires: a 3.5rem track as tall as the map row, drawn in real pixels. */
 const TRACK_W = 56;
-
-/**
- * Where the use-case wires stop: the 3.5rem gutter the grid reserves for them
- * (`lg:pl-14`). Wires live in the margin; the cards themselves say which ones
- * are lit with their own border.
- */
-const FAN_GUTTER = 56;
 
 const hair = (value: number) => Math.round(value) + 0.5;
 
@@ -183,14 +168,27 @@ function MonoNote({ children }: { children: React.ReactNode }) {
 export default function ConnectedSystemMap({
   exploreHref = "/platform",
   exploreLabel,
+  scrollProgress,
 }: {
   exploreHref?: string | null;
   /** Overrides the localized default; omit it and the link reads the page's
    *  own language rather than an English string baked into a caller. */
   exploreLabel?: string;
+  /** Homepage section-level scroll progress. The parent owns the sticky stage. */
+  scrollProgress?: number;
 }) {
   const t = useDictionary().systemMap;
+  const interactionRef = useRef(false);
   const [activeId, setActiveId] = useState<SignalId>("discovery");
+  const [activeUseCaseId, setActiveUseCaseId] = useState<UseCaseId | null>(
+    null,
+  );
+  const activeUseCase = activeUseCaseId
+    ? (USE_CASES.find((item) => item.id === activeUseCaseId) ?? null)
+    : null;
+  const activeSignalIds: readonly SignalId[] = activeUseCase
+    ? activeUseCase.uses
+    : [activeId];
   const activeIndex = Math.max(
     0,
     SIGNALS.findIndex((signal) => signal.id === activeId),
@@ -255,7 +253,18 @@ export default function ConnectedSystemMap({
     if (platformRef.current) observer.observe(platformRef.current);
     cardRefs.current.forEach((card) => card && observer.observe(card));
     return () => observer.disconnect();
-  }, [measureFan, measureNode, activeId]);
+  }, [measureFan, measureNode, activeId, activeUseCaseId]);
+
+  useEffect(() => {
+    if (scrollProgress === undefined || interactionRef.current) return;
+    const clamped = Math.max(0, Math.min(1, scrollProgress));
+    const nextIndex = Math.min(
+      SIGNALS.length - 1,
+      Math.floor(clamped * SIGNALS.length),
+    );
+    setActiveUseCaseId(null);
+    setActiveId(SIGNALS[nextIndex].id);
+  }, [scrollProgress]);
 
   return (
     <div className="border-y-2 border-ink-deep bg-white">
@@ -274,7 +283,7 @@ export default function ConnectedSystemMap({
             {SIGNALS.map((signal, index) => {
               const Icon = signal.Icon;
               const words = t.signals[signal.id];
-              const selected = signal.id === activeId;
+              const selected = activeSignalIds.includes(signal.id);
               // An unselected row still earns its space: it says how much of
               // the right-hand column it feeds, which is the one fact the
               // grid cannot show until you pick it.
@@ -287,9 +296,26 @@ export default function ConnectedSystemMap({
                   type="button"
                   aria-pressed={selected}
                   aria-controls="decision-readout use-case-grid"
-                  onMouseEnter={() => setActiveId(signal.id)}
-                  onFocus={() => setActiveId(signal.id)}
-                  onClick={() => setActiveId(signal.id)}
+                  onMouseEnter={() => {
+                    interactionRef.current = true;
+                    setActiveUseCaseId(null);
+                    setActiveId(signal.id);
+                  }}
+                  onMouseLeave={() => {
+                    interactionRef.current = false;
+                  }}
+                  onFocus={() => {
+                    interactionRef.current = true;
+                    setActiveUseCaseId(null);
+                    setActiveId(signal.id);
+                  }}
+                  onBlur={() => {
+                    interactionRef.current = false;
+                  }}
+                  onClick={() => {
+                    setActiveUseCaseId(null);
+                    setActiveId(signal.id);
+                  }}
                   className={`group relative flex min-h-[6.75rem] flex-col justify-center border-black/12 px-4 py-4 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-signal-ink sm:px-5 ${
                     index > 0 ? "border-t" : ""
                   } ${index % 2 === 1 ? "sm:border-l lg:border-l-0" : ""} ${
@@ -395,19 +421,26 @@ export default function ConnectedSystemMap({
                     className="stroke-black/12"
                   />
                 ))}
-                <path
-                  key={activeId}
-                  d={curve(
-                    inTrack.height * (0.125 + activeIndex * 0.25),
-                    nodeY ?? inTrack.height / 2,
-                  )}
-                  fill="none"
-                  pathLength={1}
-                  strokeDasharray={1}
-                  strokeWidth={1.5}
-                  stroke={active.hue}
-                  className="signal-wire-draw"
-                />
+                {activeSignalIds.map((signalId) => {
+                  const index = SIGNALS.findIndex(
+                    (signal) => signal.id === signalId,
+                  );
+                  return (
+                    <path
+                      key={signalId}
+                      d={curve(
+                        inTrack.height * (0.125 + index * 0.25),
+                        nodeY ?? inTrack.height / 2,
+                      )}
+                      fill="none"
+                      pathLength={1}
+                      strokeDasharray={1}
+                      strokeWidth={1.5}
+                      stroke={HUE[signalId]}
+                      className="signal-wire-draw"
+                    />
+                  );
+                })}
               </svg>
             ) : null}
             <span
@@ -471,9 +504,6 @@ export default function ConnectedSystemMap({
           <ColumnHead>
             <HeadLabel>{t.columns.useCases.label}</HeadLabel>
             <div className="flex items-center gap-5">
-              <span className="hidden xl:inline">
-                <MonoNote>{t.columns.useCases.note}</MonoNote>
-              </span>
               {exploreHref ? (
                 <Link
                   href={exploreHref}
@@ -498,27 +528,20 @@ export default function ConnectedSystemMap({
                 viewBox={`0 0 ${fan.w} ${fan.h}`}
                 width={fan.w}
                 height={fan.h}
-                className="pointer-events-none absolute inset-0 z-10 hidden h-full w-full lg:block"
+                className="pointer-events-none absolute inset-0 z-20 hidden h-full w-full lg:block"
               >
                 {(() => {
-                  // One wire per lit row, and every wire stops in the gutter
-                  // the grid already reserves (`lg:pl-14`). They used to be
-                  // drawn to each card's own left edge, which for the right
-                  // -hand column meant crossing the left-hand card to get
-                  // there -- a line through a sentence, on the section whose
-                  // whole claim is that the trace is legible.
                   const origin = nodeY ?? fan.h / 2;
-                  const drawn = new Set<number>();
                   return USE_CASES.map((item, index) => {
                     const card = fan.cards[index];
-                    if (!item.uses.includes(activeId) || !card) return null;
-                    const row = Math.round(card.y);
-                    if (drawn.has(row)) return null;
-                    drawn.add(row);
+                    const shouldDraw = activeUseCaseId
+                      ? item.id === activeUseCaseId
+                      : item.uses.includes(activeId);
+                    if (!shouldDraw || !card) return null;
                     return (
                       <g key={`${activeId}-${item.id}`}>
                         <path
-                          d={curve(origin, card.y, FAN_GUTTER)}
+                          d={curve(origin, card.y, card.x)}
                           fill="none"
                           pathLength={1}
                           strokeDasharray={1}
@@ -527,7 +550,7 @@ export default function ConnectedSystemMap({
                           className="signal-wire-draw"
                         />
                         <circle
-                          cx={FAN_GUTTER}
+                          cx={hair(card.x)}
                           cy={hair(card.y)}
                           r={2}
                           fill={active.hue}
@@ -546,88 +569,99 @@ export default function ConnectedSystemMap({
 
             <ul
               id="use-case-grid"
-              className="relative grid h-full grid-cols-2 gap-2 p-2 sm:gap-2.5 sm:p-2.5"
+              className="relative z-10 grid h-full grid-cols-2 gap-2 p-2 sm:gap-2.5 sm:p-2.5"
             >
               {USE_CASES.map((item, index) => {
                 const card = t.cards[item.id];
-                const related = item.uses.includes(activeId);
+                const related = activeUseCaseId
+                  ? item.id === activeUseCaseId
+                  : item.uses.includes(activeId);
+                const activate = () => {
+                  interactionRef.current = true;
+                  setActiveUseCaseId(item.id);
+                  setActiveId(item.uses[0]);
+                };
+                const release = () => {
+                  interactionRef.current = false;
+                  setActiveUseCaseId(null);
+                };
                 return (
                   <li
                     key={item.id}
                     ref={(node) => {
                       cardRefs.current[index] = node;
                     }}
-                    className={`relative rounded-md border px-3.5 py-2.5 transition-[background-color,border-color,box-shadow] duration-300 sm:px-4 ${
-                      related ? "bg-white" : "bg-ground"
-                    }`}
-                    style={{
-                      borderColor: related ? active.hue : "rgba(0,0,0,0.10)",
-                      // Lit cards lift off the ground; the rest stay flat on
-                      // it, so the difference reads before any text does.
-                      boxShadow: related
-                        ? `0 0 0 1px ${active.hue}, 0 6px 16px -12px rgba(0,0,0,0.5)`
-                        : undefined,
-                    }}
+                    className="min-w-0"
                   >
-                    <span
-                      aria-hidden="true"
-                      className="flex h-[3px] w-full overflow-hidden"
-                    >
-                      {item.uses.map((use) => (
-                        <span
-                          key={use}
-                          className="h-full flex-1 transition-colors duration-300"
-                          style={{
-                            backgroundColor: related
-                              ? HUE[use]
-                              : "rgba(0,0,0,0.09)",
-                          }}
-                        />
-                      ))}
-                    </span>
-                    <span className="sr-only">
-                      {t.signalsUsed}{" "}
-                      {item.uses.map((use) => t.signals[use].label).join(", ")}.
-                    </span>
-                    <p
-                      className={`mt-2 text-[13px] font-semibold leading-[1.3] transition-colors duration-300 ${
-                        related ? "text-ink-deep" : "text-black/64"
+                    <button
+                      type="button"
+                      aria-pressed={activeUseCaseId === item.id}
+                      onMouseEnter={activate}
+                      onMouseLeave={release}
+                      onFocus={activate}
+                      onBlur={release}
+                      onClick={activate}
+                      className={`relative h-full w-full cursor-pointer rounded-md border px-3.5 py-2.5 text-left transition-[background-color,border-color,box-shadow] duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal-ink sm:px-4 ${
+                        related ? "bg-white" : "bg-ground"
                       }`}
+                      style={{
+                        borderColor: related ? active.hue : "rgba(0,0,0,0.10)",
+                        boxShadow: related
+                          ? `0 0 0 1px ${active.hue}, 0 6px 16px -12px rgba(0,0,0,0.5)`
+                          : undefined,
+                      }}
                     >
-                      {card.name}
-                      {item.live ? (
-                        <span className="ml-1.5 inline-block whitespace-nowrap rounded-md bg-ink-deep px-1.5 py-[1px] align-[2px] font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-white">
-                          {t.servedLive}
-                        </span>
-                      ) : null}
-                    </p>
-                    {/* One slot, two states, fixed height: the sentence when
-                        the card is lit, the signals it reads when it is not.
-                        Height is fixed so the wires measured against these
-                        cards stay put. */}
-                    <div className="relative mt-1 hidden min-h-[2.05rem] sm:block">
-                      <p
-                        className={`text-[11.5px] leading-[1.45] text-black/62 transition-opacity duration-300 ${
-                          related ? "opacity-100" : "opacity-0"
-                        }`}
-                      >
-                        {card.detail}
-                      </p>
-                      <p
+                      <span
                         aria-hidden="true"
-                        className={`absolute inset-x-0 top-0 font-mono text-[10.5px] uppercase tracking-[0.08em] text-black/42 transition-opacity duration-300 ${
-                          related ? "opacity-0" : "opacity-100"
+                        className="flex h-[3px] w-full overflow-hidden"
+                      >
+                        {item.uses.map((use) => (
+                          <span
+                            key={use}
+                            className="h-full flex-1 transition-colors duration-300"
+                            style={{
+                              backgroundColor: related
+                                ? HUE[use]
+                                : "rgba(0,0,0,0.09)",
+                            }}
+                          />
+                        ))}
+                      </span>
+                      <span className="sr-only">
+                        {t.signalsUsed}{" "}
+                        {item.uses
+                          .map((use) => t.signals[use].label)
+                          .join(", ")}
+                        .
+                      </span>
+                      <p
+                        className={`mt-2 text-[13px] font-semibold leading-[1.3] transition-colors duration-300 ${
+                          related ? "text-ink-deep" : "text-black/64"
                         }`}
                       >
-                        {item.uses.map((use) => t.short[use]).join(" · ")}
+                        {card.name}
                       </p>
-                    </div>
+                      <div className="relative mt-1 hidden min-h-[2.05rem] sm:block">
+                        <p
+                          className={`text-[11.5px] leading-[1.45] text-black/62 transition-opacity duration-300 ${
+                            related ? "opacity-100" : "opacity-0"
+                          }`}
+                        >
+                          {card.detail}
+                        </p>
+                        <p
+                          aria-hidden="true"
+                          className={`absolute inset-x-0 top-0 font-mono text-[10.5px] uppercase tracking-[0.08em] text-black/42 transition-opacity duration-300 ${
+                            related ? "opacity-0" : "opacity-100"
+                          }`}
+                        >
+                          {item.uses.map((use) => t.short[use]).join(" · ")}
+                        </p>
+                      </div>
+                    </button>
                   </li>
                 );
               })}
-              {/* Not a capability, so not a card: the overflow note is dashed
-                  and rule-less, which stops the eye counting it as a
-                  fourteenth thing the platform does. */}
               <li className="rounded-md border border-dashed border-black/16 px-3.5 py-3 sm:px-4">
                 <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.1em] text-black/45">
                   {t.moreLabel}
@@ -639,15 +673,6 @@ export default function ConnectedSystemMap({
             </ul>
           </div>
         </div>
-      </div>
-
-      {/* The finding -> change -> result loop used to be restated here. It is
-          the whole subject of `#actions` directly above, so all this strip
-          keeps is the affordance: what to click, and what clicking does. */}
-      <div className="flex flex-wrap items-center justify-end gap-x-8 gap-y-3 border-t border-black/12 bg-ground px-4 py-3 sm:px-5">
-        <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.1em] text-black/58">
-          {t.hint}
-        </p>
       </div>
     </div>
   );

@@ -4,6 +4,7 @@ import { ArrowRight } from "lucide-react";
 import type { Metadata } from "next";
 
 import { BookReviewCta } from "@/components/beseam/book-review-cta";
+import FaqGrid from "@/components/beseam/faq-grid";
 import FirstMonthPromise from "@/components/beseam/first-month-promise";
 import { Reveal } from "@/components/beseam/reveal";
 import TrackedLink from "@/components/beseam/tracked-link";
@@ -25,7 +26,6 @@ export const metadata: Metadata = buildPublicMetadata({
 const CONTENTS = [
   { label: "What happens after you start", href: "#stages" },
   { label: "What Beseam handles — and what you decide", href: "#roles" },
-  { label: "What stays attached to the work", href: "#record" },
   { label: "The rules we keep", href: "#rules" },
   { label: "Questions people ask", href: "#questions" },
 ] as const;
@@ -209,8 +209,7 @@ export default function HowWeWorkPage() {
                   will see it, then checks what happened afterward.
                 </p>
                 <p className="mt-4 max-w-[52ch] text-[18px] leading-[1.7] text-ink-deep">
-                  Your team should not have to babysit another dashboard to get
-                  there.
+                  Your team steps in for decisions, not repetitive checking.
                 </p>
                 <div className="mt-7 flex flex-wrap items-center gap-4">
                   <TrackedLink
@@ -220,7 +219,7 @@ export default function HowWeWorkPage() {
                     placement="how_we_work_hero"
                     className="group inline-flex min-h-12 items-center justify-center gap-2 bg-signal-ink px-6 text-[15px] font-semibold text-white"
                   >
-                    Run the free scan
+                    Scan my store
                     <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
                   </TrackedLink>
                   <Link
@@ -240,7 +239,7 @@ export default function HowWeWorkPage() {
               aria-label="On this page"
               className="mt-14 border-t border-black/16 pt-4"
             >
-              <ol className="grid gap-px bg-black/10 sm:grid-cols-2 lg:grid-cols-5">
+              <ol className="grid gap-px bg-black/10 sm:grid-cols-2 lg:grid-cols-4">
                 {CONTENTS.map((item, index) => (
                   <li key={item.href} className="bg-ground">
                     <a
@@ -271,9 +270,9 @@ export default function HowWeWorkPage() {
                 What happens after you start.
               </h2>
               <p className="max-w-[52ch] self-end text-[17px] leading-[1.75] text-white/68 [text-wrap:pretty]">
-                Start with what is public. Add access only when it earns its
-                place. From there, Beseam keeps the work moving until there is
-                something worth your decision.
+                Start with what is public. Connect more only when it helps. From
+                there, Beseam keeps checking until there is something worth your
+                decision.
               </p>
             </div>
           </Reveal>
@@ -322,6 +321,36 @@ export default function HowWeWorkPage() {
               })}
             </ol>
           </Reveal>
+
+          <Reveal delay={0.08}>
+            <div className="mt-8 border-t border-white/16 pt-8">
+              <div className="grid gap-5 lg:grid-cols-[minmax(0,0.7fr)_minmax(0,1.3fr)] lg:items-end lg:gap-16">
+                <h3 className="max-w-[18ch] font-display text-[clamp(1.8rem,2.6vw,2.5rem)] font-normal leading-[1.08] tracking-[-0.02em] text-white">
+                  Every change keeps its history.
+                </h3>
+                <p className="max-w-[50ch] text-[14.5px] leading-[1.7] text-white/58">
+                  You should be able to open a change later and see why it
+                  existed, what you approved, and what happened next without
+                  reconstructing the story from separate tools.
+                </p>
+              </div>
+              <div className="mt-7 grid gap-px border border-white/14 bg-white/14 sm:grid-cols-2 lg:grid-cols-4">
+                {ARTIFACTS.map((item, index) => (
+                  <article key={item.name} className="bg-ink-deep px-5 py-6">
+                    <p className="font-mono text-[10px] tabular-nums tracking-[0.1em] text-signal">
+                      {String(index + 1).padStart(2, "0")}
+                    </p>
+                    <h4 className="mt-3 text-[15px] font-semibold leading-[1.35] text-white">
+                      {item.name}
+                    </h4>
+                    <p className="mt-2 text-[12.75px] leading-[1.6] text-white/54">
+                      {item.detail}
+                    </p>
+                  </article>
+                ))}
+              </div>
+            </div>
+          </Reveal>
         </div>
       </section>
 
@@ -333,7 +362,7 @@ export default function HowWeWorkPage() {
           <Reveal>
             <div className="grid gap-8 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:items-end lg:gap-20">
               <h2 className="max-w-[16ch] text-balance font-display text-[clamp(2.1rem,3.4vw,3.3rem)] font-normal leading-[1.05] tracking-[-0.025em] text-ink-deep">
-                The line between automation and judgment stays visible.
+                Automate the checking, not the judgment.
               </h2>
               <p className="max-w-[50ch] self-end text-[16px] leading-[1.7] text-black/62 [text-wrap:pretty]">
                 Beseam should remove repetitive checking and assembly work, not
@@ -362,47 +391,6 @@ export default function HowWeWorkPage() {
                 </h3>
                 <ResponsibilityList items={YOU_DECIDE} />
               </article>
-            </div>
-          </Reveal>
-        </div>
-      </section>
-
-      <section
-        id="record"
-        className="scroll-mt-24 border-b border-black/14 bg-ground"
-      >
-        <div className="mx-auto max-w-[92rem] px-5 py-20 sm:px-8 sm:py-24 lg:px-10 lg:py-28">
-          <Reveal>
-            <div className="grid gap-8 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:items-end lg:gap-20">
-              <h2 className="max-w-[15ch] text-balance font-display text-[clamp(2.1rem,3.4vw,3.3rem)] font-normal leading-[1.05] tracking-[-0.025em] text-ink-deep">
-                What stays attached to the work.
-              </h2>
-              <p className="max-w-[50ch] self-end text-[16px] leading-[1.7] text-black/62 [text-wrap:pretty]">
-                A change should be inspectable later without reconstructing the
-                story from five dashboards, a Slack thread, and someone&rsquo;s
-                memory.
-              </p>
-            </div>
-          </Reveal>
-
-          <Reveal delay={0.05}>
-            <div className="mt-12 grid gap-px border border-black/12 bg-black/12 sm:grid-cols-2 lg:grid-cols-4">
-              {ARTIFACTS.map((item, index) => (
-                <article
-                  key={item.name}
-                  className="flex flex-col bg-panel-white px-6 py-8 sm:px-7 sm:py-9"
-                >
-                  <p className="font-mono text-[11px] tabular-nums tracking-[0.1em] text-signal-ink">
-                    {String(index + 1).padStart(2, "0")}
-                  </p>
-                  <h3 className="mt-4 max-w-[18ch] text-balance text-[18px] font-semibold leading-[1.3] tracking-[-0.01em] text-ink-deep">
-                    {item.name}
-                  </h3>
-                  <p className="mt-3 text-[14.5px] leading-[1.7] text-black/60 [text-wrap:pretty]">
-                    {item.detail}
-                  </p>
-                </article>
-              ))}
             </div>
           </Reveal>
         </div>
@@ -459,65 +447,33 @@ export default function HowWeWorkPage() {
         </div>
       </section>
 
-      <section
+      <FaqGrid
         id="questions"
-        className="scroll-mt-24 border-b border-black/14 bg-ground-2"
-      >
-        <div className="mx-auto max-w-[92rem] px-5 py-20 sm:px-8 sm:py-24 lg:px-10 lg:py-28">
-          <Reveal>
-            <div className="grid gap-10 lg:grid-cols-[minmax(0,0.62fr)_minmax(0,1.38fr)] lg:gap-20">
-              <div>
-                <h2 className="max-w-[16ch] text-balance font-display text-[clamp(2rem,3.2vw,3rem)] font-normal leading-[1.06] tracking-[-0.025em] text-ink-deep">
-                  Questions teams ask before handing over access.
-                </h2>
-                <p className="mt-5 max-w-[34ch] text-[15px] leading-[1.7] text-black/60">
-                  The short version: start public, add access deliberately, and
-                  keep customer-facing decisions under your control.
-                </p>
-
-                <div className="mt-10 border-t border-black/16 pt-8">
-                  <p className="max-w-[30ch] text-[17px] font-semibold leading-[1.5] tracking-[-0.01em] text-ink-deep">
-                    Want to walk through one product with us?
-                  </p>
-                  <p className="mt-3 max-w-[34ch] text-[14.5px] leading-[1.65] text-black/60">
-                    Twenty minutes, live. Bring a product or question you think
-                    should be performing better.
-                  </p>
-                  <div className="mt-6">
-                    <BookReviewCta
-                      variant="primary"
-                      location="how_we_work_faq"
-                      label="Book the 20-minute review"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div className="border-t border-black/16">
-                {FAQS.map((faq) => (
-                  <details
-                    key={faq.question}
-                    className="group border-b border-black/14"
-                  >
-                    <summary className="flex min-h-16 cursor-pointer list-none items-center justify-between gap-6 py-5 text-[16.5px] font-semibold tracking-[-0.01em] text-ink-deep transition-colors marker:content-none hover:text-signal-ink focus-visible:ring-2 focus-visible:ring-signal-ink">
-                      {faq.question}
-                      <span
-                        aria-hidden="true"
-                        className="flex h-7 w-7 shrink-0 items-center justify-center border border-black/20 text-[18px] font-normal text-signal-ink transition-transform duration-300 ease-out group-open:rotate-45 motion-reduce:transition-none"
-                      >
-                        +
-                      </span>
-                    </summary>
-                    <p className="max-w-[66ch] pb-7 pr-10 text-[15px] leading-[1.72] text-black/64 [text-wrap:pretty]">
-                      {faq.answer}
-                    </p>
-                  </details>
-                ))}
-              </div>
-            </div>
-          </Reveal>
-        </div>
-      </section>
+        heading="Questions teams ask before handing over access."
+        intro={
+          <>
+            <p>
+              The short version: start public, add access deliberately, and keep
+              customer-facing decisions under your control.
+            </p>
+            <p className="mt-5 font-semibold text-ink-deep">
+              Want to walk through one product with us?
+            </p>
+            <p className="mt-2">
+              Twenty minutes, live. Bring a product or question you think should
+              be performing better.
+            </p>
+          </>
+        }
+        action={
+          <BookReviewCta
+            variant="primary"
+            location="how_we_work_faq"
+            label="Book the 20-minute review"
+          />
+        }
+        items={FAQS}
+      />
 
       <FirstMonthPromise />
     </>

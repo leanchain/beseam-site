@@ -1,6 +1,7 @@
 import type { CSSProperties } from "react";
 
 import Image from "next/image";
+import Link from "next/link";
 
 import {
   ArrowRight,
@@ -775,46 +776,13 @@ export default function WhatBeseamDoes({ locale = "en" }: { locale?: Locale }) {
                   <p className="mt-3.5 max-w-[33ch] text-[14.5px] leading-[1.55] text-black/64">
                     {domain.detail}
                   </p>
-                  <ul className="mt-3 flex flex-wrap gap-1.5">
-                    {domain.capabilities.map((capability) => (
-                      <li
-                        key={capability}
-                        className="bg-white px-2 py-1 font-mono text-[11px] font-medium uppercase tracking-[0.06em] text-black/56 ring-1 ring-black/12"
-                      >
-                        {capability}
-                      </li>
-                    ))}
-                  </ul>
                 </article>
               ),
             };
           })}
           footer={
             <div className="mt-5 border-y border-white/10 bg-ink-deep px-5 py-6 text-white sm:px-6 sm:py-7 lg:px-8">
-              {/* The loop, drawn as a loop.
-
-                  This band used to carry the five steps as a rail of chips
-                  with a return path drawn under it. The words were right and
-                  the return path was already there, but a rail still reads
-                  left-to-right first and closes second -- the same shape the
-                  manifesto was called out for. `LoopDiagram` is the picture
-                  that sentence was promising, and it is the figure already
-                  serving /how-we-work and /manifesto, so the homepage is
-                  reusing the drawing rather than owning a second one.
-
-                  Cost, stated because it is real: the figure is roughly 380px
-                  tall against the rail's ~100px, and it gives up the
-                  full-measure footer rule under the panels. The right column
-                  is never narrower than the svg's own 32rem cap at any
-                  breakpoint, so no label is scaled below its 11px floor --
-                  do not wrap it in anything tighter. */}
               <div className="grid gap-6 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:items-center lg:gap-12">
-                {/* This column used to restate the five steps as a sentence,
-                    under an eyebrow reading "Continuous loop" -- which the
-                    ring's own centre also says. Three tellings of one idea in
-                    one band. It now carries only what the ring cannot draw:
-                    who holds the gate, and what "measure" is measured
-                    against. */}
                 <div>
                   <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.12em] text-signal">
                     {oneSystem.gate.eyebrow}
@@ -825,6 +793,16 @@ export default function WhatBeseamDoes({ locale = "en" }: { locale?: Locale }) {
                   <p className="mt-5 max-w-[40ch] border-t border-white/12 pt-4 text-[14px] leading-[1.6] text-white/56">
                     {oneSystem.gate.note}
                   </p>
+                  <Link
+                    href="/platform"
+                    className="group mt-5 inline-flex min-h-10 items-center gap-2 text-[14px] font-semibold text-white underline decoration-white/25 underline-offset-6 hover:decoration-signal"
+                  >
+                    {t.sections.system.compact.link}
+                    <ArrowRight
+                      aria-hidden="true"
+                      className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
+                    />
+                  </Link>
                 </div>
                 <LoopDiagram tone="dark" detail animate locale={locale} />
               </div>

@@ -22,7 +22,7 @@ export const de: Dictionary = {
     links: {
       platform: "Plattform",
       howWeWork: "So arbeiten wir",
-      report: "AI Shopping Report",
+      report: "KI-Shopping-Bericht",
     },
     login: "Anmelden",
     cta: "Shop scannen",
@@ -779,9 +779,8 @@ export const de: Dictionary = {
       signals: { label: "Signale", note: "Feste Menge" },
       journey: { label: "Eine Kaufreise", note: "Abdeckung" },
       useCases: {
-        label: "Was Teams damit tun",
-        note: "Die Liste wächst weiter",
-        noLinkNote: "Verbundene Abdeckung",
+        label: "Was Beseam tun kann",
+        noLinkNote: "Verbundene Ergebnisse",
       },
     },
     feedsBefore: "Speist ",
@@ -795,11 +794,9 @@ export const de: Dictionary = {
     platformQuestion: "Wofür entscheidet sich die Kundschaft?",
     explore: "Plattform ansehen",
     signalsUsed: "Genutzte Signale:",
-    servedLive: "Live ausgespielt",
     moreLabel: "+ mehr",
     moreDetail:
-      "Kampagnen, Zuverlässigkeit, Experimente, Segmente, Media Studio, Marktplätze, Passform. Nicht jede Funktion ist für jeden Shop freigeschaltet.",
-    hint: "Signal wählen, um zu sehen, was es speist",
+      "Immersive Produkterlebnisse, Marktplätze, Marken-Workflows und weitere spezialisierte Funktionen, sofern aktiviert.",
     // `scope` und `caveat` sitzen in schmalen Spalten mit fester Zeilenhöhe:
     // die deutschen Zeilen bleiben deshalb so lang wie die englischen, nicht
     // so nah wie möglich am englischen Wortlaut.
@@ -821,9 +818,6 @@ export const de: Dictionary = {
         does: "Katalog- und Seitenqualität",
       },
       behavior: {
-        // Weiches Trennzeichen (U+00AD): "Kundenverhalten" ist ein Wort ohne
-        // Umbruchstelle und schiebt sich sonst bei 1024px über das Ebenen-
-        // Kürzel rechts daneben. Die englische Zeile bricht an ihrem Leerraum.
         label: "Kunden­verhalten",
         layer: "Kaufreise",
         scope: "Was Kundschaft verfeinert, öffnet, ignoriert, abbricht.",
@@ -847,64 +841,53 @@ export const de: Dictionary = {
       revenue: "Umsatz",
     },
     cards: {
-      aiAnswerVisibility: {
-        name: "Sichtbarkeit in KI-Antworten",
+      getDiscovered: {
+        name: "Gefunden werden",
         detail:
-          "Genannt bei den Fragen, die zählen – und was die Antwort stützte.",
+          "Sichtbarkeitslücken in KI und Suche finden und die Belege für die Auswahl stärken.",
       },
-      competitors: {
-        name: "Wer stattdessen gewählt wird",
-        detail: "Was an Ihrer Stelle erscheint, über die Zeit verfolgt.",
-      },
-      agentReadiness: {
-        name: "Agent-Tauglichkeit",
-        detail: "Ob Shopping-Agenten den Shop überhaupt lesen können.",
-      },
-      catalogTruth: {
-        name: "Katalogwahrheit",
-        detail: "Felder, Varianten, Aktualität und Bestand, wie sie ankommen.",
-      },
-      productPageEvidence: {
-        name: "Belege auf der Produktseite",
-        detail: "Was die Seite beantwortet und was sie offen lässt.",
-      },
-      storeHealth: {
-        name: "Shop-Zustand und Crawlbarkeit",
-        detail: "Indexierbarkeit, strukturierte Fakten, Maschinenlesbarkeit.",
-      },
-      brandClaims: {
-        name: "Markenaussagen und Vertrauen",
-        detail: "Aussagen mit genug Belegen, um sie sicher weiterzuverwenden.",
-      },
-      personalizedSearch: {
-        name: "Personalisierte Suche und Empfehlungen",
-        detail: "Ergebnisse und Platzierungen, live ausgespielt und gemessen.",
-      },
-      whyBuyersLeave: {
-        name: "Warum Kundschaft abspringt",
-        detail: "Sitzungen, Replay, Heatmaps und die Reibung, die sie zeigen.",
-      },
-      funnels: {
-        name: "Funnels, Kohorten, Kaufreisen",
-        detail: "Wo Kundschaft weitergeht und wer stehen bleibt.",
-      },
-      revenueAttribution: {
-        name: "Umsatz und Attribution",
+      productsChoose: {
+        name: "Produkte leichter wählbar machen",
         detail:
-          "Umsatz, beobachtete Änderungen, Attribution und Schätzungen bleiben getrennt.",
+          "Katalog, Produktseiten, Merchandising und entscheidungsrelevante Belege verbessern.",
       },
-      whatChanged: {
-        name: "Was sich verändert hat",
-        detail: "Vorher und nachher, an eine erledigte Änderung gebunden.",
-      },
-      oneChangeList: {
-        name: "Eine Änderungsliste",
+      fitSizing: {
+        name: "Die richtige Passform finden",
         detail:
-          "Jede vorgeschlagene Änderung mit Zuständigkeit, Freigabestatus und Prüfung danach.",
+          "Grössenhilfe, Messung, Fit-Empfehlungen und produktspezifische Anpassungen nutzen.",
+      },
+      understandBehavior: {
+        name: "Kundenverhalten verstehen",
+        detail:
+          "Analytics, Kaufreisen, Replay, Heatmaps, Suchverhalten und Conversion-Signale verbinden.",
+      },
+      personalizeTest: {
+        name: "Personalisieren & testen",
+        detail:
+          "Suche, Empfehlungen, Merchandising und Experimente an den Kontext der Kundschaft anpassen.",
+      },
+      journeyHealth: {
+        name: "Die Kaufreise stabil halten",
+        detail:
+          "Performance-Probleme, Frontend-Fehler, Incidents und Zuverlässigkeitsprobleme erkennen.",
+      },
+      creativeStudio: {
+        name: "Content & Produktmedien erstellen",
+        detail:
+          "Produktcontent, kreative Assets, Bilder, Videos und reichhaltigere Produkterlebnisse vorbereiten.",
+      },
+      prioritizeMeasure: {
+        name: "Priorisieren & Wirkung messen",
+        detail:
+          "Belege in eine priorisierte Änderungsliste überführen und Vorher/Nachher-Ergebnisse anhängen.",
+      },
+      campaigns: {
+        name: "Kampagnen starten & verbessern",
+        detail:
+          "Google- und Meta-Kampagnen vorbereiten, veröffentlichen und messen, sofern aktiviert.",
       },
     },
   },
-
   appScreens: {
     illustrative: "Beispielhafte Darstellung · keine Kundenergebnisse.",
     actions: {
@@ -986,7 +969,7 @@ export const de: Dictionary = {
   sections: {
     proof: {
       heading: "Sehen Sie, was der Entscheidung im Weg steht.",
-      body: "Beseam sieht sich an, was die Kundschaft getan hat, prüft Produkt-, Such- und Bestandsdaten, schliesst schwächere Erklärungen aus und macht aus dem stärksten Befund eine Änderung, die Sie freigeben und erneut prüfen können.",
+      body: "Beseam sieht sich an, was die Kundschaft getan hat, prüft Produkt-, Such- und Bestandsdaten, schliesst schwächere Erklärungen aus und macht aus dem stärksten Befund eine konkrete Änderung.",
       traceLabel: "Beispielanalyse",
       traceScope: "Suche im Shop · schematisch",
       queries: {
@@ -1185,8 +1168,25 @@ export const de: Dictionary = {
     },
 
     system: {
-      heading: "Der ganze Shop, zusammen betrachtet.",
-      body: "Was die KI über Sie sagt, was Ihre Seiten sagen und was Ihre Kundschaft tut. Getrennt sind das einzelne Berichte; zusammen zeigen sie, was sich bewegt hat und was sich mitbewegt hat.",
+      eyebrow: "Ein verbundenes Bild",
+      heading: "Ein Problem. Alle Belege dahinter.",
+      body: "Eine verpasste Empfehlung, zögernde Kundschaft oder ein verlorener Verkauf lässt sich selten mit nur einem Tool erklären. Beseam verbindet KI-Entdeckung, Ihren Shop, das Verhalten der Kundschaft und die Ergebnisse, damit die nächste Änderung mit dem vollständigen Bild beginnt.",
+      compact: {
+        inputs: [
+          "KI & Suche",
+          "Produkt & Shop",
+          "Kundenverhalten",
+          "Bestellungen & Umsatz",
+        ],
+        center: "Beseam verbindet die Belege",
+        outputs: [
+          "Was ist passiert?",
+          "Was steht im Weg?",
+          "Was sollte sich ändern?",
+          "Hat es funktioniert?",
+        ],
+        link: "Plattform ansehen",
+      },
     },
 
     impact: {
@@ -1213,6 +1213,12 @@ export const de: Dictionary = {
         question: "Was muss ich verbinden, um zu starten?",
         answer:
           "Beginnen Sie mit Ihrer Domain. Shop-, Analyse-, Such-, Verhaltens- oder Kundendaten kommen erst dazu, wenn sie Beseam helfen, das Problem zu verstehen oder eine freigegebene Änderung umzusetzen.",
+      },
+      scanVsBeseam: {
+        question:
+          "Was ist der Unterschied zwischen dem kostenlosen Scan und Beseam?",
+        answer:
+          "Der kostenlose Scan ist eine einmalige Momentaufnahme Ihres öffentlichen Shops. Beseam beobachtet danach weiter, verbindet Ihren Shop mit weiteren nützlichen Signalen, macht aus Befunden konkrete Änderungsvorschläge, setzt unterstützte Änderungen nach Ihrer Freigabe um und prüft anschliessend, was sich verändert hat.",
       },
       priority: {
         question: "Wie entscheidet Beseam, was zuerst behoben wird?",
@@ -1252,13 +1258,13 @@ export const de: Dictionary = {
         answers: "Ihre Produkte in der KI-Suche werden geprüft",
       },
       technical: (position: number, total: number) =>
-        `Technische Auffindbarkeit · Schritt ${position} von ${total}`,
+        `Ihr Shop wird gescannt · Schritt ${position} von ${total}`,
       readingDomain: (domain: string) => `${domain} wird gelesen`,
       readingStorefront: "Ihr Shop wird gelesen",
       resultsAsTheyArrive:
-        "Die Ergebnisse erscheinen unten, sobald ein Teil abgeschlossen ist. Sie müssen nicht auf alles warten.",
+        "Nützliche Befunde erscheinen, sobald sie bereit sind — Sie müssen nicht auf alles warten.",
       questionsLater:
-        "Kundenfragen kommen danach; die fortlaufende Beobachtung findet in Beseam statt.",
+        "Dieser erste Scan ist die Momentaufnahme. In Beseam laufen die Prüfungen danach weiter.",
       progress: (done: number, total: number) => `${done} von ${total}`,
       productsFound: (count: number) =>
         `${count} ${count === 1 ? "Produkt" : "Produkte"} gefunden`,
@@ -1418,19 +1424,28 @@ export const de: Dictionary = {
     },
     continue: {
       opportunities: (count: number) =>
-        `${count} ${count === 1 ? "Chance" : "Chancen"} gefunden`,
-      nextLabel: "Nächster Schritt",
-      once: "Sie haben die Lücken gefunden. Lassen Sie Beseam diesen Shop weiter beobachten.",
-      body: "Machen Sie aus diesem einmaligen Scan einen fortlaufenden Kreislauf: dieselben Kauffragen weiterlaufen lassen, die stärksten Behebungen vorbereiten, kundenseitige Änderungen freigeben und danach messen, was sich verändert hat.",
+        count === 0
+          ? "Keine offensichtliche Lücke in dieser Momentaufnahme"
+          : `${count} ${count === 1 ? "Chance" : "Chancen"} gefunden`,
+      nextLabel: "In Beseam fortfahren",
+      once: (count: number) =>
+        count === 0
+          ? "Dieser Scan ist eine Momentaufnahme. Beseam beobachtet weiter, was sich verändert."
+          : "Dieser Scan hat die Lücken gefunden. Beseam arbeitet daran weiter.",
+      body: "Nehmen Sie diesen Shop direkt mit in Beseam. Lassen Sie Discovery- und Shop-Prüfungen weiterlaufen, machen Sie aus den stärksten Befunden vorbereitete Änderungen, geben Sie kundenseitige Änderungen zuerst frei und prüfen Sie danach erneut, was sich bewegt hat.",
       benefits: [
-        "Discovery- und Shop-Prüfungen weiterlaufen lassen",
+        "Denselben Shop weiter beobachten",
         "Befunde in vorbereitete Änderungen verwandeln",
-        "Zuerst freigeben, danach die Belege erneut prüfen",
+        "Zuerst freigeben, danach erneut messen",
       ],
       prepared: "Von Beseam vorbereitet",
       approval: "Braucht Ihre Freigabe",
       afterConnection: "Nach Verbindung geprüft",
-      start: "Kostenlos mit diesem Shop starten",
+      start: "Kostenlos mit diesem Shop fortfahren",
+      carryStore: (domain: string) =>
+        `${domain} wird in die Einrichtung übernommen — Sie starten nicht von vorn.`,
+      closingEyebrow: "Genug gesehen?",
+      closingTitle: "Lassen Sie Beseam diesen Shop weiter beobachten.",
       reviewWithFinding: "Möchten Sie das lieber gemeinsam mit uns durchgehen?",
       reviewWithoutFinding:
         "Möchten Sie das lieber gemeinsam mit uns durchgehen?",
@@ -1633,10 +1648,10 @@ export const de: Dictionary = {
       reportUnavailable: "Bericht nicht verfügbar",
     },
     deeper: {
-      title:
-        "Sehen Sie, was KI über Ihre Produkte sagt — und was Sie ändern sollten.",
+      eyebrow: "Optional: zuerst mehr Belege",
+      title: "Schalten Sie den tieferen Scan frei, bevor Sie entscheiden.",
       intro:
-        "Der öffentliche Shop-Scan oben gehört bereits Ihnen. Bestätigen Sie Ihre E-Mail für den langsameren, wertvolleren Teil: Empfehlungen auf Seitenebene plus echte Kauffragen an ChatGPT und Google AI Mode.",
+        "Möchten Sie vor dem Start mit Beseam mehr Belege sehen? Bestätigen Sie eine E-Mail; dann laufen die langsameren Prüfungen: Empfehlungen auf Seitenebene plus echte Kauffragen an ChatGPT und Google AI Mode.",
       assurances: [
         "Kostenlos",
         "Kein Konto",
@@ -1671,7 +1686,7 @@ export const de: Dictionary = {
       placeholder: "sie@firma.ch",
       sending: "Wird gesendet…",
       send: "Senden",
-      runningCta: "Kostenlos fortfahren",
+      runningCta: "Tieferen Scan freischalten",
       completeCta: "Analyse per E-Mail senden",
       assurances: [
         "Kein Konto",
@@ -1736,7 +1751,8 @@ export const de: Dictionary = {
         "Wenn die Website in Ihrem Browser live ist, warten Sie einen Moment und führen Sie den Scan erneut aus.",
       ],
       reported: (reason: string) => `Vom Scan gemeldet: ${reason}`,
-      reviewCta: "Beseam an meinem Shop sehen",
+      continueCta: "Diesen Shop in Beseam verbinden",
+      reviewCta: "Hilfe mit diesem Shop bekommen",
     },
   },
   scan: {

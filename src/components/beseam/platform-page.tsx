@@ -3,12 +3,14 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
 import { ActionsScreen } from "@/components/beseam/app-screens";
-import PipelineGraphic from "@/components/beseam/pipeline-graphic";
+import FaqGrid from "@/components/beseam/faq-grid";
+import LoopDiagram from "@/components/beseam/loop-diagram";
 import PlatformCapabilities from "@/components/beseam/platform-capabilities";
 import { Reveal } from "@/components/beseam/reveal";
 import TrackedLink from "@/components/beseam/tracked-link";
 import { APP_REGISTER_URL } from "@/lib/app-urls";
 import type { MarketingPageData } from "@/lib/marketing-pages";
+
 export default function PlatformPageContent({
   page,
 }: {
@@ -74,10 +76,7 @@ export default function PlatformPageContent({
 
           <div className="mt-10 grid gap-8 lg:grid-cols-[minmax(0,1.08fr)_minmax(20rem,0.72fr)] lg:items-end lg:gap-16">
             <div>
-              <p className="font-mono text-[12px] font-semibold uppercase tracking-[0.14em] text-signal-ink">
-                Platform
-              </p>
-              <h1 className="mt-5 max-w-[17ch] text-balance font-display text-[clamp(2.8rem,5.4vw,4.8rem)] font-normal leading-[1.01] tracking-[-0.025em] text-ink-deep">
+              <h1 className="max-w-[17ch] text-balance font-display text-[clamp(2.8rem,5.4vw,4.8rem)] font-normal leading-[1.01] tracking-[-0.025em] text-ink-deep">
                 {page.headline}
               </h1>
             </div>
@@ -87,24 +86,24 @@ export default function PlatformPageContent({
               </p>
               <div className="mt-7 flex flex-wrap gap-3">
                 <TrackedLink
+                  href="/scan"
+                  eventName="platform_scan_clicked"
+                  eventCategory="conversion"
+                  placement="platform_hero"
+                  className="group inline-flex min-h-12 items-center justify-center gap-2 bg-signal-ink px-6 text-[15px] font-semibold text-white"
+                >
+                  Scan my store
+                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                </TrackedLink>
+                <TrackedLink
                   href={APP_REGISTER_URL}
                   eventName="marketing_primary_cta_clicked"
                   eventCategory="conversion"
                   placement="platform_hero"
                   preserveUtm
-                  className="group inline-flex min-h-12 items-center justify-center gap-2 bg-signal-ink px-6 text-[15px] font-semibold text-white"
-                >
-                  Start free
-                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-                </TrackedLink>
-                <TrackedLink
-                  href="/scan"
-                  eventName="platform_scan_clicked"
-                  eventCategory="conversion"
-                  placement="platform_hero"
                   className="group inline-flex min-h-12 items-center justify-center gap-2 border border-black/28 px-6 text-[15px] font-semibold text-ink-deep hover:border-signal-ink hover:text-signal-ink"
                 >
-                  Run the free scan
+                  Start free
                   <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
                 </TrackedLink>
               </div>
@@ -127,12 +126,12 @@ export default function PlatformPageContent({
           <Reveal>
             <div className="grid gap-6 lg:grid-cols-[minmax(0,0.65fr)_minmax(0,1.35fr)] lg:items-end lg:gap-20">
               <h2 className="max-w-[17ch] font-display text-[clamp(2rem,3.2vw,2.9rem)] font-normal leading-[1.06] tracking-[-0.02em] text-ink-deep">
-                Signals become work, not another report.
+                See the work, not another dashboard.
               </h2>
               <p className="max-w-[52ch] self-end text-[15px] leading-[1.72] text-black/62">
-                Beseam turns the strongest findings into one ranked queue: the
-                change, the evidence behind it, the part of the business it
-                touches, and the approval it needs before a shopper sees it.
+                Beseam turns the strongest findings into one ranked queue: what
+                to change, why it matters, what it affects, and whether it needs
+                your approval before a shopper sees it.
               </p>
             </div>
           </Reveal>
@@ -158,64 +157,41 @@ export default function PlatformPageContent({
 
       <PlatformCapabilities />
       <section className="border-b border-technical-rule bg-ink-deep text-white">
-        <div className="mx-auto max-w-[92rem] px-5 py-20 sm:px-8 sm:py-24 lg:px-10 lg:py-28">
+        <div className="mx-auto max-w-[92rem] px-5 py-16 sm:px-8 sm:py-20 lg:px-10 lg:py-24">
           <Reveal>
-            <div className="grid gap-8 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:items-end lg:gap-16">
+            <div className="grid gap-10 lg:grid-cols-[minmax(0,0.72fr)_minmax(0,1.28fr)] lg:items-center lg:gap-16">
               <div>
                 <p className="font-mono text-[12px] font-semibold uppercase tracking-[0.14em] text-signal">
-                  From evidence to outcome
+                  One finding, end to end
                 </p>
-                <h2 className="mt-7 max-w-[16ch] font-display text-[clamp(2.3rem,3.8vw,3.9rem)] font-normal leading-[1.03] tracking-[-0.02em]">
-                  Find. Prepare. Approve. Measure.
+                <h2 className="mt-6 max-w-[16ch] font-display text-[clamp(2.2rem,3.5vw,3.4rem)] font-normal leading-[1.04] tracking-[-0.02em]">
+                  Keep the question, change, and result in the same loop.
                 </h2>
+                <p className="mt-5 max-w-[50ch] text-[16px] leading-[1.75] text-white/68">
+                  A finding is useful only if it can become a specific decision
+                  and be checked again afterward. Here is that loop.
+                </p>
+                <Link
+                  href="/how-we-work"
+                  className="group mt-5 inline-flex items-center gap-2 text-[14px] font-semibold text-white underline decoration-white/30 underline-offset-4 hover:decoration-signal"
+                >
+                  See how the approval and re-check process works
+                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                </Link>
               </div>
-              <p className="max-w-[50ch] text-[16px] leading-[1.75] text-white/68">
-                Beseam watches the relevant signals, turns a supported finding
-                into a specific change, waits for your approval when customers
-                will see it, then checks the same signal again.
-              </p>
+              <LoopDiagram
+                tone="dark"
+                detail
+                animate
+                size="lg"
+                className="mx-auto lg:mx-0 lg:ml-auto"
+              />
             </div>
           </Reveal>
-          <PipelineGraphic />
         </div>
       </section>
 
-      {/* After the dark act the page runs two light beats before the oxblood
-          close. They step down the ground ramp rather than repeating one
-          value, so each boundary is visible without a rule doing the work. */}
-      <section className="border-b border-rule bg-ground-2">
-        <div className="mx-auto grid max-w-[92rem] gap-10 px-5 py-16 sm:px-8 sm:py-20 lg:grid-cols-[minmax(0,0.65fr)_minmax(0,1.35fr)] lg:gap-20 lg:px-10 lg:py-24">
-          <div>
-            <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.1em] text-signal-ink">
-              FAQ
-            </p>
-            <h2 className="mt-5 max-w-[16ch] font-display text-[clamp(2rem,3.2vw,2.9rem)] font-normal leading-[1.06] tracking-[-0.02em] text-ink-deep">
-              Questions about the platform.
-            </h2>
-          </div>
-          <div className="border-t border-rule">
-            {page.faqs.map((faq) => (
-              <details
-                key={faq.question}
-                className="group border-b border-rule"
-              >
-                <summary className="flex min-h-16 cursor-pointer list-none items-center justify-between gap-5 py-5 text-[16px] font-semibold text-ink-deep marker:content-none focus-visible:ring-2 focus-visible:ring-signal-ink">
-                  {faq.question}
-                  <span
-                    aria-hidden
-                    className="flex h-7 w-7 shrink-0 items-center justify-center border border-rule text-[18px] font-normal text-signal-ink transition-transform group-open:rotate-45"
-                  >
-                    +
-                  </span>
-                </summary>
-                <p className="max-w-[68ch] pb-6 pr-10 text-[15px] leading-relaxed text-black/62">
-                  {faq.answer}
-                </p>
-              </details>
-            ))}
-          </div>
-        </div>
-      </section>
+      <FaqGrid heading="Questions about the platform." items={page.faqs} />
 
       {/* The related links are a pager, not a section: one flat row of
           destinations between the FAQ and the close. The signal hairline under
@@ -260,12 +236,13 @@ export default function PlatformPageContent({
       <section className="bg-pigment text-white">
         <div className="mx-auto max-w-[92rem] px-5 py-20 sm:px-8 sm:py-24 lg:px-10 lg:py-28">
           <h2 className="max-w-[19ch] font-display text-[clamp(2.3rem,3.8vw,3.9rem)] font-normal leading-[1.04] tracking-[-0.02em]">
-            Start with your store. Add signals when they earn their place.
+            Start with your store. Connect more only when it helps answer a real
+            question.
           </h2>
           <p className="mt-5 max-w-[58ch] text-[17px] leading-[1.72] text-white/76">
-            Beseam starts with what it can observe, adds deeper data only when
-            it helps explain or measure something, and keeps customer-facing
-            changes behind your approval.
+            Start with the storefront and store connection. Add deeper data only
+            when it helps explain a problem, choose the next change, or measure
+            what happened afterward.
           </p>
           <div className="mt-8">
             <TrackedLink

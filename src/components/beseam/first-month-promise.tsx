@@ -59,7 +59,10 @@ export default function FirstMonthPromise({
   const promise = t.sections.promise;
 
   return (
-    <section id="promise" className="scroll-mt-24 bg-[#faf1eb]">
+    <section
+      id="promise"
+      className="scroll-mt-24 border-t border-black/10 bg-ground"
+    >
       <div className="mx-auto max-w-[92rem] px-5 py-16 sm:px-8 sm:py-24 lg:px-10 lg:py-28">
         <Reveal>
           <div className="grid gap-8 lg:grid-cols-[minmax(0,0.72fr)_minmax(0,1.28fr)] lg:items-end lg:gap-16">

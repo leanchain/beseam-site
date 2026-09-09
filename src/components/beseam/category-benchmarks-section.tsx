@@ -76,19 +76,22 @@ function agreementBandsFor(t: Dictionary) {
 
 export default function CategoryBenchmarksSection({
   locale = "en",
+  compact = false,
 }: {
   locale?: Locale;
+  compact?: boolean;
 }) {
   const t = getDictionary(locale);
   const benchmarks = t.sections.benchmarks;
   const agreementBands = agreementBandsFor(t);
+  const highlights = compact ? HIGHLIGHTS.slice(0, 3) : HIGHLIGHTS;
 
   if (CATEGORY_BENCHMARKS.length === 0) return null;
 
   return (
     <section
       id="benchmarks"
-      className="scroll-mt-24 border-t border-black/14 bg-white"
+      className="scroll-mt-24 border-t border-black/14 bg-[#faf1eb]"
     >
       <div className="mx-auto max-w-[92rem] px-5 py-16 sm:px-8 sm:py-20 lg:px-10 lg:py-24">
         <Reveal>
@@ -113,9 +116,11 @@ export default function CategoryBenchmarksSection({
                 {benchmarks.link}
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Link>
-              <p className="mt-7 max-w-[38ch] border-l-2 border-signal-ink pl-4 text-[13.5px] font-medium leading-[1.55] text-black/68">
-                {benchmarks.pullQuote}
-              </p>
+              {!compact ? (
+                <p className="mt-7 max-w-[38ch] border-l-2 border-signal-ink pl-4 text-[13.5px] font-medium leading-[1.55] text-black/68">
+                  {benchmarks.pullQuote}
+                </p>
+              ) : null}
             </div>
 
             <div>
@@ -189,7 +194,7 @@ export default function CategoryBenchmarksSection({
                   <span className="text-right">{benchmarks.columns.solo}</span>
                 </div>
                 <ul>
-                  {HIGHLIGHTS.map((benchmark) => (
+                  {highlights.map((benchmark) => (
                     <li
                       key={benchmark.slug}
                       className="group grid items-center gap-x-2 border-b border-black/12 px-1 py-2.5 transition-colors hover:bg-black/[0.025] sm:gap-x-4"

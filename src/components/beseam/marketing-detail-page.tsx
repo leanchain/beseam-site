@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
 import { ActionsScreen, ImpactScreen } from "@/components/beseam/app-screens";
+import FaqGrid from "@/components/beseam/faq-grid";
 import PipelineGraphic from "@/components/beseam/pipeline-graphic";
 import TrackedLink from "@/components/beseam/tracked-link";
 import { APP_REGISTER_URL } from "@/lib/app-urls";
@@ -355,36 +356,10 @@ export default function MarketingDetailPage({
         </section>
       ) : null}
 
-      <section className="border-b border-rule bg-ground">
-        <div className="section-pad-tight mx-auto grid max-w-6xl gap-10 px-6 lg:grid-cols-[minmax(0,0.65fr)_minmax(0,1.35fr)] lg:gap-20">
-          <div>
-            <h2 className="editorial-subheading text-ink">
-              Questions about {page.eyebrow.toLowerCase()}
-            </h2>
-          </div>
-          <div className="border-t border-rule">
-            {page.faqs.map((faq) => (
-              <details
-                key={faq.question}
-                className="group border-b border-rule"
-              >
-                <summary className="flex min-h-16 cursor-pointer list-none items-center justify-between gap-5 py-5 text-[16px] font-semibold text-ink marker:content-none focus-visible:ring-2 focus-visible:ring-signal-ink">
-                  {faq.question}
-                  <span
-                    aria-hidden
-                    className="flex h-7 w-7 shrink-0 items-center justify-center border border-rule text-[18px] font-normal text-signal-ink transition-transform group-open:rotate-45"
-                  >
-                    +
-                  </span>
-                </summary>
-                <p className="max-w-[68ch] pb-6 pr-10 text-[15px] leading-relaxed text-foreground">
-                  {faq.answer}
-                </p>
-              </details>
-            ))}
-          </div>
-        </div>
-      </section>
+      <FaqGrid
+        heading={<>Questions about {page.eyebrow.toLowerCase()}</>}
+        items={page.faqs}
+      />
       {page.related.length > 0 ? (
         <section className="border-b border-rule bg-panel-white">
           <div className="section-pad-tight mx-auto max-w-6xl px-6">

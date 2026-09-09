@@ -750,21 +750,31 @@ function FoundStrip({ result }: { result: AnswerCheckResult }) {
   const scored = result.answers.filter((answer) => answer.mentioned !== null);
   const named = scored.filter((answer) => answer.mentioned === true).length;
 
-  const facts: Array<[string, string, boolean]> = [
-    [productCount, copy.result.productsFound, false],
-    [
-      scored.length ? `${named}/${scored.length}` : "—",
-      scored.length ? copy.result.answersNamed : copy.result.answersPending,
-      !scored.length && isScanInFlight(result),
-    ],
-    [String(findingCount), copy.result.opportunitiesFound(findingCount), false],
+  const facts: Array<{ value: string; label: string; accent?: boolean }> = [
+    { value: productCount, label: copy.result.productsFound },
+    {
+      value: String(findingCount),
+      label: copy.result.opportunitiesFound(findingCount),
+      accent: findingCount > 0,
+    },
+    ...(scored.length
+      ? [
+          {
+            value: `${named}/${scored.length}`,
+            label: copy.result.answersNamed,
+            accent: named < scored.length,
+          },
+        ]
+      : []),
   ];
 
   return (
-    <dl className="grid border-b border-black/14 bg-white sm:grid-cols-3">
-      {facts.map(([value, label, pending], index) => (
+    <dl
+      className={`grid border-b border-black/14 bg-white ${facts.length === 3 ? "sm:grid-cols-3" : "sm:grid-cols-2"}`}
+    >
+      {facts.map((fact, index) => (
         <div
-          key={label}
+          key={fact.label}
           className={`flex items-baseline gap-2.5 px-5 py-4 sm:px-6 ${
             index > 0
               ? "border-t border-black/12 sm:border-l sm:border-t-0"
@@ -773,23 +783,13 @@ function FoundStrip({ result }: { result: AnswerCheckResult }) {
         >
           <dd
             className={`text-[26px] font-semibold leading-none tracking-[-0.03em] tabular-nums ${
-              index === 1 && scored.length && named < scored.length
-                ? "text-signal-ink"
-                : index === 2 && findingCount > 0
-                  ? "text-signal-ink"
-                  : "text-ink-deep"
+              fact.accent ? "text-signal-ink" : "text-ink-deep"
             }`}
           >
-            {value}
+            {fact.value}
           </dd>
-          <dt className="flex items-center gap-1.5 text-[12.5px] leading-snug text-black/58">
-            {label}
-            {pending ? (
-              <Loader2
-                className="h-3 w-3 animate-spin text-signal-ink"
-                aria-hidden="true"
-              />
-            ) : null}
+          <dt className="text-[12.5px] leading-snug text-black/58">
+            {fact.label}
           </dt>
         </div>
       ))}
@@ -1065,7 +1065,7 @@ function discoveryFileNotes(
   };
 }
 
-const FIRST_SHOWN = 4;
+const FIRST_SHOWN = 3;
 
 function WorthLookingAt({ result }: { result: AnswerCheckResult }) {
   const copy = useDictionary().answerCheck;
@@ -1268,8 +1268,6 @@ function ContinuePaths({
   continueHref: string;
 }) {
   const copy = useDictionary().answerCheck;
-  const top = sortedFindings(result)[0] ?? null;
-  const topHeadline = top ? findingHeadline(top) : null;
   const opportunityCount = groupFindings(sortedFindings(result)).length;
 
   return (
@@ -1277,24 +1275,19 @@ function ContinuePaths({
       data-print-hide
       className="border-t border-black/18 bg-ink-deep px-5 py-8 text-white sm:px-6 sm:py-9"
     >
-      <div className="grid gap-7 lg:grid-cols-[minmax(0,1fr)_minmax(17rem,0.42fr)] lg:items-center">
+      <div className="grid gap-7 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,0.46fr)] lg:items-center">
         <div>
           <p className="font-mono text-[10.5px] font-semibold uppercase tracking-[0.1em] text-white/46">
             {copy.continue.opportunities(opportunityCount)} ·{" "}
             {copy.continue.nextLabel}
           </p>
-          <h3 className="mt-2 max-w-[31ch] text-[22px] font-semibold leading-[1.25] tracking-[-0.022em] sm:text-[24px]">
-            {copy.continue.once}
+          <h3 className="mt-2 max-w-[32ch] text-[22px] font-semibold leading-[1.25] tracking-[-0.022em] sm:text-[24px]">
+            {copy.continue.once(opportunityCount)}
           </h3>
-          {topHeadline ? (
-            <p className="mt-2.5 max-w-[58ch] text-[13px] leading-[1.55] text-signal">
-              {copy.continue.startingWith(topHeadline)}
-            </p>
-          ) : null}
-          <p className="mt-3 max-w-[62ch] text-[14px] leading-[1.65] text-white/64">
+          <p className="mt-3 max-w-[64ch] text-[14px] leading-[1.65] text-white/68">
             {copy.continue.body}
           </p>
-          <ul className="mt-5 grid gap-2.5 text-[12.5px] text-white/74 sm:grid-cols-3">
+          <ul className="mt-5 grid gap-2.5 text-[12.5px] text-white/76 sm:grid-cols-3">
             {copy.continue.benefits.map((benefit) => (
               <li key={benefit} className="flex items-start gap-2">
                 <Check
@@ -1312,7 +1305,7 @@ function ContinuePaths({
             href={continueHref}
             eventName="scan_continue_clicked"
             eventCategory="conversion"
-            placement="answer_check_result"
+            placement="answer_check_result_primary"
             preserveUtm
             className="group inline-flex min-h-12 w-full items-center justify-center gap-2 bg-white px-6 text-[14px] font-semibold text-ink-deep transition-colors hover:bg-signal"
           >
@@ -1322,21 +1315,53 @@ function ContinuePaths({
               className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
             />
           </TrackedLink>
-          <p className="mt-4 text-[13px] font-semibold text-white/82">
-            {topHeadline
-              ? copy.continue.reviewWithFinding
-              : copy.continue.reviewWithoutFinding}
+          <p className="mt-3 text-center text-[11.5px] leading-[1.5] text-white/52">
+            {copy.continue.carryStore(result.domain)}
           </p>
-          <p className="mt-1.5 text-[12px] leading-[1.55] text-white/50">
-            {copy.continue.reviewBody}
-          </p>
-          <BookReviewCta
-            location="scan_result_managed"
-            label={copy.continue.reviewCta}
-            className="mt-3 min-h-11 w-full border border-white/34 bg-transparent px-4 py-0 text-[12.5px] font-semibold text-white hover:bg-white hover:text-ink-deep"
-          />
         </div>
       </div>
+    </section>
+  );
+}
+
+function ClosingContinue({
+  domain,
+  continueHref,
+}: {
+  domain: string;
+  continueHref: string;
+}) {
+  const copy = useDictionary().answerCheck;
+  return (
+    <section
+      data-print-hide
+      className="flex flex-col gap-4 border-t border-black/14 bg-[#fffaf7] px-5 py-6 sm:flex-row sm:items-center sm:justify-between sm:px-6"
+    >
+      <div>
+        <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-black/42">
+          {copy.continue.closingEyebrow}
+        </p>
+        <p className="mt-1 text-[16px] font-semibold tracking-[-0.01em] text-ink-deep">
+          {copy.continue.closingTitle}
+        </p>
+        <p className="mt-1 text-[11.5px] text-black/48">
+          {copy.continue.carryStore(domain)}
+        </p>
+      </div>
+      <TrackedLink
+        href={continueHref}
+        eventName="scan_continue_clicked"
+        eventCategory="conversion"
+        placement="answer_check_result_bottom"
+        preserveUtm
+        className="group inline-flex min-h-11 items-center justify-center gap-2 bg-ink-deep px-5 text-[13px] font-semibold text-white transition-colors hover:bg-signal-ink"
+      >
+        {copy.continue.start}
+        <ArrowRight
+          aria-hidden="true"
+          className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5"
+        />
+      </TrackedLink>
     </section>
   );
 }
@@ -2559,13 +2584,16 @@ function DeeperAnalysisPanel({
   ] as const;
 
   return (
-    <section className="border-b border-black/14 bg-white">
-      <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
-        <div className="border-b border-black/12 bg-white px-5 py-6 sm:px-6 lg:border-b-0 lg:border-r">
+    <section className="border-b border-black/14 bg-[#fffaf7]">
+      <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(0,0.85fr)]">
+        <div className="border-b border-black/12 px-5 py-6 sm:px-6 lg:border-b-0 lg:border-r">
+          <p className="font-mono text-[10.5px] font-semibold uppercase tracking-[0.1em] text-black/40">
+            {copy.deeper.eyebrow}
+          </p>
           {/* Merchant-facing only. What this costs Beseam to run is our
               problem, not something to put in front of someone deciding
               whether to trust us. */}
-          <h3 className="text-[19px] font-semibold tracking-[-0.02em] text-ink-deep">
+          <h3 className="mt-2 text-[18px] font-semibold tracking-[-0.02em] text-ink-deep">
             {copy.deeper.title}
           </h3>
           <p className="mt-1.5 max-w-[52ch] text-[13.5px] leading-relaxed text-black/62">
@@ -2590,7 +2618,7 @@ function DeeperAnalysisPanel({
         </div>
         {/* The one ask on the card gets its own ground and a little more air
             than the explanation beside it. */}
-        <div className="bg-[#fffaf7] px-5 py-6 sm:px-6">{gate}</div>
+        <div className="bg-white px-5 py-6 sm:px-6">{gate}</div>
       </div>
     </section>
   );
@@ -2970,7 +2998,13 @@ function ScanHeadline({ result }: { result: AnswerCheckResult }) {
  * wrong, in the merchant's terms, and leave both recovery routes open — a
  * dead end here is a visitor lost at the moment they were most interested.
  */
-function RejectedNotice({ result }: { result: AnswerCheckResult }) {
+function RejectedNotice({
+  result,
+  continueHref,
+}: {
+  result: AnswerCheckResult;
+  continueHref?: string;
+}) {
   const copy = useDictionary().answerCheck;
   const reason = result.reject_reason ?? "";
   const blocked = reason.toLowerCase().includes("blocked");
@@ -3013,12 +3047,27 @@ function RejectedNotice({ result }: { result: AnswerCheckResult }) {
       <p className="mt-4 text-[12.5px] leading-relaxed text-black/48">
         {copy.errors.reported(reason)}
       </p>
-      <div className="mt-5 border-t border-black/12 pt-5">
+      <div className="mt-5 flex flex-col gap-3 border-t border-black/12 pt-5 sm:flex-row">
+        {continueHref ? (
+          <TrackedLink
+            href={continueHref}
+            eventName="scan_continue_clicked"
+            eventCategory="conversion"
+            placement="answer_check_rejected"
+            preserveUtm
+            className="group inline-flex min-h-12 items-center justify-center gap-2 bg-ink-deep px-6 text-[14px] font-semibold text-white transition-colors hover:bg-signal-ink"
+          >
+            {copy.errors.continueCta}
+            <ArrowRight
+              aria-hidden="true"
+              className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
+            />
+          </TrackedLink>
+        ) : null}
         <BookReviewCta
-          variant="primary"
           location="scan_rejected"
           label={copy.errors.reviewCta}
-          className="min-h-12 gap-2 px-6 py-0 text-[14px] font-semibold"
+          className="min-h-12 gap-2 border border-black/24 bg-white px-6 py-0 text-[14px] font-semibold text-ink-deep hover:border-ink-deep"
         />
       </div>
     </section>
@@ -3182,7 +3231,7 @@ export function ResultCard({
           {/* Nothing to share or print when the scan could not read the store. */}
           <button
             type="button"
-            hidden={Boolean(result.reject_reason)}
+            hidden={Boolean(result.reject_reason) || result.status !== "ready"}
             onClick={() => void onShare()}
             className="inline-flex min-h-11 items-center gap-2 border border-black/18 bg-white px-3 text-[12px] font-semibold text-ink-deep transition-colors hover:border-black/32 hover:bg-[#fffaf7] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal-ink/35"
             aria-label={copy.result.shareAria}
@@ -3204,7 +3253,7 @@ export function ResultCard({
           </button>
           <button
             type="button"
-            hidden={Boolean(result.reject_reason)}
+            hidden={Boolean(result.reject_reason) || result.status !== "ready"}
             onClick={onPrint}
             className="inline-flex min-h-11 items-center gap-2 border border-black/18 bg-white px-3 text-[12px] font-semibold text-ink-deep transition-colors hover:border-black/32 hover:bg-[#fffaf7] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal-ink/35"
           >
@@ -3215,12 +3264,16 @@ export function ResultCard({
       </div>
 
       {result.reject_reason ? (
-        <RejectedNotice result={result} />
+        <RejectedNotice result={result} continueHref={continueHref} />
       ) : (
         <>
           <ScanHeadline result={result} />
           <FoundStrip result={result} />
           <WorthLookingAt result={result} />
+
+          {continueHref ? (
+            <ContinuePaths result={result} continueHref={continueHref} />
+          ) : null}
 
           {verificationGate && result.status === "awaiting_verification" ? (
             <DeeperAnalysisPanel result={result} gate={verificationGate} />
@@ -3234,15 +3287,18 @@ export function ResultCard({
             <SaveAuditPanel domain={result.domain} gate={verificationGate} />
           ) : null}
 
-          {continueHref && !verificationGate && !inFlight ? (
-            <ContinuePaths result={result} continueHref={continueHref} />
-          ) : null}
-
           <InitialScanSummary result={result} />
 
           {/* Prints with the report: the scope of a finding list is part of the
               finding list, not a sales aside. */}
           <ScanBoundary result={result} />
+
+          {continueHref ? (
+            <ClosingContinue
+              domain={result.domain}
+              continueHref={continueHref}
+            />
+          ) : null}
         </>
       )}
     </div>
