@@ -13,6 +13,7 @@ import HeroViewportFit from "@/components/beseam/hero-viewport-fit";
 import MeasureImpact from "@/components/beseam/measure-impact";
 import { Reveal } from "@/components/beseam/reveal";
 import WhatBeseamDoes from "@/components/beseam/what-beseam-does";
+import { getDictionary } from "@/i18n";
 import type { Locale } from "@/i18n/locale-rules.mjs";
 
 /**
@@ -37,16 +38,18 @@ import type { Locale } from "@/i18n/locale-rules.mjs";
  *
  * Hero copy is ruled, not iterated: visibility-first (tracker §Canonical
  * landing-page audit, 2026-09-05), frozen until 2026-10-05 except for bugs or
- * wording quoted from a merchant.
+ * wording quoted from a merchant. The freeze is on the wording, not on the
+ * language: the strings live in `src/i18n/en.ts` under `hero`, and moving one
+ * between locales is a translation, not an edit.
+ *
+ * Every section below is handed the locale explicitly. None of them reads the
+ * path, because under `output: "export"` a server component has no request to
+ * read it from -- the page that mounts this composition is the one that knows.
  */
-const SCAN_RETURNS = [
-  "Can AI shopping agents read your store?",
-  "See where you stand",
-  "What to fix first",
-] as const;
-
 export default function ProductionHomepage({ locale }: { locale: Locale }) {
-  void locale;
+  const t = getDictionary(locale);
+  const scanReturns = Object.entries(t.hero.scanReturns);
+
   return (
     <div className="bg-ground text-[#151515]">
       <section id="home-hero" className="relative isolate overflow-hidden">
@@ -61,13 +64,12 @@ export default function ProductionHomepage({ locale }: { locale: Locale }) {
           <Reveal className="w-full">
             <div className="mx-auto w-full max-w-[76rem] text-center">
               <h1 className="pointer-events-auto mx-auto max-w-[18ch] text-balance font-display text-[clamp(3rem,5.6vw,5rem)] font-normal leading-[0.98] tracking-[-0.025em] text-ink-deep">
-                See why AI picked{" "}
-                <span className="text-signal-ink">someone else</span>.
+                {t.hero.headlineBefore}
+                <span className="text-signal-ink">{t.hero.headlineAccent}</span>
+                {t.hero.headlineAfter}
               </h1>
               <p className="pointer-events-auto mx-auto mt-6 max-w-[64ch] text-[17px] leading-[1.7] text-black/64 sm:text-[18px]">
-                Beseam keeps watching AI discovery, your store, and your
-                shoppers to find what is worth improving, makes the changes you
-                approve, and shows you the impact of your changes.
+                {t.hero.sub}
               </p>
               <div className="pointer-events-auto mx-auto mt-9 w-full">
                 <LiveAnswerCheck
@@ -77,9 +79,9 @@ export default function ProductionHomepage({ locale }: { locale: Locale }) {
                   formNote={
                     <div className="mx-auto mt-2 flex flex-col items-center text-center">
                       <ul className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
-                        {SCAN_RETURNS.map((item) => (
+                        {scanReturns.map(([key, item]) => (
                           <li
-                            key={item}
+                            key={key}
                             className="flex items-center gap-2 text-[13px] leading-snug text-black/62"
                           >
                             <Check
@@ -100,20 +102,20 @@ export default function ProductionHomepage({ locale }: { locale: Locale }) {
         <HeroScrollCue />
       </section>
 
-      <CredibilityRail />
-      <ConnectedEvidence />
-      <WhatBeseamDoes />
-      <CategoryBenchmarksSection />
-      <EvidenceToWork />
+      <CredibilityRail locale={locale} />
+      <ConnectedEvidence locale={locale} />
+      <WhatBeseamDoes locale={locale} />
+      <CategoryBenchmarksSection locale={locale} />
+      <EvidenceToWork locale={locale} />
       <DecisionBridge
         id="system"
         surfaceClassName="bg-ground-3"
         eyebrow=""
-        heading="The whole store, seen together."
-        body="What AI answers about you, what your pages say, and what shoppers do. Apart they are separate reports; together they show what moved and what moved with it."
+        heading={t.sections.system.heading}
+        body={t.sections.system.body}
       />
-      <MeasureImpact />
-      <FirstMonthPromise />
+      <MeasureImpact locale={locale} />
+      <FirstMonthPromise locale={locale} />
     </div>
   );
 }

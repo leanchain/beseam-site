@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 
+import { useDictionary } from "@/i18n/use-locale";
+
 /**
  * Decorative "more below" affordance pinned to the bottom of the full-height
  * hero. Present on load, fades out as soon as the visitor starts scrolling,
@@ -10,6 +12,9 @@ import { useEffect, useState } from "react";
  * rather than frozen mid-animation (see .hero-scroll-wheel in globals.css).
  */
 export default function HeroScrollCue() {
+  // A client component in the root of a static export has no locale prop to
+  // take, so it reads the one signal it does have: the path.
+  const t = useDictionary();
   const [atTop, setAtTop] = useState(true);
 
   useEffect(() => {
@@ -30,7 +35,7 @@ export default function HeroScrollCue() {
         <span className="motion-safe-only h-1.5 w-1 rounded-full bg-black/45 hero-scroll-wheel" />
       </span>
       <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.14em] text-black/45">
-        Scroll
+        {t.hero.scrollCue}
       </span>
     </div>
   );
