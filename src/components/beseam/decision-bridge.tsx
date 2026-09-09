@@ -12,6 +12,12 @@ type DecisionBridgeProps = {
   heading?: string;
   body?: string;
   exploreHref?: string | null;
+  /**
+   * Passed straight through. Left undefined so `ConnectedSystemMap` falls back
+   * to its own localized label -- the homepage mounts this section on /de and
+   * an English default here would be the one string on the map that stayed
+   * English.
+   */
   exploreLabel?: string;
   /**
    * Ground the section paints on. The homepage runs this beat as the last
@@ -34,7 +40,7 @@ export default function DecisionBridge({
   heading = "See the whole shopper journey in one place.",
   body = "AI discovery, product pages, shopper behavior, and revenue should not live in separate dashboards. Beseam keeps them together, finds what to improve, prepares the change, and checks what happened afterward. You approve customer-facing changes.",
   exploreHref = "/platform",
-  exploreLabel = "Explore the platform",
+  exploreLabel,
   surfaceClassName = "bg-ground",
 }: DecisionBridgeProps) {
   return (

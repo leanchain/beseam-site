@@ -18,6 +18,9 @@ import {
   ShoppingBag,
 } from "lucide-react";
 
+import type { Dictionary } from "@/i18n";
+import { useDictionary } from "@/i18n/use-locale";
+
 /**
  * One machine, not four cards. Four signals are a fixed set of inputs; what
  * teams run on them is not. Selecting a signal traces it: the wire lights, the
@@ -26,13 +29,16 @@ import {
  * coverage.
  */
 
+/**
+ * Ids, hues, icons and the input tokens; the words are in `t.systemMap.signals`
+ * under the same ids. The tokens stay here and stay untranslated because they
+ * are field names shown as field names -- a German `produktseiten` would name
+ * an identifier nothing in the product emits.
+ */
 const SIGNALS = [
   {
     id: "discovery",
-    label: "AI discovery",
-    layer: "Off-site",
     hue: "#b8441d",
-    scope: "Where products enter — or miss — the shortlist.",
     inputs: [
       "chatgpt",
       "google_ai_mode",
@@ -41,17 +47,11 @@ const SIGNALS = [
       "copilot",
       "google_search",
     ],
-    caveat:
-      "Point-in-time samples, dated and repeatable. Never a model’s hidden ranking logic.",
-    does: "Shortlist visibility",
     Icon: Bot,
   },
   {
     id: "store",
-    label: "Store & product",
-    layer: "Storefront",
     hue: "#2e5da6",
-    scope: "What the page answers, and what it offers next.",
     inputs: [
       "product_pages",
       "onsite_search",
@@ -59,17 +59,11 @@ const SIGNALS = [
       "catalog_feed",
       "recommendations",
     ],
-    caveat:
-      "Public storefront data only. No store login, no private customer data.",
-    does: "Catalog and page readiness",
     Icon: ShoppingBag,
   },
   {
     id: "behavior",
-    label: "Shopper behavior",
-    layer: "Journey",
     hue: "#1f7a4d",
-    scope: "What shoppers refine, open, ignore, and abandon.",
     inputs: [
       "query_refinement",
       "product_opens",
@@ -77,21 +71,12 @@ const SIGNALS = [
       "checkout_dropoff",
       "session_replay",
     ],
-    caveat:
-      "What shoppers did. Why it happened stays a hypothesis until it is tested.",
-    does: "Proactive personalization",
     Icon: MousePointer2,
   },
   {
     id: "revenue",
-    label: "Revenue",
-    layer: "Outcome",
     hue: "#8a6a1b",
-    scope: "What changed after the decision was acted on.",
     inputs: ["conversion", "orders", "attribution", "revenue_after_change"],
-    caveat:
-      "Measured after the change ships, against the same questions that exposed the gap.",
-    does: "Impact and attribution",
     Icon: BarChart3,
   },
 ] as const;
@@ -103,92 +88,38 @@ const HUE: Record<SignalId, string> = SIGNALS.reduce(
   {} as Record<SignalId, string>,
 );
 
-/** Every entry is a real surface in the product, tagged with what composes it. */
+/**
+ * Every entry is a real surface in the product, tagged with what composes it.
+ * Which signals a card reads is architecture and stays here; its name and the
+ * sentence under it are in `t.systemMap.cards` under the same ids.
+ */
 const USE_CASES: readonly {
-  name: string;
-  detail: string;
+  id: keyof Dictionary["systemMap"]["cards"];
   uses: readonly SignalId[];
   /** Runs in the storefront on every request, not as a report. */
   live?: boolean;
 }[] = [
+  { id: "aiAnswerVisibility", uses: ["discovery"] },
+  { id: "competitors", uses: ["discovery"] },
+  { id: "agentReadiness", uses: ["discovery", "store"] },
+  { id: "catalogTruth", uses: ["store"] },
+  { id: "productPageEvidence", uses: ["store"] },
+  { id: "storeHealth", uses: ["store"] },
+  { id: "brandClaims", uses: ["store"] },
   {
-    name: "AI answer visibility",
-    detail:
-      "Named for the questions that matter, and what supported the answer.",
-    uses: ["discovery"],
-  },
-  {
-    name: "Competitors chosen instead",
-    detail: "What appears in your place, tracked over time.",
-    uses: ["discovery"],
-  },
-  {
-    name: "Agent readiness",
-    detail: "Whether shopping agents can read the storefront at all.",
-    uses: ["discovery", "store"],
-  },
-  {
-    name: "Catalog truth",
-    detail: "Fields, variants, freshness, and stock as a shopper meets them.",
-    uses: ["store"],
-  },
-  {
-    name: "Product page evidence",
-    detail: "What the page answers, and what it leaves open.",
-    uses: ["store"],
-  },
-  {
-    name: "Store health and crawlability",
-    detail: "Indexability, structured facts, machine readability.",
-    uses: ["store"],
-  },
-  {
-    name: "Brand claims and trust",
-    detail: "Claims with enough evidence behind them to reuse safely.",
-    uses: ["store"],
-  },
-  {
-    name: "Personalized search and recommendations",
-    detail: "Ranked results and placements, served live and measured.",
+    id: "personalizedSearch",
     uses: ["store", "behavior", "revenue"],
     live: true,
   },
+  { id: "whyBuyersLeave", uses: ["behavior"] },
+  { id: "funnels", uses: ["behavior", "revenue"] },
+  { id: "revenueAttribution", uses: ["revenue"] },
+  { id: "whatChanged", uses: ["discovery", "revenue"] },
   {
-    name: "Why buyers leave",
-    detail: "Sessions, replay, heatmaps, and the friction they show.",
-    uses: ["behavior"],
-  },
-  {
-    name: "Funnels, cohorts, journeys",
-    detail: "Where shoppers move forward, and who stops.",
-    uses: ["behavior", "revenue"],
-  },
-  {
-    name: "Revenue and attribution",
-    detail:
-      "Actual revenue, observed changes, attribution, and estimates stay separate.",
-    uses: ["revenue"],
-  },
-  {
-    name: "What changed",
-    detail: "Before and after, tied to one completed change.",
-    uses: ["discovery", "revenue"],
-  },
-  {
-    name: "One change list",
-    detail:
-      "Every proposed change with an owner, approval status, and a check afterward.",
+    id: "oneChangeList",
     uses: ["discovery", "store", "behavior", "revenue"],
   },
 ];
-
-/** Card-width names for the signals a use case reads. */
-const SHORT: Record<SignalId, string> = {
-  discovery: "Discovery",
-  store: "Store",
-  behavior: "Behavior",
-  revenue: "Revenue",
-};
 
 /** Signal wires: a 3.5rem track as tall as the map row, drawn in real pixels. */
 const TRACK_W = 56;
@@ -251,17 +182,21 @@ function MonoNote({ children }: { children: React.ReactNode }) {
 
 export default function ConnectedSystemMap({
   exploreHref = "/platform",
-  exploreLabel = "Explore the platform",
+  exploreLabel,
 }: {
   exploreHref?: string | null;
+  /** Overrides the localized default; omit it and the link reads the page's
+   *  own language rather than an English string baked into a caller. */
   exploreLabel?: string;
 }) {
+  const t = useDictionary().systemMap;
   const [activeId, setActiveId] = useState<SignalId>("discovery");
   const activeIndex = Math.max(
     0,
     SIGNALS.findIndex((signal) => signal.id === activeId),
   );
   const active = SIGNALS[activeIndex];
+  const activeWords = t.signals[active.id];
   const inTrack = useTrackHeight();
 
   // Both wire sets meet the platform box itself, not the row's midpoint, so its
@@ -328,16 +263,17 @@ export default function ConnectedSystemMap({
         {/* Signals — the fixed set */}
         <div className="flex flex-col border-b border-black/12 lg:border-b-0 lg:border-r">
           <ColumnHead>
-            <HeadLabel>Signals</HeadLabel>
-            <MonoNote>Fixed set</MonoNote>
+            <HeadLabel>{t.columns.signals.label}</HeadLabel>
+            <MonoNote>{t.columns.signals.note}</MonoNote>
           </ColumnHead>
           <div
             role="group"
-            aria-label="Information across the shopper journey"
+            aria-label={t.signalsAriaLabel}
             className="grid min-h-0 flex-1 sm:grid-cols-2 lg:grid-cols-1 lg:grid-rows-4"
           >
             {SIGNALS.map((signal, index) => {
               const Icon = signal.Icon;
+              const words = t.signals[signal.id];
               const selected = signal.id === activeId;
               // An unselected row still earns its space: it says how much of
               // the right-hand column it feeds, which is the one fact the
@@ -388,7 +324,7 @@ export default function ConnectedSystemMap({
                         />
                       </span>
                       <p className="text-[14px] font-semibold leading-[1.25] text-ink-deep">
-                        {signal.label}
+                        {words.label}
                       </p>
                     </div>
                     <span
@@ -397,7 +333,7 @@ export default function ConnectedSystemMap({
                         color: selected ? signal.hue : "rgba(0,0,0,0.58)",
                       }}
                     >
-                      {signal.layer}
+                      {words.layer}
                     </span>
                   </div>
                   {/* One slot, fixed height, two states: the sentence when the
@@ -409,7 +345,7 @@ export default function ConnectedSystemMap({
                         selected ? "opacity-100" : "opacity-0"
                       }`}
                     >
-                      {signal.scope}
+                      {words.scope}
                     </p>
                     <p
                       aria-hidden={selected}
@@ -417,7 +353,10 @@ export default function ConnectedSystemMap({
                         selected ? "opacity-0" : "opacity-100"
                       }`}
                     >
-                      Feeds {feeds} of {USE_CASES.length}
+                      {t.feedsBefore}
+                      {feeds}
+                      {t.feedsBetween}
+                      {USE_CASES.length}
                     </p>
                   </div>
                   <span
@@ -484,19 +423,23 @@ export default function ConnectedSystemMap({
         {/* Context and platform */}
         <div className="flex flex-col border-b border-black/12 lg:border-b-0 lg:border-r">
           <ColumnHead>
-            <HeadLabel>One shopper journey</HeadLabel>
-            <MonoNote>Coverage</MonoNote>
+            <HeadLabel>{t.columns.journey.label}</HeadLabel>
+            <MonoNote>{t.columns.journey.note}</MonoNote>
           </ColumnHead>
           <div
             id="decision-readout"
             className="flex min-h-0 flex-1 flex-col justify-center gap-5 px-5 py-7 sm:px-6"
           >
             <p className="max-w-[30ch] text-[15px] font-semibold leading-[1.35] text-ink-deep">
-              {active.does}
+              {activeWords.does}
             </p>
 
             <div>
-              <MonoNote>Input — what {active.label} reads</MonoNote>
+              <MonoNote>
+                {t.inputBefore}
+                {activeWords.label}
+                {t.inputAfter}
+              </MonoNote>
               <div className="mt-2 rounded-md border border-black/14 bg-ground px-4 py-3">
                 <p className="font-mono text-[11.5px] leading-[1.7] text-ink-deep">
                   {active.inputs.join(", ")}
@@ -505,18 +448,18 @@ export default function ConnectedSystemMap({
               {/* The scope line stays: it is the only place on the page that
                   says what Beseam does not read. */}
               <p className="mt-2 text-[11.5px] leading-[1.5] text-black/58">
-                {active.caveat}
+                {activeWords.caveat}
               </p>
             </div>
 
             <div>
-              <MonoNote>Platform</MonoNote>
+              <MonoNote>{t.platformLabel}</MonoNote>
               <div
                 ref={platformRef}
                 className="mt-2 rounded-md border-2 border-ink-deep px-5 py-5"
               >
                 <p className="font-display text-[clamp(1.4rem,1.9vw,1.85rem)] leading-[1.1] tracking-[-0.02em] text-ink-deep">
-                  What will this shopper choose?
+                  {t.platformQuestion}
                 </p>
               </div>
             </div>
@@ -526,24 +469,24 @@ export default function ConnectedSystemMap({
         {/* Use cases — the growing set */}
         <div className="flex flex-col">
           <ColumnHead>
-            <HeadLabel>What teams run on it</HeadLabel>
+            <HeadLabel>{t.columns.useCases.label}</HeadLabel>
             <div className="flex items-center gap-5">
               <span className="hidden xl:inline">
-                <MonoNote>The list keeps growing</MonoNote>
+                <MonoNote>{t.columns.useCases.note}</MonoNote>
               </span>
               {exploreHref ? (
                 <Link
                   href={exploreHref}
                   className="group inline-flex items-center gap-1.5 whitespace-nowrap text-[12px] font-semibold text-signal-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal-ink focus-visible:ring-offset-2"
                 >
-                  {exploreLabel}
+                  {exploreLabel ?? t.explore}
                   <ArrowRight
                     aria-hidden="true"
                     className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5"
                   />
                 </Link>
               ) : (
-                <MonoNote>Connected coverage</MonoNote>
+                <MonoNote>{t.columns.useCases.noLinkNote}</MonoNote>
               )}
             </div>
           </ColumnHead>
@@ -573,7 +516,7 @@ export default function ConnectedSystemMap({
                     if (drawn.has(row)) return null;
                     drawn.add(row);
                     return (
-                      <g key={`${activeId}-${item.name}`}>
+                      <g key={`${activeId}-${item.id}`}>
                         <path
                           d={curve(origin, card.y, FAN_GUTTER)}
                           fill="none"
@@ -606,10 +549,11 @@ export default function ConnectedSystemMap({
               className="relative grid h-full grid-cols-2 gap-2 p-2 sm:gap-2.5 sm:p-2.5"
             >
               {USE_CASES.map((item, index) => {
+                const card = t.cards[item.id];
                 const related = item.uses.includes(activeId);
                 return (
                   <li
-                    key={item.name}
+                    key={item.id}
                     ref={(node) => {
                       cardRefs.current[index] = node;
                     }}
@@ -642,24 +586,18 @@ export default function ConnectedSystemMap({
                       ))}
                     </span>
                     <span className="sr-only">
-                      Signals used:{" "}
-                      {item.uses
-                        .map(
-                          (use) =>
-                            SIGNALS.find((signal) => signal.id === use)?.label,
-                        )
-                        .join(", ")}
-                      .
+                      {t.signalsUsed}{" "}
+                      {item.uses.map((use) => t.signals[use].label).join(", ")}.
                     </span>
                     <p
                       className={`mt-2 text-[13px] font-semibold leading-[1.3] transition-colors duration-300 ${
                         related ? "text-ink-deep" : "text-black/64"
                       }`}
                     >
-                      {item.name}
+                      {card.name}
                       {item.live ? (
                         <span className="ml-1.5 inline-block whitespace-nowrap rounded-md bg-ink-deep px-1.5 py-[1px] align-[2px] font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-white">
-                          Served live
+                          {t.servedLive}
                         </span>
                       ) : null}
                     </p>
@@ -673,7 +611,7 @@ export default function ConnectedSystemMap({
                           related ? "opacity-100" : "opacity-0"
                         }`}
                       >
-                        {item.detail}
+                        {card.detail}
                       </p>
                       <p
                         aria-hidden="true"
@@ -681,7 +619,7 @@ export default function ConnectedSystemMap({
                           related ? "opacity-0" : "opacity-100"
                         }`}
                       >
-                        {item.uses.map((use) => SHORT[use]).join(" · ")}
+                        {item.uses.map((use) => t.short[use]).join(" · ")}
                       </p>
                     </div>
                   </li>
@@ -692,12 +630,10 @@ export default function ConnectedSystemMap({
                   fourteenth thing the platform does. */}
               <li className="rounded-md border border-dashed border-black/16 px-3.5 py-3 sm:px-4">
                 <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.1em] text-black/45">
-                  + more
+                  {t.moreLabel}
                 </p>
                 <p className="mt-2 text-[11.5px] leading-[1.45] text-black/55">
-                  Campaigns, reliability, experiments, segments, media studio,
-                  marketplaces, fit. Not every capability is enabled for every
-                  store.
+                  {t.moreDetail}
                 </p>
               </li>
             </ul>
@@ -710,7 +646,7 @@ export default function ConnectedSystemMap({
           keeps is the affordance: what to click, and what clicking does. */}
       <div className="flex flex-wrap items-center justify-end gap-x-8 gap-y-3 border-t border-black/12 bg-ground px-4 py-3 sm:px-5">
         <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.1em] text-black/58">
-          Select a signal to light what it feeds
+          {t.hint}
         </p>
       </div>
     </div>
