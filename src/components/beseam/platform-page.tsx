@@ -3,8 +3,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
 import PipelineGraphic from "@/components/beseam/pipeline-graphic";
-import PlatformDepth from "@/components/beseam/platform-depth";
-import PlatformSurfaces from "@/components/beseam/platform-surfaces";
+import PlatformCapabilities from "@/components/beseam/platform-capabilities";
 import { Reveal } from "@/components/beseam/reveal";
 import TrackedLink from "@/components/beseam/tracked-link";
 import { APP_REGISTER_URL } from "@/lib/app-urls";
@@ -118,13 +117,11 @@ export default function PlatformPageContent({
         </div>
       </section>
 
-      {/* The connected-system map lives on the homepage (`#system`). Running
-          it here too made /platform a second telling of the same argument;
-          this page answers the question the homepage cannot -- what you
-          actually open, and what opens later. */}
-      <PlatformSurfaces />
-
-      <PlatformDepth />
+      {/* The connected-system map lives on the homepage (`#system`), and the
+          growth-plan and results screens are the homepage's proof. What this
+          page owes a visitor is the full extent of the thing: every capability
+          it has, and which ones are live on day one. */}
+      <PlatformCapabilities />
 
       <section className="border-b border-technical-rule bg-ink-deep text-white">
         <div className="mx-auto max-w-[92rem] px-5 py-20 sm:px-8 sm:py-24 lg:px-10 lg:py-28">
