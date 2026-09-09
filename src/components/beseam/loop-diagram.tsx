@@ -1,5 +1,8 @@
 import type { CSSProperties } from "react";
 
+import { getDictionary } from "@/i18n";
+import type { Locale } from "@/i18n/locale-rules.mjs";
+
 /**
  * The loop, drawn as a loop.
  *
@@ -57,13 +60,16 @@ const ACCENT_RING = `color-mix(in srgb, ${ACCENT} 52%, transparent)`;
  * touching /how-we-work or /manifesto, where a numbered list underneath
  * already spells the same five steps out and a second gloss would just be a
  * third telling.
+ *
+ * Order and the gate flag are geometry, so they stay here; the words are in
+ * `t.loop.steps`, keyed by the same ids.
  */
 const LOOP_STEPS = [
-  { label: "Find", detail: "what to improve" },
-  { label: "Prepare", detail: "the change" },
-  { label: "Approve", detail: "you decide", gate: true },
-  { label: "Apply", detail: "Beseam ships it" },
-  { label: "Measure", detail: "the same journey" },
+  { id: "find" },
+  { id: "prepare" },
+  { id: "approve", gate: true },
+  { id: "apply" },
+  { id: "measure" },
 ] as const;
 
 const START = -90;
@@ -90,6 +96,7 @@ export default function LoopDiagram({
   tone = "light",
   detail = false,
   animate = false,
+  locale = "en",
 }: {
   className?: string;
   tone?: "light" | "dark";
@@ -99,7 +106,12 @@ export default function LoopDiagram({
    *  /manifesto were shipped as a still figure and are not being changed
    *  underneath. */
   animate?: boolean;
+  /** Defaulted because /how-we-work and /manifesto mount this propless and
+   *  have no German route; the homepage hands it the page's own locale. */
+  locale?: Locale;
 }) {
+  const t = getDictionary(locale).loop;
+
   return (
     <figure className={className}>
       <svg
@@ -110,11 +122,8 @@ export default function LoopDiagram({
           tone === "dark" ? "text-white" : "text-ink-deep"
         }`}
       >
-        <title id="beseam-loop-title">The Beseam operating loop</title>
-        <desc id="beseam-loop-desc">
-          Five steps arranged in a circle, each arrow pointing to the next:
-          Find, Prepare, Approve, Apply, Measure. Measure leads back to Find.
-        </desc>
+        <title id="beseam-loop-title">{t.title}</title>
+        <desc id="beseam-loop-desc">{t.desc}</desc>
 
         <defs>
           <marker
@@ -133,12 +142,12 @@ export default function LoopDiagram({
           </marker>
         </defs>
 
-        {LOOP_STEPS.map(({ label }, index) => {
+        {LOOP_STEPS.map(({ id }, index) => {
           const from = polar(START + index * SPAN + TRIM, R);
           const to = polar(START + (index + 1) * SPAN - TRIM, R);
           const d = `M ${from.x.toFixed(1)} ${from.y.toFixed(1)} A ${R} ${R} 0 0 1 ${to.x.toFixed(1)} ${to.y.toFixed(1)}`;
           return (
-            <g key={`arc-${label}`}>
+            <g key={`arc-${id}`}>
               {/* Rail first, current over it: the arc has to stay readable
                   when the dashes are frozen by reduced motion, and the
                   arrowhead belongs to the rail so it never marches. */}
@@ -166,6 +175,7 @@ export default function LoopDiagram({
         })}
 
         {LOOP_STEPS.map((step, index) => {
+          const words = t.steps[step.id];
           const angle = START + index * SPAN;
           const node = polar(angle, R);
           const caption = polar(angle, R + 46);
@@ -178,7 +188,7 @@ export default function LoopDiagram({
           const gate = detail && "gate" in step && step.gate;
 
           return (
-            <g key={step.label} className={gate ? "text-signal" : undefined}>
+            <g key={step.id} className={gate ? "text-signal" : undefined}>
               <circle
                 cx={node.x}
                 cy={node.y}
@@ -212,7 +222,7 @@ export default function LoopDiagram({
                 fill="currentColor"
                 className="text-[17px] font-semibold"
               >
-                {step.label}
+                {words.label}
               </text>
               {detail ? (
                 <text
@@ -224,7 +234,7 @@ export default function LoopDiagram({
                   fillOpacity={gate ? 0.9 : 0.55}
                   className="text-[12.5px]"
                 >
-                  {step.detail}
+                  {words.detail}
                 </text>
               ) : null}
             </g>
@@ -240,7 +250,7 @@ export default function LoopDiagram({
           fillOpacity="0.45"
           className="font-mono text-[15px] font-semibold uppercase tracking-[0.12em] sm:text-[12px]"
         >
-          Continuous
+          {t.centre.line1}
         </text>
         <text
           x={CX}
@@ -251,7 +261,7 @@ export default function LoopDiagram({
           fillOpacity="0.45"
           className="font-mono text-[15px] font-semibold uppercase tracking-[0.12em] sm:text-[12px]"
         >
-          loop
+          {t.centre.line2}
         </text>
       </svg>
 
@@ -265,7 +275,7 @@ export default function LoopDiagram({
             tone === "dark" ? "text-white/60" : "text-black/54"
           }`}
         >
-          Measure does not end the work. It starts the next Find.
+          {t.caption}
         </figcaption>
       )}
     </figure>

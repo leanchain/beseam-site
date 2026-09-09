@@ -818,7 +818,7 @@ export default function WhatBeseamDoes({ locale = "en" }: { locale?: Locale }) {
                     {oneSystem.gate.note}
                   </p>
                 </div>
-                <LoopDiagram tone="dark" detail animate />
+                <LoopDiagram tone="dark" detail animate locale={locale} />
               </div>
             </div>
           }
