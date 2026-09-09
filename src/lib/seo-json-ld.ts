@@ -44,19 +44,13 @@ export function homeJsonLd(locale: Locale) {
         url: `${SITE_URL}/`,
         applicationCategory: "BusinessApplication",
         operatingSystem: "Web",
-        description:
-          "Beseam continuously finds strong ecommerce growth opportunities, prepares supported fixes for brand-owner approval, applies approved changes, and measures what changes afterward.",
-        featureList: [
-          "Find where shoppers may be missed across discovery and the store",
-          "Prioritize growth opportunities by evidence and projected impact",
-          "Ask the brand owner to approve before customer-facing changes are applied",
-          "Measure what changed with before-and-after evidence",
-        ],
+        description: t.meta.home.schemaSoftwareDescription,
+        featureList: t.meta.home.schemaFeatures,
       },
       {
         "@type": "FAQPage",
         "@id": `${url}#faq`,
-        name: "Questions about Beseam",
+        name: t.meta.home.schemaFaqName,
         mainEntity: Object.values(t.faq.items).map((faq) => ({
           "@type": "Question",
           name: faq.question,

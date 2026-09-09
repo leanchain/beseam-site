@@ -74,7 +74,7 @@ export default function ProductionHomepage({ locale }: { locale: Locale }) {
               <div className="pointer-events-auto mx-auto mt-9 w-full">
                 <LiveAnswerCheck
                   placement="homepage_hero"
-                  handOffTo="/scan"
+                  handOffTo={locale === "de" ? "/de/scan" : "/scan"}
                   glowInput
                   formNote={
                     <div className="mx-auto mt-2 flex flex-col items-center text-center">

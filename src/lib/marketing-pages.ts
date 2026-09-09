@@ -141,17 +141,18 @@ export const MARKETING_PAGES: Record<string, MarketingPageData> = {
   platform: {
     slug: "platform",
     eyebrow: "Platform",
-    headline: "See what helps shoppers find, choose, and buy from you.",
-    metaTitle: "Beseam Platform | Connected Ecommerce Growth",
+    headline:
+      "One place to see where shoppers choose you — and where they don't.",
+    metaTitle: "Beseam Platform | From Shopper Signals to Measured Changes",
     description:
-      "Beseam watches AI discovery, your store, shopper behavior, and revenue. It finds what to improve, prepares the change, gets your approval, applies it, and checks what changed.",
+      "Beseam connects AI discovery, product and store evidence, shopper behavior, and outcomes. It turns those signals into changes you can approve, apply, and measure.",
     intro:
-      "Beseam watches what shoppers see before they visit, what they find on your store, what they do next, and what happens after a change. It keeps finding what to improve instead of giving you another dashboard to manage.",
+      "Beseam connects what shoppers see before they visit, what they find on your store, what they do next, and what happens after a change. It turns those signals into a ranked queue of work instead of another set of dashboards to manage.",
     proofLine:
-      "Discovery, product pages, shopper behavior, changes, and results stay in one place.",
-    observationsHeading: "Follow the shopper from discovery to purchase",
+      "The shopper question, the evidence, the change, your approval, and the result stay connected.",
+    observationsHeading: "Follow the shopper from discovery to outcome",
     observationsIntro:
-      "See where shoppers find you, what helps them choose, where they stop, and what changes after you fix something.",
+      "See where shoppers find you, what helps them decide, where intent gets lost, and whether the outcome moves after a change.",
     observations: [
       {
         title: "Get found",
@@ -204,22 +205,22 @@ export const MARKETING_PAGES: Record<string, MarketingPageData> = {
       {
         question: "What do I need to connect first?",
         answer:
-          "Connect the store first. Beseam keeps watching where shoppers overlook you, choose something else, or stop before purchase. Add more data only when it helps explain a problem.",
+          "You can start with your domain. The free scan reads the public storefront without an account. For ongoing work, connect the store first; add analytics, behavior, search, or other data only when it helps explain a problem or measure a change.",
       },
       {
-        question: "How does Beseam work out what may be worth changing?",
+        question: "Is Beseam another analytics dashboard?",
         answer:
-          "Beseam looks at what shoppers did, what happened on the store, and what changed in sales. It separates facts from possible explanations and shows what is most worth fixing first.",
+          "No. Beseam uses the signals it can observe to decide what is worth looking at next, keeps the evidence attached, and turns the strongest findings into specific work. The queue is the product; the underlying dashboards are evidence when you need them.",
       },
       {
-        question: "How are changes approved and published?",
+        question: "What can Beseam actually change?",
         answer:
-          "The brand owner approves every customer-facing change before Beseam applies it. Where the connected system supports rollback, Beseam keeps the previous version.",
+          "With the right connection, Beseam can prepare changes to product data, content, merchandising, onsite search, recommendations, and other editable parts of the store. What it can apply directly depends on the connected system. Customer-facing changes require your approval.",
       },
       {
         question: "How do I know whether a change helped?",
         answer:
-          "Beseam checks shopper behavior, the store, conversion, orders, or revenue again after a change. The result helps decide what to do next without claiming the change caused something the data cannot prove.",
+          "Beseam checks the relevant signal again after the change: the same shopper question, the same page or journey, or a before-and-after outcome when the data supports it. It shows what moved without claiming causation the evidence cannot establish.",
       },
     ],
     related: [

@@ -165,6 +165,77 @@ test("answer-check remains an e-commerce proxy rather than a Trevra route", asyn
   );
 });
 
+test("a known locale is forwarded to the scan API", async () => {
+  const seen = [];
+  await withFetch(
+    async (input) => {
+      seen.push(String(input.url ?? input));
+      return new Response("{}", {
+        status: 200,
+        headers: { "content-type": "application/json" },
+      });
+    },
+    async () => {
+      await worker.fetch(
+        new Request(
+          "https://beseam.com/api/answer-check?domain=example.com&locale=de",
+        ),
+        { API_BASE_URL: "https://api.example/api" },
+      );
+    },
+  );
+  assert.match(seen[0], /locale=de/);
+});
+
+test("a known locale is forwarded in a scan POST body", async () => {
+  const bodies = [];
+  await withFetch(
+    async (_input, init) => {
+      bodies.push(JSON.parse(init.body));
+      return new Response("{}", {
+        status: 200,
+        headers: { "content-type": "application/json" },
+      });
+    },
+    async () => {
+      await worker.fetch(
+        new Request("https://beseam.com/api/answer-check", {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+            origin: "https://beseam.com",
+          },
+          body: JSON.stringify({ domain: "example.com", locale: "de" }),
+        }),
+        { API_BASE_URL: "https://api.example/api" },
+      );
+    },
+  );
+  assert.equal(bodies[0].locale, "de");
+});
+
+test("an unknown locale is dropped, not proxied", async () => {
+  const seen = [];
+  await withFetch(
+    async (input) => {
+      seen.push(String(input.url ?? input));
+      return new Response("{}", {
+        status: 200,
+        headers: { "content-type": "application/json" },
+      });
+    },
+    async () => {
+      await worker.fetch(
+        new Request(
+          "https://beseam.com/api/answer-check?domain=example.com&locale=xx",
+        ),
+        { API_BASE_URL: "https://api.example/api" },
+      );
+    },
+  );
+  assert.doesNotMatch(seen[0], /locale=/);
+});
+
 test("/scan/verify is handled by the worker and sends missing tokens to the scan page", async () => {
   const response = await worker.fetch(
     new Request("https://beseam.com/scan/verify"),
@@ -204,7 +275,7 @@ test("/scan/verify consumes a valid token and returns to the scan page", async (
   assert.equal(calls[0].init.method, "POST");
   assert.equal(
     response.headers.get("location"),
-    "https://beseam.com/scan?domain=shop.example",
+    "https://beseam.com/scan?domain=shop.example&verified=1",
   );
 });
 

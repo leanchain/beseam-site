@@ -111,7 +111,6 @@ export default function RootLayout({
         url: `${SITE_URL}/`,
         name: "Beseam",
         publisher: { "@id": `${SITE_URL}/#organization` },
-        inLanguage: "en",
       },
     ],
   };

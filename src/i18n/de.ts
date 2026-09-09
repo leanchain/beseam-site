@@ -1,12 +1,12 @@
 import type { Dictionary } from "./en";
 
 /**
- * Swiss orthography: this file has no ß anywhere, and must not grow one.
+ * Swiss orthography: this file has no Eszett anywhere, and must not grow one.
  * Switzerland dropped the letter, and Beseam is Swiss -- the footer says so.
- * Every ß is written ss (Grösse, schliessen, heisst, grösser). A German
+ * Every Eszett is written ss (Grösse, schliessen, heisst, grösser). A German
  * reader sees a Swiss spelling, not a mistake; do not "correct" these back.
  *
- * It is not free: ss is one character wider than ß, so any ß-bearing string
+ * It is not free: ss is one character wider than Eszett, so any Eszett-bearing string
  * that sits in a measured or clipped box grew by a character when this rule
  * was applied. The measurements noted in the comments below already account
  * for it.
@@ -59,7 +59,7 @@ export const de: Dictionary = {
         links: {
           platform: "Plattform",
           aiShoppingDiscovery: "KI-Shopping-Sichtbarkeit",
-          compare: "Compare",
+          compare: "Vergleich",
         },
       },
       aiShoppingAgents: {
@@ -100,6 +100,15 @@ export const de: Dictionary = {
       description:
         "Beseam zeigt Ihnen, wo KI-Einkaufsassistenten Ihre Produkte auslassen, warum das passiert, was zu beheben ist und ob die Behebung funktioniert hat. Kostenloser Shop-Scan; kundenseitige Änderungen nur mit Ihrer Zustimmung.",
       imageAlt: "Beseam findet, behebt und misst E-Commerce-Wachstumschancen",
+      schemaSoftwareDescription:
+        "Beseam findet fortlaufend starke Wachstumschancen im E-Commerce, bereitet unterstützte Änderungen zur Freigabe durch die Marke vor, setzt freigegebene Änderungen um und misst, was sich danach verändert.",
+      schemaFeatures: [
+        "Erkennen, wo Kundschaft in der Produktsuche oder im Shop verloren gehen kann",
+        "Wachstumschancen nach Belegen und erwarteter Wirkung priorisieren",
+        "Vor kundenseitigen Änderungen die Freigabe der Marke einholen",
+        "Mit Vorher-Nachher-Belegen messen, was sich verändert hat",
+      ],
+      schemaFaqName: "Fragen zu Beseam",
     },
     scan: {
       title: "Kostenloser Shop-Scan | Beseam",
@@ -1233,11 +1242,509 @@ export const de: Dictionary = {
     },
   },
 
+  answerCheck: {
+    steps: {
+      labels: {
+        storefront: "Ihr Shop wird gelesen",
+        catalog: "Produkte und Preise werden geprüft",
+        pages: "Ihre Produktseiten werden geprüft",
+        questions: "Mögliche Kundenfragen werden formuliert",
+        answers: "Ihre Produkte in der KI-Suche werden geprüft",
+      },
+      technical: (position: number, total: number) =>
+        `Technische Auffindbarkeit · Schritt ${position} von ${total}`,
+      readingDomain: (domain: string) => `${domain} wird gelesen`,
+      readingStorefront: "Ihr Shop wird gelesen",
+      resultsAsTheyArrive:
+        "Die Ergebnisse erscheinen unten, sobald ein Teil abgeschlossen ist. Sie müssen nicht auf alles warten.",
+      questionsLater:
+        "Kundenfragen kommen danach; die fortlaufende Beobachtung findet in Beseam statt.",
+      progress: (done: number, total: number) => `${done} von ${total}`,
+      productsFound: (count: number) =>
+        `${count} ${count === 1 ? "Produkt" : "Produkte"} gefunden`,
+      pagesAnalyzed: (count: number) =>
+        `${count} ${count === 1 ? "Produktseite" : "Produktseiten"} analysiert`,
+      pagesProgress: (done: number, total: number) =>
+        `${done} von ${total} Produktseiten bisher analysiert`,
+      pagesFinishing:
+        "Ihre Produkte und Preise stehen bereits unten, während diese Prüfung abgeschlossen wird",
+      pagesFailed:
+        "Diese Seiten konnten bei diesem Durchlauf nicht vollständig gelesen werden",
+      questionsWritten: (count: number) =>
+        `${count} ${count === 1 ? "Frage" : "Fragen"} formuliert`,
+      questionsFromProducts: "Aus den gefundenen Produkten formuliert",
+      confirmEmail: (channels: string) =>
+        `Bestätigen Sie Ihre E-Mail, dann fahren wir mit ${channels} fort`,
+      askingChannels: (channels: string) => `${channels} werden befragt`,
+    },
+    result: {
+      productsFound: "Produkte gefunden",
+      answersNamed: "KI-Antworten nannten Sie",
+      answersPending: "KI-Antworten stehen aus",
+      opportunitiesFound: (count: number) =>
+        count === 1 ? "Chance gefunden" : "Chancen gefunden",
+      statusRejected: "Dieser Shop konnte nicht gelesen werden",
+      statusRunning: "Läuft noch",
+      statusFreeReady: "Kostenloser Scan bereit",
+      statusComplete: "Scan abgeschlossen",
+      shareAria: "Diesen Scan teilen",
+      linkCopied: "Link kopiert",
+      shared: "Geteilt",
+      copyFailed: "Kopieren fehlgeschlagen",
+      share: "Teilen",
+      print: "Drucken",
+      brandAppearance: "Markenpräsenz",
+      strong: "Stark",
+      mixed: "Gemischt",
+      weak: "Schwach",
+      barelyVisible: "Kaum sichtbar",
+      brandEverywhere: "Ihre Marke erschien in jeder beobachteten Antwort.",
+      brandNowhere: "Ihre Marke erschien in keiner beobachteten Antwort.",
+      brandMissing: (missed: number, total: number) =>
+        `Ihre Marke fehlte in ${missed} von ${total} beobachteten Antworten.`,
+      frequentAlternative: "Häufigste Alternative:",
+      byAssistant: "Nach Assistent",
+      assistants: (count: number) =>
+        `${count} ${count === 1 ? "Assistent" : "Assistenten"}`,
+      namedYou: "nannte Sie",
+      noAnswer: "keine Antwort",
+      didNotNameYou: "nannte Sie nicht",
+      noImage: "Kein Bild",
+      yours: "Ihr Produkt",
+      merchant: "Händler",
+      assistant: "Assistent",
+      commerceStorefront: "Commerce-Shop",
+      storefront: "Shop",
+      openProduct: "Produkt öffnen →",
+      details: "Details",
+      close: "Schliessen",
+      headlineAll: (brand: string, total: number) =>
+        `${brand} wurde in allen ${total} geprüften KI-Antworten genannt.`,
+      headlineNone: (brand: string, total: number) =>
+        `${brand} wurde in keiner der ${total} geprüften KI-Antworten genannt.`,
+      headlineMissed: (brand: string, missed: number, total: number) =>
+        `${brand} fehlte in ${missed} von ${total} geprüften KI-Antworten.`,
+      headlineFindings: (brand: string, count: number) =>
+        `Wir haben den öffentlichen Shop von ${brand} gelesen und ${count} ${count === 1 ? "Chance" : "Chancen"} gefunden, die sich anzusehen lohnen.`,
+      headlineReading: (brand: string) =>
+        `Der Shop von ${brand} wird gerade gelesen.`,
+      headlineClear: (brand: string) =>
+        `Auf den lesbaren Seiten von ${brand} ist nichts Offensichtliches aufgefallen.`,
+      sampledSupport:
+        "Das sind Momentaufnahmen, keine Rangliste. Sie zeigen, was Kundinnen und Kunden bei unseren Fragen angezeigt bekamen.",
+      moreMayFollow:
+        "Weitere Befunde können folgen, während Ihre Produktseiten fertig gelesen werden.",
+      findingsSupport:
+        "Jeder Punkt steht unten in klaren Worten, mit den Belegen direkt darunter.",
+      readingSupport:
+        "Die Ergebnisse erscheinen unten, sobald ein Teil abgeschlossen ist.",
+      clearSupport:
+        "Das ist ein gutes Zeichen, aber ein öffentlicher Scan weniger Seiten kann nicht alles ausschliessen.",
+    },
+    findings: {
+      priorityFirst: "Zuerst sinnvoll",
+      priorityLook: "Einen Blick wert",
+      priorityMinor: "Klein",
+      areas: {
+        discovery: "Gefunden werden",
+        listing: "Wie Ihre Produkte gelistet sind",
+        page: "Was die Produktseite der Kundschaft sagt",
+        trust: "Vertrauen und Sicherheit",
+        markets: "Märkte und Sprachen",
+        searchStructured: "Suche & strukturierte Daten",
+        internationalization: "Internationalisierung",
+        trustDelivery: "Vertrauen & Auslieferung",
+        machineReadability: "Maschinenlesbarkeit",
+        productEvidence: "Produktbelege",
+      },
+      recommendation: "Empfehlung ansehen",
+      close: "Schliessen",
+      improveNext: "Als Nächstes verbessern:",
+      startFixing: "In Beseam beheben",
+      evidence: "Belege",
+      checks: (count: number) => `${count} Prüfungen`,
+      productsSeenOn: "Bei diesen Produkten gesehen",
+      seePage: "Seite ansehen →",
+      rawCatalog: "Gelesene Roh-Katalogdatei →",
+      fullPageReport: "Vollständigen Seitenbericht öffnen →",
+      heading: "Das zuerst beheben",
+      intro:
+        "Die klarsten Chancen aus diesem öffentlichen Scan, danach geordnet, was sich zuerst anzusehen lohnt. Öffnen Sie einen Punkt für Empfehlung und Belege.",
+      stillReading: "Wird noch gelesen.",
+      moreMayAppear:
+        " Weitere Befunde können erscheinen, während Ihre Produktseiten fertig werden.",
+      showOther: (count: number) =>
+        `${count} ${count === 1 ? "weiteren Befund" : "weitere Befunde"} anzeigen`,
+      readingPages: "Ihre Produktseiten werden noch gelesen.",
+      discoveryFiles: {
+        llms: "Eine kurze Zusammenfassung Ihres Shops für KI-Assistenten, die danach suchen. Optional.",
+        agents:
+          "Hinweise für KI-Agenten, die Ihren Shop im Auftrag von Kundinnen und Kunden durchsuchen. Optional.",
+        skill:
+          "Beschreibt in einem Format, das einige KI-Werkzeuge lesen, was ein Assistent in Ihrem Shop tun kann. Sehr neu und optional — überspringen Sie dies, sofern Sie nicht bereits mit KI-Agenten arbeiten.",
+        ucp: "Eine maschinenlesbare Beschreibung Ihres Shops für Commerce-Agenten. Optional.",
+      },
+    },
+    boundary: {
+      heading: "Wo dieser Scan endet",
+      intro:
+        "Ein öffentlicher Scan reicht nur bis zu einem gewissen Punkt. Hier sehen Sie genau, wie weit er ging und was danach weiterläuft.",
+      did: "Was dieser Scan getan hat",
+      didPublic:
+        "Ihren öffentlichen Shop so gelesen, wie es jeder Besucher kann — ohne Anmeldung und ohne Shop-Zugriff.",
+      didPages: (count: number) =>
+        `Die Seitenprüfungen auf ${count} ${count === 1 ? "Produktseite" : "Produktseiten"} ausgeführt, plus robots.txt, Sitemap und Crawler-Zugriff.`,
+      didPagesSample:
+        "Die Seitenprüfungen auf einer Stichprobe Ihrer Produktseiten ausgeführt, plus robots.txt, Sitemap und Crawler-Zugriff.",
+      didCatalog:
+        "Ihre Katalogdaten mit dem verglichen, was jede Seite tatsächlich ausgibt — Namen, Preise und Verfügbarkeit.",
+      not: "Was er nicht getan hat",
+      notKeepAsking:
+        "Nicht weiter gefragt. Die KI-Antworten oben wurden bei diesem Durchlauf einmalig erhoben.",
+      notAskLive:
+        "ChatGPT oder Google AI Mode nicht live zu Ihren Produkten befragt. Hier ist keine fortlaufende KI-Antwort enthalten.",
+      notRepeat:
+        "Nicht selbstständig wiederholt. Hinter einem öffentlichen Scan steht kein Zeitplan.",
+      notHistory:
+        "Keine Historie geführt. Es gibt keinen früheren Durchlauf zum Vergleichen.",
+      next: "Was in Beseam beginnt",
+      nextItems: [
+        "Kundenfragen, die Sie lesen und bearbeiten, bevor eine davon läuft.",
+        "Diese Fragen nach Zeitplan statt nur einmal stellen.",
+        "Die Antworten mit Datum als Beleg aufbewahren.",
+        "Behebungen danach ordnen, was sich zuerst lohnt.",
+        "Dieselben Fragen nach einer Änderung erneut stellen, damit Sie sehen, was sich bewegt hat.",
+      ],
+    },
+    continue: {
+      opportunities: (count: number) =>
+        `${count} ${count === 1 ? "Chance" : "Chancen"} gefunden`,
+      nextLabel: "Nächster Schritt",
+      once: "Sie haben die Lücken gefunden. Lassen Sie Beseam diesen Shop weiter beobachten.",
+      body: "Machen Sie aus diesem einmaligen Scan einen fortlaufenden Kreislauf: dieselben Kauffragen weiterlaufen lassen, die stärksten Behebungen vorbereiten, kundenseitige Änderungen freigeben und danach messen, was sich verändert hat.",
+      benefits: [
+        "Discovery- und Shop-Prüfungen weiterlaufen lassen",
+        "Befunde in vorbereitete Änderungen verwandeln",
+        "Zuerst freigeben, danach die Belege erneut prüfen",
+      ],
+      prepared: "Von Beseam vorbereitet",
+      approval: "Braucht Ihre Freigabe",
+      afterConnection: "Nach Verbindung geprüft",
+      start: "Kostenlos mit diesem Shop starten",
+      reviewWithFinding: "Möchten Sie das lieber gemeinsam mit uns durchgehen?",
+      reviewWithoutFinding:
+        "Möchten Sie das lieber gemeinsam mit uns durchgehen?",
+      startingWith: (headline: string) => `Ausgehend von „${headline}“`,
+      reviewBody:
+        "In 20 Minuten nutzen wir einen Befund aus diesem Scan und zeigen den vollständigen Kreislauf an Ihrem Shop — Beleg, vorgeschlagene Änderung, Freigabe und erneute Prüfung.",
+      reviewCta: "20-minütige Shop-Durchsprache buchen",
+    },
+    visibility: {
+      googleSearch: "Google-Suche:",
+      excerpt: "Auszug der Antwort · nicht die vollständige Antwort",
+      unreachable: (channel: string, error: string) =>
+        `${channel} war nicht erreichbar: ${error}`,
+      noWrittenAnswer: (channel: string) =>
+        `${channel} lieferte für diese Frage keine schriftliche Antwort.`,
+      namedYou: "Nannte Sie",
+      didNotNameYou: "Nannte Sie nicht",
+      noVerdict: "Kein Ergebnis",
+      namedInstead: "stattdessen genannt:",
+      productsSurfaced: "Produkte, die der Kundschaft gezeigt wurden",
+      noProducts: "Es wurden keine Produkte gezeigt",
+      addsUpTo: "Was daraus folgt",
+      noUsableAnswer: "Kein Assistent lieferte hier eine verwertbare Antwort.",
+      verdictAll: (count: number) =>
+        count === 1
+          ? "Der befragte Assistent nannte Sie bei dieser Frage."
+          : `Alle ${count} befragten Assistenten nannten Sie bei dieser Frage.`,
+      verdictNone: (count: number, rivals: string) =>
+        `Keiner der ${count} befragten ${count === 1 ? "Assistenten" : "Assistenten"} nannte Sie bei dieser Frage.${rivals}`,
+      verdictSome: (named: number, count: number, rivals: string) =>
+        `${named} von ${count} befragten Assistenten nannten Sie.${rivals}`,
+      rivalsTail: (names: string, count: number) =>
+        ` Stattdessen ${count === 1 ? "wurde" : "wurden"} ${names} vorgeschlagen.`,
+      askedOne: "separat an 1 Assistenten gestellt",
+      askedMany: (count: number) =>
+        `separat an jeden von ${count} Assistenten gestellt`,
+      title: "Wie Sie erscheinen, wenn Kundinnen und Kunden fragen",
+      summary: (named: number, total: number, questions: number) =>
+        `${named}/${total} beobachtete Antworten nannten Sie · ${questions} ${questions === 1 ? "Kauffrage" : "Kauffragen"}`,
+      checking: "Es wird geprüft, was der Kundschaft gezeigt wird",
+      competitors: "Konkurrenten, die genannt wurden, wenn Sie es nicht wurden",
+      openQuestion:
+        "Öffnen Sie eine Frage, um die Antwort jedes Assistenten zu sehen",
+      askedIn: (language: string) => `Gefragt auf ${language}`,
+    },
+    summary: {
+      store: "Shop",
+      catalog: "Katalog",
+      productPages: "Produktseiten",
+      publicFootprint: "Öffentliche Präsenz",
+      localePaths: "Sprachpfade",
+      domains: "Domains",
+      whatExists: "Was vorhanden ist",
+      discoverable: "Kann es gefunden werden?",
+      productPagesLabel: "Produktseiten",
+      collections: "Kollektionen",
+      collectionUrls: "Kollektions-URLs",
+      pages: "Seiten",
+      articles: "Artikel",
+      blogs: "Blogs",
+      policies: "Richtlinien",
+      localeCopies: "Lokalisierte URL-Kopien",
+      searchPageSignals: "Suche & Seitensignale",
+      productShoppingData: "Produkt- & Shoppingdaten",
+      contentMerchandising: "Inhalt & Merchandising",
+      trustConfidence: "Vertrauen & Kaufsicherheit",
+      marketsLocalization: "Märkte & Lokalisierung",
+      technicalSecurity: "Technik & Sicherheit",
+      notMeasured: "Nicht gemessen",
+      readable: "Lesbar",
+      open: "Offen",
+      unavailable: "Nicht verfügbar",
+      found: "Gefunden",
+      declared: "Deklariert",
+      notFound: "Nicht gefunden",
+      blocked: (count: number) => `${count} blockiert`,
+      quickNotMeasured: "Im Schnellscan nicht gemessen",
+      primary: "Primär",
+      primaryStorefront: "Primärer Shop",
+      platformUnknown: "Plattform unbekannt",
+      publicUrls: "Öffentliche URLs gefunden",
+      productsSampled: (count: number) =>
+        `${count} Produkte stichprobenartig geprüft`,
+      localePathCount: (count: number) => `${count} Sprachpfade`,
+      storeSummary: (
+        products: string,
+        collections: string,
+        location: string,
+        sitemap: string,
+        crawler: string,
+      ) =>
+        `${products} Produkte · ${collections} · ${location} · Sitemap ${sitemap} · Crawler-Zugriff ${crawler}`,
+      internalReachSummary: (
+        links: number,
+        products: number,
+        collections: number,
+      ) =>
+        `${links} Homepage-Links · ${products} Produktlinks · ${collections} Kollektionslinks`,
+      pageAuditSummary: (
+        pages: number,
+        failed: number,
+        evaluated: number,
+        unchecked: number,
+      ) =>
+        `${pages} ${pages === 1 ? "Produktseite" : "Produktseiten"} gelesen · ${failed} von ${evaluated} Prüfungen brauchen Aufmerksamkeit · ${unchecked} konnten wir nicht prüfen`,
+      localizedCopies: (count: number) => `${count}+ lokalisierte URL-Kopien`,
+      robots: "robots.txt",
+      sitemap: "Sitemap",
+      searchCrawlers: "Such-Crawler",
+      assistantCrawlers: "KI-Crawler",
+      blockedUrls: "Durch robots.txt blockierte URLs",
+      internalReach: "Interne Erreichbarkeit",
+      orphanProducts: "Verwaiste Produkte",
+      discoveryFiles: "Discovery-Dateien",
+      sitemapFreshness: "Sitemap-Aktualität",
+      sitemapImages: "Bilder in der Sitemap",
+      allowed: (allowed: number, total: number) =>
+        `${allowed}/${total} zugelassen`,
+      noDates: "Keine Datumsangaben vorhanden",
+      noImages: "Keine Bildeinträge vorhanden",
+      lowerBounds:
+        "Werte mit + sind Untergrenzen, weil das schnelle URL-Inventar die Grenze von 5'000 URLs erreicht hat.",
+      homepageSample:
+        "Homepage-Pfade werden hier nur stichprobenartig geprüft. Echte Abdeckung verwaister Seiten braucht den vollständigen internen Linkgraphen.",
+      emergingFiles: (present: number, total: number) =>
+        `Diese vier Dateien sind neue Konventionen, um KI-Assistenten mitzuteilen, was Ihr Shop ist und wie er genutzt werden kann. ${present} von ${total} sind veröffentlicht. Keine davon ist erforderlich, keine ist heute nachweislich ein Rankingfaktor, und eine fehlende Datei ist kein Fehler. Wir zeigen sie, weil veröffentlichende Shops für Assistenten leichter korrekt zu lesen sind — nicht weil Sie ohne sie etwas falsch machen.`,
+      catalogQuestion: "Können Produkte verstanden und unterschieden werden?",
+      countsChecked: "die Werte unten beziehen sich auf die geprüften Produkte",
+      withGap: (count: number) =>
+        `${count} Produkte mit mindestens einer Lücke`,
+      catalogSummary: (
+        checked: string,
+        gaps: number,
+        unavailable: number,
+        consistency: number,
+      ) =>
+        `${checked} · ${gaps} brauchen Aufmerksamkeit · ${unavailable} nicht verfügbar${consistency ? ` · ${consistency} Konsistenzlücken in der Stichprobe` : ""}`,
+      catalogGaps: (count: number) =>
+        `${count} ${count === 1 ? "Kataloglücke" : "Kataloglücken"}`,
+      productTypes: (count: number) => `${count} Produkttypen`,
+      categories: "Kategorien & Kollektionen",
+      withoutCategory: "ohne Kategorie",
+      withoutTags: "ohne Tags",
+      membership: "Kollektionszugehörigkeit:",
+      commonTypes: "Häufige Produkttypen:",
+      collectionsList: "Kollektionen:",
+      identity: "Produktidentität",
+      withoutId: "ohne SKU/Barcode",
+      brandVendorGaps: "Marken-/Herstellerlücken",
+      idConflicts: "Identifikator-Konflikte",
+      variants: "Varianten & Kaufoptionen",
+      withVariants: "Produkte mit Varianten",
+      noBuyerOptions: "zeigen keine Kaufoptionen",
+      variantOptionGaps: "echte Variantenoptionslücken",
+      variantIdGaps: "Varianten-ID-Lücken",
+      options: "Optionen:",
+      productInfo: "Produktinformationen",
+      wellDescribed: "gut beschrieben",
+      missingDescriptions: "fehlende Beschreibungen",
+      thin: "dünn",
+      withoutImages: "ohne Bilder",
+      duplicateCopy: "doppelte Texte",
+      availability: "Verfügbarkeit",
+      unavailableProducts: "nicht verfügbare Produkte",
+      variantsAcross: "Varianten über",
+      checkedProducts: "geprüfte Produkte",
+      consistency: "Produktkonsistenz",
+      comparingPages: "Beispiel-Produktseiten werden verglichen…",
+      sampledGaps: "Stichproben-Lücken",
+      consistencyBody: (pages: number) =>
+        `Katalog ↔ Seitendaten für Preis, Verfügbarkeit, Produktdaten und Kaufattribute auf ${pages} Beispiel-Produktseiten.`,
+      standsOut: "Was auffällt",
+      high: "Hoch",
+      catalogLimited:
+        "Katalogweite Details sind bei diesem Shop eingeschränkt; die repräsentativen Produktseiten folgen unten.",
+      pagesReading: (count: number) =>
+        `${count} Produktseiten · werden gerade gelesen`,
+      pagesFailed: (count: number) =>
+        `${count} Produktseiten · konnten nicht vollständig gelesen werden`,
+      pagesUnavailable:
+        "Eine repräsentative Produktseitenprüfung war bei diesem Durchlauf nicht verfügbar",
+      pagesGated: (count: number) =>
+        `${count} Produktseiten · nach Ihrer E-Mail-Bestätigung`,
+      pagesGatedBody:
+        "Diese Seiten genau zu lesen ist die langsame Hälfte des Scans, und Ihre E-Mail-Bestätigung startet sie. Die Shop- und Katalogbelege oben bleiben genau dort, wo sie sind.",
+      inspecting: (count: number) =>
+        `${count} repräsentative Produktseiten werden geprüft`,
+      evidenceReady:
+        "Shop- und Katalogbelege sind oben bereits verfügbar. Ergebnisse auf Seitenebene erscheinen hier automatisch.",
+      pdpFailed:
+        "Die Shop- und Katalogbeobachtungen bleiben gültig. Die repräsentative Produktseitenprüfung konnte bei diesem Durchlauf nicht abgeschlossen werden.",
+      sampleShows: "Was die Beispiel-Produktseiten zeigen",
+      needAttention: (count: number) => `${count} brauchen Aufmerksamkeit`,
+      checked: (count: number) => `von ${count} geprüft`,
+      couldNotCheck: (count: number) => ` · ${count} konnten wir nicht prüfen`,
+      health: (score: number) => `Zustand ${score}`,
+      needAttentionOf: (failed: number, total: number) =>
+        `${failed} von ${total} brauchen Aufmerksamkeit`,
+      openReport: "Seitenbericht öffnen",
+      reportUnavailable: "Bericht nicht verfügbar",
+    },
+    deeper: {
+      title:
+        "Sehen Sie, was KI über Ihre Produkte sagt — und was Sie ändern sollten.",
+      intro:
+        "Der öffentliche Shop-Scan oben gehört bereits Ihnen. Bestätigen Sie Ihre E-Mail für den langsameren, wertvolleren Teil: Empfehlungen auf Seitenebene plus echte Kauffragen an ChatGPT und Google AI Mode.",
+      assurances: [
+        "Kostenlos",
+        "Kein Konto",
+        "Eine E-Mail, keine Marketingliste",
+      ],
+      aiPages: "KI liest Ihre Seiten und sagt, was zu ändern ist",
+      aiPagesDetail:
+        "Öffnen Sie einen Produktseitenbericht: KI geht die Seite neben den Befunden oben durch und schreibt konkrete Verbesserungen samt zugrunde liegendem Seitentext zurück.",
+      shopperAnswers: "Was Kundinnen und Kunden heute gesagt wird",
+      shopperAnswersDetail: (count: number) =>
+        `Fragen aus den ${count} eben gelesenen ${count === 1 ? "Produkt" : "Produkten"} werden an ChatGPT und Google AI Mode gestellt; die Antworten werden aufgezeichnet.`,
+      alternatives: "Wer genannt wird, wenn Sie es nicht werden",
+      alternativesDetail:
+        "Die konkurrierenden Marken und Produkte, die an Ihrer Stelle erscheinen.",
+    },
+    email: {
+      sentTo: (email: string) => `Gesendet an ${email}`,
+      completeTitle: "Ihr Link ist im Posteingang.",
+      continueTitle: "Ein Klick im Posteingang, dann geht es weiter.",
+      completeBody:
+        "Nichts auf dieser Seite verschwindet. Der Link öffnet dieselbe Analyse jederzeit wieder.",
+      continueBody:
+        "Nichts auf dieser Seite verschwindet. Öffnen Sie den Link: Dann fragen wir die Assistenten zu Ihren Produkten und zeigen Ihnen die vollständige Analyse.",
+      differentEmail: "An eine andere E-Mail senden",
+      label: "Geschäftliche E-Mail",
+      runningLabel: "Vollständigen Scan freischalten",
+      completeLabel: "Diese Analyse behalten",
+      completeIntro: (domain: string) =>
+        `Die Analyse für ${domain} ist fertig. Hinterlassen Sie eine Adresse; wir senden Ihnen den Link, damit Sie sie jederzeit öffnen können.`,
+      runningIntro: (domain: string) =>
+        `Der öffentliche Scan von ${domain} steht bereits auf dieser Seite. Bestätigen Sie Ihre E-Mail, um Empfehlungen auf Seitenebene freizuschalten, ChatGPT und Google AI Mode zu Ihren Produkten zu befragen und die vollständige Analyse zu behalten.`,
+      placeholder: "sie@firma.ch",
+      sending: "Wird gesendet…",
+      send: "Senden",
+      runningCta: "Kostenlos fortfahren",
+      completeCta: "Analyse per E-Mail senden",
+      assurances: [
+        "Kein Konto",
+        "Keine Karte",
+        "Eine E-Mail, keine Marketingliste",
+      ],
+      sent: "E-Mail gesendet",
+      clickContinue: "Ein Klick im Posteingang, dann fahren wir fort.",
+      openSent: (email: string) =>
+        `Öffnen Sie den Link, den wir an ${email} gesendet haben. Nichts auf dieser Seite verschwindet. Sie können weiterlesen oder später zurückkehren.`,
+      sendAgain: "Erneut senden",
+      differentAddress: "Andere Adresse verwenden",
+      confirmTitle: "Bestätigen Sie Ihre E-Mail, um beides zu öffnen",
+      confirmBody:
+        "Wir senden einen Link. Ein Klick öffnet beides — ohne Konto, ohne Karte und ohne Marketingliste.",
+      addEmail: "E-Mail hinzufügen",
+      privacyPrefix: "Siehe unsere",
+      privacy: "Datenschutzerklärung",
+    },
+    errors: {
+      scanDomain: "Diese Domain konnte nicht gescannt werden.",
+      serviceUnavailable: "Der Scan-Dienst ist derzeit nicht verfügbar.",
+      missingToken:
+        "Diesem Bestätigungslink fehlt das Token. Starten Sie den Scan unten neu oder fahren Sie fort.",
+      usedToken:
+        "Dieser Bestätigungslink ist ungültig oder wurde bereits verwendet. Starten Sie den Scan erneut, wenn Sie einen neuen Link brauchen.",
+      verifyUnavailable:
+        "Dieser Link konnte gerade nicht bestätigt werden. Versuchen Sie den Link aus Ihrer E-Mail erneut.",
+      enterDomain: "Geben Sie Ihre Shop-Domain ein.",
+      enterEmail: "Geben Sie Ihre geschäftliche E-Mail ein.",
+      invalidEmail: "Geben Sie eine gültige geschäftliche E-Mail ein.",
+      ownDomain: "Geben Sie die Domain Ihres eigenen Shops ein.",
+      rateLimited:
+        "Derzeit gibt es zu viele Scan-Anfragen. Versuchen Sie es in Kürze erneut.",
+      sendEmail: "Die Bestätigungs-E-Mail konnte nicht gesendet werden.",
+      sendEmailNow:
+        "Die Bestätigungs-E-Mail konnte gerade nicht gesendet werden.",
+      retrying: "Wird erneut versucht…",
+      tryAgain: "Erneut versuchen",
+      pollExhausted:
+        "Ihre Produktseiten konnten diesmal nicht vollständig gelesen werden. Die abgeschlossenen Beobachtungen unten sind weiterhin nützlich; lesen Sie die Befunde als Möglichkeiten, nicht als endgültige Urteile.",
+      running: "Läuft…",
+      runAgain: "Erneut ausführen",
+      rejectedTitle: (domain: string) =>
+        `${domain} konnte nicht gelesen werden.`,
+      blockedExplanation:
+        "Ihr Shop hat unsere Anfrage abgewiesen. Meist liegt das an einer Firewall- oder Bot-Schutzregel; das bedeutet nicht, dass mit Ihrem Shop etwas nicht stimmt.",
+      noProductsExplanation:
+        "Die Website war erreichbar, aber wir konnten keine öffentlichen Produktseiten finden. Das passiert bei Shops, die Produkte erst nach einer Anmeldung anzeigen, oder bei Websites, die kein Shop sind.",
+      genericExplanation:
+        "Die Domain antwortete nicht auf eine öffentliche Anfrage. Sie könnte falsch geschrieben, geparkt oder vorübergehend offline sein.",
+      blockedSuggestions: [
+        "Prüfen Sie, ob die Domain wirklich der Shop ist, den Kundinnen und Kunden nutzen, und keine Staging- oder Admin-Adresse.",
+        "Fragen Sie die Person, die den Shop betreut, ob Bot-Schutz externe Leser blockiert. Dieselbe Regel blockiert häufig auch Suchmaschinen.",
+      ],
+      noProductsSuggestions: [
+        "Versuchen Sie die Domain, auf der Kundinnen und Kunden tatsächlich Produkte ansehen, einschliesslich eines möglichen Marktpräfixes.",
+        "Wenn Ihre Produkte erst nach einer Anmeldung sichtbar sind, kann ein öffentlicher Scan sie nicht erreichen; wir können sie aber gemeinsam mit Ihnen ansehen.",
+      ],
+      genericSuggestions: [
+        "Prüfen Sie die Schreibweise und versuchen Sie es ohne www oder nachgestellten Pfad.",
+        "Wenn die Website in Ihrem Browser live ist, warten Sie einen Moment und führen Sie den Scan erneut aus.",
+      ],
+      reported: (reason: string) => `Vom Scan gemeldet: ${reason}`,
+      reviewCta: "Beseam an meinem Shop sehen",
+    },
+  },
   scan: {
     eyebrow: "Kostenloser Shop-Scan",
-    heading: "Sehen Sie, was den Kauf verhindern kann.",
+    heading:
+      "Sehen Sie, was Ihre Produkte schwerer auffindbar, vergleichbar oder kaufbar macht.",
     intro:
-      "Geben Sie Ihre Domain ein, und der Scan startet. Wir lesen Ihren öffentlichen Shop so, wie eine Suchmaschine oder ein KI-Assistent ihn liest, und die Befunde erscheinen auf dieser Seite, sobald sie vorliegen.",
+      "Geben Sie Ihre Shop-Domain ein. Beseam liest den öffentlichen Shop und zeigt, wo Produkte übersehen werden, schwer vergleichbar sind oder Kaufhürden schaffen können — mit Belegen und dem sinnvollsten nächsten Schritt.",
     duration: "Dauert meist etwa eine Minute.",
     promiseBody:
       "Wir lesen Ihren öffentlichen Shop so, wie eine Suchmaschine oder ein KI-Assistent ihn liest: Ihre Produktseiten, Ihre Katalogdaten und Ihre Website-Einstellungen. Den Link zu Ihrer Analyse schicken wir Ihnen per E-Mail — Sie sehen, was diese Systeme sehen, und was zuerst zu beheben ist. Es ist kein Keyword-Report — wir messen keine Suchnachfrage, und Kundenfragen kommen später, nicht hier.",
@@ -1248,13 +1755,14 @@ export const de: Dictionary = {
     ],
     formNote: {
       line: "Der kostenlose Scan liest Ihren Shop einmal.",
-      // Ausgeschrieben, nicht aus `loop.steps` zusammengesetzt: dort heißt
+      // Ausgeschrieben, nicht aus `loop.steps` zusammengesetzt: dort heisst
       // Schritt 02 "Planen", weil im Ring nur 68px Platz sind. In einem Satz
       // steht "Vorbereiten".
       loop: "Beseam: Finden → Vorbereiten → Freigeben → Umsetzen → Messen",
     },
     form: {
       domainLabel: "Shop-Domain",
+      websiteHoneypot: "Webseite",
       // Beispiel-Domain, nicht Marke: "ihrshop.de" zeigt einem deutschen
       // Besucher das erwartete Format, "yourstore.com" zeigt ein fremdes.
       domainPlaceholder: "ihrshop.de",
@@ -1262,9 +1770,10 @@ export const de: Dictionary = {
       submitting: "Wir lesen Ihren Shop…",
       again: "Anderen Shop scannen",
       startNote:
-        "Wir lesen Ihren Shop sofort. Kein Konto, keine Karte. Eine E-Mail-Adresse geben Sie erst an, wenn die Befunde auf dem Bildschirm stehen, damit wir Ihnen die Analyse schicken können.",
+        "Startet sofort. Nach Ihrer E-Mail fragen wir erst, wenn die ersten Befunde auf dem Bildschirm stehen.",
     },
-    contentsHeading: "Was der Scan liest",
+    contentsHeading: "Was wir prüfen",
+    scopeNote: "Nur öffentlicher Shop · kein Shop-Zugriff",
     contents: [
       {
         label: "Ihr Shop-Auftritt",
@@ -1310,12 +1819,14 @@ export const de: Dictionary = {
     once: "Dieser Scan liest Ihren Shop einmal. Beseam prüft weiter und belegt, was sich verändert hat.",
     continuous: "Sehen, was fortlaufend läuft →",
     beyond: {
-      heading: "Fragen nach Plan, und eine erneute Prüfung nach der Behebung.",
-      body: "In Beseam lesen und bearbeiten Sie die Kundenfragen, bevor eine davon läuft, die Antworten bleiben als Beleg erhalten, Behebungen werden danach geordnet, was sich zuerst lohnt, und dieselben Fragen werden nach einer Änderung erneut gestellt, damit Sie sehen, was sich bewegt hat.",
+      eyebrow: "Nach dem kostenlosen Scan",
+      heading:
+        "Ein Scan findet die Lücke. Beseam arbeitet weiter, wenn Sie die Seite verlassen.",
+      body: "Lassen Sie dieselben Kundenfragen weiterlaufen, machen Sie aus den stärksten Befunden vorbereitete Änderungen, geben Sie kundenseitige Änderungen frei und prüfen Sie die Belege danach erneut.",
       review:
         "Oder bringen Sie Ihren Shop in eine zwanzigminütige Durchsprache: An einem echten Befund zeigen wir, was Beseam gefunden hat, was es ändern würde und was es danach erneut prüft.",
-      start: "Fortlaufende Prüfung starten",
-      book: "Beseam an meinem Shop sehen",
+      start: "Kostenlos mit meinem Shop starten",
+      book: "20-minütige Shop-Durchsprache buchen",
     },
   },
 };

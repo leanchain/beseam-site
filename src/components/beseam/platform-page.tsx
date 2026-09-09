@@ -117,30 +117,22 @@ export default function PlatformPageContent({
         </div>
       </section>
 
-      {/* Before the capability list, the thing itself.
-
-          This page used to go from the hero straight into three acts of
-          prose, and a visitor could read the whole platform without ever
-          seeing what a merchant logs into. The two screens the rest of the
-          site already uses -- the Growth plan and the results ledger, drawn in
-          HTML rather than screenshotted (`app-screens.tsx`) -- carry the
-          product truth here too: the change Beseam prepared, and what it
-          measured afterwards. Both frames stamp themselves illustrative.
-
-          The connected-system map stays on the homepage (`#system`). What
-          this page owes a visitor after the screens is the full extent of the
-          thing: every capability it has, and which ones are live on day one. */}
+      {/* Show the product before explaining its breadth. A visitor should see
+          the queue a merchant actually works from, then understand the four
+          parts of the buying journey that can feed it. The connected-system
+          map stays on the homepage; /platform goes deeper on what each signal
+          becomes rather than recreating an internal package catalogue. */}
       <section className="border-b border-rule bg-ground-2">
         <div className="mx-auto max-w-[92rem] px-5 py-16 sm:px-8 sm:py-20 lg:px-10 lg:py-24">
           <Reveal>
             <div className="grid gap-6 lg:grid-cols-[minmax(0,0.65fr)_minmax(0,1.35fr)] lg:items-end lg:gap-20">
               <h2 className="max-w-[17ch] font-display text-[clamp(2rem,3.2vw,2.9rem)] font-normal leading-[1.06] tracking-[-0.02em] text-ink-deep">
-                What a merchant actually opens.
+                Signals become work, not another report.
               </h2>
               <p className="max-w-[52ch] self-end text-[15px] leading-[1.72] text-black/62">
-                One queue of changes: what Beseam found, which shopper question
-                it came from, how much of your booked sales it touches, and the
-                approval it still needs before a shopper sees it.
+                Beseam turns the strongest findings into one ranked queue: the
+                change, the evidence behind it, the part of the business it
+                touches, and the approval it needs before a shopper sees it.
               </p>
             </div>
           </Reveal>
@@ -171,16 +163,16 @@ export default function PlatformPageContent({
             <div className="grid gap-8 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:items-end lg:gap-16">
               <div>
                 <p className="font-mono text-[12px] font-semibold uppercase tracking-[0.14em] text-signal">
-                  How Beseam works
+                  From evidence to outcome
                 </p>
                 <h2 className="mt-7 max-w-[16ch] font-display text-[clamp(2.3rem,3.8vw,3.9rem)] font-normal leading-[1.03] tracking-[-0.02em]">
-                  Observe. Understand. Act. Learn.
+                  Find. Prepare. Approve. Measure.
                 </h2>
               </div>
               <p className="max-w-[50ch] text-[16px] leading-[1.75] text-white/68">
-                The same loop runs across discovery, products, behavior,
-                conversion, and revenue. Each part helps Beseam decide what to
-                check or change next without giving you another dashboard.
+                Beseam watches the relevant signals, turns a supported finding
+                into a specific change, waits for your approval when customers
+                will see it, then checks the same signal again.
               </p>
             </div>
           </Reveal>
@@ -268,12 +260,12 @@ export default function PlatformPageContent({
       <section className="bg-pigment text-white">
         <div className="mx-auto max-w-[92rem] px-5 py-20 sm:px-8 sm:py-24 lg:px-10 lg:py-28">
           <h2 className="max-w-[19ch] font-display text-[clamp(2.3rem,3.8vw,3.9rem)] font-normal leading-[1.04] tracking-[-0.02em]">
-            Connect your store. Beseam keeps the loop moving.
+            Start with your store. Add signals when they earn their place.
           </h2>
           <p className="mt-5 max-w-[58ch] text-[17px] leading-[1.72] text-white/76">
-            Beseam keeps finding what to improve, prepares the change, asks for
-            your approval when it affects customers, applies approved changes,
-            and checks what happened.
+            Beseam starts with what it can observe, adds deeper data only when
+            it helps explain or measure something, and keeps customer-facing
+            changes behind your approval.
           </p>
           <div className="mt-8">
             <TrackedLink

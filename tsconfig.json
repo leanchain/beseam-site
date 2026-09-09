@@ -34,9 +34,14 @@
     "**/*.tsx",
     ".next-dev/types/**/*.ts",
     ".next-hwqa/types/**/*.ts",
+    ".next-hwqa2/types/**/*.ts",
+    ".next-hwqa3/types/**/*.ts",
+    ".next-hwqa4/types/**/*.ts",
+    ".next-hww-polish/types/**/*.ts",
+    ".next-pagerqa/types/**/*.ts",
     ".next/types/**/*.ts",
     "next-env.d.ts",
-    ".next-hwqa2/types/**/*.ts"
+    ".next-hww-p2/types/**/*.ts"
   ],
   "exclude": [
     "node_modules",

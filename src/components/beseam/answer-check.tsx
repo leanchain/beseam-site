@@ -11,7 +11,8 @@ import {
 
 import { useRouter } from "next/navigation";
 
-import { useDictionary } from "@/i18n/use-locale";
+import type { Dictionary, Locale } from "@/i18n";
+import { useDictionary, useLocale } from "@/i18n/use-locale";
 
 import {
   ArrowRight,
@@ -47,10 +48,10 @@ const MAX_POLLS = 60; // ~6 minutes, then stop asking
 const LIVE_STATUSES = new Set(["running", "queued", "validating"]);
 const PENDING_PAGE_AUDIT_STATUSES = new Set(["queued", "running"]);
 
-// `awaiting_verification` is not a resting state: the free five-PDP sample keeps
-// landing behind it, and its findings only reach the card on a later fetch. Poll
-// on the work that is actually outstanding rather than on the status word alone,
-// so a still-active progress step can never spin forever.
+// Poll on the work that is actually outstanding rather than on the status word
+// alone. The page-audit sample is armed by the verification click and can still
+// be in flight after the paid status settles, and a row left `queued` by an
+// older build must not spin a step forever either.
 export function isScanInFlight(result: AnswerCheckResult) {
   return (
     LIVE_STATUSES.has(result.status) ||
@@ -60,8 +61,8 @@ export function isScanInFlight(result: AnswerCheckResult) {
 }
 
 // A cached row is worth rendering on its own only when its free stage actually
-// produced something, or is still producing it. A row whose sample failed, or
-// never started, is an empty card — the arrival re-runs the scan instead of
+// produced something, or is still producing it. A row that never got a
+// storefront read is an empty card — the arrival re-runs the scan instead of
 // showing it.
 export function hasUsableFreeStage(result: AnswerCheckResult) {
   if (result.reject_reason) return true;
@@ -69,6 +70,11 @@ export function hasUsableFreeStage(result: AnswerCheckResult) {
   if (PENDING_PAGE_AUDIT_STATUSES.has(result.page_audits_status ?? "")) {
     return true;
   }
+  // A storefront read that landed is a usable free stage on its own. The product
+  // pages below it are waiting for the emailed link, not for another probe, so
+  // re-running the scan here would re-read the storefront to arrive back at the
+  // page the visitor is already looking at.
+  if (result.products_seen > 0) return true;
   return LIVE_STATUSES.has(result.status) || result.status === "ready";
 }
 
@@ -153,12 +159,12 @@ function sortedFindings(result: AnswerCheckResult) {
   );
 }
 
-function findingArea(code: string) {
-  if (code.startsWith("seo.")) return "Search & structured data";
-  if (code.startsWith("i18n.")) return "Internationalization";
-  if (code.startsWith("security.")) return "Trust & delivery";
-  if (code.startsWith("geo.")) return "Machine readability";
-  return "Product evidence";
+function findingArea(code: string, copy: Dictionary["answerCheck"]) {
+  if (code.startsWith("seo.")) return copy.findings.areas.searchStructured;
+  if (code.startsWith("i18n.")) return copy.findings.areas.internationalization;
+  if (code.startsWith("security.")) return copy.findings.areas.trustDelivery;
+  if (code.startsWith("geo.")) return copy.findings.areas.machineReadability;
+  return copy.findings.areas.productEvidence;
 }
 
 // ── Merchant-facing reading of one finding ──────────────────────────────────
@@ -178,20 +184,33 @@ function findingNextStep(finding: Finding) {
   return finding.next_step?.trim() || finding.detail?.trim() || null;
 }
 
-function findingGroup(finding: Finding) {
-  return finding.area?.trim() || findingArea(finding.code);
+function findingGroup(finding: Finding, copy: Dictionary["answerCheck"]) {
+  const area = finding.area?.trim();
+  if (area) {
+    const localized: Record<string, string> = {
+      "Getting found": copy.findings.areas.discovery,
+      "How your products are listed": copy.findings.areas.listing,
+      "What the product page tells shoppers": copy.findings.areas.page,
+      "Trust and safety": copy.findings.areas.trust,
+      "Markets and languages": copy.findings.areas.markets,
+    };
+    return localized[area] ?? area;
+  }
+  return findingArea(finding.code, copy);
 }
 
 // Severity words are engineering words. A store owner needs to know what to do
 // first, not how a check classified itself — and a scan of five public pages
 // has not earned the word "critical".
-function priorityOf(finding: Finding) {
+function priorityOf(finding: Finding, copy: Dictionary["answerCheck"]) {
   const severity = finding.severity ?? "medium";
   if (severity === "blocker" || severity === "high") {
-    return { label: "Worth doing first", urgent: true };
+    return { label: copy.findings.priorityFirst, urgent: true };
   }
-  if (severity === "medium") return { label: "Worth a look", urgent: false };
-  return { label: "Minor", urgent: false };
+  if (severity === "medium") {
+    return { label: copy.findings.priorityLook, urgent: false };
+  }
+  return { label: copy.findings.priorityMinor, urgent: false };
 }
 
 // Locale paths arrive as raw prefixes (`de-ch`, `en-us`). Those are
@@ -262,12 +281,92 @@ const COUNTRY_NAMES: Record<string, string> = {
   cn: "China",
 };
 
-function marketLabel(result: AnswerCheckResult): string | null {
-  const market = result.brand_evidence?.market ?? null;
+const LANGUAGE_NAMES_DE: Record<string, string> = {
+  ar: "Arabisch",
+  cs: "Tschechisch",
+  da: "Dänisch",
+  de: "Deutsch",
+  el: "Griechisch",
+  en: "Englisch",
+  es: "Spanisch",
+  fi: "Finnisch",
+  fr: "Französisch",
+  he: "Hebräisch",
+  hu: "Ungarisch",
+  it: "Italienisch",
+  ja: "Japanisch",
+  ko: "Koreanisch",
+  nb: "Norwegisch",
+  nl: "Niederländisch",
+  no: "Norwegisch",
+  pl: "Polnisch",
+  pt: "Portugiesisch",
+  ro: "Rumänisch",
+  ru: "Russisch",
+  sv: "Schwedisch",
+  tr: "Türkisch",
+  uk: "Ukrainisch",
+  zh: "Chinesisch",
+};
+const COUNTRY_NAMES_DE: Record<string, string> = {
+  us: "Vereinigte Staaten",
+  gb: "Vereinigtes Königreich",
+  ie: "Irland",
+  ca: "Kanada",
+  au: "Australien",
+  nz: "Neuseeland",
+  de: "Deutschland",
+  at: "Österreich",
+  ch: "Schweiz",
+  fr: "Frankreich",
+  be: "Belgien",
+  it: "Italien",
+  nl: "Niederlande",
+  es: "Spanien",
+  mx: "Mexiko",
+  pt: "Portugal",
+  br: "Brasilien",
+  pl: "Polen",
+  se: "Schweden",
+  dk: "Dänemark",
+  no: "Norwegen",
+  fi: "Finnland",
+  cz: "Tschechien",
+  ro: "Rumänien",
+  hu: "Ungarn",
+  gr: "Griechenland",
+  tr: "Türkei",
+  ru: "Russland",
+  ua: "Ukraine",
+  jp: "Japan",
+  kr: "Südkorea",
+  cn: "China",
+};
+function localizedLanguageName(code: string, locale: Locale) {
+  const names = locale === "de" ? LANGUAGE_NAMES_DE : LANGUAGE_NAMES;
+  return names[code.toLowerCase()];
+}
+function localizedCountryName(code: string, locale: Locale) {
+  const names = locale === "de" ? COUNTRY_NAMES_DE : COUNTRY_NAMES;
+  return names[code.toLowerCase()];
+}
+function localizedMarketName(name: string | null, locale: Locale) {
+  if (!name || locale !== "de") return name;
+  const code = Object.keys(COUNTRY_NAMES).find(
+    (key) => COUNTRY_NAMES[key] === name,
+  );
+  return code ? (COUNTRY_NAMES_DE[code] ?? name) : name;
+}
+
+function marketLabel(result: AnswerCheckResult, locale: Locale): string | null {
+  const market = localizedMarketName(
+    result.brand_evidence?.market ?? null,
+    locale,
+  );
   const languages: string[] = [];
-  for (const locale of result.site_inventory?.locales ?? []) {
-    for (const part of locale.toLowerCase().split(/[-_]/)) {
-      const name = LANGUAGE_NAMES[part];
+  for (const localeTag of result.site_inventory?.locales ?? []) {
+    for (const part of localeTag.toLowerCase().split(/[-_]/)) {
+      const name = localizedLanguageName(part, locale);
       if (name && !languages.includes(name)) languages.push(name);
     }
   }
@@ -277,7 +376,7 @@ function marketLabel(result: AnswerCheckResult): string | null {
   // actually written in is a second, always-available signal for the same
   // fact, so it fills this in rather than leaving the identity line silent.
   if (!languages.length && result.questions_language) {
-    const name = LANGUAGE_NAMES[result.questions_language.toLowerCase()];
+    const name = localizedLanguageName(result.questions_language, locale);
     if (name) languages.push(name);
   }
   const spoken = languages.slice(0, 3).join(" · ");
@@ -288,10 +387,13 @@ function marketLabel(result: AnswerCheckResult): string | null {
 // Language and country the questions were actually written for, together —
 // always shown, English included: a quiet default is still a fact the
 // merchant did not have to infer for themselves.
-function questionLanguageBadge(result: AnswerCheckResult): string | null {
+function questionLanguageBadge(
+  result: AnswerCheckResult,
+  locale: Locale,
+): string | null {
   const code = result.questions_language;
   const language = code
-    ? (LANGUAGE_NAMES[code.toLowerCase()] ?? code.toUpperCase())
+    ? (localizedLanguageName(code, locale) ?? code.toUpperCase())
     : null;
   // `questions_country` is interpreted from the crawl (which locale-prefixed
   // URL the store's own site actually used), same source and same fallback
@@ -299,8 +401,8 @@ function questionLanguageBadge(result: AnswerCheckResult): string | null {
   // a ccTLD guess and only fills in when the crawl named nothing.
   const countryCode = result.questions_country?.toLowerCase();
   const country =
-    (countryCode ? COUNTRY_NAMES[countryCode] : null) ??
-    result.brand_evidence?.market ??
+    (countryCode ? localizedCountryName(countryCode, locale) : null) ??
+    localizedMarketName(result.brand_evidence?.market ?? null, locale) ??
     null;
   return [language, country].filter(Boolean).join(" · ") || null;
 }
@@ -451,12 +553,72 @@ const OPTIMISTIC_STEPS: Step[] = [
 
 // The storefront read and the catalog read finish inside the POST. Everything
 // after them -- the product-page sample, the questions, the answers -- is the
-// slow half, and it is the half the address buys. So the rail breaks there and
-// the ask sits in the seam: what already ran is above it, what is still coming
-// is below it.
+// slow half, and it is the half the address buys: none of it starts until the
+// emailed link is clicked. So the rail breaks there and the ask sits in the
+// seam: what already ran is above it, what the address starts is below it,
+// pending.
 const LIGHT_STEP_KEYS = new Set(["storefront", "catalog"]);
 
+function localizedStepLabel(step: Step, copy: Dictionary["answerCheck"]) {
+  return (
+    copy.steps.labels[step.key as keyof typeof copy.steps.labels] ?? step.label
+  );
+}
+
+function localizedStepDetail(step: Step, copy: Dictionary["answerCheck"]) {
+  const detail = step.detail?.trim();
+  if (!detail) return null;
+
+  let match: RegExpMatchArray | null;
+  if (
+    step.key === "catalog" &&
+    (match = detail.match(/^(\d+) products? found$/))
+  ) {
+    return copy.steps.productsFound(Number(match[1]));
+  }
+  if (step.key === "pages") {
+    if ((match = detail.match(/^(\d+) product pages? analyzed$/))) {
+      return copy.steps.pagesAnalyzed(Number(match[1]));
+    }
+    if (
+      (match = detail.match(/^Analyzed (\d+) of (\d+) product pages so far$/))
+    ) {
+      return copy.steps.pagesProgress(Number(match[1]), Number(match[2]));
+    }
+    if (
+      detail === "Your products and prices are already below while these finish"
+    ) {
+      return copy.steps.pagesFinishing;
+    }
+    if (detail === "We could not finish reading these pages on this run") {
+      return copy.steps.pagesFailed;
+    }
+  }
+  if (step.key === "questions") {
+    if ((match = detail.match(/^(\d+) questions? written$/))) {
+      return copy.steps.questionsWritten(Number(match[1]));
+    }
+    if (detail === "Written from the products we found") {
+      return copy.steps.questionsFromProducts;
+    }
+  }
+  if (step.key === "answers") {
+    const confirm = "Confirm your email and we continue with ";
+    const asking = "Asking ";
+    if (detail.startsWith(confirm))
+      return copy.steps.confirmEmail(detail.slice(confirm.length));
+    if (detail.startsWith(asking))
+      return copy.steps.askingChannels(detail.slice(asking.length));
+  }
+  // Reject reasons and other backend facts are deliberately left verbatim;
+  // phase 2 localizes API-supplied copy.
+  return detail;
+}
+
 function StepRow({ step }: { step: Step }) {
+  const copy = useDictionary().answerCheck;
+  const label = localizedStepLabel(step, copy);
+  const detail = localizedStepDetail(step, copy);
   return (
     <li className="flex items-start gap-3">
       <StepMark state={step.state} />
@@ -468,11 +630,11 @@ function StepRow({ step }: { step: Step }) {
               : "font-medium text-ink-deep"
           }`}
         >
-          {step.label}
+          {label}
         </p>
-        {step.detail ? (
+        {detail ? (
           <p className="mt-0.5 text-[12.5px] leading-relaxed text-black/54">
-            {step.detail}
+            {detail}
           </p>
         ) : null}
         {step.state === "active" && step.progress && step.progress.total > 0 ? (
@@ -482,7 +644,10 @@ function StepRow({ step }: { step: Step }) {
             aria-valuenow={step.progress.done}
             aria-valuemin={0}
             aria-valuemax={step.progress.total}
-            aria-label={`${step.progress.done} of ${step.progress.total}`}
+            aria-label={copy.steps.progress(
+              step.progress.done,
+              step.progress.total,
+            )}
           >
             <div
               className="h-full rounded-full bg-[#1a6b43] transition-[width] duration-500 ease-out"
@@ -511,6 +676,7 @@ function ScanProgress({
   /** Rendered between the finished light steps and the slow ones. */
   interlude?: ReactNode;
 }) {
+  const copy = useDictionary().answerCheck;
   const visible = steps.filter((step) => step.state !== "skipped");
   if (!visible.length) return null;
 
@@ -536,18 +702,18 @@ function ScanProgress({
           are the only clue to what kind of assessment this is, and they read
           equally well as the start of a keyword report. */}
       <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.1em] text-black/44">
-        Technical discoverability · step {position} of {visible.length}
+        {copy.steps.technical(position, visible.length)}
       </p>
       <h3 className="mt-1.5 text-[15px] font-semibold tracking-[-0.01em] text-ink-deep">
-        {domain ? `Reading ${domain}` : "Reading your storefront"}
+        {domain
+          ? copy.steps.readingDomain(domain)
+          : copy.steps.readingStorefront}
       </h3>
       <p className="mt-1 text-[13px] leading-relaxed text-black/56">
-        Results appear below as soon as each part is done. You do not have to
-        wait for all of it.
+        {copy.steps.resultsAsTheyArrive}
       </p>
       <p className="mt-1.5 text-[12.5px] leading-relaxed text-black/50">
-        Shopper questions come after this, and tracking them over time happens
-        inside Beseam.
+        {copy.steps.questionsLater}
       </p>
       <ol className="mt-4 space-y-3">
         {(interlude ? lightSteps : visible).map((step) => (
@@ -574,6 +740,7 @@ function ScanProgress({
 
 // ── The real numbers, the moment they exist ─────────────────────────────────
 function FoundStrip({ result }: { result: AnswerCheckResult }) {
+  const copy = useDictionary().answerCheck;
   const catalog = result.catalog_inventory;
   const productCount =
     catalog?.products_checked && catalog.products_checked > 0
@@ -584,19 +751,13 @@ function FoundStrip({ result }: { result: AnswerCheckResult }) {
   const named = scored.filter((answer) => answer.mentioned === true).length;
 
   const facts: Array<[string, string, boolean]> = [
-    [productCount, "products found", false],
+    [productCount, copy.result.productsFound, false],
     [
       scored.length ? `${named}/${scored.length}` : "—",
-      scored.length
-        ? "assistant answers named you"
-        : "assistant answers pending",
+      scored.length ? copy.result.answersNamed : copy.result.answersPending,
       !scored.length && isScanInFlight(result),
     ],
-    [
-      String(findingCount),
-      findingCount === 1 ? "opportunity found" : "opportunities found",
-      false,
-    ],
+    [String(findingCount), copy.result.opportunitiesFound(findingCount), false],
   ];
 
   return (
@@ -676,8 +837,9 @@ function FindingRow({
   exampleContext: Parameters<typeof fixExampleFor>[1];
   fixHref: string;
 }) {
+  const copy = useDictionary().answerCheck;
   const finding = group.lead;
-  const priority = priorityOf(finding);
+  const priority = priorityOf(finding, copy);
   const why = findingWhy(finding);
   const nextStep = findingNextStep(finding);
   const example = fixExampleFor(finding.code, {
@@ -695,7 +857,9 @@ function FindingRow({
 
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[11.5px] font-semibold uppercase tracking-[0.08em]">
-              <span className="text-black/44">{findingGroup(finding)}</span>
+              <span className="text-black/44">
+                {findingGroup(finding, copy)}
+              </span>
               <span aria-hidden="true" className="text-black/20">
                 ·
               </span>
@@ -714,9 +878,11 @@ function FindingRow({
 
           <span className="inline-flex min-h-9 items-center gap-2 justify-self-start text-[12px] font-semibold text-black/52 group-hover/finding:text-signal-ink sm:justify-self-end">
             <span className="group-open/finding:hidden">
-              See recommendation
+              {copy.findings.recommendation}
             </span>
-            <span className="hidden group-open/finding:inline">Close</span>
+            <span className="hidden group-open/finding:inline">
+              {copy.findings.close}
+            </span>
             <ChevronDown
               className="h-3.5 w-3.5 transition-transform group-open/finding:rotate-180"
               aria-hidden="true"
@@ -734,7 +900,9 @@ function FindingRow({
               ) : null}
               {nextStep ? (
                 <p className="mt-4 max-w-[68ch] border-l border-signal-ink/35 pl-3.5 text-[14px] leading-[1.6] text-ink-deep">
-                  <span className="font-semibold">Improve next: </span>
+                  <span className="font-semibold">
+                    {copy.findings.improveNext}{" "}
+                  </span>
                   {nextStep}
                 </p>
               ) : null}
@@ -763,7 +931,7 @@ function FindingRow({
                 preserveUtm
                 className="group/fix mt-5 inline-flex min-h-10 items-center gap-2 border border-ink-deep px-4 text-[12.5px] font-semibold text-ink-deep transition-colors hover:bg-ink-deep hover:text-white"
               >
-                Start fixing this in Beseam
+                {copy.findings.startFixing}
                 <ArrowRight
                   aria-hidden="true"
                   className="h-3.5 w-3.5 transition-transform group-hover/fix:translate-x-0.5"
@@ -773,9 +941,9 @@ function FindingRow({
 
             <div className="border-t border-black/10 pt-4 lg:border-l lg:border-t-0 lg:pl-5 lg:pt-0">
               <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-black/42">
-                Evidence
+                {copy.findings.evidence}
                 {group.members.length > 1
-                  ? ` · ${group.members.length} checks`
+                  ? ` · ${copy.findings.checks(group.members.length)}`
                   : ""}
               </p>
               <div className="mt-3 space-y-4 text-[12px] leading-relaxed text-black/58">
@@ -811,7 +979,7 @@ function FindingRow({
                       {member.examples?.length ? (
                         <div className="mt-2.5 border-l border-signal-ink/30 pl-3">
                           <p className="text-[11px] font-semibold uppercase tracking-[0.07em] text-black/42">
-                            Products this was seen on
+                            {copy.findings.productsSeenOn}
                           </p>
                           <ul className="mt-1.5 space-y-1.5">
                             {member.examples.slice(0, 4).map((sample) => (
@@ -847,7 +1015,7 @@ function FindingRow({
                             rel="noreferrer"
                             className="font-semibold text-black/56 underline decoration-black/20 underline-offset-4 hover:text-ink-deep hover:decoration-signal-ink"
                           >
-                            See the page →
+                            {copy.findings.seePage}
                           </a>
                         ) : null}
                         {member.catalog_url ? (
@@ -857,7 +1025,7 @@ function FindingRow({
                             rel="noreferrer"
                             className="font-semibold text-black/56 underline decoration-black/20 underline-offset-4 hover:text-ink-deep hover:decoration-signal-ink"
                           >
-                            The raw catalog file we read →
+                            {copy.findings.rawCatalog}
                           </a>
                         ) : null}
                         {member.url && reportId ? (
@@ -867,7 +1035,7 @@ function FindingRow({
                             rel="noreferrer"
                             className="font-semibold text-ink-deep underline decoration-black/24 underline-offset-4 hover:decoration-signal-ink"
                           >
-                            Full page report →
+                            {copy.findings.fullPageReport}
                           </a>
                         ) : null}
                       </p>
@@ -886,20 +1054,21 @@ function FindingRow({
 // "Why would I publish a /SKILL.md file?" is a fair question and the report never
 // answered it. Each file gets a plain sentence naming who reads it. All four are
 // young conventions; saying so is more useful than implying a gap.
-const DISCOVERY_FILE_NOTES: Record<string, string> = {
-  "/llms.txt":
-    "A short summary of your store for AI assistants that look for one. Optional.",
-  "/agents.md":
-    "Notes for AI agents browsing your store on a shopper's behalf. Optional.",
-  "/SKILL.md":
-    "Describes what an assistant can do on your store, in a format some AI tools read. Very new and optional — skip it unless you already work with AI agents.",
-  "/.well-known/ucp":
-    "A machine-readable card describing your store for commerce agents. Optional.",
-};
+function discoveryFileNotes(
+  copy: Dictionary["answerCheck"],
+): Record<string, string> {
+  return {
+    "/llms.txt": copy.findings.discoveryFiles.llms,
+    "/agents.md": copy.findings.discoveryFiles.agents,
+    "/SKILL.md": copy.findings.discoveryFiles.skill,
+    "/.well-known/ucp": copy.findings.discoveryFiles.ucp,
+  };
+}
 
 const FIRST_SHOWN = 4;
 
 function WorthLookingAt({ result }: { result: AnswerCheckResult }) {
+  const copy = useDictionary().answerCheck;
   // Every finding, in order, with nothing held back behind a "show the rest".
   const [expanded, setExpanded] = useState(false);
   const findings = groupFindings(sortedFindings(result));
@@ -933,15 +1102,11 @@ function WorthLookingAt({ result }: { result: AnswerCheckResult }) {
     <section className="border-b border-black/14 bg-white">
       <div className="border-b border-black/12 px-5 py-5 sm:px-6">
         <h3 className="text-[19px] font-semibold tracking-[-0.02em] text-ink-deep">
-          Fix these first
+          {copy.findings.heading}
         </h3>
         <p className="mt-1.5 max-w-[70ch] text-[13.5px] leading-relaxed text-black/60">
-          {findings.length
-            ? "The clearest opportunities from this public scan, ordered by what is worth looking at first. Open one for the recommendation and evidence."
-            : "Still reading."}
-          {pagesInFlight
-            ? " More may appear as your product pages finish."
-            : ""}
+          {findings.length ? copy.findings.intro : copy.findings.stillReading}
+          {pagesInFlight ? copy.findings.moreMayAppear : ""}
         </p>
       </div>
 
@@ -966,7 +1131,7 @@ function WorthLookingAt({ result }: { result: AnswerCheckResult }) {
                 onClick={() => setExpanded(true)}
                 className="inline-flex min-h-11 items-center gap-2 text-[13.5px] font-semibold text-ink-deep underline decoration-black/28 underline-offset-6 transition-colors hover:text-signal-ink hover:decoration-signal-ink"
               >
-                Show the other {countLabel(hidden, "finding")}
+                {copy.findings.showOther(hidden)}
                 <ChevronDown className="h-4 w-4" aria-hidden="true" />
               </button>
             </div>
@@ -981,7 +1146,7 @@ function WorthLookingAt({ result }: { result: AnswerCheckResult }) {
             aria-hidden="true"
           />
           <p className="text-[13.5px] text-black/62">
-            Still reading your product pages.
+            {copy.findings.readingPages}
           </p>
         </div>
       )}
@@ -1005,6 +1170,7 @@ function WorthLookingAt({ result }: { result: AnswerCheckResult }) {
 // in setup, the daily visibility cycle, the raw channel answer kept on the run,
 // the ranked action queue, and the post-publish recheck of the same questions.
 function ScanBoundary({ result }: { result: AnswerCheckResult }) {
+  const copy = useDictionary().answerCheck;
   const sampledPages = (result.page_audits ?? []).length;
   const asked = result.answers.some((answer) => answer.mentioned !== null);
 
@@ -1014,37 +1180,29 @@ function ScanBoundary({ result }: { result: AnswerCheckResult }) {
     items: string[];
   }> = [
     {
-      label: "What this scan did",
+      label: copy.boundary.did,
       tone: "did",
       items: [
-        "Read your public storefront the way any visitor can — no login, no store access.",
+        copy.boundary.didPublic,
         sampledPages
-          ? `Ran the page checks over ${countLabel(sampledPages, "product page")}, plus your robots file, sitemap and crawler access.`
-          : "Ran the page checks over a sample of your product pages, plus your robots file, sitemap and crawler access.",
-        "Compared your catalog data against what each page actually renders — names, prices, availability.",
+          ? copy.boundary.didPages(sampledPages)
+          : copy.boundary.didPagesSample,
+        copy.boundary.didCatalog,
       ],
     },
     {
-      label: "What it did not do",
+      label: copy.boundary.not,
       tone: "not",
       items: [
-        asked
-          ? "Keep asking. The assistant answers above were sampled once, on this run."
-          : "Ask ChatGPT or Google AI Mode anything about your products. Nothing here is a live assistant answer.",
-        "Repeat on its own. A public scan has no schedule behind it.",
-        "Keep a history. There is no earlier run to compare this against.",
+        asked ? copy.boundary.notKeepAsking : copy.boundary.notAskLive,
+        copy.boundary.notRepeat,
+        copy.boundary.notHistory,
       ],
     },
     {
-      label: "What starts in Beseam",
+      label: copy.boundary.next,
       tone: "next",
-      items: [
-        "Shopper questions you read and edit before any of them run.",
-        "Those questions asked on a schedule instead of once.",
-        "The answers kept as evidence, with the date they were given.",
-        "Fixes ordered by what is worth doing first.",
-        "The same questions asked again after a change, so you can see what moved.",
-      ],
+      items: [...copy.boundary.nextItems],
     },
   ];
 
@@ -1052,11 +1210,10 @@ function ScanBoundary({ result }: { result: AnswerCheckResult }) {
     <section className="border-b border-black/14 bg-white">
       <div className="border-b border-black/12 px-5 py-5 sm:px-6">
         <h3 className="text-[19px] font-semibold tracking-[-0.02em] text-ink-deep">
-          Where this scan stops
+          {copy.boundary.heading}
         </h3>
         <p className="mt-1.5 max-w-[70ch] text-[13.5px] leading-relaxed text-black/60">
-          A public scan can only reach so far. This is exactly how far it went,
-          and what continues after it.
+          {copy.boundary.intro}
         </p>
       </div>
       <div className="grid md:grid-cols-3">
@@ -1110,88 +1267,75 @@ function ContinuePaths({
   result: AnswerCheckResult;
   continueHref: string;
 }) {
+  const copy = useDictionary().answerCheck;
   const top = sortedFindings(result)[0] ?? null;
   const topHeadline = top ? findingHeadline(top) : null;
   const opportunityCount = groupFindings(sortedFindings(result)).length;
 
   return (
-    // Two offers, two grounds. The upgrade — the same checks kept running — is
-    // the primary path and takes the one solid button; the assisted review keeps
-    // the pigment ground but takes the outlined treatment, so the ranking is
-    // carried by weight instead of by two solid buttons competing.
     <section
       data-print-hide
-      className="grid border-t border-black/18 text-white lg:grid-cols-2"
+      className="border-t border-black/18 bg-ink-deep px-5 py-8 text-white sm:px-6 sm:py-9"
     >
-      <div className="bg-ink-deep px-5 py-7 sm:px-6 sm:py-8">
-        <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.1em] text-white/50">
-          {opportunityCount}{" "}
-          {opportunityCount === 1 ? "opportunity" : "opportunities"} found
-        </p>
-        {/* The one line the product owner wants carrying this moment. It sits
-            with the primary CTA so the upgrade is read as the reason to start,
-            not as a second offer. */}
-        <h3 className="mt-2 max-w-[28ch] text-[19px] font-semibold leading-[1.3] tracking-[-0.02em]">
-          This scan reads your store once. Beseam keeps checking, and proves
-          what changed.
-        </h3>
-        <p className="mt-2.5 max-w-[46ch] text-[14px] leading-[1.62] text-white/64">
-          Connect your store and Beseam checks these against your real catalog,
-          prepares the changes, and asks for your approval before anything
-          customer-facing changes.
-        </p>
-        <div className="mt-5 grid gap-2 text-[12.5px] sm:grid-cols-2">
-          <div className="border border-white/16 px-3 py-2.5">
-            <span className="block text-white/46">Prepared by Beseam</span>
-            <span className="mt-0.5 block font-semibold text-white">
-              Checked after connection
-            </span>
-          </div>
-          <div className="border border-white/16 px-3 py-2.5">
-            <span className="block text-white/46">Needs your approval</span>
-            <span className="mt-0.5 block font-semibold text-white">
-              Checked after connection
-            </span>
-          </div>
-        </div>
-        <TrackedLink
-          href={continueHref}
-          eventName="scan_continue_clicked"
-          eventCategory="conversion"
-          placement="answer_check_result"
-          preserveUtm
-          className="group mt-6 inline-flex min-h-12 items-center justify-center gap-2 bg-white px-6 text-[14px] font-semibold text-ink-deep transition-colors hover:bg-signal hover:text-ink-deep"
-        >
-          Start ongoing checks
-          <ArrowRight
-            aria-hidden="true"
-            className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
-          />
-        </TrackedLink>
-      </div>
-
-      <div className="bg-pigment px-5 py-7 sm:px-6 sm:py-8">
-        <h3 className="text-[19px] font-semibold tracking-[-0.02em]">
-          {topHeadline
-            ? "Want to see Beseam follow this end to end?"
-            : "See how Beseam works on a real store"}
-        </h3>
-        {topHeadline ? (
-          <p className="mt-2.5 max-w-[44ch] text-[14px] leading-[1.5] text-signal">
-            Starting with “{topHeadline}”
+      <div className="grid gap-7 lg:grid-cols-[minmax(0,1fr)_minmax(17rem,0.42fr)] lg:items-center">
+        <div>
+          <p className="font-mono text-[10.5px] font-semibold uppercase tracking-[0.1em] text-white/46">
+            {copy.continue.opportunities(opportunityCount)} ·{" "}
+            {copy.continue.nextLabel}
           </p>
-        ) : null}
-        <p className="mt-2.5 max-w-[44ch] text-[14px] leading-[1.62] text-white/70">
-          In a 20-minute store review, we use one real finding to show how
-          Beseam works: check what may explain it, prepare the change, get your
-          approval, apply it, and check what happened.
-        </p>
-        <BookReviewCta
-          variant="primary"
-          location="scan_result_managed"
-          label="See Beseam on my store"
-          className="mt-6 min-h-12 gap-2 border border-white/45 bg-transparent px-6 py-0 text-[14px] font-semibold text-white hover:bg-white hover:text-ink-deep"
-        />
+          <h3 className="mt-2 max-w-[31ch] text-[22px] font-semibold leading-[1.25] tracking-[-0.022em] sm:text-[24px]">
+            {copy.continue.once}
+          </h3>
+          {topHeadline ? (
+            <p className="mt-2.5 max-w-[58ch] text-[13px] leading-[1.55] text-signal">
+              {copy.continue.startingWith(topHeadline)}
+            </p>
+          ) : null}
+          <p className="mt-3 max-w-[62ch] text-[14px] leading-[1.65] text-white/64">
+            {copy.continue.body}
+          </p>
+          <ul className="mt-5 grid gap-2.5 text-[12.5px] text-white/74 sm:grid-cols-3">
+            {copy.continue.benefits.map((benefit) => (
+              <li key={benefit} className="flex items-start gap-2">
+                <Check
+                  aria-hidden="true"
+                  className="mt-0.5 h-3.5 w-3.5 shrink-0 text-signal"
+                />
+                <span>{benefit}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="border-t border-white/14 pt-6 lg:border-l lg:border-t-0 lg:pl-7 lg:pt-0">
+          <TrackedLink
+            href={continueHref}
+            eventName="scan_continue_clicked"
+            eventCategory="conversion"
+            placement="answer_check_result"
+            preserveUtm
+            className="group inline-flex min-h-12 w-full items-center justify-center gap-2 bg-white px-6 text-[14px] font-semibold text-ink-deep transition-colors hover:bg-signal"
+          >
+            {copy.continue.start}
+            <ArrowRight
+              aria-hidden="true"
+              className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
+            />
+          </TrackedLink>
+          <p className="mt-4 text-[13px] font-semibold text-white/82">
+            {topHeadline
+              ? copy.continue.reviewWithFinding
+              : copy.continue.reviewWithoutFinding}
+          </p>
+          <p className="mt-1.5 text-[12px] leading-[1.55] text-white/50">
+            {copy.continue.reviewBody}
+          </p>
+          <BookReviewCta
+            location="scan_result_managed"
+            label={copy.continue.reviewCta}
+            className="mt-3 min-h-11 w-full border border-white/34 bg-transparent px-4 py-0 text-[12.5px] font-semibold text-white hover:bg-white hover:text-ink-deep"
+          />
+        </div>
       </div>
     </section>
   );
@@ -1250,22 +1394,36 @@ const PLATFORM_LABELS: Record<string, string> = {
   generic: "Storefront",
 };
 
-function platformLabel(platform: string) {
+function platformLabel(platform: string, copy: Dictionary["answerCheck"]) {
   const key = platform.trim().toLowerCase();
+  if (key === "shopify") return copy.result.commerceStorefront;
+  if (key === "generic") return copy.result.storefront;
   return (
     PLATFORM_LABELS[key] ?? platform.charAt(0).toUpperCase() + platform.slice(1)
   );
 }
 
-function scoreBand(score: number) {
+function scoreBand(score: number, copy: Dictionary["answerCheck"]) {
   if (score >= 70)
-    return { label: "Strong", text: "text-[#1a6b43]", fill: "bg-[#1f7a4d]" };
+    return {
+      label: copy.result.strong,
+      text: "text-[#1a6b43]",
+      fill: "bg-[#1f7a4d]",
+    };
   if (score >= 40)
-    return { label: "Mixed", text: "text-ink-deep", fill: "bg-ink-deep" };
+    return {
+      label: copy.result.mixed,
+      text: "text-ink-deep",
+      fill: "bg-ink-deep",
+    };
   if (score >= 15)
-    return { label: "Weak", text: "text-signal-ink", fill: "bg-[#d95028]" };
+    return {
+      label: copy.result.weak,
+      text: "text-signal-ink",
+      fill: "bg-[#d95028]",
+    };
   return {
-    label: "Barely visible",
+    label: copy.result.barelyVisible,
     text: "text-signal-ink",
     fill: "bg-[#d95028]",
   };
@@ -1285,6 +1443,7 @@ const CHANNEL_BRAND_KEYS: Record<string, string> = {
 };
 
 function AiVisibilityWorkspace({ result }: { result: AnswerCheckResult }) {
+  const copy = useDictionary().answerCheck;
   const scored = result.answers.filter((answer) => answer.mentioned !== null);
   if (!scored.length) return null;
 
@@ -1321,31 +1480,34 @@ function AiVisibilityWorkspace({ result }: { result: AnswerCheckResult }) {
       <div className="grid lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
         <div className="border-b border-black/12 px-5 py-6 sm:px-6 lg:border-b-0 lg:border-r">
           <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-black/42">
-            Brand appearance
+            {copy.result.brandAppearance}
           </p>
           <div className="mt-2 flex flex-wrap items-end gap-3">
             <span
-              className={`text-[52px] font-semibold leading-none tracking-[-0.045em] tabular-nums ${scoreBand(pct).text}`}
+              className={`text-[52px] font-semibold leading-none tracking-[-0.045em] tabular-nums ${scoreBand(pct, copy).text}`}
             >
               {named}/{scored.length}
             </span>
             <span
-              className={`mb-1 text-[12px] font-semibold ${scoreBand(pct).text}`}
+              className={`mb-1 text-[12px] font-semibold ${scoreBand(pct, copy).text}`}
             >
-              {scoreBand(pct).label} · {pct}%
+              {scoreBand(pct, copy).label} · {pct}%
             </span>
           </div>
           <p className="mt-3 max-w-[42ch] text-[13.5px] leading-relaxed text-black/62">
             {named === scored.length
-              ? "Your brand appeared in every observed answer."
+              ? copy.result.brandEverywhere
               : named === 0
-                ? "Your brand did not appear in any observed answer."
-                : `Your brand was missing from ${scored.length - named} of ${scored.length} observed answers.`}
+                ? copy.result.brandNowhere
+                : copy.result.brandMissing(
+                    scored.length - named,
+                    scored.length,
+                  )}
           </p>
           {topRival && named < scored.length ? (
             <p className="mt-4 border-t border-black/10 pt-3 text-[12.5px] leading-relaxed text-black/58">
               <span className="font-semibold text-ink-deep">
-                Most frequent alternative:{" "}
+                {copy.result.frequentAlternative}{" "}
               </span>
               {topRival.label} · {topRival.count}×
             </p>
@@ -1355,11 +1517,10 @@ function AiVisibilityWorkspace({ result }: { result: AnswerCheckResult }) {
         <div className="px-5 py-6 sm:px-6">
           <div className="flex items-center justify-between gap-3">
             <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-black/42">
-              By assistant
+              {copy.result.byAssistant}
             </p>
             <span className="font-mono text-[11px] text-black/42">
-              {channels.length}{" "}
-              {channels.length === 1 ? "assistant" : "assistants"}
+              {copy.result.assistants(channels.length)}
             </span>
           </div>
           <div className="mt-2 divide-y divide-black/10 border-y border-black/10">
@@ -1383,7 +1544,7 @@ function AiVisibilityWorkspace({ result }: { result: AnswerCheckResult }) {
                   </p>
                   <div className="ml-9 mt-2 h-1 bg-black/8">
                     <span
-                      className={`block h-full ${scoreBand(engine.pct).fill}`}
+                      className={`block h-full ${scoreBand(engine.pct, copy).fill}`}
                       style={{ width: `${Math.max(engine.pct, 1.5)}%` }}
                     />
                   </div>
@@ -1393,7 +1554,7 @@ function AiVisibilityWorkspace({ result }: { result: AnswerCheckResult }) {
                     {engine.wins}/{engine.total}
                   </p>
                   <p className="mt-0.5 text-[11.5px] text-black/44">
-                    named you
+                    {copy.result.namedYou}
                   </p>
                 </div>
               </div>
@@ -1411,6 +1572,7 @@ function AiVisibilityWorkspace({ result }: { result: AnswerCheckResult }) {
 // grounded engine actually ran — is shown as itself instead.
 
 function ChannelChip({ channel, answer }: { channel: string; answer: Answer }) {
+  const copy = useDictionary().answerCheck;
   const named = answer.mentioned === true;
   const unknown = answer.mentioned === null || Boolean(answer.error);
   const tone = unknown
@@ -1438,7 +1600,11 @@ function ChannelChip({ channel, answer }: { channel: string; answer: Answer }) {
         <X className="h-2.5 w-2.5" aria-hidden="true" />
       )}
       <span className="sr-only">
-        {unknown ? "no answer" : named ? "named you" : "did not name you"}
+        {unknown
+          ? copy.result.noAnswer
+          : named
+            ? copy.result.namedYou
+            : copy.result.didNotNameYou}
       </span>
     </span>
   );
@@ -1468,6 +1634,7 @@ function shownProducts(answers: Answer[]) {
 // Merchant CDNs refuse hotlinked images (Cross-Origin-Resource-Policy), so the
 // image comes back through our own worker instead of straight from the CDN.
 function ProductTile({ product }: { product: ShownProduct }) {
+  const copy = useDictionary().answerCheck;
   // Stage 1 is the worker proxy (the only thing that beats hotlink blocking).
   // `next dev` does not run the worker, so fall back to the CDN URL there
   // before giving up on the image entirely.
@@ -1494,12 +1661,12 @@ function ProductTile({ product }: { product: ShownProduct }) {
           />
         ) : (
           <span className="px-2 text-center text-[12px] leading-tight text-black/62">
-            {product.merchant ?? "No image"}
+            {product.merchant ?? copy.result.noImage}
           </span>
         )}
         {product.ours ? (
           <span className="absolute left-0 top-0 bg-[#1f7a4d] px-1.5 py-0.5 text-[12px] font-semibold uppercase tracking-[0.06em] text-white">
-            yours
+            {copy.result.yours}
           </span>
         ) : null}
       </div>
@@ -1508,7 +1675,7 @@ function ProductTile({ product }: { product: ShownProduct }) {
           {product.title}
         </p>
         <p className="mt-1 text-[11px] leading-snug text-black/48">
-          {product.merchant ?? "Merchant"}
+          {product.merchant ?? copy.result.merchant}
           {product.price ? ` · ${product.price}` : ""}
         </p>
         {product.url && product.link_live ? (
@@ -1518,7 +1685,7 @@ function ProductTile({ product }: { product: ShownProduct }) {
             rel="noreferrer"
             className="mt-2 inline-flex text-[11px] font-semibold text-ink-deep underline decoration-black/24 underline-offset-4 hover:decoration-signal-ink"
           >
-            Open product →
+            {copy.result.openProduct}
           </a>
         ) : null}
       </div>
@@ -1541,6 +1708,7 @@ function Fold({
   defaultOpen?: boolean;
   children: React.ReactNode;
 }) {
+  const copy = useDictionary().answerCheck;
   return (
     <details
       open={defaultOpen}
@@ -1554,8 +1722,10 @@ function Fold({
           </p>
         </div>
         <span className="flex min-h-11 shrink-0 items-center gap-2 text-[12px] font-semibold text-ink-deep">
-          <span className="group-open/fold:hidden">Details</span>
-          <span className="hidden group-open/fold:inline">Close</span>
+          <span className="group-open/fold:hidden">{copy.result.details}</span>
+          <span className="hidden group-open/fold:inline">
+            {copy.result.close}
+          </span>
           <ChevronDown
             className="h-4 w-4 transition-transform group-open/fold:rotate-180"
             aria-hidden="true"
@@ -1568,12 +1738,20 @@ function Fold({
 }
 
 function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
+  const copy = useDictionary().answerCheck;
+  const locale = useLocale();
+  const discoveryNotes = discoveryFileNotes(copy);
   const findings = sortedFindings(result);
   const audits = result.page_audits ?? [];
   const pageAuditStatus =
     result.page_audits_status ?? (audits.length ? "complete" : "not_started");
   const pageAuditsInFlight =
     pageAuditStatus === "queued" || pageAuditStatus === "running";
+  // Not running, not failed, nothing read: the close read of the product pages
+  // has not been bought yet. Say what opens it, rather than reporting an
+  // inspection that "was not available" -- a failure the visitor cannot act on.
+  const pageAuditsGated =
+    pageAuditStatus === "not_started" && audits.length === 0;
   const catalogFindings = findings.filter(
     (finding) =>
       finding.source !== "page_audit" && finding.source !== "catalog_sample",
@@ -1590,7 +1768,10 @@ function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
     0,
   );
 
-  const market = result.brand_evidence?.market ?? null;
+  const market = localizedMarketName(
+    result.brand_evidence?.market ?? null,
+    locale,
+  );
   // Rows written before the inventory stage existed come back as `{}` rather
   // than absent. An empty object is truthy, so every `!inventory` guard below
   // would pass and then dereference `inventory.robots`, taking the whole card
@@ -1637,77 +1818,86 @@ function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
       : ""
     : entitySuffix;
   const collectionNoun = collectionsMeasured
-    ? "collections"
-    : "collection URLs";
+    ? copy.summary.collections.toLowerCase()
+    : copy.summary.collectionUrls.toLowerCase();
   const contentPageCount = entityPageTypes.page ?? 0;
   const articleCount = entityPageTypes.article ?? 0;
   const blogCount = entityPageTypes.blog ?? 0;
   const policyCount = entityPageTypes.policy ?? 0;
   const inventoryUrlLabel = inventory
     ? `${inventory.urls_discovered}${inventory.urls_capped ? "+" : ""} URLs`
-    : `${result.products_seen} products sampled`;
+    : copy.summary.productsSampled(result.products_seen);
   const robotsLabel = !inventory
-    ? "Not measured"
+    ? copy.summary.notMeasured
     : inventory.robots.status === "rules_found"
-      ? "Readable"
+      ? copy.summary.readable
       : inventory.robots.status === "open"
-        ? "Open"
+        ? copy.summary.open
         : inventory.robots.status === "unavailable"
-          ? "Unavailable"
-          : "Not measured";
+          ? copy.summary.unavailable
+          : copy.summary.notMeasured;
   const sitemapLabel = !inventory
-    ? "Not measured"
+    ? copy.summary.notMeasured
     : inventory.sitemap.status === "found"
-      ? "Found"
+      ? copy.summary.found
       : inventory.sitemap.status === "declared"
-        ? "Declared"
+        ? copy.summary.declared
         : inventory.sitemap.status === "not_found"
-          ? "Not found"
-          : "Not measured";
+          ? copy.summary.notFound
+          : copy.summary.notMeasured;
   const crawlerLabel =
     !inventory || inventory.search_crawlers.status !== "measured"
-      ? "Not measured"
+      ? copy.summary.notMeasured
       : inventory.search_crawlers.blocked > 0
-        ? `${inventory.search_crawlers.blocked} blocked`
-        : "Open";
+        ? copy.summary.blocked(inventory.search_crawlers.blocked)
+        : copy.summary.open;
   const discoveryFiles = Object.entries(inventory?.discovery_files ?? {});
   const discoveryFilesPresent = discoveryFiles.filter(
     ([, value]) => value.present === true,
   ).length;
   const internalReach = inventory?.internal_reach;
   const internalReachLabel = !internalReach
-    ? "Not measured"
+    ? copy.summary.notMeasured
     : internalReach.status === "sampled"
-      ? `${internalReach.internal_links ?? 0} homepage links · ${internalReach.product_links ?? 0} product · ${internalReach.collection_links ?? 0} collection`
+      ? copy.summary.internalReachSummary(
+          internalReach.internal_links ?? 0,
+          internalReach.product_links ?? 0,
+          internalReach.collection_links ?? 0,
+        )
       : internalReach.status === "not_measured"
-        ? "Not measured in quick scan"
+        ? copy.summary.quickNotMeasured
         : internalReach.status;
 
   const siteMapRows = (
     [
-      ["Product pages", `${productCount}${productCountSuffix}`],
+      [copy.summary.productPagesLabel, `${productCount}${productCountSuffix}`],
       [
-        collectionsMeasured ? "Collections" : "Collection URLs",
+        collectionsMeasured
+          ? copy.summary.collections
+          : copy.summary.collectionUrls,
         `${collectionCount}${collectionCountSuffix}`,
       ],
-      ["Pages", `${contentPageCount}${entitySuffix}`],
-      ["Articles", `${articleCount}${entitySuffix}`],
-      ["Blogs", `${blogCount}${entitySuffix}`],
-      ["Policies", `${policyCount}${entitySuffix}`],
+      [copy.summary.pages, `${contentPageCount}${entitySuffix}`],
+      [copy.summary.articles, `${articleCount}${entitySuffix}`],
+      [copy.summary.blogs, `${blogCount}${entitySuffix}`],
+      [copy.summary.policies, `${policyCount}${entitySuffix}`],
       [
-        "Locale URL copies",
+        copy.summary.localeCopies,
         `${inventory?.localized_url_copies ?? 0}${inventory?.urls_capped ? "+" : ""}`,
       ],
     ] as Array<[string, string]>
   ).filter(([, value]) => Number.parseInt(value, 10) > 0);
 
   const staticAreas = [
-    { label: "Search & page signals", domains: ["seo"] },
-    { label: "Product & shopping data", domains: ["shopping"] },
-    { label: "Content & merchandising", domains: ["aeo", "cro", "geo"] },
-    { label: "Trust & purchase confidence", domains: ["eeat", "compliance"] },
-    { label: "Markets & localization", domains: ["i18n"] },
-    { label: "Technical & security", domains: ["security"] },
+    { label: copy.summary.searchPageSignals, domains: ["seo"] },
+    { label: copy.summary.productShoppingData, domains: ["shopping"] },
+    {
+      label: copy.summary.contentMerchandising,
+      domains: ["aeo", "cro", "geo"],
+    },
+    { label: copy.summary.trustConfidence, domains: ["eeat", "compliance"] },
+    { label: copy.summary.marketsLocalization, domains: ["i18n"] },
+    { label: copy.summary.technicalSecurity, domains: ["security"] },
   ].map((area) => {
     const counts = audits.reduce(
       (acc, audit) => {
@@ -1726,8 +1916,8 @@ function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
   });
 
   const catalogCheckedLabel = catalog
-    ? `${catalog.products_checked}${catalog.products_capped ? "+" : ""} products checked`
-    : `${result.products_seen} products sampled`;
+    ? `${catalog.products_checked}${catalog.products_capped ? "+" : ""} ${copy.summary.checkedProducts}`
+    : copy.summary.productsSampled(result.products_seen);
 
   // Store, Catalog and Product pages each already collapse on their own. An
   // outer disclosure around them was a fold inside a fold — two clicks and a
@@ -1736,47 +1926,61 @@ function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
   return (
     <section className="border-b border-black/14 bg-white">
       <Fold
-        title="Store"
+        title={copy.summary.store}
         summary={
           inventory
-            ? `${productCount}${productCountSuffix} products · ${collectionCount}${collectionCountSuffix} ${collectionNoun} · ${localeCount ? `${localeCount} locale paths` : (market ?? "primary storefront")} · sitemap ${sitemapLabel.toLowerCase()} · crawler access ${crawlerLabel.toLowerCase()}`
-            : `${result.brand ?? result.domain} · ${result.platform ?? "platform unknown"}`
+            ? copy.summary.storeSummary(
+                `${productCount}${productCountSuffix}`,
+                `${collectionCount}${collectionCountSuffix} ${collectionNoun}`,
+                localeCount
+                  ? copy.summary.localePathCount(localeCount)
+                  : (market ?? copy.summary.primaryStorefront),
+                sitemapLabel.toLowerCase(),
+                crawlerLabel.toLowerCase(),
+              )
+            : `${result.brand ?? result.domain} · ${result.platform ? platformLabel(result.platform, copy) : copy.summary.platformUnknown}`
         }
       >
         <div className="grid gap-px bg-black/10 sm:grid-cols-4">
           <div className="bg-white px-5 py-4 sm:px-6">
-            <p className="text-[11px] text-black/42">Store</p>
+            <p className="text-[11px] text-black/42">{copy.summary.store}</p>
             <p className="mt-1 text-[12.5px] font-semibold text-ink-deep">
               {result.brand ?? result.domain}
             </p>
             <p className="mt-0.5 text-[11px] text-black/48">
-              {result.platform ?? "Storefront"}
+              {result.platform
+                ? platformLabel(result.platform, copy)
+                : copy.summary.store}
             </p>
           </div>
           <div className="bg-white px-5 py-4">
-            <p className="text-[11px] text-black/42">Public footprint</p>
+            <p className="text-[11px] text-black/42">
+              {copy.summary.publicFootprint}
+            </p>
             <p className="mt-1 text-[12.5px] font-semibold text-ink-deep">
               {inventoryUrlLabel}
             </p>
             <p className="mt-0.5 text-[11px] text-black/48">
               {inventory?.localized_url_copies
-                ? `${inventory.localized_url_copies}+ localized URL copies`
-                : "Public URLs discovered"}
+                ? copy.summary.localizedCopies(inventory.localized_url_copies)
+                : copy.summary.publicUrls}
             </p>
           </div>
           <div className="bg-white px-5 py-4">
-            <p className="text-[11px] text-black/42">Locale paths</p>
+            <p className="text-[11px] text-black/42">
+              {copy.summary.localePaths}
+            </p>
             <p className="mt-1 text-[12.5px] font-semibold text-ink-deep">
-              {localeCount || "Primary"}
+              {localeCount || copy.summary.primary}
             </p>
             <p className="mt-0.5 text-[11px] text-black/48">
               {inventory?.locales.length
                 ? inventory.locales.join(", ")
-                : (market ?? "Primary storefront")}
+                : (market ?? copy.summary.primaryStorefront)}
             </p>
           </div>
           <div className="bg-white px-5 py-4 sm:px-6">
-            <p className="text-[11px] text-black/42">Domains</p>
+            <p className="text-[11px] text-black/42">{copy.summary.domains}</p>
             <p className="mt-1 text-[12.5px] font-semibold text-ink-deep">
               {siteHosts.length || 1}
             </p>
@@ -1791,7 +1995,7 @@ function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
             <div className="grid gap-6 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)]">
               <div>
                 <p className="text-[11px] font-semibold text-ink-deep">
-                  What exists
+                  {copy.summary.whatExists}
                 </p>
                 <div className="mt-3 grid grid-cols-2 gap-px border border-black/10 bg-black/10 sm:grid-cols-3 lg:grid-cols-2">
                   {siteMapRows.map(([label, count]) => (
@@ -1805,55 +2009,61 @@ function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
                 </div>
                 {inventory.urls_capped ? (
                   <p className="mt-2 text-[11px] leading-relaxed text-black/42">
-                    Counts with + are lower bounds because the quick URL
-                    inventory reached its 5,000-URL cap.
+                    {copy.summary.lowerBounds}
                   </p>
                 ) : null}
               </div>
 
               <div>
                 <p className="text-[11px] font-semibold text-ink-deep">
-                  Can it be discovered?
+                  {copy.summary.discoverable}
                 </p>
                 <dl className="mt-3 divide-y divide-black/10 border-y border-black/10 bg-white">
                   {[
                     [
-                      "robots.txt",
+                      copy.summary.robots,
                       robotsLabel,
                       inventory.robots.status === "unavailable",
                     ],
                     [
-                      "Sitemap",
+                      copy.summary.sitemap,
                       `${sitemapLabel}${inventory.sitemap.urls_from_sitemap ? ` · ${inventory.sitemap.urls_from_sitemap}${inventory.urls_capped ? "+" : ""} URLs` : ""}`,
                       inventory.sitemap.status === "not_found",
                     ],
                     [
-                      "Search crawlers",
+                      copy.summary.searchCrawlers,
                       inventory.search_crawlers.status === "measured"
-                        ? `${inventory.search_crawlers.allowed}/${inventory.search_crawlers.total} allowed`
-                        : "Not measured",
+                        ? copy.summary.allowed(
+                            inventory.search_crawlers.allowed,
+                            inventory.search_crawlers.total,
+                          )
+                        : copy.summary.notMeasured,
                       inventory.search_crawlers.blocked > 0,
                     ],
                     [
-                      "Assistant crawlers",
+                      copy.summary.assistantCrawlers,
                       inventory.assistant_crawlers.status === "measured"
-                        ? `${inventory.assistant_crawlers.allowed}/${inventory.assistant_crawlers.total} allowed`
-                        : "Not measured",
+                        ? copy.summary.allowed(
+                            inventory.assistant_crawlers.allowed,
+                            inventory.assistant_crawlers.total,
+                          )
+                        : copy.summary.notMeasured,
                       inventory.assistant_crawlers.blocked > 0,
                     ],
                     [
-                      "URLs blocked by robots",
+                      copy.summary.blockedUrls,
                       inventory.robots.blocked_urls == null
-                        ? "Not measured"
+                        ? copy.summary.notMeasured
                         : String(inventory.robots.blocked_urls),
                       Number(inventory.robots.blocked_urls ?? 0) > 0,
                     ],
-                    ["Internal reach", internalReachLabel, false],
+                    [copy.summary.internalReach, internalReachLabel, false],
                     [
-                      "Orphan products",
+                      copy.summary.orphanProducts,
                       internalReach?.orphan_products === "not_measured"
-                        ? "Not measured in quick scan"
-                        : (internalReach?.orphan_products ?? "Not measured"),
+                        ? copy.summary.quickNotMeasured
+                        : (internalReach?.orphan_products ??
+                          copy.summary.notMeasured),
                       false,
                     ],
                     // Each discovery file gets its own row. Summarising them as
@@ -1864,25 +2074,31 @@ function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
                       ? discoveryFiles.map(([path, value]) => [
                           path,
                           value.present
-                            ? "Found"
+                            ? copy.summary.found
                             : value.present === false
-                              ? "Not found"
-                              : "Not measured",
+                              ? copy.summary.notFound
+                              : copy.summary.notMeasured,
                           false,
                         ])
-                      : [["Discovery files", "Not measured", false]]),
+                      : [
+                          [
+                            copy.summary.discoveryFiles,
+                            copy.summary.notMeasured,
+                            false,
+                          ],
+                        ]),
                     [
-                      "Sitemap freshness",
+                      copy.summary.sitemapFreshness,
                       inventory.sitemap.dated_urls
                         ? `${inventory.sitemap.dated_urls}${inventory.urls_capped ? "+" : ""} dated URLs`
-                        : "No dates exposed",
+                        : copy.summary.noDates,
                       false,
                     ],
                     [
-                      "Images in sitemap",
+                      copy.summary.sitemapImages,
                       inventory.sitemap.image_entries
                         ? `${inventory.sitemap.image_entries}${inventory.urls_capped ? "+" : ""} references`
-                        : "No image entries exposed",
+                        : copy.summary.noImages,
                       false,
                     ],
                   ].map(([label, value, warn]) => (
@@ -1892,9 +2108,9 @@ function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
                     >
                       <dt className="text-[11px] text-black/50">
                         {label}
-                        {DISCOVERY_FILE_NOTES[String(label)] ? (
+                        {discoveryNotes[String(label)] ? (
                           <span className="mt-0.5 block text-[11.5px] leading-snug text-black/38">
-                            {DISCOVERY_FILE_NOTES[String(label)]}
+                            {discoveryNotes[String(label)]}
                           </span>
                         ) : null}
                       </dt>
@@ -1908,21 +2124,15 @@ function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
                 </dl>
                 {internalReach?.status === "sampled" ? (
                   <p className="mt-2 text-[11px] leading-relaxed text-black/42">
-                    Homepage paths are sampled here. True orphan coverage needs
-                    the full internal-link graph.
+                    {copy.summary.homepageSample}
                   </p>
                 ) : null}
                 {discoveryFiles.length ? (
                   <p className="mt-2 text-[11px] leading-relaxed text-black/42">
-                    Those four are emerging conventions for telling AI
-                    assistants what your store is and how to use it.{" "}
-                    {discoveryFilesPresent} of {discoveryFiles.length} are
-                    published. <strong>None of them is required</strong>, none
-                    is known to affect how you rank in search today, and a
-                    missing one is not a fault. We report them because the
-                    stores that publish them are easier for assistants to read
-                    correctly — not because you are doing anything wrong without
-                    them.
+                    {copy.summary.emergingFiles(
+                      discoveryFilesPresent,
+                      discoveryFiles.length,
+                    )}
                   </p>
                 ) : null}
               </div>
@@ -1932,11 +2142,16 @@ function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
       </Fold>
 
       <Fold
-        title="Catalog"
+        title={copy.summary.catalog}
         summary={
           catalog
-            ? `${catalogCheckedLabel} · ${catalog.products_with_gaps} need attention · ${catalog.unavailable_products} unavailable${consistencyFindings.length ? ` · ${consistencyFindings.length} sampled consistency gaps` : ""}`
-            : `${catalogFindings.length} catalog ${catalogFindings.length === 1 ? "gap" : "gaps"}`
+            ? copy.summary.catalogSummary(
+                catalogCheckedLabel,
+                catalog.products_with_gaps,
+                catalog.unavailable_products,
+                consistencyFindings.length,
+              )
+            : copy.summary.catalogGaps(catalogFindings.length)
         }
       >
         {catalog ? (
@@ -1944,46 +2159,47 @@ function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
             <div className="flex flex-wrap items-end justify-between gap-3">
               <div>
                 <p className="text-[13px] font-semibold text-ink-deep">
-                  Can products be understood and distinguished?
+                  {copy.summary.catalogQuestion}
                 </p>
                 <p className="mt-1 text-[11.5px] text-black/50">
                   {catalogCheckedLabel}
                   {catalog.products_capped
-                    ? " · counts below cover the products checked"
+                    ? ` · ${copy.summary.countsChecked}`
                     : ""}
                 </p>
               </div>
               <span className="text-[11px] text-black/44">
-                {catalog.products_with_gaps} products with at least one gap
+                {copy.summary.withGap(catalog.products_with_gaps)}
               </span>
             </div>
 
             <div className="mt-4 grid gap-px border border-black/10 bg-black/10 md:grid-cols-2 xl:grid-cols-3">
               <div className="bg-white p-4">
                 <p className="text-[11px] font-semibold text-ink-deep">
-                  Categories & collections
+                  {copy.summary.categories}
                 </p>
                 <p className="mt-2 text-[18px] font-semibold text-ink-deep">
                   {catalog.missing_product_types}{" "}
                   <span className="text-[11px] font-normal text-black/46">
-                    without category
+                    {copy.summary.withoutCategory}
                   </span>
                 </p>
                 <p className="mt-1 text-[11px] leading-relaxed text-black/48">
-                  {catalog.product_type_count ?? 0} product types ·{" "}
+                  {copy.summary.productTypes(catalog.product_type_count ?? 0)} ·{" "}
                   {collectionCount}
                   {collectionCountSuffix} {collectionNoun} ·{" "}
-                  {catalog.missing_tags} without tags
+                  {catalog.missing_tags} {copy.summary.withoutTags}
                 </p>
                 <p className="mt-2 text-[11px] text-black/38">
-                  Collection membership:{" "}
+                  {copy.summary.membership}{" "}
                   {catalog.collection_membership?.status === "not_measured"
-                    ? "not measured in quick scan"
-                    : (catalog.collection_membership?.status ?? "not measured")}
+                    ? copy.summary.quickNotMeasured
+                    : (catalog.collection_membership?.status ??
+                      copy.summary.notMeasured)}
                 </p>
                 {catalog.top_product_types?.length ? (
                   <p className="mt-2 line-clamp-2 text-[11px] text-black/46">
-                    Common product types:{" "}
+                    {copy.summary.commonTypes}{" "}
                     {catalog.top_product_types
                       .slice(0, 4)
                       .map((item) => item.name)
@@ -1992,44 +2208,45 @@ function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
                 ) : null}
                 {catalog.collection_titles?.length ? (
                   <p className="mt-1 line-clamp-2 text-[11px] text-black/46">
-                    Collections:{" "}
+                    {copy.summary.collectionsList}{" "}
                     {catalog.collection_titles.slice(0, 4).join(" · ")}
                   </p>
                 ) : null}
               </div>
               <div className="bg-white p-4">
                 <p className="text-[11px] font-semibold text-ink-deep">
-                  Product identity
+                  {copy.summary.identity}
                 </p>
                 <p className="mt-2 text-[18px] font-semibold text-ink-deep">
                   {catalog.missing_identifiers}{" "}
                   <span className="text-[11px] font-normal text-black/46">
-                    without SKU/barcode
+                    {copy.summary.withoutId}
                   </span>
                 </p>
                 <p className="mt-1 text-[11px] leading-relaxed text-black/48">
-                  {catalog.placeholder_vendors} brand/vendor gaps ·{" "}
-                  {catalog.identifier_conflicts} identifier conflicts
+                  {catalog.placeholder_vendors} {copy.summary.brandVendorGaps} ·{" "}
+                  {catalog.identifier_conflicts} {copy.summary.idConflicts}
                 </p>
               </div>
               <div className="bg-white p-4">
                 <p className="text-[11px] font-semibold text-ink-deep">
-                  Variants & buyer options
+                  {copy.summary.variants}
                 </p>
                 <p className="mt-2 text-[18px] font-semibold text-ink-deep">
                   {catalog.multi_variant_products}{" "}
                   <span className="text-[11px] font-normal text-black/46">
-                    products with variants
+                    {copy.summary.withVariants}
                   </span>
                 </p>
                 <p className="mt-1 text-[11px] leading-relaxed text-black/48">
-                  {catalog.default_only_options} expose no buyer options ·{" "}
-                  {catalog.variant_option_gaps ?? 0} true variant-option gaps ·{" "}
-                  {catalog.variant_identifier_gaps} variant ID gaps
+                  {catalog.default_only_options} {copy.summary.noBuyerOptions} ·{" "}
+                  {catalog.variant_option_gaps ?? 0}{" "}
+                  {copy.summary.variantOptionGaps} ·{" "}
+                  {catalog.variant_identifier_gaps} {copy.summary.variantIdGaps}
                 </p>
                 {catalog.option_dimensions?.length ? (
                   <p className="mt-2 line-clamp-2 text-[11px] text-black/46">
-                    Options:{" "}
+                    {copy.summary.options}{" "}
                     {catalog.option_dimensions
                       .slice(0, 5)
                       .map((item) => item.name)
@@ -2039,59 +2256,61 @@ function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
               </div>
               <div className="bg-white p-4">
                 <p className="text-[11px] font-semibold text-ink-deep">
-                  Product information
+                  {copy.summary.productInfo}
                 </p>
                 <p className="mt-2 text-[18px] font-semibold text-ink-deep">
                   {catalog.describability.strong}{" "}
                   <span className="text-[11px] font-normal text-black/46">
-                    well described
+                    {copy.summary.wellDescribed}
                   </span>
                 </p>
                 <p className="mt-1 text-[11px] leading-relaxed text-black/48">
-                  {catalog.missing_descriptions} missing descriptions ·{" "}
-                  {catalog.thin_descriptions} thin · {catalog.missing_images}{" "}
-                  without images · {catalog.duplicate_description_products}{" "}
-                  duplicate copy
+                  {catalog.missing_descriptions}{" "}
+                  {copy.summary.missingDescriptions} ·{" "}
+                  {catalog.thin_descriptions} {copy.summary.thin} ·{" "}
+                  {catalog.missing_images} {copy.summary.withoutImages} ·{" "}
+                  {catalog.duplicate_description_products}{" "}
+                  {copy.summary.duplicateCopy}
                 </p>
               </div>
               <div className="bg-white p-4">
                 <p className="text-[11px] font-semibold text-ink-deep">
-                  Availability
+                  {copy.summary.availability}
                 </p>
                 <p
                   className={`mt-2 text-[18px] font-semibold ${catalog.unavailable_products ? "text-signal-ink" : "text-ink-deep"}`}
                 >
                   {catalog.unavailable_products}{" "}
                   <span className="text-[11px] font-normal text-black/46">
-                    unavailable products
+                    {copy.summary.unavailableProducts}
                   </span>
                 </p>
                 <p className="mt-1 text-[11px] leading-relaxed text-black/48">
-                  {catalog.total_variants} variants across{" "}
-                  {catalog.products_checked} checked products
+                  {catalog.total_variants} {copy.summary.variantsAcross}{" "}
+                  {catalog.products_checked} {copy.summary.checkedProducts}
                 </p>
               </div>
               <div className="bg-white p-4">
                 <p className="text-[11px] font-semibold text-ink-deep">
-                  Product consistency
+                  {copy.summary.consistency}
                 </p>
                 {pageAuditsInFlight ? (
                   <div className="mt-2 flex items-center gap-2 text-[11px] text-black/52">
                     <Loader2 className="h-3.5 w-3.5 animate-spin text-signal-ink" />
-                    Comparing sample product pages…
+                    {copy.summary.comparingPages}
                   </div>
                 ) : (
                   <p className="mt-2 text-[18px] font-semibold text-ink-deep">
                     {consistencyFindings.length}{" "}
                     <span className="text-[11px] font-normal text-black/46">
-                      sampled gaps
+                      {copy.summary.sampledGaps}
                     </span>
                   </p>
                 )}
                 <p className="mt-1 text-[11px] leading-relaxed text-black/48">
-                  Catalog ↔ page data for price, availability, product data and
-                  buyer attributes on {audits.length || result.products_seen}{" "}
-                  sample product pages.
+                  {copy.summary.consistencyBody(
+                    audits.length || result.products_seen,
+                  )}
                 </p>
               </div>
             </div>
@@ -2099,7 +2318,7 @@ function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
             {catalogFindings.length ? (
               <div className="mt-5 border-t border-black/10 pt-4">
                 <p className="text-[11px] font-semibold text-ink-deep">
-                  What stands out
+                  {copy.summary.standsOut}
                 </p>
                 <ul className="mt-2 divide-y divide-black/10 border-y border-black/10 bg-white px-3">
                   {catalogFindings.map((finding, index) => (
@@ -2118,7 +2337,7 @@ function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
                       {finding.severity === "high" ||
                       finding.severity === "blocker" ? (
                         <span className="shrink-0 text-[11px] font-semibold uppercase text-signal-ink">
-                          High
+                          {copy.summary.high}
                         </span>
                       ) : null}
                     </li>
@@ -2129,8 +2348,7 @@ function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
           </div>
         ) : (
           <div className="bg-white px-5 py-4 text-[12.5px] text-black/54 sm:px-6">
-            Catalog-wide detail is limited on this storefront; the
-            representative product pages continue below.
+            {copy.summary.catalogLimited}
           </div>
         )}
       </Fold>
@@ -2139,15 +2357,25 @@ function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
           value is the per-check detail, not the one-line count. */}
       <Fold
         defaultOpen
-        title="Product pages"
+        title={copy.summary.productPages}
         summary={
           pageAuditsInFlight
-            ? `${result.products_seen} product pages · reading now`
+            ? copy.summary.pagesReading(result.products_seen)
             : pageAuditStatus === "failed"
-              ? `${result.products_seen} product pages · we could not finish reading them`
-              : audits.length === 0
-                ? "Representative product-page inspection was not available in this run"
-                : `${audits.length} product ${audits.length === 1 ? "page" : "pages"} read · ${failedChecks} of ${evaluatedChecks} checks need attention · ${staticAreas.reduce((sum, area) => sum + area.unevaluated, 0)} we could not check`
+              ? copy.summary.pagesFailed(result.products_seen)
+              : pageAuditsGated
+                ? copy.summary.pagesGated(result.products_seen)
+                : audits.length === 0
+                  ? copy.summary.pagesUnavailable
+                  : copy.summary.pageAuditSummary(
+                      audits.length,
+                      failedChecks,
+                      evaluatedChecks,
+                      staticAreas.reduce(
+                        (sum, area) => sum + area.unevaluated,
+                        0,
+                      ),
+                    )
         }
       >
         {pageAuditsInFlight ? (
@@ -2155,24 +2383,26 @@ function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
             <Loader2 className="mt-0.5 h-4 w-4 animate-spin text-signal-ink" />
             <div>
               <p className="text-[12.5px] font-semibold text-ink-deep">
-                Inspecting {result.products_seen} representative product pages
+                {copy.summary.inspecting(result.products_seen)}
               </p>
               <p className="mt-1 text-[11.5px] text-black/50">
-                Store and catalog evidence is already available above.
-                Page-level results will appear here automatically.
+                {copy.summary.evidenceReady}
               </p>
             </div>
           </div>
         ) : pageAuditStatus === "failed" ? (
           <p className="bg-white px-5 py-4 text-[12px] text-black/54 sm:px-6">
-            The Store and Catalog observations are still valid. The
-            representative PDP inspection could not complete on this run.
+            {copy.summary.pdpFailed}
+          </p>
+        ) : pageAuditsGated ? (
+          <p className="bg-white px-5 py-4 text-[12.5px] leading-relaxed text-black/54 sm:px-6">
+            {copy.summary.pagesGatedBody}
           </p>
         ) : (
           <>
             <div className="border-b border-black/12 bg-[#fffaf7] px-5 py-4 sm:px-6">
               <p className="text-[11px] font-semibold text-ink-deep">
-                What the sample product pages show
+                {copy.summary.sampleShows}
               </p>
               <div className="mt-3 grid gap-px border border-black/10 bg-black/10 sm:grid-cols-2 lg:grid-cols-3">
                 {staticAreas.map((area) => (
@@ -2184,12 +2414,12 @@ function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
                       <span
                         className={`text-[16px] font-semibold ${area.failed ? "text-signal-ink" : "text-ink-deep"}`}
                       >
-                        {area.failed} need attention
+                        {copy.summary.needAttention(area.failed)}
                       </span>
                       <span className="text-[11px] text-black/42">
-                        of {area.evaluated} checked
+                        {copy.summary.checked(area.evaluated)}
                         {area.unevaluated
-                          ? ` · ${area.unevaluated} we could not check`
+                          ? copy.summary.couldNotCheck(area.unevaluated)
                           : ""}
                       </span>
                     </div>
@@ -2217,7 +2447,7 @@ function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
                   <div className="flex items-center gap-3 text-[11px] sm:justify-end">
                     {audit.score != null ? (
                       <span className="font-semibold text-ink-deep">
-                        Health {Math.round(audit.score)}
+                        {copy.summary.health(Math.round(audit.score))}
                       </span>
                     ) : null}
                     <span
@@ -2227,8 +2457,10 @@ function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
                           : "text-black/48"
                       }
                     >
-                      {audit.checks_failed} of {audit.checks_evaluated} need
-                      attention
+                      {copy.summary.needAttentionOf(
+                        audit.checks_failed,
+                        audit.checks_evaluated,
+                      )}
                     </span>
                   </div>
                   {audit.report_id ? (
@@ -2238,12 +2470,12 @@ function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
                       rel="noreferrer"
                       className="inline-flex items-center gap-1.5 justify-self-start text-[11.5px] font-semibold text-ink-deep underline decoration-black/18 underline-offset-4 hover:text-signal-ink hover:decoration-signal-ink sm:justify-self-end"
                     >
-                      Open the page report{" "}
+                      {copy.summary.openReport}{" "}
                       <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
                     </a>
                   ) : (
                     <span className="justify-self-start text-[11px] text-black/34 sm:justify-self-end">
-                      Report unavailable
+                      {copy.summary.reportUnavailable}
                     </span>
                   )}
                 </li>
@@ -2269,6 +2501,7 @@ function ScanDisclosure({
   children: React.ReactNode;
   defaultOpen?: boolean;
 }) {
+  const copy = useDictionary().answerCheck;
   return (
     <details
       open={defaultOpen}
@@ -2280,8 +2513,12 @@ function ScanDisclosure({
           <p className="mt-1 text-[12.5px] text-black/56">{summary}</p>
         </div>
         <span className="flex min-h-11 shrink-0 items-center gap-2 text-[12px] font-semibold text-ink-deep">
-          <span className="group-open/section:hidden">Details</span>
-          <span className="hidden group-open/section:inline">Close</span>
+          <span className="group-open/section:hidden">
+            {copy.result.details}
+          </span>
+          <span className="hidden group-open/section:inline">
+            {copy.result.close}
+          </span>
           <ChevronDown
             className="h-4 w-4 transition-transform group-open/section:rotate-180"
             aria-hidden="true"
@@ -2306,24 +2543,19 @@ function DeeperAnalysisPanel({
   result: AnswerCheckResult;
   gate: React.ReactNode;
 }) {
+  const copy = useDictionary().answerCheck;
   // Two distinct things open up, and both are gated by the same one click:
   // the answer probe (`execute_probe`) and the per-page AI interpretation
   // (`/pdp/public/pdp-audit/{id}/complete-ai`, which is handed the failed
   // checks above plus the real page copy and returns concrete suggestions).
   // Only advertising the first one undersold what confirming actually buys.
   const adds = [
+    [copy.deeper.aiPages, copy.deeper.aiPagesDetail],
     [
-      "AI reads your pages and says what to change",
-      "Open any product page report and AI goes through the page next to the findings above, then writes back concrete improvements and the page copy it based them on.",
+      copy.deeper.shopperAnswers,
+      copy.deeper.shopperAnswersDetail(result.products_seen),
     ],
-    [
-      "What shoppers are told today",
-      `Questions written from the ${countLabel(result.products_seen, "product")} we just read, put to ChatGPT and Google AI Mode, with the answers recorded.`,
-    ],
-    [
-      "Who gets named when you do not",
-      "The competing brands and products that appear in place of yours.",
-    ],
+    [copy.deeper.alternatives, copy.deeper.alternativesDetail],
   ] as const;
 
   return (
@@ -2334,26 +2566,10 @@ function DeeperAnalysisPanel({
               problem, not something to put in front of someone deciding
               whether to trust us. */}
           <h3 className="text-[19px] font-semibold tracking-[-0.02em] text-ink-deep">
-            Let AI go through your store with you
+            {copy.deeper.title}
           </h3>
           <p className="mt-1.5 max-w-[52ch] text-[13.5px] leading-relaxed text-black/62">
-            Everything above is yours already. Next, AI reads your product pages
-            alongside these findings and writes back what to change, and your
-            shoppers’ own questions go to ChatGPT and Google AI Mode so you can
-            see what they are told today. Confirm your email to open both.
-          </p>
-          <p className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[12.5px] font-medium text-[#3b3833]">
-            {["Free", "No account", "One email, no marketing list"].map(
-              (item) => (
-                <span key={item} className="inline-flex items-center gap-1.5">
-                  <Check
-                    aria-hidden="true"
-                    className="h-3.5 w-3.5 text-[#1f7a4d]"
-                  />
-                  {item}
-                </span>
-              ),
-            )}
+            {copy.deeper.intro}
           </p>
           <dl className="mt-5 border-t border-black/12">
             {adds.map(([term, detail]) => (
@@ -2393,9 +2609,9 @@ function DeeperAnalysisPanel({
  * `probe.py` keeps no answer prose, so this states the counts and the names —
  * never a paraphrase of something we did not keep.
  */
-function questionVerdict(answers: Answer[]) {
+function questionVerdict(answers: Answer[], copy: Dictionary["answerCheck"]) {
   const scored = answers.filter((answer) => answer.mentioned !== null);
-  if (!scored.length) return "No assistant returned a usable answer here.";
+  if (!scored.length) return copy.visibility.noUsableAnswer;
 
   const named = scored.filter((answer) => answer.mentioned === true).length;
   const rivals = Array.from(
@@ -2408,18 +2624,17 @@ function questionVerdict(answers: Answer[]) {
     ),
   ).filter(Boolean);
 
-  const assistants = countLabel(scored.length, "assistant");
   const tail = rivals.length
-    ? ` ${rivals.slice(0, 3).join(", ")} ${rivals.length === 1 ? "was" : "were"} put forward instead.`
+    ? copy.visibility.rivalsTail(rivals.slice(0, 3).join(", "), rivals.length)
     : "";
 
   if (named === scored.length) {
-    return `You were named by ${named === 1 ? "the assistant" : `all ${assistants}`} asked this question.`;
+    return copy.visibility.verdictAll(scored.length);
   }
   if (named === 0) {
-    return `None of the ${assistants} asked this question named you.${tail}`;
+    return copy.visibility.verdictNone(scored.length, tail);
   }
-  return `${named} of ${assistants} named you.${tail}`;
+  return copy.visibility.verdictSome(named, scored.length, tail);
 }
 
 function QuestionRow({
@@ -2429,6 +2644,7 @@ function QuestionRow({
   question: string;
   answers: Answer[];
 }) {
+  const copy = useDictionary().answerCheck;
   const products = shownProducts(answers);
 
   return (
@@ -2446,7 +2662,7 @@ function QuestionRow({
               {answers.map((answer, index) => (
                 <ChannelChip
                   key={`${answer.channel_label}-${index}`}
-                  channel={answer.channel_label ?? "Assistant"}
+                  channel={answer.channel_label ?? copy.result.assistant}
                   answer={answer}
                 />
               ))}
@@ -2473,8 +2689,8 @@ function QuestionRow({
             </div>
             <p className="mt-1.5 text-right text-[11px] text-black/40">
               {answers.length === 1
-                ? "asked to 1 assistant"
-                : `asked to each of ${countLabel(answers.length, "assistant")} separately`}
+                ? copy.visibility.askedOne
+                : copy.visibility.askedMany(answers.length)}
             </p>
 
             <ul className="mt-4 space-y-5">
@@ -2487,7 +2703,7 @@ function QuestionRow({
                   ),
                 ).filter(Boolean);
                 const said = answer.framing?.trim();
-                const channel = answer.channel_label ?? "Assistant";
+                const channel = answer.channel_label ?? copy.result.assistant;
 
                 return (
                   <li key={`${channel}-${index}`}>
@@ -2509,7 +2725,9 @@ function QuestionRow({
                         how we collected it. */}
                     {answer.search_queries?.length ? (
                       <p className="mt-1.5 text-[11.5px] leading-relaxed text-black/50">
-                        <span className="font-semibold">Google search: </span>
+                        <span className="font-semibold">
+                          {copy.visibility.googleSearch}{" "}
+                        </span>
                         {answer.search_queries
                           .slice(0, 3)
                           .map((q) => `“${q}”`)
@@ -2526,12 +2744,12 @@ function QuestionRow({
                             keeps a summary line; the full provider payload is
                             not retained. */}
                         <p className="border-t border-black/10 px-3.5 py-1.5 text-[11px] text-black/40">
-                          Excerpt of what came back · not the full reply
+                          {copy.visibility.excerpt}
                         </p>
                       </div>
                     ) : answer.error ? (
                       <p className="mt-1.5 border border-dashed border-black/16 px-3.5 py-2.5 text-[12.5px] leading-relaxed text-black/48">
-                        {channel} could not be reached: {answer.error}
+                        {copy.visibility.unreachable(channel, answer.error)}
                       </p>
                     ) : (answer.products?.length ?? 0) > 0 ||
                       instead.length > 0 ||
@@ -2542,7 +2760,7 @@ function QuestionRow({
                       // — an apology stacked on top of it reads as a broken scan
                       // rather than as a thin answer.
                       <p className="mt-1.5 border border-dashed border-black/16 px-3.5 py-2.5 text-[12.5px] leading-relaxed text-black/48">
-                        {channel} returned no written answer for this question.
+                        {copy.visibility.noWrittenAnswer(channel)}
                       </p>
                     )}
 
@@ -2551,14 +2769,14 @@ function QuestionRow({
                         className={`font-semibold ${answer.mentioned === true ? "text-[#1a6b43]" : answer.mentioned === false ? "text-signal-ink" : "text-black/56"}`}
                       >
                         {answer.mentioned === true
-                          ? "Named you"
+                          ? copy.visibility.namedYou
                           : answer.mentioned === false
-                            ? "Did not name you"
-                            : "No verdict"}
+                            ? copy.visibility.didNotNameYou
+                            : copy.visibility.noVerdict}
                       </span>
                       {instead.length ? (
                         <span className="text-black/62">
-                          · named instead: {instead.join(", ")}
+                          · {copy.visibility.namedInstead} {instead.join(", ")}
                         </span>
                       ) : null}
                     </p>
@@ -2573,8 +2791,8 @@ function QuestionRow({
           <div className="px-4 py-3.5 sm:px-5">
             <p className="text-[12px] font-semibold text-black/62">
               {products.length
-                ? "Products put in front of the shopper"
-                : "No products were surfaced"}
+                ? copy.visibility.productsSurfaced
+                : copy.visibility.noProducts}
             </p>
             {/* Bounded: a question that surfaced eight products would otherwise
                 tower over the transcript beside it and leave the left column a
@@ -2592,10 +2810,10 @@ function QuestionRow({
 
             <div className="mt-4 border-t border-black/10 pt-3">
               <p className="text-[12px] font-semibold text-black/62">
-                What this adds up to
+                {copy.visibility.addsUpTo}
               </p>
               <p className="mt-1.5 max-w-[46ch] text-[13px] leading-relaxed text-ink-deep">
-                {questionVerdict(answers)}
+                {questionVerdict(answers, copy)}
               </p>
             </div>
           </div>
@@ -2605,6 +2823,8 @@ function QuestionRow({
   );
 }
 function VisibilityDisclosure({ result }: { result: AnswerCheckResult }) {
+  const copy = useDictionary().answerCheck;
+  const locale = useLocale();
   const scored = result.answers.filter((answer) => answer.mentioned !== null);
   const named = scored.filter((answer) => answer.mentioned === true).length;
   const rivals = tallyRivals(result.answers).slice(0, RIVAL_LIMIT);
@@ -2618,11 +2838,11 @@ function VisibilityDisclosure({ result }: { result: AnswerCheckResult }) {
   return (
     <ScanDisclosure
       defaultOpen
-      title="How you appear when shoppers ask"
+      title={copy.visibility.title}
       summary={
         scored.length > 0
-          ? `${named}/${scored.length} observed answers named you · ${rows.length} buying ${rows.length === 1 ? "question" : "questions"}`
-          : "Checking what shoppers are being shown"
+          ? copy.visibility.summary(named, scored.length, rows.length)
+          : copy.visibility.checking
       }
     >
       <AiVisibilityWorkspace result={result} />
@@ -2632,7 +2852,7 @@ function VisibilityDisclosure({ result }: { result: AnswerCheckResult }) {
           {rivals.length > 0 ? (
             <div className="px-4 py-4 sm:px-5">
               <p className="text-[12px] font-semibold text-black/62">
-                Competitors named when you were not
+                {copy.visibility.competitors}
               </p>
               <ul className="mt-3 grid gap-2 sm:grid-cols-2 sm:gap-x-10">
                 {rivals.map((rival) => (
@@ -2663,11 +2883,13 @@ function VisibilityDisclosure({ result }: { result: AnswerCheckResult }) {
           <div className="border-t border-black/12">
             <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 px-4 pb-1 pt-4 sm:px-5">
               <p className="text-[12px] font-semibold text-black/62">
-                Open a question to see what each assistant answered
+                {copy.visibility.openQuestion}
               </p>
-              {questionLanguageBadge(result) ? (
+              {questionLanguageBadge(result, locale) ? (
                 <span className="shrink-0 rounded-full border border-black/16 px-2 py-0.5 text-[11.5px] font-medium text-black/58">
-                  Asked in {questionLanguageBadge(result)}
+                  {copy.visibility.askedIn(
+                    questionLanguageBadge(result, locale)!,
+                  )}
                 </span>
               ) : null}
             </div>
@@ -2698,6 +2920,7 @@ function VisibilityDisclosure({ result }: { result: AnswerCheckResult }) {
  * the run status a second time.
  */
 function ScanHeadline({ result }: { result: AnswerCheckResult }) {
+  const copy = useDictionary().answerCheck;
   const brand = result.brand || result.domain;
   const scored = result.answers.filter((answer) => answer.mentioned !== null);
   const missed = scored.filter((answer) => answer.mentioned === false).length;
@@ -2710,24 +2933,20 @@ function ScanHeadline({ result }: { result: AnswerCheckResult }) {
   if (scored.length) {
     headline =
       missed === 0
-        ? `${brand} was named in all ${scored.length} assistant answers we sampled.`
+        ? copy.result.headlineAll(brand, scored.length)
         : missed === scored.length
-          ? `${brand} was named in none of the ${scored.length} assistant answers we sampled.`
-          : `${brand} was missing from ${missed} of the ${scored.length} assistant answers we sampled.`;
-    support =
-      "These are point-in-time samples, not a ranking. They show what shoppers were told when we asked.";
+          ? copy.result.headlineNone(brand, scored.length)
+          : copy.result.headlineMissed(brand, missed, scored.length);
+    support = copy.result.sampledSupport;
   } else if (findings) {
-    headline = `We read ${brand}’s public storefront and found ${countLabel(findings, "thing")} worth looking at.`;
-    support = running
-      ? "More may follow as your product pages finish reading."
-      : "Each one is written below in plain words, with the evidence kept underneath it.";
+    headline = copy.result.headlineFindings(brand, findings);
+    support = running ? copy.result.moreMayFollow : copy.result.findingsSupport;
   } else if (running) {
-    headline = `Reading ${brand}’s storefront now.`;
-    support = "Results appear below as each part finishes.";
+    headline = copy.result.headlineReading(brand);
+    support = copy.result.readingSupport;
   } else {
-    headline = `Nothing obvious stood out on the ${brand} pages we could read.`;
-    support =
-      "That is a good sign, but a public scan of a few pages cannot rule everything out.";
+    headline = copy.result.headlineClear(brand);
+    support = copy.result.clearSupport;
   }
 
   return (
@@ -2752,35 +2971,27 @@ function ScanHeadline({ result }: { result: AnswerCheckResult }) {
  * dead end here is a visitor lost at the moment they were most interested.
  */
 function RejectedNotice({ result }: { result: AnswerCheckResult }) {
+  const copy = useDictionary().answerCheck;
   const reason = result.reject_reason ?? "";
   const blocked = reason.toLowerCase().includes("blocked");
   const noProducts = reason.toLowerCase().includes("product pages");
 
   const explanation = blocked
-    ? "Your storefront turned our request away. That is usually a firewall or bot-protection rule, and it does not mean anything is wrong with your store."
+    ? copy.errors.blockedExplanation
     : noProducts
-      ? "We reached the site but could not find public product pages on it. That happens with storefronts that render products only after login, or that are not a shop at all."
-      : "The domain did not answer a public request. It may be misspelled, parked, or temporarily down.";
+      ? copy.errors.noProductsExplanation
+      : copy.errors.genericExplanation;
 
   const suggestions = blocked
-    ? [
-        "Check the domain is the storefront shoppers use, not a staging or admin address.",
-        "Ask whoever maintains the store whether bot protection is blocking outside readers. The same rule usually blocks search engines too.",
-      ]
+    ? copy.errors.blockedSuggestions
     : noProducts
-      ? [
-          "Try the domain shoppers actually browse products on, including any market prefix.",
-          "If your products are only visible after login, a public scan cannot reach them, but we can look at them with you.",
-        ]
-      : [
-          "Check the spelling, and try it without www or a trailing path.",
-          "If the site is live in your browser, wait a moment and run it again.",
-        ];
+      ? copy.errors.noProductsSuggestions
+      : copy.errors.genericSuggestions;
 
   return (
     <section className="border-b border-black/14 bg-white px-5 py-6 sm:px-6">
       <p className="max-w-[32ch] text-balance font-display text-[clamp(1.4rem,2.8vw,1.95rem)] font-normal leading-[1.14] tracking-[-0.02em] text-ink-deep">
-        We could not read {result.domain}.
+        {copy.errors.rejectedTitle(result.domain)}
       </p>
       <p className="mt-2.5 max-w-[64ch] text-[14px] leading-[1.6] text-black/62">
         {explanation}
@@ -2800,15 +3011,36 @@ function RejectedNotice({ result }: { result: AnswerCheckResult }) {
         ))}
       </ul>
       <p className="mt-4 text-[12.5px] leading-relaxed text-black/48">
-        What the scan reported: {reason}
+        {copy.errors.reported(reason)}
       </p>
       <div className="mt-5 border-t border-black/12 pt-5">
         <BookReviewCta
           variant="primary"
           location="scan_rejected"
-          label="See Beseam on my store"
+          label={copy.errors.reviewCta}
           className="min-h-12 gap-2 px-6 py-0 text-[14px] font-semibold"
         />
+      </div>
+    </section>
+  );
+}
+
+function SaveAuditPanel({ domain, gate }: { domain: string; gate: ReactNode }) {
+  const copy = useDictionary().answerCheck;
+  return (
+    <section className="border-b border-black/14 bg-[#fffaf7] px-5 py-6 sm:px-6">
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(17rem,0.42fr)] lg:items-center">
+        <div>
+          <h3 className="text-[18px] font-semibold tracking-[-0.015em] text-ink-deep">
+            {copy.email.completeLabel}
+          </h3>
+          <p className="mt-1.5 max-w-[58ch] text-[13px] leading-[1.6] text-black/58">
+            {copy.email.completeIntro(domain)}
+          </p>
+        </div>
+        <div className="border-t border-black/10 pt-5 lg:border-l lg:border-t-0 lg:pl-6 lg:pt-0">
+          {gate}
+        </div>
       </div>
     </section>
   );
@@ -2827,6 +3059,8 @@ export function ResultCard({
   continueHref?: string;
   verificationGate?: React.ReactNode;
 }) {
+  const copy = useDictionary().answerCheck;
+  const locale = useLocale();
   const answers = result.answers;
   const inFlight = isScanInFlight(result);
   const scored = answers.filter((answer) => answer.mentioned !== null);
@@ -2859,7 +3093,10 @@ export function ResultCard({
   };
 
   const onShare = async () => {
-    const shareUrl = new URL("/scan", window.location.origin);
+    const shareUrl = new URL(
+      locale === "de" ? "/de/scan" : "/scan",
+      window.location.origin,
+    );
     shareUrl.searchParams.set("domain", result.domain);
     const title = `${identity ?? result.brand ?? result.domain} · Beseam Observe scan`;
 
@@ -2887,12 +3124,12 @@ export function ResultCard({
     }
   };
 
-  const marketing = marketLabel(result);
+  const marketing = marketLabel(result, locale);
   const identityLine =
     identityMeta ??
     [
       result.domain,
-      result.platform ? platformLabel(result.platform) : null,
+      result.platform ? platformLabel(result.platform, copy) : null,
       marketing,
     ]
       .filter(Boolean)
@@ -2935,10 +3172,12 @@ export function ResultCard({
               aria-hidden="true"
             />
             {result.reject_reason
-              ? "Could not read this store"
+              ? copy.result.statusRejected
               : inFlight
-                ? "Still running"
-                : "Scan complete"}
+                ? copy.result.statusRunning
+                : result.status === "awaiting_verification"
+                  ? copy.result.statusFreeReady
+                  : copy.result.statusComplete}
           </span>
           {/* Nothing to share or print when the scan could not read the store. */}
           <button
@@ -2946,7 +3185,7 @@ export function ResultCard({
             hidden={Boolean(result.reject_reason)}
             onClick={() => void onShare()}
             className="inline-flex min-h-11 items-center gap-2 border border-black/18 bg-white px-3 text-[12px] font-semibold text-ink-deep transition-colors hover:border-black/32 hover:bg-[#fffaf7] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal-ink/35"
-            aria-label="Share this scan"
+            aria-label={copy.result.shareAria}
           >
             {shareStatus === "copied" || shareStatus === "shared" ? (
               <Check className="h-3.5 w-3.5" aria-hidden="true" />
@@ -2955,12 +3194,12 @@ export function ResultCard({
             )}
             <span aria-live="polite">
               {shareStatus === "copied"
-                ? "Link copied"
+                ? copy.result.linkCopied
                 : shareStatus === "shared"
-                  ? "Shared"
+                  ? copy.result.shared
                   : shareStatus === "failed"
-                    ? "Copy failed"
-                    : "Share"}
+                    ? copy.result.copyFailed
+                    : copy.result.share}
             </span>
           </button>
           <button
@@ -2970,7 +3209,7 @@ export function ResultCard({
             className="inline-flex min-h-11 items-center gap-2 border border-black/18 bg-white px-3 text-[12px] font-semibold text-ink-deep transition-colors hover:border-black/32 hover:bg-[#fffaf7] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal-ink/35"
           >
             <Printer className="h-3.5 w-3.5" aria-hidden="true" />
-            Print
+            {copy.result.print}
           </button>
         </div>
       </div>
@@ -2983,10 +3222,20 @@ export function ResultCard({
           <FoundStrip result={result} />
           <WorthLookingAt result={result} />
 
-          {verificationGate ? (
+          {verificationGate && result.status === "awaiting_verification" ? (
             <DeeperAnalysisPanel result={result} gate={verificationGate} />
-          ) : scored.length > 0 || result.questions.length > 0 ? (
+          ) : null}
+
+          {scored.length > 0 || result.questions.length > 0 ? (
             <VisibilityDisclosure result={result} />
+          ) : null}
+
+          {verificationGate && result.status !== "awaiting_verification" ? (
+            <SaveAuditPanel domain={result.domain} gate={verificationGate} />
+          ) : null}
+
+          {continueHref && !verificationGate && !inFlight ? (
+            <ContinuePaths result={result} continueHref={continueHref} />
           ) : null}
 
           <InitialScanSummary result={result} />
@@ -2994,10 +3243,6 @@ export function ResultCard({
           {/* Prints with the report: the scope of a finding list is part of the
               finding list, not a sales aside. */}
           <ScanBoundary result={result} />
-
-          {continueHref ? (
-            <ContinuePaths result={result} continueHref={continueHref} />
-          ) : null}
         </>
       )}
     </div>
@@ -3060,9 +3305,36 @@ export default function AnswerCheck({
 }) {
   const { trackEvent } = useAnalytics();
   const router = useRouter();
-  // Only the field and its labels read from this so far. The scan result,
-  // its progress steps and its errors are still English in both locales.
+  const locale = useLocale();
   const t = useDictionary();
+  const copy = t.answerCheck;
+
+  const apiError = (
+    payload: unknown,
+    status: number,
+    fallback: string,
+  ): string => {
+    if (status === 429) return copy.errors.rateLimited;
+    const value =
+      payload && typeof payload === "object"
+        ? String(
+            (payload as { detail?: unknown; error?: unknown }).detail ??
+              (payload as { error?: unknown }).error ??
+              "",
+          ).trim()
+        : "";
+    const known: Record<string, string> = {
+      "Enter your store domain.": copy.errors.enterDomain,
+      "Enter a store domain, like yourstore.com.": copy.errors.enterDomain,
+      "Enter your own store domain.": copy.errors.ownDomain,
+      "Enter a valid work email.": copy.errors.invalidEmail,
+      "The scan service is unavailable right now.":
+        copy.errors.serviceUnavailable,
+      "We could not scan that domain.": copy.errors.scanDomain,
+      "We could not send the verification email.": copy.errors.sendEmail,
+    };
+    return (known[value] ?? value) || fallback;
+  };
   const [domain, setDomain] = useState("");
   const [email, setEmail] = useState("");
   const [website, setWebsite] = useState("");
@@ -3070,18 +3342,22 @@ export default function AnswerCheck({
   const [error, setError] = useState("");
   const [verificationError, setVerificationError] = useState("");
   const [verificationSent, setVerificationSent] = useState(false);
+  const [verifiedArrival, setVerifiedArrival] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [verificationSubmitting, setVerificationSubmitting] = useState(false);
   const pollCount = useRef(0);
   const [pollExhausted, setPollExhausted] = useState(false);
 
-  const load = useCallback(async (target: string) => {
-    const response = await fetch(
-      `/api/answer-check?domain=${encodeURIComponent(target)}`,
-    );
-    if (!response.ok) return null;
-    return (await response.json()) as AnswerCheckResult;
-  }, []);
+  const load = useCallback(
+    async (target: string) => {
+      const response = await fetch(
+        `/api/answer-check?domain=${encodeURIComponent(target)}&locale=${encodeURIComponent(locale)}`,
+      );
+      if (!response.ok) return null;
+      return (await response.json()) as AnswerCheckResult;
+    },
+    [locale],
+  );
 
   // The one place a scan is actually started. Both the form and an arriving
   // ?domain= go through it, so a link to a domain nobody has scanned yet
@@ -3098,16 +3374,13 @@ export default function AnswerCheck({
             email: address || null,
             source: placement,
             website,
+            locale,
           }),
         });
         const payload = await response.json();
 
         if (!response.ok) {
-          setError(
-            payload?.detail ||
-              payload?.error ||
-              "We could not scan that domain.",
-          );
+          setError(apiError(payload, response.status, copy.errors.scanDomain));
           return;
         }
 
@@ -3128,12 +3401,12 @@ export default function AnswerCheck({
           });
         }
       } catch {
-        setError("The scan service is unavailable right now.");
+        setError(copy.errors.serviceUnavailable);
       } finally {
         setSubmitting(false);
       }
     },
-    [placement, trackEvent, website],
+    [locale, placement, trackEvent, website],
   );
 
   // Arrivals with ?domain=: a verification click, a shared link, or the hand-off
@@ -3145,19 +3418,14 @@ export default function AnswerCheck({
     arrivalHandled.current = true;
 
     const params = new URLSearchParams(window.location.search);
+    setVerifiedArrival(params.get("verified") === "1");
     const scanError = params.get("scan_error");
     if (scanError === "missing_token") {
-      setError(
-        "That verification link is missing its token. Start or continue your scan below.",
-      );
+      setError(copy.errors.missingToken);
     } else if (scanError === "link_used") {
-      setError(
-        "That verification link is invalid or has already been used. Start the scan again if you need a new link.",
-      );
+      setError(copy.errors.usedToken);
     } else if (scanError === "unavailable") {
-      setError(
-        "We could not verify that link right now. Try the link from your email again.",
-      );
+      setError(copy.errors.verifyUnavailable);
     }
 
     const fromUrl = params.get("domain");
@@ -3182,13 +3450,21 @@ export default function AnswerCheck({
       void runScan(fromUrl, "");
     });
   }, [load, runScan, handOffTo, placement, trackEvent]);
-  // Poll while either the free PDP sample or the verified live probe is running.
-  // The budget is finite, so the exhausted case has to say so: silently ceasing
-  // to poll leaves a progress row spinning forever with nothing to act on.
+  // Poll while the paid probe or its page-audit sample is running, and while a
+  // sent link is still unclicked: nothing runs behind the gate any more, and the
+  // click usually happens in a mail app or on a phone, so this page has to notice
+  // it and continue on its own. The budget is finite, so the exhausted case has
+  // to say so: silently ceasing to poll leaves a row spinning with nothing to act
+  // on.
+  const awaitingClick =
+    verificationSent && result?.status === "awaiting_verification";
   useEffect(() => {
-    if (!result || !isScanInFlight(result)) return;
+    if (!result || (!isScanInFlight(result) && !awaitingClick)) return;
     if (pollCount.current >= MAX_POLLS) {
-      setPollExhausted(true);
+      // Only work that was actually running can have stalled. A link that has
+      // not been clicked yet is not a failure to report, so the budget simply
+      // runs out in silence and the ask stays where it is.
+      if (isScanInFlight(result)) setPollExhausted(true);
       return;
     }
 
@@ -3200,7 +3476,7 @@ export default function AnswerCheck({
     }, POLL_MS);
 
     return () => clearTimeout(timer);
-  }, [result, load]);
+  }, [result, load, awaitingClick]);
 
   const onSubmit = async (event: FormEvent) => {
     event.preventDefault();
@@ -3209,7 +3485,7 @@ export default function AnswerCheck({
 
     const target = domain.trim();
     if (!target) {
-      setError("Enter your store domain.");
+      setError(copy.errors.enterDomain);
       return;
     }
 
@@ -3246,7 +3522,7 @@ export default function AnswerCheck({
 
     const address = email.trim();
     if (!address) {
-      setVerificationError("Enter your work email.");
+      setVerificationError(copy.errors.enterEmail);
       return;
     }
     if (!result) return;
@@ -3262,6 +3538,7 @@ export default function AnswerCheck({
             email: address,
             source: placement,
             website,
+            locale,
           }),
         });
 
@@ -3282,24 +3559,25 @@ export default function AnswerCheck({
       const payload = await response.json();
       if (!response.ok) {
         setVerificationError(
-          payload?.detail ||
-            payload?.error ||
-            "We could not send the verification email.",
+          apiError(payload, response.status, copy.errors.sendEmail),
         );
         return;
       }
 
       setResult(payload as AnswerCheckResult);
       setVerificationSent(true);
+      // The link is what starts the slow half, and the wait for the click is its
+      // own budget: whatever the free stage already spent polling must not eat
+      // into it.
+      pollCount.current = 0;
+      setPollExhausted(false);
       trackEvent({
         action: "answer_check_verification_requested",
         category: "conversion",
         label: placement,
       });
     } catch {
-      setVerificationError(
-        "We could not send the verification email right now.",
-      );
+      setVerificationError(copy.errors.sendEmailNow);
     } finally {
       setVerificationSubmitting(false);
     }
@@ -3345,8 +3623,12 @@ export default function AnswerCheck({
     </button>
   );
 
+  // Keep the progress rail only while work is actually running. Once the fast
+  // public read lands, the findings themselves are more persuasive than a list
+  // of pending steps; the email unlock inside the result explains what starts
+  // next without pushing the evidence below the fold.
   const showProgress = Boolean(
-    submitting || (result && isScanInFlight(result) && !result.reject_reason),
+    submitting || (result && !result.reject_reason && isScanInFlight(result)),
   );
 
   // A domain someone already ran to completion is the one path where the whole
@@ -3355,133 +3637,106 @@ export default function AnswerCheck({
   // audit to send.
   const scanIsComplete = result?.status === "ready";
 
-  // The storefront and catalog reads finish inside the POST, so by the first
-  // payload the visitor already has their platform, product count and prices
-  // on screen. That is the moment to ask: something has been given, and the
-  // product-page sample behind the ask is minutes of work, not seconds.
-  // Waiting for `awaiting_verification` asked at the end of the slow half
-  // instead of the start of it.
-  const lightStageDone = Boolean(
-    result?.steps.some(
-      (step) => step.key === "catalog" && step.state === "done",
-    ),
-  );
+  // The email gate has two jobs only: authorize the slow half of a fresh scan,
+  // or let someone who opened a shared/cached finished scan keep a copy. A
+  // visitor who arrived through the verification link has already given us the
+  // address, and must never be asked for it again.
   const showEmailAsk = Boolean(
     !handOffTo &&
     result &&
     !result.reject_reason &&
-    (lightStageDone ||
-      result.status === "awaiting_verification" ||
-      scanIsComplete),
+    (result.status === "awaiting_verification" ||
+      (scanIsComplete && !verificationSent && !verifiedArrival)),
   );
 
-  const focusEmailField = () => {
-    const field = document.getElementById("answer-check-email");
-    field?.scrollIntoView({ block: "center", behavior: "smooth" });
-    (field as HTMLInputElement | null)?.focus({ preventScroll: true });
-  };
-
-  // The one place the address is asked. It sits in the seam of the progress
-  // rail: the storefront and catalog reads are above it, done; the
-  // product-page sample, the questions and the answers are below it, and they
-  // are the minutes. Sending does not replace the page -- progress keeps
-  // animating and findings keep landing while the link sits in the inbox.
+  // The address ask is rendered inside the result, after the visitor has seen
+  // the first useful evidence. The form itself stays compact; the result panel
+  // around it explains what confirming unlocks.
   const emailAsk = showEmailAsk ? (
-    <div className="border border-black/18 bg-white p-5 sm:p-6">
+    <div>
       {verificationSent ? (
         <>
           <p className="flex items-center gap-2 text-[13px] font-semibold text-[#1a6b43]">
             <MailCheck className="h-4 w-4" aria-hidden="true" />
-            Sent to {email.trim()}
+            {copy.email.sentTo(email.trim())}
           </p>
-          <p className="mt-2.5 text-[18px] font-semibold tracking-[-0.01em] text-ink-deep">
+          <p className="mt-2 text-[16px] font-semibold tracking-[-0.01em] text-ink-deep">
             {scanIsComplete
-              ? "Your link is in your inbox."
-              : "One click in your inbox and we keep going."}
+              ? copy.email.completeTitle
+              : copy.email.continueTitle}
           </p>
-          <p className="mt-1.5 max-w-[54ch] text-[13.5px] leading-relaxed text-[#5f5a55]">
-            {scanIsComplete
-              ? "Nothing on this page goes away. The link opens this same audit whenever you want it back."
-              : "Nothing on this page goes away in the meantime. Open the link and we ask the assistants about your products, then show you the whole audit."}
+          <p className="mt-1.5 text-[12.5px] leading-relaxed text-[#5f5a55]">
+            {scanIsComplete ? copy.email.completeBody : copy.email.continueBody}
           </p>
-          {/* A sent state with no exit strands anyone who mistyped their
-                  address or never received the mail. */}
           <button
             type="button"
             onClick={() => setVerificationSent(false)}
-            className="mt-4 inline-flex min-h-11 items-center text-[13px] font-semibold text-ink-deep underline decoration-black/30 underline-offset-4 transition-colors hover:text-signal-ink hover:decoration-signal-ink"
+            className="mt-3 inline-flex min-h-10 items-center text-[12.5px] font-semibold text-ink-deep underline decoration-black/30 underline-offset-4 transition-colors hover:text-signal-ink hover:decoration-signal-ink"
           >
-            Send it to a different email
+            {copy.email.differentEmail}
           </button>
         </>
       ) : (
-        <form
-          onSubmit={onVerificationSubmit}
-          noValidate
-          className="grid items-start gap-x-10 gap-y-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,26rem)]"
-        >
-          <div>
-            <label
-              className="text-[16px] font-semibold tracking-[-0.01em] text-ink-deep"
-              htmlFor="answer-check-email"
+        <form onSubmit={onVerificationSubmit} noValidate>
+          <label className="sr-only" htmlFor="answer-check-email">
+            {copy.email.label}
+          </label>
+          <div className="grid gap-2.5">
+            <input
+              id="answer-check-email"
+              type="email"
+              autoComplete="email"
+              value={email}
+              onChange={(event) => {
+                setEmail(event.target.value);
+                if (verificationError) setVerificationError("");
+              }}
+              placeholder={copy.email.placeholder}
+              aria-invalid={Boolean(verificationError)}
+              className={inputClass}
+            />
+            <button
+              type="submit"
+              disabled={verificationSubmitting}
+              className="group inline-flex min-h-12 w-full items-center justify-center gap-2 bg-signal-ink px-6 text-[14px] font-semibold text-white disabled:opacity-70"
             >
-              Where do we send your audit?
-            </label>
-            <p className="mt-1.5 max-w-[54ch] text-[13px] leading-relaxed text-[#5f5a55]">
-              {scanIsComplete
-                ? `The audit for ${result?.domain ?? "your store"} is complete. Leave an address and we send you the link, so it is yours to open and keep.`
-                : `We are reading ${result?.domain ?? "your store"} now. Leave an address and we send one link — click it and we also ask the assistants about your products.`}
-            </p>
-          </div>
-          <div>
-            <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto]">
-              <input
-                id="answer-check-email"
-                type="email"
-                autoComplete="email"
-                value={email}
-                onChange={(event) => {
-                  setEmail(event.target.value);
-                  if (verificationError) setVerificationError("");
-                }}
-                placeholder="you@company.com"
-                aria-invalid={Boolean(verificationError)}
-                className={inputClass}
+              {verificationSubmitting
+                ? copy.email.sending
+                : scanIsComplete
+                  ? copy.email.completeCta
+                  : copy.email.runningCta}
+              <ArrowRight
+                aria-hidden="true"
+                className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
               />
-              <button
-                type="submit"
-                disabled={verificationSubmitting}
-                className="group inline-flex min-h-12 items-center justify-center gap-2 bg-signal-ink px-6 text-[15px] font-semibold text-white disabled:opacity-70"
-              >
-                {verificationSubmitting ? "Sending…" : "Send it"}
-                <ArrowRight
-                  aria-hidden="true"
-                  className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
-                />
-              </button>
-            </div>
-            <p className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[12.5px] font-medium text-[#3b3833]">
-              {["No account", "No card", "One email, no marketing list"].map(
-                (item) => (
-                  <span key={item} className="inline-flex items-center gap-1.5">
-                    <Check
-                      aria-hidden="true"
-                      className="h-3.5 w-3.5 text-[#1f7a4d]"
-                    />
-                    {item}
-                  </span>
-                ),
-              )}
-            </p>
-            {verificationError ? (
-              <p
-                role="alert"
-                className="mt-3 text-[13px] leading-relaxed text-[#b3261e]"
-              >
-                {verificationError}
-              </p>
-            ) : null}
+            </button>
           </div>
+          <p className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11.5px] font-medium text-[#3b3833]">
+            {copy.email.assurances.map((item) => (
+              <span key={item} className="inline-flex items-center gap-1.5">
+                <Check aria-hidden="true" className="h-3 w-3 text-[#1f7a4d]" />
+                {item}
+              </span>
+            ))}
+          </p>
+          <p className="mt-2 text-[11px] leading-relaxed text-[#5f5a55]">
+            {copy.email.privacyPrefix}{" "}
+            <a
+              href="/privacy-policy"
+              className="underline decoration-black/25 underline-offset-2 hover:text-signal-ink hover:decoration-signal-ink"
+            >
+              {copy.email.privacy}
+            </a>
+            .
+          </p>
+          {verificationError ? (
+            <p
+              role="alert"
+              className="mt-3 text-[13px] leading-relaxed text-[#b3261e]"
+            >
+              {verificationError}
+            </p>
+          ) : null}
         </form>
       )}
     </div>
@@ -3543,7 +3798,7 @@ export default function AnswerCheck({
             </p>
           )}
           <label className="sr-only" aria-hidden="true">
-            Website
+            {t.scan.form.websiteHoneypot}
             <input
               tabIndex={-1}
               autoComplete="off"
@@ -3576,7 +3831,7 @@ export default function AnswerCheck({
               className="mt-3 inline-flex min-h-10 items-center gap-2 border border-black/36 bg-white px-4 text-[13px] font-semibold text-ink-deep transition-colors hover:border-signal-ink hover:text-signal-ink disabled:cursor-wait disabled:opacity-70"
             >
               <RefreshCw className="h-3.5 w-3.5" aria-hidden="true" />
-              {submitting ? "Retrying…" : "Try again"}
+              {submitting ? copy.errors.retrying : copy.errors.tryAgain}
             </button>
           ) : null}
         </div>
@@ -3597,15 +3852,8 @@ export default function AnswerCheck({
           <ScanProgress
             steps={result && !submitting ? result.steps : OPTIMISTIC_STEPS}
             domain={result?.domain ?? (domain.trim() || null)}
-            interlude={emailAsk}
           />
         </div>
-      ) : null}
-
-      {/* Without a progress rail to sit inside -- a finished audit reopened
-          from a link -- the ask stands on its own, seamed to the card. */}
-      {showProgress ? null : emailAsk ? (
-        <div className={`mx-auto mt-8 w-full ${columnClass}`}>{emailAsk}</div>
       ) : null}
 
       {result ? (
@@ -3621,9 +3869,7 @@ export default function AnswerCheck({
               className="mb-4 flex flex-wrap items-center justify-between gap-3 border border-black/18 bg-[#fffaf7] px-5 py-4"
             >
               <p className="max-w-[62ch] text-[13px] leading-relaxed text-ink-deep">
-                We did not finish reading your product pages this time. The
-                completed observations below are still useful; read the findings
-                as possibilities, not verdicts.
+                {copy.errors.pollExhausted}
               </p>
               {/* Drives the scan directly. It used to submit the domain form by
                   id, which is not on the page any more once a result is. */}
@@ -3634,89 +3880,14 @@ export default function AnswerCheck({
                 className="inline-flex min-h-11 shrink-0 items-center gap-2 border border-black/36 bg-white px-4 text-[13px] font-semibold text-ink-deep transition-colors hover:border-signal-ink hover:text-signal-ink disabled:cursor-wait disabled:opacity-70"
               >
                 <RefreshCw className="h-3.5 w-3.5" aria-hidden="true" />
-                {submitting ? "Running…" : "Run it again"}
+                {submitting ? copy.errors.running : copy.errors.runAgain}
               </button>
             </div>
           ) : null}
           <ResultCard
             result={result}
             continueHref={`${APP_REGISTER_URL}?scan_domain=${encodeURIComponent(result.domain)}`}
-            verificationGate={
-              result.status === "awaiting_verification" ? (
-                verificationSent ? (
-                  <div>
-                    <p className="flex items-center gap-2 text-[13px] font-semibold text-[#1a6b43]">
-                      <Check className="h-4 w-4" aria-hidden="true" />
-                      Email sent
-                    </p>
-                    <p className="mt-2.5 text-[18px] font-semibold tracking-[-0.01em] text-ink-deep">
-                      One click in your inbox and we continue.
-                    </p>
-                    <p className="mt-1.5 max-w-[52ch] text-[13.5px] leading-relaxed text-[#5f5a55]">
-                      Open the link we sent to {email.trim()}. Nothing on this
-                      page goes away in the meantime. You can keep reading, or
-                      come back to it later.
-                    </p>
-                    {/* A sent state with no exit strands anyone who mistyped
-                        their address or never received the mail. */}
-                    <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-[13px]">
-                      <button
-                        type="button"
-                        onClick={() => setVerificationSent(false)}
-                        className="inline-flex min-h-11 items-center font-semibold text-ink-deep underline decoration-black/30 underline-offset-4 transition-colors hover:text-signal-ink hover:decoration-signal-ink"
-                      >
-                        Send it again
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setEmail("");
-                          setVerificationSent(false);
-                        }}
-                        className="inline-flex min-h-11 items-center text-[#5f5a55] underline decoration-black/20 underline-offset-4 transition-colors hover:text-signal-ink hover:decoration-signal-ink"
-                      >
-                        Use a different address
-                      </button>
-                    </div>
-                  </div>
-                ) : (
-                  <div>
-                    <p className="text-[15px] font-semibold tracking-[-0.01em] text-ink-deep">
-                      Confirm your email to open both
-                    </p>
-                    <p className="mt-1.5 max-w-[52ch] text-[13px] leading-relaxed text-[#5f5a55]">
-                      We send one link. Click it and both open up: no account,
-                      no card, no marketing list.
-                    </p>
-                    {/* One address field on the page, never two. The ask lives
-                        under the progress rail where the visitor met it first;
-                        this returns them to it rather than raising a rival
-                        input for the same value. */}
-                    <button
-                      type="button"
-                      onClick={focusEmailField}
-                      className="group mt-3.5 inline-flex min-h-12 items-center justify-center gap-2 bg-signal-ink px-6 text-[14px] font-semibold text-white"
-                    >
-                      Add your email
-                      <ArrowRight
-                        aria-hidden="true"
-                        className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
-                      />
-                    </button>
-                    <p className="mt-2.5 max-w-[52ch] text-[12px] leading-relaxed text-[#5f5a55]">
-                      See our{" "}
-                      <a
-                        href="/privacy-policy"
-                        className="underline decoration-black/25 underline-offset-2 hover:text-signal-ink hover:decoration-signal-ink"
-                      >
-                        privacy policy
-                      </a>
-                      .
-                    </p>
-                  </div>
-                )
-              ) : undefined
-            }
+            verificationGate={emailAsk ?? undefined}
           />
         </div>
       ) : null}

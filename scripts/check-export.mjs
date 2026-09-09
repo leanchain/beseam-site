@@ -1,4 +1,4 @@
-import { access } from "node:fs/promises";
+import { access, readFile } from "node:fs/promises";
 
 // `output: "export"` with the default `trailingSlash: false` writes each
 // route as `<route>.html`, not `<route>/index.html` -- the whole site
@@ -30,6 +30,23 @@ for (const path of FORBIDDEN) {
     failed = true;
   } catch {
     /* expected */
+  }
+}
+
+for (const [path, expectedLang] of [
+  ["out/index.html", "en"],
+  ["out/scan.html", "en"],
+  ["out/de.html", "de"],
+  ["out/de/scan.html", "de"],
+]) {
+  try {
+    const html = await readFile(path, "utf8");
+    if (!html.includes(`<html lang="${expectedLang}"`)) {
+      console.error(`${path}: expected html lang=${expectedLang}`);
+      failed = true;
+    }
+  } catch {
+    // The existence check above already reports the missing file.
   }
 }
 console.log(failed ? "export check FAILED" : "export check ok");

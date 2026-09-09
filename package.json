@@ -9,6 +9,7 @@
     "dev:worker": "wrangler dev --config wrangler.dev.jsonc --port ${LP_PORT:-7002} --var DEV_ORIGIN:http://localhost:${LP_NEXT_PORT:-7003} --var API_BASE_URL:${LOCAL_API_BASE:-http://localhost:8123/api} --var APP_BASE_URL:${LOCAL_APP_BASE:-http://localhost:3123}",
     "dev:next-only": "NEXT_DIST_DIR=.next-dev next dev --turbopack -p ${LP_PORT:-7002}",
     "build": "next build",
+    "postbuild": "node scripts/fix-export-locales.mjs",
     "brand:assets": "bash scripts/generate-brand-assets.sh",
     "test:worker": "node --test main.test.mjs",
     "start": "next start",

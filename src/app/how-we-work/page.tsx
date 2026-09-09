@@ -6,165 +6,186 @@ import type { Metadata } from "next";
 import { BookReviewCta } from "@/components/beseam/book-review-cta";
 import FirstMonthPromise from "@/components/beseam/first-month-promise";
 import { Reveal } from "@/components/beseam/reveal";
+import TrackedLink from "@/components/beseam/tracked-link";
 import { buildPublicMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = buildPublicMetadata({
-  title: "How We Work With Ecommerce Brands",
+  title: "How Beseam Works With Ecommerce Teams | Beseam",
   description:
-    "What the first few weeks look like, what you end up with, the rules we keep, and what we will not do. Nothing customers see goes live without your yes.",
+    "See what happens after the first scan: what Beseam watches, what your team decides, how changes are approved, and how the same signals are checked again afterward.",
   path: "/how-we-work",
 });
 
-// This page is the working relationship, not the machine. The machine is drawn
-// twice already -- the connected map on the homepage (`#system`) and the
-// capability acts on `/platform` -- so the loop rail and loop diagram that used
-// to live here were a third telling of the same thing and are gone.
-//
-// The spine is the one that recurs across the pages that do this well (Decagon's
-// week-by-week rollout, Retool's Day 1/30/60/90 guide, Sanity's "a technical
-// team assigned to you", Work & Co's named principles, Cub Studio's objection
-// FAQ placed where the steps end): name the tradeoff, put a calendar on the
-// relationship, name what the merchant ends up with, give the rules ownable
-// names rather than category labels, say the refusals plainly, then answer the
-// questions that kill deals.
-//
-// Copy register: how a person talks. Contractions, short sentences, no literary
-// constructions. The earlier draft avoided every contraction and read like a
-// brochure -- that was the tell.
-//
-// Composition: every act used to be the same two-column slab, so the page had
-// one rhythm and no centre. The hero now carries a contents rail, the calendar
-// is the one drawn thing (a rail with ticks, the last tick hollow where the
-// work hands itself over), rules and refusals are a diptych rather than two
-// more slabs, and the review CTA rides inside the FAQ instead of taking a band
-// of its own in front of the closing promise.
-//
-// Two things are deliberately absent. There is no worked example with invented
-// questions or fabricated competitors -- the site's rule is that evidence is
-// real or it is not shown, and a made-up transcript on a page arguing for
-// attached evidence is self-defeating. And no trial length is stated: billing
-// configures none, so the promise is the one `first-month-promise.tsx` makes.
+// /platform explains the machine. This page explains the working relationship:
+// what happens after the first look, what Beseam handles, what the merchant
+// decides, and the rules that keep customer-facing work under merchant control.
+// Avoid repeating the platform capability map or turning this into an agency
+// process page with invented week-by-week promises.
 
 const CONTENTS = [
-  { label: "What the first weeks look like", href: "#weeks" },
-  { label: "What you end up with", href: "#hold" },
-  { label: "What we will and will not do", href: "#rules" },
+  { label: "What happens after you start", href: "#stages" },
+  { label: "What Beseam handles — and what you decide", href: "#roles" },
+  { label: "What stays attached to the work", href: "#record" },
+  { label: "The rules we keep", href: "#rules" },
   { label: "Questions people ask", href: "#questions" },
 ] as const;
 
-// The calendar. Labelled by event rather than day count: the only duration on
-// this page that is a promise is the twenty minutes, because it is the only one
-// we control end to end.
 const STAGES = [
   {
-    when: "The first call",
-    title: "Twenty minutes, your store, live.",
-    body: "Pick one product that should be selling and isn't. We look at it with you and tell you what we find. If you don't need us, we'll say so.",
-    from: "Nothing. No connection, no contract.",
+    step: "01",
+    label: "Start with a snapshot",
+    title: "See what the public storefront says before you connect anything.",
+    body: "The free scan reads the same public pages a shopper, search engine, or shopping agent can reach. No store login, no private data, and no changes. It gives you a concrete starting point instead of asking you to configure a platform before you know why you need it.",
+    yours: "Your domain. That is enough to start.",
   },
   {
-    when: "The first week",
-    title: "Your rules come before your catalogue.",
-    body: "We connect your store with read-only access and agree what's off limits: the words you own, the claims you can't make, the products nobody touches. Nothing customers see changes this week.",
-    from: "Read-only access, and an hour with someone who can answer brand questions.",
+    step: "02",
+    label: "Connect and set the rules",
+    title: "Give Beseam the context it cannot learn from a page alone.",
+    body: "Connect the store and define the boundaries: brand language, claims you will not make, products or fields that are off limits, and who can approve changes. Add analytics, behavior, search, or other data only when it makes a real decision better.",
+    yours: "Access, constraints, and the people who can say yes or no.",
   },
   {
-    when: "The first change",
-    title: "One change, written out, with the proof behind it.",
-    body: "You see the question a shopper asked, the answer they got, what we found behind it, the exact change, and what we think it'll do. You say yes, no, or not this one. We make the changes your store lets us make and write up the rest, so your developer isn't left guessing.",
-    from: "A yes, a no, or a not this one.",
+    step: "03",
+    label: "Beseam keeps watching",
+    title: "The checks continue without your team babysitting them.",
+    body: "Beseam keeps asking the relevant shopper questions, checking product and store evidence, and reading connected behavior or outcome signals. It brings forward the things worth attention instead of asking you to inspect every source yourself.",
+    yours: "Tell Beseam when priorities or business rules change.",
   },
   {
-    when: "After it ships",
-    title: "We ask the same questions again.",
-    body: "Same questions, same places, and we put the answers side by side. Some changes move things. Some don't, and you hear about those too, with the evidence and what we think we got wrong.",
-    from: "Nothing. That part's on us.",
+    step: "04",
+    label: "A change reaches you",
+    title: "You get a proposed change with the evidence already attached.",
+    body: "You see what happened, what Beseam thinks is worth changing, the exact scope of the change, and why it is being proposed. Approve it, reject it, or leave it alone. Where the connection supports the change, Beseam can apply it after approval; otherwise the implementation is written out for whoever ships it.",
+    yours:
+      "A yes, a no, or a not-this-one. Customer-facing changes wait for you.",
   },
   {
-    when: "By month three",
-    title: "Less of this should reach you.",
-    body: "The early weeks are hands-on on purpose. Every call we make by hand teaches us what your brand allows. Once the patterns repeat, more of it runs without asking you. If we're still doing week-one work in month six, we got something wrong.",
-    from: "Fewer decisions than the month before.",
+    step: "05",
+    label: "Check again",
+    title: "The work is not finished when the change ships.",
+    body: "Beseam checks the relevant signal again: the same shopper question, the same page or journey, or a before-and-after outcome when the data supports it. What moved, what stayed flat, and what remains uncertain become evidence for the next decision.",
+    yours: "Nothing to manufacture. Flat results count too.",
   },
+] as const;
+
+const BESEAM_HANDLES = [
+  "Run the recurring checks across the signals you have connected.",
+  "Keep the original observation and supporting evidence together.",
+  "Rank the findings that appear worth acting on first.",
+  "Prepare the specific change and the reason behind it.",
+  "Apply approved changes where the connection supports them.",
+  "Re-check the relevant signal and keep the result with the work.",
+] as const;
+
+const YOU_DECIDE = [
+  "What the brand will and will not say or do.",
+  "Which systems and deeper data sources Beseam may use.",
+  "Which products, fields, or journeys are off limits.",
+  "Whether a customer-facing change is approved.",
+  "When a business priority changes enough to override the normal ranking.",
 ] as const;
 
 const ARTIFACTS = [
   {
-    name: "The question and the answer",
+    name: "The original signal",
     detail:
-      "Kept whole, not squashed into a score. You can read the answer your product got left out of.",
+      "The shopper question, answer, page, journey, or outcome that started the work — kept in its original context.",
   },
   {
-    name: "The change, written out",
+    name: "The evidence",
     detail:
-      "The field, what it said, what it says now, and why. Easy to undo, easy to hand to whoever ships it.",
+      "What Beseam observed, which facts support it, and where an explanation is still only a hypothesis.",
   },
   {
-    name: "Before and after",
+    name: "The change and approval",
     detail:
-      "The same questions asked again and set side by side, with the date they were asked.",
+      "The exact proposed change, what it affects, your decision, and what actually went live.",
   },
   {
-    name: "What you approved",
+    name: "The re-check",
     detail:
-      "What you said yes to, when, and what went live because of it. Yours to export.",
+      "The same relevant signal checked again, with the before-and-after result attached to the change.",
   },
 ] as const;
 
 const RULES = [
   [
-    "Nothing goes live without your yes.",
-    "Not once. Not to save time. Not because the change looked obvious.",
+    "Customer-facing changes wait for your approval.",
+    "Monitoring, diagnosis, and re-checking can run in the background. Publishing does not quietly become autonomous.",
   ],
   [
-    "We ask the same question again.",
-    "The original question, rerun. Never a friendlier one swapped in afterwards.",
+    "Facts and hypotheses stay different.",
+    "If the evidence shows what happened but not why, Beseam says that. A likely cause does not get promoted into a fact.",
   ],
   [
-    "You hear about the flops too.",
-    "If a change did nothing, we tell you it did nothing.",
+    "The comparison stays honest.",
+    "The same question or relevant signal is checked again. Beseam does not swap in a friendlier test after the change.",
+  ],
+  [
+    "Flat results are results.",
+    "If the signal does not move, the record says so. The next decision starts from that evidence instead of hiding it.",
   ],
 ] as const;
 
 const REFUSALS = [
-  "Say we know the cause when the evidence only points at it. A guess gets called a guess.",
-  "Promise you a spot in an answer. Nobody controls that, us included.",
-  "Put a score in front of you instead of what it's made of.",
-  "Charge you before you've seen it do something.",
+  "Promise a ranking, recommendation, conversion lift, or revenue result we do not control.",
+  "Claim a cause when the evidence only supports a possible explanation.",
+  "Hide the underlying evidence behind a single score when you need to inspect it.",
+  "Publish a customer-facing change outside the approval rules you set.",
 ] as const;
 
 const FAQS = [
   {
-    question: "What do you need access to?",
+    question: "What do I need to connect?",
     answer:
-      "Read-only access to your store to start. The first look needs nothing at all: the public scan reads what any shopper can already see, with no login and nothing private.",
+      "Nothing for the first public scan except your domain. For ongoing work, start with the store. Add analytics, behavior, search, customer, or revenue data only when it helps explain a problem, rank the work, or measure what changed.",
   },
   {
-    question: "How long before the first change?",
+    question: "How much work does my team have to do?",
     answer:
-      "The first week goes on rules and access, not edits. The first change reaches you once there's something worth changing and we know what you won't allow. One you'll approve beats three you have to police.",
+      "Your team sets the boundaries, gives Beseam the access it needs, and decides on customer-facing changes. Beseam handles the recurring checks, evidence gathering, prioritization, proposed work, supported implementation after approval, and re-checking.",
   },
   {
-    question: "Who does the work if it needs a developer?",
+    question: "How soon do we get the first change?",
     answer:
-      "We make the changes your store connection allows, once you've approved them. Anything else you get written out — the field, the value, the reason — so your developer or agency is shipping it, not working it out.",
+      "As soon as there is a finding worth acting on and enough context to propose a responsible change. Beseam does not manufacture a first-week edit just to make onboarding look busy.",
   },
   {
     question: "What if we say no to a change?",
     answer:
-      "It doesn't ship. The reason goes into your rules, so the same idea doesn't come back next month with different wording.",
+      "It does not ship. The rejection remains part of the work record, and your rules should prevent the same unsuitable idea from repeatedly coming back as if nothing was learned.",
   },
   {
-    question: "What does it cost?",
+    question: "Is this an agency or a managed service?",
     answer:
-      "You start free and pay once it's proved it's worth it. One subscription instead of a tool plus an agency, and we don't take a cut of your ad spend.",
+      "Beseam is software. The product keeps the monitoring, evidence, proposed work, approvals, and measurement connected. Early setup can be hands-on because the rules matter, but the goal is not to create an ongoing consulting dependency.",
   },
   {
-    question: "What if nothing we change moves anything?",
+    question: "What if a change does not help?",
     answer:
-      "Then you'll see that, in the rerun, with the date on it. We'd rather show you a flat line than a score that hides one. You decide what that's worth.",
+      "Then the re-check should show that. Beseam keeps the flat result next to the change and uses it as evidence for what to revisit or try next rather than turning it into a success story.",
   },
 ] as const;
+
+function ResponsibilityList({ items }: { items: readonly string[] }) {
+  return (
+    <ul className="mt-7 border-t border-black/14">
+      {items.map((item) => (
+        <li
+          key={item}
+          className="flex gap-3 border-b border-black/12 py-4 text-[14.5px] leading-[1.62] text-black/68"
+        >
+          <span
+            aria-hidden
+            className="mt-[0.7em] h-px w-3 shrink-0 bg-signal-ink"
+          />
+          <span>{item}</span>
+        </li>
+      ))}
+    </ul>
+  );
+}
 
 export default function HowWeWorkPage() {
   return (
@@ -177,25 +198,31 @@ export default function HowWeWorkPage() {
                 <p className="font-mono text-[12px] font-semibold uppercase tracking-[0.14em] text-signal-ink">
                   How we work
                 </p>
-                <h1 className="mt-6 max-w-[14ch] text-balance font-display text-[clamp(3rem,5.8vw,5rem)] font-normal leading-[0.98] tracking-[-0.03em] text-ink-deep">
-                  Finding it was never the hard part.
+                <h1 className="mt-6 max-w-[15ch] text-balance font-display text-[clamp(3rem,5.8vw,5rem)] font-normal leading-[0.98] tracking-[-0.03em] text-ink-deep">
+                  Beseam does the checking. You make the decisions.
                 </h1>
               </div>
               <div>
                 <p className="max-w-[52ch] text-[18px] leading-[1.7] text-black/66 [text-wrap:pretty]">
-                  Most tools hand you a list and stop. Someone still has to
-                  write the change, get it signed off, ship it, and check
-                  afterwards whether it did anything.
+                  Beseam runs the recurring checks, brings you the evidence and
+                  the exact next change, waits for your approval when customers
+                  will see it, then checks what happened afterward.
                 </p>
                 <p className="mt-4 max-w-[52ch] text-[18px] leading-[1.7] text-ink-deep">
-                  That&rsquo;s the part we do with you.
+                  Your team should not have to babysit another dashboard to get
+                  there.
                 </p>
                 <div className="mt-7 flex flex-wrap items-center gap-4">
-                  <BookReviewCta
-                    variant="primary"
-                    location="how_we_work_hero"
-                    label="Book the 20-minute review"
-                  />
+                  <TrackedLink
+                    href="/scan"
+                    eventName="how_we_work_scan_clicked"
+                    eventCategory="conversion"
+                    placement="how_we_work_hero"
+                    className="group inline-flex min-h-12 items-center justify-center gap-2 bg-signal-ink px-6 text-[15px] font-semibold text-white"
+                  >
+                    Run the free scan
+                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                  </TrackedLink>
                   <Link
                     href="/platform"
                     className="group inline-flex min-h-12 items-center gap-2 px-1 text-[15px] font-semibold text-ink-deep underline decoration-black/25 underline-offset-[6px] hover:decoration-signal-ink"
@@ -208,19 +235,17 @@ export default function HowWeWorkPage() {
             </div>
           </Reveal>
 
-          {/* A contents rail rather than a scroll of surprises: four promises,
-              and the page keeps them in this order. */}
           <Reveal delay={0.06}>
             <nav
               aria-label="On this page"
               className="mt-14 border-t border-black/16 pt-4"
             >
-              <ol className="grid gap-px bg-black/10 sm:grid-cols-2 lg:grid-cols-4">
+              <ol className="grid gap-px bg-black/10 sm:grid-cols-2 lg:grid-cols-5">
                 {CONTENTS.map((item, index) => (
                   <li key={item.href} className="bg-ground">
                     <a
                       href={item.href}
-                      className="group flex h-full items-baseline gap-3 py-4 pr-4 text-[14px] leading-[1.45] text-black/62 transition-colors hover:text-signal-ink sm:pr-8"
+                      className="group flex h-full items-baseline gap-3 py-4 pr-4 text-[14px] leading-[1.45] text-black/62 transition-colors hover:text-signal-ink lg:pr-6"
                     >
                       <span className="font-mono text-[11px] tabular-nums text-black/35 transition-colors group-hover:text-signal-ink">
                         {String(index + 1).padStart(2, "0")}
@@ -235,24 +260,20 @@ export default function HowWeWorkPage() {
         </div>
       </section>
 
-      {/* The calendar is the centre of the page and the one thing a visitor
-          cannot get from `/platform`: what happens, in what order, and what it
-          costs them at each step. The last tick is hollow -- by then the work
-          should be running without anyone asking. */}
       <section
-        id="weeks"
+        id="stages"
         className="scroll-mt-24 border-b border-white/12 bg-ink-deep text-white"
       >
         <div className="mx-auto max-w-[92rem] px-5 py-20 sm:px-8 sm:py-24 lg:px-10 lg:py-28">
           <Reveal>
             <div className="grid gap-8 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:items-end lg:gap-20">
               <h2 className="max-w-[15ch] text-balance font-display text-[clamp(2.2rem,3.8vw,3.6rem)] font-normal leading-[1.04] tracking-[-0.025em]">
-                What the first weeks look like.
+                What happens after you start.
               </h2>
               <p className="max-w-[52ch] self-end text-[17px] leading-[1.75] text-white/68 [text-wrap:pretty]">
-                No onboarding project, no eight-week discovery. This is the
-                order things happen in, and the note next to each step is
-                everything it costs you.
+                Start with what is public. Add access only when it earns its
+                place. From there, Beseam keeps the work moving until there is
+                something worth your decision.
               </p>
             </div>
           </Reveal>
@@ -263,7 +284,7 @@ export default function HowWeWorkPage() {
                 const last = index === STAGES.length - 1;
                 return (
                   <li
-                    key={stage.when}
+                    key={stage.step}
                     className="relative grid gap-6 border-t border-white/14 py-10 pl-7 sm:pl-10 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.55fr)] lg:gap-16"
                   >
                     <span
@@ -278,24 +299,22 @@ export default function HowWeWorkPage() {
                     />
                     <div>
                       <p className="flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.12em] text-signal">
-                        <span className="tabular-nums">
-                          {String(index + 1).padStart(2, "0")}
-                        </span>
-                        <span className="text-white/45">{stage.when}</span>
+                        <span className="tabular-nums">{stage.step}</span>
+                        <span className="text-white/45">{stage.label}</span>
                       </p>
-                      <h3 className="mt-5 max-w-[26ch] text-balance text-[clamp(1.25rem,1.7vw,1.55rem)] font-semibold leading-[1.25] tracking-[-0.015em] text-white">
+                      <h3 className="mt-5 max-w-[29ch] text-balance text-[clamp(1.25rem,1.7vw,1.55rem)] font-semibold leading-[1.25] tracking-[-0.015em] text-white">
                         {stage.title}
                       </h3>
-                      <p className="mt-4 max-w-[58ch] text-[15px] leading-[1.75] text-white/62 [text-wrap:pretty]">
+                      <p className="mt-4 max-w-[64ch] text-[15px] leading-[1.75] text-white/62 [text-wrap:pretty]">
                         {stage.body}
                       </p>
                     </div>
                     <div className="lg:pt-[3.25rem]">
                       <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-white/38">
-                        What it costs you
+                        What we need from you
                       </p>
-                      <p className="mt-3 max-w-[30ch] border-l border-white/20 pl-4 text-[14.5px] leading-[1.6] text-white/82">
-                        {stage.from}
+                      <p className="mt-3 max-w-[32ch] border-l border-white/20 pl-4 text-[14.5px] leading-[1.6] text-white/82">
+                        {stage.yours}
                       </p>
                     </div>
                   </li>
@@ -307,19 +326,61 @@ export default function HowWeWorkPage() {
       </section>
 
       <section
-        id="hold"
+        id="roles"
         className="scroll-mt-24 border-b border-black/14 bg-ground-2"
       >
         <div className="mx-auto max-w-[92rem] px-5 py-20 sm:px-8 sm:py-24 lg:px-10 lg:py-28">
           <Reveal>
             <div className="grid gap-8 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:items-end lg:gap-20">
-              <h2 className="max-w-[15ch] text-balance font-display text-[clamp(2.1rem,3.4vw,3.3rem)] font-normal leading-[1.05] tracking-[-0.025em] text-ink-deep">
-                What you end up with.
+              <h2 className="max-w-[16ch] text-balance font-display text-[clamp(2.1rem,3.4vw,3.3rem)] font-normal leading-[1.05] tracking-[-0.025em] text-ink-deep">
+                The line between automation and judgment stays visible.
               </h2>
-              <p className="max-w-[48ch] self-end text-[16px] leading-[1.7] text-black/62 [text-wrap:pretty]">
-                Not a dashboard you have to remember to log into. Four things
-                you can forward to a developer, a buyer or your board as they
-                are.
+              <p className="max-w-[50ch] self-end text-[16px] leading-[1.7] text-black/62 [text-wrap:pretty]">
+                Beseam should remove repetitive checking and assembly work, not
+                quietly take over decisions that belong to the brand.
+              </p>
+            </div>
+          </Reveal>
+
+          <Reveal delay={0.05}>
+            <div className="mt-12 grid gap-px border border-black/12 bg-black/12 lg:grid-cols-2">
+              <article className="bg-white px-6 py-8 sm:px-8 sm:py-9">
+                <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.12em] text-signal-ink">
+                  Beseam handles
+                </p>
+                <h3 className="mt-4 max-w-[20ch] text-[22px] font-semibold leading-[1.28] tracking-[-0.015em] text-ink-deep">
+                  The recurring work around the decision.
+                </h3>
+                <ResponsibilityList items={BESEAM_HANDLES} />
+              </article>
+              <article className="bg-white px-6 py-8 sm:px-8 sm:py-9">
+                <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.12em] text-signal-ink">
+                  You decide
+                </p>
+                <h3 className="mt-4 max-w-[20ch] text-[22px] font-semibold leading-[1.28] tracking-[-0.015em] text-ink-deep">
+                  The boundaries and choices only the brand can own.
+                </h3>
+                <ResponsibilityList items={YOU_DECIDE} />
+              </article>
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
+      <section
+        id="record"
+        className="scroll-mt-24 border-b border-black/14 bg-ground"
+      >
+        <div className="mx-auto max-w-[92rem] px-5 py-20 sm:px-8 sm:py-24 lg:px-10 lg:py-28">
+          <Reveal>
+            <div className="grid gap-8 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:items-end lg:gap-20">
+              <h2 className="max-w-[15ch] text-balance font-display text-[clamp(2.1rem,3.4vw,3.3rem)] font-normal leading-[1.05] tracking-[-0.025em] text-ink-deep">
+                What stays attached to the work.
+              </h2>
+              <p className="max-w-[50ch] self-end text-[16px] leading-[1.7] text-black/62 [text-wrap:pretty]">
+                A change should be inspectable later without reconstructing the
+                story from five dashboards, a Slack thread, and someone&rsquo;s
+                memory.
               </p>
             </div>
           </Reveal>
@@ -347,9 +408,6 @@ export default function HowWeWorkPage() {
         </div>
       </section>
 
-      {/* Rules and refusals as one diptych: the promise and its cost belong on
-          the same spread, and two more stacked slabs was the thing that made
-          the page feel generated. */}
       <section
         id="rules"
         className="scroll-mt-24 border-b border-black/14 bg-white"
@@ -359,15 +417,15 @@ export default function HowWeWorkPage() {
             <Reveal>
               <div className="lg:pr-16">
                 <h2 className="max-w-[18ch] text-balance font-display text-[clamp(2.1rem,3.4vw,3.3rem)] font-normal leading-[1.05] tracking-[-0.025em] text-ink-deep">
-                  Three rules we keep on the bad weeks.
+                  The rules matter most when the answer is not obvious.
                 </h2>
                 <div className="mt-10 border-t border-black/16">
                   {RULES.map(([rule, detail]) => (
                     <div key={rule} className="border-b border-black/12 py-7">
-                      <p className="max-w-[26ch] text-balance font-display text-[clamp(1.45rem,2.1vw,1.95rem)] font-normal leading-[1.18] tracking-[-0.02em] text-ink-deep">
+                      <p className="max-w-[30ch] text-balance font-display text-[clamp(1.4rem,2vw,1.9rem)] font-normal leading-[1.18] tracking-[-0.02em] text-ink-deep">
                         {rule}
                       </p>
-                      <p className="mt-3 max-w-[46ch] text-[15px] leading-[1.7] text-black/58 [text-wrap:pretty]">
+                      <p className="mt-3 max-w-[50ch] text-[15px] leading-[1.7] text-black/58 [text-wrap:pretty]">
                         {detail}
                       </p>
                     </div>
@@ -379,7 +437,7 @@ export default function HowWeWorkPage() {
             <Reveal delay={0.06}>
               <div className="lg:border-l lg:border-black/14 lg:pl-16">
                 <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.12em] text-signal-ink">
-                  And what we will not do
+                  What Beseam will not do
                 </p>
                 <ul className="mt-8 border-t border-black/16">
                   {REFUSALS.map((line) => (
@@ -391,7 +449,7 @@ export default function HowWeWorkPage() {
                         aria-hidden="true"
                         className="mt-[0.7em] h-px w-4 shrink-0 bg-signal-ink"
                       />
-                      <span className="max-w-[40ch]">{line}</span>
+                      <span className="max-w-[42ch]">{line}</span>
                     </li>
                   ))}
                 </ul>
@@ -403,25 +461,27 @@ export default function HowWeWorkPage() {
 
       <section
         id="questions"
-        className="scroll-mt-24 border-b border-black/14 bg-ground"
+        className="scroll-mt-24 border-b border-black/14 bg-ground-2"
       >
         <div className="mx-auto max-w-[92rem] px-5 py-20 sm:px-8 sm:py-24 lg:px-10 lg:py-28">
           <Reveal>
             <div className="grid gap-10 lg:grid-cols-[minmax(0,0.62fr)_minmax(0,1.38fr)] lg:gap-20">
               <div>
                 <h2 className="max-w-[16ch] text-balance font-display text-[clamp(2rem,3.2vw,3rem)] font-normal leading-[1.06] tracking-[-0.025em] text-ink-deep">
-                  The questions people actually ask.
+                  Questions teams ask before handing over access.
                 </h2>
-                <p className="mt-5 max-w-[32ch] text-[15px] leading-[1.7] text-black/60">
-                  Better answered here than on the third call.
+                <p className="mt-5 max-w-[34ch] text-[15px] leading-[1.7] text-black/60">
+                  The short version: start public, add access deliberately, and
+                  keep customer-facing decisions under your control.
                 </p>
 
                 <div className="mt-10 border-t border-black/16 pt-8">
                   <p className="max-w-[30ch] text-[17px] font-semibold leading-[1.5] tracking-[-0.01em] text-ink-deep">
-                    Pick one product that should be selling and isn&rsquo;t.
+                    Want to walk through one product with us?
                   </p>
                   <p className="mt-3 max-w-[34ch] text-[14.5px] leading-[1.65] text-black/60">
-                    Twenty minutes, live. You keep what we find either way.
+                    Twenty minutes, live. Bring a product or question you think
+                    should be performing better.
                   </p>
                   <div className="mt-6">
                     <BookReviewCta

@@ -1,4 +1,4 @@
-import { redirectTargetFor } from "./src/i18n/locale-rules.mjs";
+import { LOCALES, redirectTargetFor } from "./src/i18n/locale-rules.mjs";
 
 const ALLOWED_ORIGINS = new Set([
   "https://beseam.com",
@@ -405,10 +405,12 @@ async function proxyAnswerCheck(request, url, env) {
   if (request.method === "GET") {
     const domain = clean(url.searchParams.get("domain"), 253);
     if (!domain) return json({ error: "domain is required" }, 422);
-    return forwardJson(
+    const locale = clean(url.searchParams.get("locale"), 8);
+    const upstream = new URL(
       `${apiBase}/monitoring/public/answer-check/${encodeURIComponent(domain)}`,
-      { method: "GET" },
     );
+    if (LOCALES.includes(locale)) upstream.searchParams.set("locale", locale);
+    return forwardJson(upstream.toString(), { method: "GET" });
   }
 
   if (request.method !== "POST") {
@@ -431,6 +433,7 @@ async function proxyAnswerCheck(request, url, env) {
 
   const domain = clean(payload?.domain, 253);
   const email = clean(payload?.email, 320);
+  const locale = clean(payload?.locale, 8);
   if (!domain) return json({ error: "Enter your store domain." }, 422);
   if (email && !validEmail(email)) {
     return json({ error: "Enter a valid work email." }, 422);
@@ -445,6 +448,7 @@ async function proxyAnswerCheck(request, url, env) {
       source: clean(payload?.source, 64) || "homepage_hero",
       // Honeypot passes straight through: the backend decides what to do.
       website: clean(payload?.website, 200) || null,
+      ...(LOCALES.includes(locale) ? { locale } : {}),
     }),
   });
 }
@@ -580,6 +584,9 @@ async function verifyAnswerCheck(url, env) {
       return Response.redirect(`${appBase}/report/${reportId}`, 302);
     }
     scan.searchParams.set("domain", payload.domain);
+    // The visitor got here by clicking the email we just sent. Mark that fact
+    // so the result page never asks for the same address a second time.
+    scan.searchParams.set("verified", "1");
   } catch {
     scan.searchParams.set("scan_error", "unavailable");
   }

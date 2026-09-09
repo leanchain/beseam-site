@@ -120,6 +120,15 @@ const enDictionary = {
         "Beseam shows you where AI shopping assistants leave your products out, why, what to fix, and whether the fix worked. Free store scan; customer-facing changes only with your approval.",
       imageAlt:
         "Beseam finding, fixing, and measuring ecommerce growth opportunities",
+      schemaSoftwareDescription:
+        "Beseam continuously finds strong ecommerce growth opportunities, prepares supported fixes for brand-owner approval, applies approved changes, and measures what changes afterward.",
+      schemaFeatures: [
+        "Find where shoppers may be missed across discovery and the store",
+        "Prioritize growth opportunities by evidence and projected impact",
+        "Ask the brand owner to approve before customer-facing changes are applied",
+        "Measure what changed with before-and-after evidence",
+      ] as Quad<string>,
+      schemaFaqName: "Questions about Beseam",
     },
     scan: {
       title: "Free Store Scan | Beseam",
@@ -1116,7 +1125,7 @@ const enDictionary = {
       discovery: {
         buyingQuestion: "Buying question",
         example: "Example",
-/**
+        /**
          * Typed one character at a time by `.vig-type` in globals.css. The
          * element publishes this string's `.length` as `--vig-chars`, and the
          * CSS reads both its width and its step count from that, so a
@@ -1331,11 +1340,492 @@ const enDictionary = {
    * is the same in every locale. The tuple types make a locale that drops or
    * adds an entry a type error rather than a short list.
    */
+  answerCheck: {
+    steps: {
+      labels: {
+        storefront: "Reading your storefront",
+        catalog: "Checking your products and prices",
+        pages: "Looking at your product pages",
+        questions: "Writing questions shoppers may ask",
+        answers: "Checking how your products appear in discovery",
+      },
+      technical: (position: number, total: number) =>
+        `Technical discoverability · step ${position} of ${total}`,
+      readingDomain: (domain: string) => `Reading ${domain}`,
+      readingStorefront: "Reading your storefront",
+      resultsAsTheyArrive:
+        "Results appear below as soon as each part is done. You do not have to wait for all of it.",
+      questionsLater:
+        "Shopper questions come after this, and tracking them over time happens inside Beseam.",
+      progress: (done: number, total: number) => `${done} of ${total}`,
+      productsFound: (count: number) =>
+        `${count} ${count === 1 ? "product" : "products"} found`,
+      pagesAnalyzed: (count: number) =>
+        `${count} ${count === 1 ? "product page" : "product pages"} analyzed`,
+      pagesProgress: (done: number, total: number) =>
+        `Analyzed ${done} of ${total} product pages so far`,
+      pagesFinishing:
+        "Your products and prices are already below while these finish",
+      pagesFailed: "We could not finish reading these pages on this run",
+      questionsWritten: (count: number) =>
+        `${count} ${count === 1 ? "question" : "questions"} written`,
+      questionsFromProducts: "Written from the products we found",
+      confirmEmail: (channels: string) =>
+        `Confirm your email and we continue with ${channels}`,
+      askingChannels: (channels: string) => `Asking ${channels}`,
+    },
+    result: {
+      productsFound: "products found",
+      answersNamed: "assistant answers named you",
+      answersPending: "assistant answers pending",
+      opportunitiesFound: (count: number): string =>
+        count === 1 ? "opportunity found" : "opportunities found",
+      statusRejected: "Could not read this store",
+      statusRunning: "Still running",
+      statusFreeReady: "Free scan ready",
+      statusComplete: "Scan complete",
+      shareAria: "Share this scan",
+      linkCopied: "Link copied",
+      shared: "Shared",
+      copyFailed: "Copy failed",
+      share: "Share",
+      print: "Print",
+      brandAppearance: "Brand appearance",
+      strong: "Strong",
+      mixed: "Mixed",
+      weak: "Weak",
+      barelyVisible: "Barely visible",
+      brandEverywhere: "Your brand appeared in every observed answer.",
+      brandNowhere: "Your brand did not appear in any observed answer.",
+      brandMissing: (missed: number, total: number) =>
+        `Your brand was missing from ${missed} of ${total} observed answers.`,
+      frequentAlternative: "Most frequent alternative:",
+      byAssistant: "By assistant",
+      assistants: (count: number) =>
+        `${count} ${count === 1 ? "assistant" : "assistants"}`,
+      namedYou: "named you",
+      noAnswer: "no answer",
+      didNotNameYou: "did not name you",
+      noImage: "No image",
+      yours: "yours",
+      merchant: "Merchant",
+      assistant: "Assistant",
+      commerceStorefront: "Commerce storefront",
+      storefront: "Storefront",
+      openProduct: "Open product →",
+      details: "Details",
+      close: "Close",
+      headlineAll: (brand: string, total: number) =>
+        `${brand} was named in all ${total} assistant answers we sampled.`,
+      headlineNone: (brand: string, total: number) =>
+        `${brand} was named in none of the ${total} assistant answers we sampled.`,
+      headlineMissed: (brand: string, missed: number, total: number) =>
+        `${brand} was missing from ${missed} of the ${total} assistant answers we sampled.`,
+      headlineFindings: (brand: string, count: number) =>
+        `We read ${brand}’s public storefront and found ${count} ${count === 1 ? "opportunity" : "opportunities"} worth looking at.`,
+      headlineReading: (brand: string) => `Reading ${brand}’s storefront now.`,
+      headlineClear: (brand: string) =>
+        `Nothing obvious stood out on the ${brand} pages we could read.`,
+      sampledSupport:
+        "These are point-in-time samples, not a ranking. They show what shoppers were told when we asked.",
+      moreMayFollow: "More may follow as your product pages finish reading.",
+      findingsSupport:
+        "Each one is written below in plain words, with the evidence kept underneath it.",
+      readingSupport: "Results appear below as each part finishes.",
+      clearSupport:
+        "That is a good sign, but a public scan of a few pages cannot rule everything out.",
+    },
+    findings: {
+      priorityFirst: "Worth doing first",
+      priorityLook: "Worth a look",
+      priorityMinor: "Minor",
+      areas: {
+        discovery: "Getting found",
+        listing: "How your products are listed",
+        page: "What the product page tells shoppers",
+        trust: "Trust and safety",
+        markets: "Markets and languages",
+        searchStructured: "Search & structured data",
+        internationalization: "Internationalization",
+        trustDelivery: "Trust & delivery",
+        machineReadability: "Machine readability",
+        productEvidence: "Product evidence",
+      },
+      recommendation: "See recommendation",
+      close: "Close",
+      improveNext: "Improve next:",
+      startFixing: "Start fixing this in Beseam",
+      evidence: "Evidence",
+      checks: (count: number) => `${count} checks`,
+      productsSeenOn: "Products this was seen on",
+      seePage: "See the page →",
+      rawCatalog: "The raw catalog file we read →",
+      fullPageReport: "Full page report →",
+      heading: "Fix these first",
+      intro:
+        "The clearest opportunities from this public scan, ordered by what is worth looking at first. Open one for the recommendation and evidence.",
+      stillReading: "Still reading.",
+      moreMayAppear: " More may appear as your product pages finish.",
+      showOther: (count: number) =>
+        `Show the other ${count} ${count === 1 ? "finding" : "findings"}`,
+      readingPages: "Still reading your product pages.",
+      discoveryFiles: {
+        llms: "A short summary of your store for AI assistants that look for one. Optional.",
+        agents:
+          "Notes for AI agents browsing your store on a shopper's behalf. Optional.",
+        skill:
+          "Describes what an assistant can do on your store, in a format some AI tools read. Very new and optional — skip it unless you already work with AI agents.",
+        ucp: "A machine-readable card describing your store for commerce agents. Optional.",
+      },
+    },
+    boundary: {
+      heading: "Where this scan stops",
+      intro:
+        "A public scan can only reach so far. This is exactly how far it went, and what continues after it.",
+      did: "What this scan did",
+      didPublic:
+        "Read your public storefront the way any visitor can — no login, no store access.",
+      didPages: (count: number) =>
+        `Ran the page checks over ${count} ${count === 1 ? "product page" : "product pages"}, plus your robots file, sitemap and crawler access.`,
+      didPagesSample:
+        "Ran the page checks over a sample of your product pages, plus your robots file, sitemap and crawler access.",
+      didCatalog:
+        "Compared your catalog data against what each page actually renders — names, prices, availability.",
+      not: "What it did not do",
+      notKeepAsking:
+        "Keep asking. The assistant answers above were sampled once, on this run.",
+      notAskLive:
+        "Ask ChatGPT or Google AI Mode anything about your products. Nothing here is a live assistant answer.",
+      notRepeat: "Repeat on its own. A public scan has no schedule behind it.",
+      notHistory:
+        "Keep a history. There is no earlier run to compare this against.",
+      next: "What starts in Beseam",
+      nextItems: [
+        "Shopper questions you read and edit before any of them run.",
+        "Those questions asked on a schedule instead of once.",
+        "The answers kept as evidence, with the date they were given.",
+        "Fixes ordered by what is worth doing first.",
+        "The same questions asked again after a change, so you can see what moved.",
+      ] as readonly [string, string, string, string, string],
+    },
+    continue: {
+      opportunities: (count: number): string =>
+        `${count} ${count === 1 ? "opportunity" : "opportunities"} found`,
+      nextLabel: "Next step",
+      once: "You found the gaps. Keep Beseam watching this store.",
+      body: "Turn this one-off scan into an ongoing loop: keep the same buying questions running, prepare the strongest fixes, approve what reaches customers, and measure what changed.",
+      benefits: [
+        "Keep discovery and store checks running",
+        "Turn findings into prepared changes",
+        "Approve first, then recheck the evidence",
+      ] as readonly [string, string, string],
+      prepared: "Prepared by Beseam",
+      approval: "Needs your approval",
+      afterConnection: "Checked after connection",
+      start: "Start free with this store",
+      reviewWithFinding: "Prefer to walk through this with us?",
+      reviewWithoutFinding: "Prefer to walk through this with us?",
+      startingWith: (headline: string) => `Starting with “${headline}”`,
+      reviewBody:
+        "In 20 minutes, we use one finding from this scan to show the full loop on your store — evidence, proposed change, approval, and recheck.",
+      reviewCta: "Book a 20-minute store review",
+    },
+    visibility: {
+      googleSearch: "Google search:",
+      excerpt: "Excerpt of what came back · not the full reply",
+      unreachable: (channel: string, error: string) =>
+        `${channel} could not be reached: ${error}`,
+      noWrittenAnswer: (channel: string) =>
+        `${channel} returned no written answer for this question.`,
+      namedYou: "Named you",
+      didNotNameYou: "Did not name you",
+      noVerdict: "No verdict",
+      namedInstead: "named instead:",
+      productsSurfaced: "Products put in front of the shopper",
+      noProducts: "No products were surfaced",
+      addsUpTo: "What this adds up to",
+      noUsableAnswer: "No assistant returned a usable answer here.",
+      verdictAll: (count: number) =>
+        `You were named by ${count === 1 ? "the assistant" : `all ${count} assistants`} asked this question.`,
+      verdictNone: (count: number, rivals: string) =>
+        `None of the ${count} ${count === 1 ? "assistant" : "assistants"} asked this question named you.${rivals}`,
+      verdictSome: (named: number, count: number, rivals: string) =>
+        `${named} of ${count} ${count === 1 ? "assistant" : "assistants"} named you.${rivals}`,
+      rivalsTail: (names: string, count: number) =>
+        ` ${names} ${count === 1 ? "was" : "were"} put forward instead.`,
+      askedOne: "asked to 1 assistant",
+      askedMany: (count: number) =>
+        `asked to each of ${count} assistants separately`,
+      title: "How you appear when shoppers ask",
+      summary: (named: number, total: number, questions: number) =>
+        `${named}/${total} observed answers named you · ${questions} buying ${questions === 1 ? "question" : "questions"}`,
+      checking: "Checking what shoppers are being shown",
+      competitors: "Competitors named when you were not",
+      openQuestion: "Open a question to see what each assistant answered",
+      askedIn: (language: string) => `Asked in ${language}`,
+    },
+    summary: {
+      store: "Store",
+      catalog: "Catalog",
+      productPages: "Product pages",
+      publicFootprint: "Public footprint",
+      localePaths: "Locale paths",
+      domains: "Domains",
+      whatExists: "What exists",
+      discoverable: "Can it be discovered?",
+      productPagesLabel: "Product pages",
+      collections: "Collections",
+      collectionUrls: "Collection URLs",
+      pages: "Pages",
+      articles: "Articles",
+      blogs: "Blogs",
+      policies: "Policies",
+      localeCopies: "Locale URL copies",
+      searchPageSignals: "Search & page signals",
+      productShoppingData: "Product & shopping data",
+      contentMerchandising: "Content & merchandising",
+      trustConfidence: "Trust & purchase confidence",
+      marketsLocalization: "Markets & localization",
+      technicalSecurity: "Technical & security",
+      notMeasured: "Not measured",
+      readable: "Readable",
+      open: "Open",
+      unavailable: "Unavailable",
+      found: "Found",
+      declared: "Declared",
+      notFound: "Not found",
+      blocked: (count: number) => `${count} blocked`,
+      quickNotMeasured: "Not measured in quick scan",
+      primary: "Primary",
+      primaryStorefront: "Primary storefront",
+      platformUnknown: "platform unknown",
+      publicUrls: "Public URLs discovered",
+      productsSampled: (count: number) => `${count} products sampled`,
+      localePathCount: (count: number) => `${count} locale paths`,
+      storeSummary: (
+        products: string,
+        collections: string,
+        location: string,
+        sitemap: string,
+        crawler: string,
+      ) =>
+        `${products} products · ${collections} · ${location} · sitemap ${sitemap} · crawler access ${crawler}`,
+      internalReachSummary: (
+        links: number,
+        products: number,
+        collections: number,
+      ) =>
+        `${links} homepage links · ${products} product · ${collections} collection`,
+      pageAuditSummary: (
+        pages: number,
+        failed: number,
+        evaluated: number,
+        unchecked: number,
+      ) =>
+        `${pages} product ${pages === 1 ? "page" : "pages"} read · ${failed} of ${evaluated} checks need attention · ${unchecked} we could not check`,
+      localizedCopies: (count: number) => `${count}+ localized URL copies`,
+      robots: "robots.txt",
+      sitemap: "Sitemap",
+      searchCrawlers: "Search crawlers",
+      assistantCrawlers: "Assistant crawlers",
+      blockedUrls: "URLs blocked by robots",
+      internalReach: "Internal reach",
+      orphanProducts: "Orphan products",
+      discoveryFiles: "Discovery files",
+      sitemapFreshness: "Sitemap freshness",
+      sitemapImages: "Images in sitemap",
+      allowed: (allowed: number, total: number) =>
+        `${allowed}/${total} allowed`,
+      noDates: "No dates exposed",
+      noImages: "No image entries exposed",
+      lowerBounds:
+        "Counts with + are lower bounds because the quick URL inventory reached its 5,000-URL cap.",
+      homepageSample:
+        "Homepage paths are sampled here. True orphan coverage needs the full internal-link graph.",
+      emergingFiles: (present: number, total: number) =>
+        `Those four are emerging conventions for telling AI assistants what your store is and how to use it. ${present} of ${total} are published. None of them is required, none is known to affect how you rank in search today, and a missing one is not a fault. We report them because the stores that publish them are easier for assistants to read correctly — not because you are doing anything wrong without them.`,
+      catalogQuestion: "Can products be understood and distinguished?",
+      countsChecked: "counts below cover the products checked",
+      withGap: (count: number) => `${count} products with at least one gap`,
+      catalogSummary: (
+        checked: string,
+        gaps: number,
+        unavailable: number,
+        consistency: number,
+      ) =>
+        `${checked} · ${gaps} need attention · ${unavailable} unavailable${consistency ? ` · ${consistency} sampled consistency gaps` : ""}`,
+      catalogGaps: (count: number) =>
+        `${count} catalog ${count === 1 ? "gap" : "gaps"}`,
+      productTypes: (count: number) => `${count} product types`,
+      categories: "Categories & collections",
+      withoutCategory: "without category",
+      withoutTags: "without tags",
+      membership: "Collection membership:",
+      commonTypes: "Common product types:",
+      collectionsList: "Collections:",
+      identity: "Product identity",
+      withoutId: "without SKU/barcode",
+      brandVendorGaps: "brand/vendor gaps",
+      idConflicts: "identifier conflicts",
+      variants: "Variants & buyer options",
+      withVariants: "products with variants",
+      noBuyerOptions: "expose no buyer options",
+      variantOptionGaps: "true variant-option gaps",
+      variantIdGaps: "variant ID gaps",
+      options: "Options:",
+      productInfo: "Product information",
+      wellDescribed: "well described",
+      missingDescriptions: "missing descriptions",
+      thin: "thin",
+      withoutImages: "without images",
+      duplicateCopy: "duplicate copy",
+      availability: "Availability",
+      unavailableProducts: "unavailable products",
+      variantsAcross: "variants across",
+      checkedProducts: "checked products",
+      consistency: "Product consistency",
+      comparingPages: "Comparing sample product pages…",
+      sampledGaps: "sampled gaps",
+      consistencyBody: (pages: number) =>
+        `Catalog ↔ page data for price, availability, product data and buyer attributes on ${pages} sample product pages.`,
+      standsOut: "What stands out",
+      high: "High",
+      catalogLimited:
+        "Catalog-wide detail is limited on this storefront; the representative product pages continue below.",
+      pagesReading: (count: number) => `${count} product pages · reading now`,
+      pagesFailed: (count: number) =>
+        `${count} product pages · we could not finish reading them`,
+      pagesUnavailable:
+        "Representative product-page inspection was not available in this run",
+      pagesGated: (count: number) =>
+        `${count} product pages · after you confirm your email`,
+      pagesGatedBody:
+        "Reading these pages closely is the slow half of the scan, and confirming your email is what starts it. The store and catalog evidence above stays exactly where it is.",
+      inspecting: (count: number) =>
+        `Inspecting ${count} representative product pages`,
+      evidenceReady:
+        "Store and catalog evidence is already available above. Page-level results will appear here automatically.",
+      pdpFailed:
+        "The Store and Catalog observations are still valid. The representative PDP inspection could not complete on this run.",
+      sampleShows: "What the sample product pages show",
+      needAttention: (count: number) => `${count} need attention`,
+      checked: (count: number) => `of ${count} checked`,
+      couldNotCheck: (count: number) => ` · ${count} we could not check`,
+      health: (score: number) => `Health ${score}`,
+      needAttentionOf: (failed: number, total: number) =>
+        `${failed} of ${total} need attention`,
+      openReport: "Open the page report",
+      reportUnavailable: "Report unavailable",
+    },
+    deeper: {
+      title: "See what AI says about your products — and what to change.",
+      intro:
+        "The public storefront read above is already yours. Confirm your email to unlock the slower, higher-value part: page-level recommendations plus real buying questions asked to ChatGPT and Google AI Mode.",
+      assurances: [
+        "Free",
+        "No account",
+        "One email, no marketing list",
+      ] as readonly [string, string, string],
+      aiPages: "AI reads your pages and says what to change",
+      aiPagesDetail:
+        "Open any product page report and AI goes through the page next to the findings above, then writes back concrete improvements and the page copy it based them on.",
+      shopperAnswers: "What shoppers are told today",
+      shopperAnswersDetail: (count: number) =>
+        `Questions written from the ${count} ${count === 1 ? "product" : "products"} we just read, put to ChatGPT and Google AI Mode, with the answers recorded.`,
+      alternatives: "Who gets named when you do not",
+      alternativesDetail:
+        "The competing brands and products that appear in place of yours.",
+    },
+    email: {
+      sentTo: (email: string) => `Sent to ${email}`,
+      completeTitle: "Your link is in your inbox.",
+      continueTitle: "One click in your inbox and we keep going.",
+      completeBody:
+        "Nothing on this page goes away. The link opens this same audit whenever you want it back.",
+      continueBody:
+        "Nothing on this page goes away in the meantime. Open the link and we ask the assistants about your products, then show you the whole audit.",
+      differentEmail: "Send it to a different email",
+      label: "Work email",
+      runningLabel: "Unlock the full scan",
+      completeLabel: "Keep this audit",
+      completeIntro: (domain: string) =>
+        `The audit for ${domain} is complete. Leave an address and we send you the link, so it is yours to open and keep.`,
+      runningIntro: (domain: string) =>
+        `The public read of ${domain} is already on this page. Confirm your email to unlock page-level recommendations, ask ChatGPT and Google AI Mode about your products, and keep the full audit.`,
+      placeholder: "you@company.com",
+      sending: "Sending…",
+      send: "Send it",
+      runningCta: "Continue free",
+      completeCta: "Email me the audit",
+      assurances: [
+        "No account",
+        "No card",
+        "One email, no marketing list",
+      ] as readonly [string, string, string],
+      sent: "Email sent",
+      clickContinue: "One click in your inbox and we continue.",
+      openSent: (email: string) =>
+        `Open the link we sent to ${email}. Nothing on this page goes away in the meantime. You can keep reading, or come back to it later.`,
+      sendAgain: "Send it again",
+      differentAddress: "Use a different address",
+      confirmTitle: "Confirm your email to open both",
+      confirmBody:
+        "We send one link. Click it and both open up: no account, no card, no marketing list.",
+      addEmail: "Add your email",
+      privacyPrefix: "See our",
+      privacy: "privacy policy",
+    },
+    errors: {
+      scanDomain: "We could not scan that domain.",
+      serviceUnavailable: "The scan service is unavailable right now.",
+      missingToken:
+        "That verification link is missing its token. Start or continue your scan below.",
+      usedToken:
+        "That verification link is invalid or has already been used. Start the scan again if you need a new link.",
+      verifyUnavailable:
+        "We could not verify that link right now. Try the link from your email again.",
+      enterDomain: "Enter your store domain.",
+      enterEmail: "Enter your work email.",
+      invalidEmail: "Enter a valid work email.",
+      ownDomain: "Enter your own store domain.",
+      rateLimited:
+        "Too many scan requests right now. Please try again shortly.",
+      sendEmail: "We could not send the verification email.",
+      sendEmailNow: "We could not send the verification email right now.",
+      retrying: "Retrying…",
+      tryAgain: "Try again",
+      pollExhausted:
+        "We did not finish reading your product pages this time. The completed observations below are still useful; read the findings as possibilities, not verdicts.",
+      running: "Running…",
+      runAgain: "Run it again",
+      rejectedTitle: (domain: string) => `We could not read ${domain}.`,
+      blockedExplanation:
+        "Your storefront turned our request away. That is usually a firewall or bot-protection rule, and it does not mean anything is wrong with your store.",
+      noProductsExplanation:
+        "We reached the site but could not find public product pages on it. That happens with storefronts that render products only after login, or that are not a shop at all.",
+      genericExplanation:
+        "The domain did not answer a public request. It may be misspelled, parked, or temporarily down.",
+      blockedSuggestions: [
+        "Check the domain is the storefront shoppers use, not a staging or admin address.",
+        "Ask whoever maintains the store whether bot protection is blocking outside readers. The same rule usually blocks search engines too.",
+      ] as readonly [string, string],
+      noProductsSuggestions: [
+        "Try the domain shoppers actually browse products on, including any market prefix.",
+        "If your products are only visible after login, a public scan cannot reach them, but we can look at them with you.",
+      ] as readonly [string, string],
+      genericSuggestions: [
+        "Check the spelling, and try it without www or a trailing path.",
+        "If the site is live in your browser, wait a moment and run it again.",
+      ] as readonly [string, string],
+      reported: (reason: string) => `What the scan reported: ${reason}`,
+      reviewCta: "See Beseam on my store",
+    },
+  },
   scan: {
     eyebrow: "Free store scan",
-    heading: "See what may stop shoppers from buying.",
+    heading: "See what makes your products harder to find, choose, or buy.",
     intro:
-      "Enter your domain and the scan starts. We read your public store the way a search engine or an AI assistant reads it, and the findings land on this page as they arrive.",
+      "Enter your store domain. Beseam reads the public storefront and shows where products may get missed, become hard to compare, or create buying friction — with evidence and what to fix first.",
     duration: "Usually about a minute.",
     // `FreeScanPromise`'s longer version of `intro`: it runs above the field
     // on /playbook, where the visitor has not come for a scan and needs the
@@ -1364,14 +1854,16 @@ const enDictionary = {
      */
     form: {
       domainLabel: "Store domain",
+      websiteHoneypot: "Website",
       domainPlaceholder: "yourstore.com",
       submit: "Scan my store",
       submitting: "Reading your store…",
       again: "Scan another store",
       startNote:
-        "We start reading your store now. No account, no card. You give us an email once the findings are on screen, so we can send you the audit.",
+        "Starts immediately. We ask for your email only after the first findings are on screen.",
     },
-    contentsHeading: "What the scan reads",
+    contentsHeading: "What we check",
+    scopeNote: "Public storefront only · no store access",
     // The four groups of checks the public scan actually runs, in the order
     // they run (`storefront.py`, `page_audit.py`). The fourth is deliberately
     // the limit rather than a feature: a one-off sample, not the ongoing
@@ -1421,12 +1913,13 @@ const enDictionary = {
     once: "This scan reads your store once. Beseam keeps checking, and proves what changed.",
     continuous: "See what runs continuously →",
     beyond: {
-      heading: "Questions on a schedule, and a recheck after the fix.",
-      body: "In Beseam you read and edit the shopper questions before any of them run, the answers are kept as evidence, fixes are ordered by what is worth doing first, and the same questions are asked again after a change so you can see what moved.",
+      eyebrow: "After the free scan",
+      heading: "A scan finds the gap. Beseam keeps working after you leave.",
+      body: "Keep the same shopper questions running, turn the strongest findings into prepared changes, approve what reaches customers, and recheck the evidence after each change.",
       review:
         "Or bring your store to a twenty-minute review, and we will use one real finding to show what Beseam found, what it would change, and what it checks again afterward.",
-      start: "Start ongoing checks",
-      book: "See Beseam on my store",
+      start: "Start free with my store",
+      book: "Book a 20-minute store review",
     },
   },
 };
