@@ -4,12 +4,15 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { User } from "lucide-react";
 
+import type { Dictionary } from "@/i18n";
+import { useDictionary } from "@/i18n/use-locale";
+
 type Metric = readonly [label: string, value: string, score: number];
 type Satellite = readonly [label: string, value: string];
 type Capability = readonly [label: string, value: string, description: string];
 
 type Hub = {
-  id: string;
+  id: HubId;
   label: string;
   x: number;
   y: number;
@@ -57,248 +60,172 @@ const LAYER = "380ms cubic-bezier(.22,.61,.36,1)";
 // reading/scanning, and starting motion under an active cursor reads as
 // competing for attention rather than demonstrating the product.
 const AUTO_JOURNEY_IDLE_DELAY_MS = 10000;
-const HUBS: readonly Hub[] = [
+/**
+ * Topology and data only: coordinates, ids, and the numeric values that read
+ * the same in every language. Every string a visitor reads -- hub label,
+ * satellite label, metric label, capability label and description -- lives in
+ * the `heroGraph` dictionary namespace and is merged back into the `Hub` and
+ * `Capability` tuples by `localizedHubs` / `localizedCapabilities` below, so a
+ * German visitor never reads an English node.
+ */
+const HUB_DATA = [
   {
     id: "ai",
-    label: "AI answers",
     x: 170,
     y: 158,
-    satellites: [
-      ["ChatGPT", "68"],
-      ["Gemini", "61"],
-      ["AI Mode", "72"],
-      ["citations", "54"],
-    ],
+    satellites: ["68", "61", "72", "54"],
     metrics: [
-      ["ChatGPT visibility", "68 / 100", 68],
-      ["Gemini visibility", "61 / 100", 61],
-      ["Google AI Mode", "72 / 100", 72],
+      ["68 / 100", 68],
+      ["61 / 100", 61],
+      ["72 / 100", 72],
     ],
   },
   {
     id: "search",
-    label: "Search results",
     x: 365,
     y: 108,
-    satellites: [
-      ["JSON-LD", "83%"],
-      ["indexable", "100%"],
-      ["queries", "74%"],
-      ["snippets", "66%"],
-    ],
+    satellites: ["83%", "100%", "74%", "66%"],
     metrics: [
-      ["JSON-LD coverage", "83%", 83],
-      ["Indexability", "100%", 100],
-      ["Query match", "74%", 74],
+      ["83%", 83],
+      ["100%", 100],
+      ["74%", 74],
     ],
   },
   {
     id: "catalog",
-    label: "Products considered",
     x: 590,
     y: 245,
-    satellites: [
-      ["fields", "91%"],
-      ["freshness", "96%"],
-      ["variants", "88%"],
-      ["stock", "94%"],
-    ],
+    satellites: ["91%", "96%", "88%", "94%"],
     metrics: [
-      ["Completeness", "91%", 91],
-      ["Freshness", "96%", 96],
-      ["Variant coverage", "88%", 88],
+      ["91%", 91],
+      ["96%", 96],
+      ["88%", 88],
     ],
   },
   {
     id: "brand",
-    label: "Brand trust",
     x: 770,
     y: 112,
-    satellites: [
-      ["claims", "86%"],
-      ["identity", "94%"],
-      ["trust", "71%"],
-      ["evidence", "79%"],
-    ],
+    satellites: ["86%", "94%", "71%", "79%"],
     metrics: [
-      ["Approved claims", "86%", 86],
-      ["Identity coverage", "94%", 94],
-      ["Trust proof", "71%", 71],
+      ["86%", 86],
+      ["94%", 94],
+      ["71%", 71],
     ],
   },
   {
     id: "truth",
-    label: "Product facts",
     x: 840,
     y: 315,
-    satellites: [
-      ["price", "100%"],
-      ["shipping", "80%"],
-      ["reviews", "60%"],
-      ["facts", "89%"],
-    ],
+    satellites: ["100%", "80%", "60%", "89%"],
     metrics: [
-      ["Facts covered", "5 / 7", 71],
-      ["Shipping facts", "4 / 5", 80],
-      ["Structured facts", "89%", 89],
+      ["5 / 7", 71],
+      ["4 / 5", 80],
+      ["89%", 89],
     ],
   },
   {
     id: "creative",
-    label: "What they see",
     x: 1040,
     y: 118,
-    satellites: [
-      ["images", "82%"],
-      ["video", "46%"],
-      ["brand fit", "91%"],
-      ["assets", "24"],
-    ],
+    satellites: ["82%", "46%", "91%", "24"],
     metrics: [
-      ["Product image coverage", "82%", 82],
-      ["Brand consistency", "91%", 91],
-      ["Video coverage", "46%", 46],
+      ["82%", 82],
+      ["91%", 91],
+      ["46%", 46],
     ],
   },
   {
     id: "campaigns",
-    label: "Ads they see",
     x: 1245,
     y: 155,
-    satellites: [
-      ["Google Ads", "82%"],
-      ["Meta Ads", "76%"],
-      ["landing", "91%"],
-      ["tracking", "88%"],
-    ],
+    satellites: ["82%", "76%", "91%", "88%"],
     metrics: [
-      ["Google Ads readiness", "82%", 82],
-      ["Meta Ads readiness", "76%", 76],
-      ["Landing readiness", "91%", 91],
+      ["82%", 82],
+      ["76%", 76],
+      ["91%", 91],
     ],
   },
   {
     id: "onsite",
-    label: "Store search",
     x: 1085,
     y: 330,
-    satellites: [
-      ["retrieval", "86%"],
-      ["top 3", "64%"],
-      ["zero result", "3.8%"],
-      ["filters", "77%"],
-    ],
+    satellites: ["86%", "64%", "3.8%", "77%"],
     metrics: [
-      ["Retrieval coverage", "86%", 86],
-      ["Top-3 placement", "64%", 64],
-      ["Zero-result rate", "3.8%", 38],
+      ["86%", 86],
+      ["64%", 64],
+      ["3.8%", 38],
     ],
   },
   {
     id: "recs",
-    label: "What gets suggested",
     x: 1325,
     y: 315,
-    satellites: [
-      ["coverage", "84%"],
-      ["affinity", "73%"],
-      ["rules", "12"],
-      ["holdout", "on"],
-    ],
+    satellites: ["84%", "73%", "12", "on"],
     metrics: [
-      ["Catalog coverage", "84%", 84],
-      ["Affinity confidence", "73%", 73],
-      ["Holdout coverage", "62%", 62],
+      ["84%", 84],
+      ["73%", 73],
+      ["62%", 62],
     ],
   },
   {
     id: "pdp",
-    label: "Product page",
     x: 925,
     y: 500,
-    satellites: [
-      ["evidence", "5/7"],
-      ["policy", "82%"],
-      ["trust", "60%"],
-      ["content", "89%"],
-    ],
+    satellites: ["5/7", "82%", "60%", "89%"],
     metrics: [
-      ["Questions answered", "5 / 7", 71],
-      ["Policy clarity", "82%", 82],
-      ["Trust coverage", "60%", 60],
+      ["5 / 7", 71],
+      ["82%", 82],
+      ["60%", 60],
     ],
   },
   {
     id: "behavior",
-    label: "What they do next",
     x: 1225,
     y: 500,
-    satellites: [
-      ["engagement", "18%"],
-      ["friction", "7.2%"],
-      ["searches", "426"],
-      ["replay", "128"],
-    ],
+    satellites: ["18%", "7.2%", "426", "128"],
     metrics: [
-      ["Interaction rate", "18%", 58],
-      ["Friction sessions", "7.2%", 28],
-      ["Searches observed", "426", 76],
+      ["18%", 58],
+      ["7.2%", 28],
+      ["426", 76],
     ],
   },
   {
     id: "checkout",
-    label: "Checkout",
     x: 1490,
     y: 385,
-    satellites: [
-      ["complete", "72%"],
-      ["payment", "97%"],
-      ["drop-off", "28%"],
-      ["errors", "1.4%"],
-    ],
+    satellites: ["72%", "97%", "28%", "1.4%"],
     metrics: [
-      ["Completion", "72%", 72],
-      ["Payment success", "97%", 97],
-      ["Drop-off", "28%", 28],
+      ["72%", 72],
+      ["97%", 97],
+      ["28%", 28],
     ],
   },
   {
     id: "revenue",
-    label: "Purchase",
     x: 1630,
     y: 210,
-    satellites: [
-      ["orders", "184"],
-      ["CVR", "3.6%"],
-      ["AOV", "€84"],
-      ["impact", "+8.4%"],
-    ],
+    satellites: ["184", "3.6%", "€84", "+8.4%"],
     metrics: [
-      ["Orders", "184", 74],
-      ["Conversion rate", "3.6%", 60],
-      ["Observed impact", "+8.4%", 68],
+      ["184", 74],
+      ["3.6%", 60],
+      ["+8.4%", 68],
     ],
   },
   {
     id: "marketplaces",
-    label: "Marketplaces",
     x: 1720,
     y: 260,
-    satellites: [
-      ["Amazon", "74"],
-      ["eBay", "58"],
-      ["Otto", "62"],
-      ["Galaxus", "69"],
-    ],
+    satellites: ["74", "58", "62", "69"],
     metrics: [
-      ["Amazon visibility", "74 / 100", 74],
-      ["eBay visibility", "58 / 100", 58],
-      ["Buy Box coverage", "72%", 72],
+      ["74 / 100", 74],
+      ["58 / 100", 58],
+      ["72%", 72],
     ],
   },
 ] as const;
 
-type HubId = (typeof HUBS)[number]["id"];
+type HubId = (typeof HUB_DATA)[number]["id"];
 type GraphLayoutName = "mobile" | "tablet" | "desktop" | "wide" | "ultrawide";
 type GraphLayout = {
   width: number;
@@ -460,441 +387,105 @@ function resolveGraphLayout(width: number, height: number): GraphLayoutName {
   return "desktop";
 }
 
-const CAPABILITIES: Readonly<Record<string, readonly Capability[]>> = {
-  ai: [
-    [
-      "Did they name you?",
-      "Observed",
-      "Check how products and the brand appear across AI shopping surfaces.",
-    ],
-    [
-      "What changed?",
-      "Check again",
-      "Ask the same shopper questions again and show what changed.",
-    ],
-    [
-      "Questions you appear for",
-      "68%",
-      "Measure whether products are present for the shopper questions that matter.",
-    ],
-    [
-      "Who was chosen instead?",
-      "Observed",
-      "Observe products that appear instead of or alongside the merchant catalog.",
-    ],
-    [
-      "What sources support it?",
-      "54%",
-      "Track the sources that support how the product is described.",
-    ],
-  ],
-  search: [
-    [
-      "Queries finding you",
-      "Observed",
-      "Connect search results to the products shoppers are trying to find.",
-    ],
-    [
-      "Machine-readable facts",
-      "83%",
-      "Structured product information available to search and shopping systems.",
-    ],
-    [
-      "Can the page be found?",
-      "100%",
-      "Whether important product pages can be found and indexed.",
-    ],
-    [
-      "Does the wording match?",
-      "74%",
-      "How well product facts match real shopper searches.",
-    ],
-    [
-      "What search can show",
-      "66%",
-      "Visible and structured product data that can support richer search results.",
-    ],
-  ],
-  catalog: [
-    [
-      "Products available",
-      "Catalog",
-      "The products and variants shoppers can actually choose.",
-    ],
-    [
-      "Variants shoppers can choose",
-      "Catalog",
-      "Variant-level product facts available when shoppers choose.",
-    ],
-    [
-      "Facts worth adding",
-      "Gap",
-      "Product facts that may make choosing easier.",
-    ],
-    [
-      "Approved product changes",
-      "Approved",
-      "Merchant-approved product changes prepared for the storefront.",
-    ],
-    [
-      "Variant choices",
-      "88%",
-      "Coverage of variant-level product truth across the catalog.",
-    ],
-    [
-      "Availability matches",
-      "94%",
-      "Agreement between catalog availability and visible storefront state.",
-    ],
-  ],
-  brand: [
-    [
-      "Who you are",
-      "Info",
-      "Brand information available when shoppers compare you with alternatives.",
-    ],
-    [
-      "Current brand info",
-      "Fresh",
-      "Keep the brand information shoppers see up to date.",
-    ],
-    [
-      "Claims shoppers can trust",
-      "86%",
-      "Claims with enough proof to reuse safely.",
-    ],
-    [
-      "Policies and proof",
-      "71%",
-      "Policies, proof, and trust information attached to the brand.",
-    ],
-    [
-      "Same story everywhere",
-      "94%",
-      "Consistency between approved brand context and what shoppers encounter.",
-    ],
-  ],
-  truth: [
-    [
-      "Price & availability",
-      "96%",
-      "Canonical price, availability and offer-state agreement.",
-    ],
-    [
-      "Price matches",
-      "100%",
-      "Price consistency across catalog, schema and the visible product page.",
-    ],
-    [
-      "Delivery answer",
-      "80%",
-      "Shipping information available in the data and on the page.",
-    ],
-    [
-      "Review proof",
-      "60%",
-      "Whether reviews are visible where shoppers decide.",
-    ],
-    [
-      "Facts match the page",
-      "89%",
-      "Whether structured product data matches what shoppers see on the page.",
-    ],
-    [
-      "Check again after change",
-      "Check again",
-      "Check the same product information after an approved change.",
-    ],
-  ],
+// The capability value slot, in graph order per hub. Paired back with the
+// translated label and description by `localizedCapabilities`.
+const CAPABILITY_VALUES: Readonly<Record<string, readonly string[]>> = {
+  ai: ["Observed", "Check again", "68%", "Observed", "54%"],
+  search: ["Observed", "83%", "100%", "74%", "66%"],
+  catalog: ["Catalog", "Catalog", "Gap", "Approved", "88%", "94%"],
+  brand: ["Info", "Fresh", "86%", "71%", "94%"],
+  truth: ["96%", "100%", "80%", "60%", "89%", "Check again"],
   creative: [
-    [
-      "What shoppers see first",
-      "Content",
-      "The images and content shoppers see before they compare in detail.",
-    ],
-    [
-      "Product imagery",
-      "Available",
-      "Images that help shoppers understand the product and use case.",
-    ],
-    [
-      "Product video",
-      "Available",
-      "Video that can answer questions static product facts cannot.",
-    ],
-    [
-      "Is the proof clear?",
-      "Review",
-      "Check whether the images or video support the product claim.",
-    ],
-    [
-      "Available product proof",
-      "Content",
-      "Reusable assets tied to the product and brand context.",
-    ],
-    [
-      "Use-case content",
-      "Content",
-      "Content that helps shoppers understand whether the product fits their need.",
-    ],
+    "Content",
+    "Available",
+    "Available",
+    "Review",
+    "Content",
+    "Content",
   ],
   campaigns: [
-    [
-      "Can the ad land well?",
-      "Readiness",
-      "Check whether the product, tracking, and landing experience support the promise in the ad.",
-    ],
-    [
-      "Offer and message",
-      "Message",
-      "The promise a shopper sees before arriving at the product or store.",
-    ],
-    [
-      "Approved campaign change",
-      "Approved",
-      "A merchant-approved campaign change tied to the reason behind it.",
-    ],
-    [
-      "Does the landing answer?",
-      "Check",
-      "Check whether the landing page answers the question the ad created.",
-    ],
-    [
-      "Creative variants",
-      "Options",
-      "Alternative messages and creative for the same product and shopper need.",
-    ],
-    [
-      "What earns the click",
-      "Observed",
-      "See which product message gets shopper attention.",
-    ],
-    [
-      "Who clicked and bought?",
-      "Observed",
-      "Connect campaign response with the downstream buying path.",
-    ],
-    [
-      "What the traffic cost",
-      "Measured",
-      "Keep paid traffic cost separate from the purchases that follow.",
-    ],
+    "Readiness",
+    "Message",
+    "Approved",
+    "Check",
+    "Options",
+    "Observed",
+    "Observed",
+    "Measured",
   ],
-  onsite: [
-    [
-      "What shoppers searched",
-      "Observed",
-      "The words shoppers use when they are trying to find the right product.",
-    ],
-    [
-      "Which products appeared",
-      "64% top 3",
-      "Where relevant products appear in onsite search results.",
-    ],
-    [
-      "Where search failed",
-      "3.8%",
-      "Shopping searches that return no useful product result.",
-    ],
-    [
-      "What they did next",
-      "Observed",
-      "Shopper behavior after a search result is shown.",
-    ],
-    [
-      "What shapes the ranking",
-      "Rules",
-      "Rules and product data that influence which options a shopper sees.",
-    ],
-  ],
-  recs: [
-    [
-      "What was recommended",
-      "Observed",
-      "The products the storefront places in front of the shopper.",
-    ],
-    [
-      "Why these products?",
-      "Rules",
-      "The merchandising rules and product data that shape recommendations.",
-    ],
-    [
-      "Fit to shopper need",
-      "73%",
-      "How well the product matches what the shopper appears to want.",
-    ],
-    [
-      "Eligible products",
-      "84%",
-      "How much of the relevant catalog can participate in recommendations.",
-    ],
-    [
-      "Did recommendations help?",
-      "Measured",
-      "Compare recommendation exposure with what shoppers did afterward.",
-    ],
-  ],
-  pdp: [
-    [
-      "Questions answered",
-      "Page",
-      "Product-page information available for the questions shoppers ask before choosing.",
-    ],
-    [
-      "What is missing?",
-      "Observed",
-      "Find gaps in the product page without pretending every gap caused the choice.",
-    ],
-    [
-      "Check after the change",
-      "Check again",
-      "Check the same product-page information after an approved change.",
-    ],
-    [
-      "Facts match the page",
-      "89%",
-      "Agreement between visible page content and structured product facts.",
-    ],
-    [
-      "Size & fit",
-      "Info",
-      "Fit guidance and size recommendations that help shoppers choose the right variant.",
-    ],
-    [
-      "Reviews & trust",
-      "60%",
-      "Reviews and trust information visible when shoppers decide.",
-    ],
-    [
-      "Returns & delivery",
-      "82%",
-      "Policy and delivery information visible before the shopper commits.",
-    ],
-  ],
+  onsite: ["Observed", "64% top 3", "3.8%", "Observed", "Rules"],
+  recs: ["Observed", "Rules", "73%", "84%", "Measured"],
+  pdp: ["Page", "Observed", "Check again", "89%", "Info", "60%", "82%"],
   behavior: [
-    [
-      "What shoppers did",
-      "Observed",
-      "Navigation, engagement, commerce, and friction events around the buying path.",
-    ],
-    [
-      "Where they hesitated",
-      "Observed",
-      "Shopper behavior that may point to uncertainty or friction.",
-    ],
-    [
-      "What they searched",
-      "Observed",
-      "Search behavior connected to what the shopper did afterward.",
-    ],
-    [
-      "What they opened",
-      "Observed",
-      "Which products, pages, and information the shopper actually viewed.",
-    ],
-    [
-      "Where they left",
-      "Observed",
-      "The point in the journey where a shopper stopped moving forward.",
-    ],
-    [
-      "Session replay",
-      "Replay",
-      "Replay to understand shopper friction without pretending it proves the cause.",
-    ],
-    [
-      "Interaction patterns",
-      "Heatmap",
-      "See which parts of a page shoppers use or ignore across many sessions.",
-    ],
+    "Observed",
+    "Observed",
+    "Observed",
+    "Observed",
+    "Observed",
+    "Replay",
+    "Heatmap",
   ],
-  checkout: [
-    [
-      "Where checkout stopped",
-      "28%",
-      "Observed shopper loss during the purchase path.",
-    ],
-    [
-      "Payment success",
-      "97%",
-      "Observed payment completion across tracked checkout sessions.",
-    ],
-    [
-      "Delivery friction",
-      "Observed",
-      "Delivery cost and timing that can change a shopper's final choice.",
-    ],
-    [
-      "Technical errors",
-      "Observed",
-      "Runtime errors that may interfere with purchase completion.",
-    ],
-    [
-      "Did the fix hold?",
-      "Check again",
-      "Check the same checkout data after an approved change.",
-    ],
-  ],
-  revenue: [
-    [
-      "Was there a purchase?",
-      "Orders",
-      "Booked orders and revenue used as proof of purchase.",
-    ],
-    [
-      "What changed after?",
-      "Check again",
-      "Before-and-after measurement tied to a completed change.",
-    ],
-    [
-      "Observed vs attributed",
-      "Separate",
-      "Keep directly observed and attributed revenue separate.",
-    ],
-    [
-      "Conversion path",
-      "Funnel",
-      "Where shoppers move forward or stop across the buying journey.",
-    ],
-    [
-      "Which shoppers changed?",
-      "Cohort",
-      "See how results differ across shopper groups.",
-    ],
-    [
-      "Does revenue reconcile?",
-      "Check",
-      "Check that tracked revenue matches the store's revenue data.",
-    ],
-  ],
-  marketplaces: [
-    [
-      "Who wins the Buy Box?",
-      "72%",
-      "Share of tracked listings currently winning the buy box against competing sellers.",
-    ],
-    [
-      "Can shoppers compare it?",
-      "88%",
-      "Required marketplace fields and imagery present across tracked SKUs.",
-    ],
-    [
-      "Does the price match?",
-      "91%",
-      "Tracked listings priced in line with the merchant's own storefront.",
-    ],
-    [
-      "Where does it rank?",
-      "Top 20",
-      "Median tracked position within its marketplace category page.",
-    ],
-    [
-      "Is there enough proof?",
-      "64%",
-      "Tracked products with enough reviews to help shoppers choose.",
-    ],
-  ],
+  checkout: ["28%", "97%", "Observed", "Observed", "Check again"],
+  revenue: ["Orders", "Check again", "Separate", "Funnel", "Cohort", "Check"],
+  marketplaces: ["72%", "88%", "91%", "Top 20", "64%"],
 };
+
+type HeroGraphCopy = Dictionary["heroGraph"];
+
+/**
+ * The dictionary keys satellites, metrics and capabilities by index ("0",
+ * "1", ...) rather than as arrays, for the same reason `faq.items` is keyed:
+ * `Dictionary` only enforces a key set, and an array would let a locale ship
+ * three satellites where English ships four -- the graph would then render an
+ * undefined label rather than fail the build. Integer-like keys iterate in
+ * ascending numeric order, so this restores the graph's own order exactly.
+ */
+function indexedCopy<T>(entries: Readonly<Record<string, T>>): readonly T[] {
+  return Object.values(entries);
+}
+
+function localizedHubs(copy: HeroGraphCopy): readonly Hub[] {
+  // Every satellite value is a number ("68", "3.8%", "€84") except one, which is
+  // a word and therefore copy; it is overridden by hub id and index.
+  const valueOverrides: Record<string, string> = copy.satelliteValues;
+  return HUB_DATA.map((hub) => {
+    const hubCopy = copy.hubs[hub.id];
+    const satelliteLabels = indexedCopy<string>(hubCopy.satellites);
+    const metricLabels = indexedCopy<string>(hubCopy.metrics);
+    return {
+      id: hub.id,
+      label: hubCopy.label,
+      x: hub.x,
+      y: hub.y,
+      satellites: hub.satellites.map((value, index): Satellite => [
+        satelliteLabels[index],
+        valueOverrides[`${hub.id}.${index}`] ?? value,
+      ]),
+      metrics: hub.metrics.map(([value, score], index): Metric => [
+        metricLabels[index],
+        value,
+        score,
+      ]),
+    };
+  });
+}
+
+function localizedCapabilities(
+  copy: HeroGraphCopy,
+): Readonly<Record<string, readonly Capability[]>> {
+  return Object.fromEntries(
+    HUB_DATA.map((hub) => [
+      hub.id,
+      indexedCopy<{ label: string; description: string }>(
+        copy.hubs[hub.id].capabilities,
+      ).map((capability, index): Capability => [
+        capability.label,
+        CAPABILITY_VALUES[hub.id][index],
+        capability.description,
+      ]),
+    ]),
+  );
+}
 
 const LINKS = [
   ["ai", "search"],
@@ -1280,6 +871,12 @@ export default function HeroSurfaceShift() {
     };
   }, []);
 
+  const graphCopy = useDictionary().heroGraph;
+  const hubs = useMemo(() => localizedHubs(graphCopy), [graphCopy]);
+  const capabilitiesByHub = useMemo(
+    () => localizedCapabilities(graphCopy),
+    [graphCopy],
+  );
   const graphLayout = GRAPH_LAYOUTS[layoutName];
   const autoJourney = JOURNEYS[autoJourneyIndex];
   const autoJourneyVisible =
@@ -1316,7 +913,7 @@ export default function HeroSurfaceShift() {
   );
   const layoutHubs = useMemo<Hub[]>(
     () =>
-      HUBS.map((hub) => {
+      hubs.map((hub) => {
         const position = graphLayout.positions[hub.id];
         const centre = graphLayout.width / 2;
         return {
@@ -1325,7 +922,7 @@ export default function HeroSurfaceShift() {
           y: position.y * verticalScale,
         };
       }),
-    [graphLayout, verticalScale],
+    [graphLayout, hubs, verticalScale],
   );
   const hubById = useMemo(
     () =>
@@ -1338,7 +935,7 @@ export default function HeroSurfaceShift() {
 
   const capabilityNodes = useMemo<CapabilityNode[]>(() => {
     return layoutHubs.flatMap((hub, hubIndex) => {
-      const capabilities = (CAPABILITIES[hub.id] ?? []).slice(
+      const capabilities = (capabilitiesByHub[hub.id] ?? []).slice(
         0,
         graphLayout.capabilityLimit,
       );
@@ -1373,7 +970,14 @@ export default function HeroSurfaceShift() {
         return { hubId: hub.id, index, x, y, capability };
       });
     });
-  }, [graphHeight, graphLayout, heroExclusion, layoutHubs, layoutName]);
+  }, [
+    capabilitiesByHub,
+    graphHeight,
+    graphLayout,
+    heroExclusion,
+    layoutHubs,
+    layoutName,
+  ]);
   const setAutoSignalPosition = useCallback((point: Point) => {
     const marker = autoSignalRef.current;
     const root = rootRef.current;

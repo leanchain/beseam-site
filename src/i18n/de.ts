@@ -105,6 +105,625 @@ export const de: Dictionary = {
     scrollCue: "Scrollen",
   },
 
+  // Kurz halten: die Knoten sitzen auf festen Koordinaten, ein längeres Label
+  // überlappt seinen Nachbarn. Markennamen (ChatGPT, Gemini, AI Mode, Google,
+  // Buy Box, Amazon, eBay, Otto, Galaxus) bleiben unverändert.
+  heroGraph: {
+    satelliteValues: { "recs.3": "an" },
+    hubs: {
+      ai: {
+        label: "KI-Antworten",
+        satellites: {
+          0: "ChatGPT",
+          1: "Gemini",
+          2: "AI Mode",
+          3: "Quellen",
+        },
+        metrics: {
+          0: "ChatGPT-Sichtbarkeit",
+          1: "Gemini-Sichtbarkeit",
+          2: "Google AI Mode",
+        },
+        capabilities: {
+          0: {
+            label: "Wurden Sie genannt?",
+            description:
+              "Prüfen, wie Produkte und Marke in KI-Shopping-Kanälen erscheinen.",
+          },
+          1: {
+            label: "Was hat sich geändert?",
+            description:
+              "Dieselben Kundenfragen erneut stellen und zeigen, was sich geändert hat.",
+          },
+          2: {
+            label: "Fragen mit Ihrer Nennung",
+            description:
+              "Messen, ob Produkte bei den relevanten Kundenfragen vorkommen.",
+          },
+          3: {
+            label: "Wer wurde stattdessen gewählt?",
+            description:
+              "Produkte beobachten, die statt oder neben Ihrem Katalog erscheinen.",
+          },
+          4: {
+            label: "Welche Quellen stützen das?",
+            description:
+              "Die Quellen verfolgen, die die Produktbeschreibung stützen.",
+          },
+        },
+      },
+      search: {
+        label: "Suchergebnisse",
+        satellites: {
+          0: "JSON-LD",
+          1: "indexierbar",
+          2: "Anfragen",
+          3: "Snippets",
+        },
+        metrics: {
+          0: "JSON-LD-Abdeckung",
+          1: "Indexierbarkeit",
+          2: "Anfragen-Treffer",
+        },
+        capabilities: {
+          0: {
+            label: "Anfragen, die Sie finden",
+            description:
+              "Suchergebnisse mit den Produkten verbinden, die Kundschaft sucht.",
+          },
+          1: {
+            label: "Maschinenlesbare Fakten",
+            description:
+              "Strukturierte Produktdaten, die Such- und Shopping-Systeme lesen können.",
+          },
+          2: {
+            label: "Ist die Seite auffindbar?",
+            description:
+              "Ob wichtige Produktseiten gefunden und indexiert werden können.",
+          },
+          3: {
+            label: "Passen die Begriffe?",
+            description: "Wie gut Produktfakten zu echten Suchanfragen passen.",
+          },
+          4: {
+            label: "Was die Suche zeigt",
+            description:
+              "Sichtbare und strukturierte Produktdaten für reichhaltigere Suchergebnisse.",
+          },
+        },
+      },
+      catalog: {
+        label: "Produkte in der Auswahl",
+        satellites: {
+          0: "Felder",
+          1: "Aktualität",
+          2: "Varianten",
+          3: "Bestand",
+        },
+        metrics: {
+          0: "Vollständigkeit",
+          1: "Aktualität",
+          2: "Variantenabdeckung",
+        },
+        capabilities: {
+          0: {
+            label: "Verfügbare Produkte",
+            description:
+              "Die Produkte und Varianten, die Kundschaft wirklich wählen kann.",
+          },
+          1: {
+            label: "Wählbare Varianten",
+            description:
+              "Produktfakten je Variante, verfügbar im Moment der Wahl.",
+          },
+          2: {
+            label: "Sinnvolle Ergänzungen",
+            description: "Produktfakten, die die Wahl erleichtern können.",
+          },
+          3: {
+            label: "Freigegebene Änderungen",
+            description:
+              "Von Ihnen freigegebene Produktänderungen, bereit für den Shop.",
+          },
+          4: {
+            label: "Variantenauswahl",
+            description: "Abdeckung der Variantenfakten im gesamten Katalog.",
+          },
+          5: {
+            label: "Bestand stimmt",
+            description:
+              "Übereinstimmung zwischen Katalogbestand und sichtbarem Shop.",
+          },
+        },
+      },
+      brand: {
+        label: "Markenvertrauen",
+        satellites: {
+          0: "Aussagen",
+          1: "Identität",
+          2: "Vertrauen",
+          3: "Belege",
+        },
+        metrics: {
+          0: "Freigegebene Aussagen",
+          1: "Identitätsabdeckung",
+          2: "Vertrauensbelege",
+        },
+        capabilities: {
+          0: {
+            label: "Wer Sie sind",
+            description:
+              "Markeninformationen, die beim Vergleich mit Alternativen verfügbar sind.",
+          },
+          1: {
+            label: "Aktuelle Markendaten",
+            description: "Die sichtbaren Markeninformationen aktuell halten.",
+          },
+          2: {
+            label: "Belegte Aussagen",
+            description:
+              "Aussagen mit genug Beleg, um sie sicher weiterzuverwenden.",
+          },
+          3: {
+            label: "Richtlinien und Belege",
+            description: "Richtlinien, Belege und Vertrauensangaben zur Marke.",
+          },
+          4: {
+            label: "Überall dieselbe Aussage",
+            description:
+              "Übereinstimmung zwischen freigegebenem Markenkontext und dem, was Kundschaft sieht.",
+          },
+        },
+      },
+      truth: {
+        label: "Produktfakten",
+        satellites: {
+          0: "Preis",
+          1: "Versand",
+          2: "Bewertungen",
+          3: "Fakten",
+        },
+        metrics: {
+          0: "Abgedeckte Fakten",
+          1: "Versandangaben",
+          2: "Strukturierte Fakten",
+        },
+        capabilities: {
+          0: {
+            label: "Preis & Verfügbarkeit",
+            description:
+              "Übereinstimmung von Preis, Verfügbarkeit und Angebotsstatus.",
+          },
+          1: {
+            label: "Preis stimmt",
+            description:
+              "Preisgleichheit über Katalog, Schema und sichtbare Produktseite.",
+          },
+          2: {
+            label: "Lieferauskunft",
+            description: "Versandangaben in den Daten und auf der Seite.",
+          },
+          3: {
+            label: "Bewertungsbeleg",
+            description:
+              "Ob Bewertungen dort sichtbar sind, wo entschieden wird.",
+          },
+          4: {
+            label: "Fakten passen zur Seite",
+            description:
+              "Ob strukturierte Produktdaten zu dem passen, was auf der Seite steht.",
+          },
+          5: {
+            label: "Nach der Änderung prüfen",
+            description:
+              "Dieselben Produktangaben nach einer freigegebenen Änderung prüfen.",
+          },
+        },
+      },
+      creative: {
+        label: "Was sie sehen",
+        satellites: {
+          0: "Bilder",
+          1: "Video",
+          2: "Markenpassung",
+          3: "Material",
+        },
+        metrics: {
+          0: "Bildabdeckung",
+          1: "Markenkonsistenz",
+          2: "Videoabdeckung",
+        },
+        capabilities: {
+          0: {
+            label: "Was zuerst zu sehen ist",
+            description:
+              "Bilder und Inhalte, die Kundschaft sieht, bevor sie genauer vergleicht.",
+          },
+          1: {
+            label: "Produktbilder",
+            description:
+              "Bilder, die Produkt und Anwendungsfall verständlich machen.",
+          },
+          2: {
+            label: "Produktvideo",
+            description:
+              "Video, das Fragen beantwortet, die reine Fakten offenlassen.",
+          },
+          3: {
+            label: "Ist der Beleg klar?",
+            description:
+              "Prüfen, ob Bilder oder Video die Produktaussage stützen.",
+          },
+          4: {
+            label: "Vorhandene Belege",
+            description:
+              "Wiederverwendbares Material zu Produkt und Markenkontext.",
+          },
+          5: {
+            label: "Inhalte zum Einsatz",
+            description:
+              "Inhalte, die zeigen, ob das Produkt zum Bedarf passt.",
+          },
+        },
+      },
+      campaigns: {
+        // Nicht "Gesehene Anzeigen": das Label überlappt bei 1024 px den Wert
+        // "91%" des Nachbarsatelliten um 13,9 px -- gemessen, nicht geschätzt.
+        label: "Anzeigen",
+        satellites: {
+          0: "Google Ads",
+          1: "Meta Ads",
+          2: "Zielseite",
+          3: "Tracking",
+        },
+        metrics: {
+          0: "Google-Ads-Bereitschaft",
+          1: "Meta-Ads-Bereitschaft",
+          2: "Zielseiten-Bereitschaft",
+        },
+        capabilities: {
+          0: {
+            label: "Trägt die Anzeige?",
+            description:
+              "Prüfen, ob Produkt, Tracking und Zielseite das Versprechen der Anzeige tragen.",
+          },
+          1: {
+            label: "Angebot und Aussage",
+            description: "Das Versprechen, das Kundschaft vor dem Klick sieht.",
+          },
+          2: {
+            label: "Freigegebene Änderung",
+            description:
+              "Eine von Ihnen freigegebene Kampagnenänderung samt Begründung.",
+          },
+          3: {
+            label: "Antwortet die Zielseite?",
+            description:
+              "Prüfen, ob die Zielseite die Frage der Anzeige beantwortet.",
+          },
+          4: {
+            label: "Motivvarianten",
+            description:
+              "Alternative Aussagen und Motive für dasselbe Produkt und denselben Bedarf.",
+          },
+          5: {
+            label: "Was den Klick bringt",
+            description: "Sehen, welche Produktaussage Aufmerksamkeit bekommt.",
+          },
+          6: {
+            label: "Wer klickte und kaufte?",
+            description:
+              "Kampagnenreaktion mit dem weiteren Kaufweg verbinden.",
+          },
+          7: {
+            label: "Klickkosten",
+            description:
+              "Kosten bezahlter Zugriffe getrennt von den folgenden Käufen halten.",
+          },
+        },
+      },
+      onsite: {
+        label: "Shop-Suche",
+        satellites: {
+          0: "Treffer",
+          1: "Top 3",
+          2: "Null Treffer",
+          3: "Filter",
+        },
+        metrics: {
+          0: "Trefferabdeckung",
+          1: "Top-3-Platzierung",
+          2: "Null-Treffer-Quote",
+        },
+        capabilities: {
+          0: {
+            label: "Wonach gesucht wurde",
+            description:
+              "Die Worte, mit denen Kundschaft das passende Produkt sucht.",
+          },
+          1: {
+            label: "Welche Produkte kamen",
+            description: "Wo relevante Produkte in der Shop-Suche erscheinen.",
+          },
+          2: {
+            label: "Suche ohne Treffer",
+            description: "Suchen, die kein brauchbares Produkt zurückgeben.",
+          },
+          3: {
+            label: "Was danach geschah",
+            description: "Verhalten der Kundschaft nach einem Suchergebnis.",
+          },
+          4: {
+            label: "Was das Ranking formt",
+            description:
+              "Regeln und Produktdaten, die die gezeigten Optionen beeinflussen.",
+          },
+        },
+      },
+      recs: {
+        label: "Was empfohlen wird",
+        satellites: {
+          0: "Abdeckung",
+          1: "Affinität",
+          2: "Regeln",
+          3: "Holdout",
+        },
+        metrics: {
+          0: "Katalogabdeckung",
+          1: "Affinitätsgüte",
+          2: "Holdout-Abdeckung",
+        },
+        capabilities: {
+          0: {
+            label: "Was empfohlen wurde",
+            description: "Die Produkte, die der Shop der Kundschaft zeigt.",
+          },
+          1: {
+            label: "Warum diese Produkte?",
+            description: "Die Regeln und Produktdaten hinter den Empfehlungen.",
+          },
+          2: {
+            label: "Passung zum Bedarf",
+            description: "Wie gut das Produkt zum erkennbaren Bedarf passt.",
+          },
+          3: {
+            label: "Geeignete Produkte",
+            description:
+              "Wie viel des Katalogs in Empfehlungen auftauchen kann.",
+          },
+          4: {
+            label: "Halfen die Empfehlungen?",
+            description: "Empfehlungen mit dem späteren Verhalten vergleichen.",
+          },
+        },
+      },
+      pdp: {
+        label: "Produktseite",
+        satellites: {
+          0: "Belege",
+          1: "Richtlinien",
+          2: "Vertrauen",
+          3: "Inhalt",
+        },
+        metrics: {
+          0: "Beantwortete Fragen",
+          1: "Klarheit der Richtlinien",
+          2: "Vertrauensabdeckung",
+        },
+        capabilities: {
+          0: {
+            label: "Beantwortete Fragen",
+            description:
+              "Angaben auf der Produktseite zu den Fragen vor der Wahl.",
+          },
+          1: {
+            label: "Was fehlt?",
+            description:
+              "Lücken auf der Produktseite finden, ohne jede Lücke zur Ursache zu erklären.",
+          },
+          2: {
+            label: "Nach der Änderung prüfen",
+            description:
+              "Dieselben Angaben der Produktseite nach der Änderung prüfen.",
+          },
+          3: {
+            label: "Fakten passen zur Seite",
+            description:
+              "Übereinstimmung von sichtbarem Inhalt und strukturierten Fakten.",
+          },
+          4: {
+            label: "Größe & Passform",
+            description:
+              "Hinweise zu Passform und Größe für die richtige Variante.",
+          },
+          5: {
+            label: "Bewertungen & Vertrauen",
+            description:
+              "Bewertungen und Vertrauensangaben im Moment der Entscheidung.",
+          },
+          6: {
+            label: "Rückgabe & Lieferung",
+            description:
+              "Richtlinien und Lieferangaben vor dem Kaufentschluss.",
+          },
+        },
+      },
+      behavior: {
+        label: "Was sie dann tun",
+        satellites: {
+          0: "Interaktion",
+          1: "Reibung",
+          2: "Suchen",
+          3: "Aufzeichnung",
+        },
+        metrics: {
+          0: "Interaktionsrate",
+          1: "Reibungs-Sitzungen",
+          2: "Beobachtete Suchen",
+        },
+        capabilities: {
+          0: {
+            label: "Was Kundschaft tat",
+            description:
+              "Navigation, Interaktion, Kauf und Reibung entlang des Kaufwegs.",
+          },
+          1: {
+            label: "Wo sie zögerten",
+            description:
+              "Verhalten, das auf Unsicherheit oder Reibung hindeuten kann.",
+          },
+          2: {
+            label: "Wonach sie suchten",
+            description:
+              "Suchverhalten, verbunden mit dem, was danach geschah.",
+          },
+          3: {
+            label: "Was sie öffneten",
+            description:
+              "Welche Produkte, Seiten und Angaben tatsächlich gesehen wurden.",
+          },
+          4: {
+            label: "Wo sie abbrachen",
+            description: "Der Punkt im Kaufweg, an dem es nicht weiterging.",
+          },
+          5: {
+            label: "Aufzeichnung",
+            description:
+              "Aufzeichnungen zeigen Reibung, beweisen aber keine Ursache.",
+          },
+          6: {
+            label: "Interaktionsmuster",
+            description:
+              "Sehen, welche Seitenteile genutzt und welche ignoriert werden.",
+          },
+        },
+      },
+      checkout: {
+        label: "Checkout",
+        satellites: {
+          0: "Abschluss",
+          1: "Zahlung",
+          2: "Abbruch",
+          3: "Fehler",
+        },
+        metrics: {
+          0: "Abschlussquote",
+          1: "Zahlungserfolg",
+          2: "Abbruchquote",
+        },
+        capabilities: {
+          0: {
+            label: "Wo der Checkout stoppte",
+            description: "Beobachtete Abbrüche auf dem Kaufweg.",
+          },
+          1: {
+            label: "Zahlungserfolg",
+            description:
+              "Beobachtete Zahlungsabschlüsse in erfassten Checkouts.",
+          },
+          2: {
+            label: "Lieferhürden",
+            description:
+              "Lieferkosten und -zeiten, die die Wahl noch kippen können.",
+          },
+          3: {
+            label: "Technische Fehler",
+            description: "Laufzeitfehler, die den Kaufabschluss stören können.",
+          },
+          4: {
+            label: "Hielt die Behebung?",
+            description: "Dieselben Checkout-Daten nach der Änderung prüfen.",
+          },
+        },
+      },
+      revenue: {
+        label: "Kauf",
+        satellites: {
+          0: "Bestellungen",
+          1: "CVR",
+          2: "AOV",
+          3: "Wirkung",
+        },
+        metrics: {
+          0: "Bestellungen",
+          1: "Conversion-Rate",
+          2: "Beobachtete Wirkung",
+        },
+        capabilities: {
+          0: {
+            label: "Gab es einen Kauf?",
+            description: "Gebuchte Bestellungen und Umsatz als Kaufbeleg.",
+          },
+          1: {
+            label: "Was änderte sich danach?",
+            description:
+              "Vorher-Nachher-Messung zu einer abgeschlossenen Änderung.",
+          },
+          2: {
+            label: "Beobachtet vs. zugeordnet",
+            description:
+              "Direkt beobachteten und zugeordneten Umsatz getrennt halten.",
+          },
+          3: {
+            label: "Kaufweg",
+            description: "Wo Kundschaft weitergeht oder stehen bleibt.",
+          },
+          4: {
+            label: "Wer hat sich verändert?",
+            description:
+              "Sehen, wie sich Ergebnisse je Kundengruppe unterscheiden.",
+          },
+          5: {
+            label: "Stimmt der Umsatz?",
+            description:
+              "Prüfen, ob der erfasste Umsatz zu den Shop-Daten passt.",
+          },
+        },
+      },
+      marketplaces: {
+        label: "Marktplätze",
+        satellites: {
+          0: "Amazon",
+          1: "eBay",
+          2: "Otto",
+          3: "Galaxus",
+        },
+        metrics: {
+          0: "Amazon-Sichtbarkeit",
+          1: "eBay-Sichtbarkeit",
+          2: "Buy-Box-Abdeckung",
+        },
+        capabilities: {
+          0: {
+            label: "Wer gewinnt die Buy Box?",
+            description:
+              "Anteil der erfassten Angebote, die die Buy Box gegen Mitbewerber gewinnen.",
+          },
+          1: {
+            label: "Ist es vergleichbar?",
+            description:
+              "Pflichtfelder und Bilder des Marktplatzes über alle erfassten SKUs.",
+          },
+          2: {
+            label: "Stimmt der Preis?",
+            description:
+              "Erfasste Angebote, deren Preis zum eigenen Shop passt.",
+          },
+          3: {
+            label: "Auf welchem Platz?",
+            description:
+              "Mittlere erfasste Position auf der Kategorieseite des Marktplatzes.",
+          },
+          4: {
+            label: "Genug Belege?",
+            description:
+              "Erfasste Produkte mit genug Bewertungen für die Wahl.",
+          },
+        },
+      },
+    },
+  },
+
   rail: {
     ariaLabel: "Forschungsergebnis",
     eyebrow: "Neue Studie",

@@ -125,6 +125,641 @@ const enDictionary = {
     scrollCue: "Scroll",
   },
 
+  /**
+   * The hero knowledge graph (`hero-surface-shift.tsx`). Only the strings live
+   * here: coordinates, ids, the graph topology and the numeric values stay in
+   * the component, because they are identical in every locale.
+   *
+   * German labels are deliberately shorter than a literal translation would
+   * be. The graph places nodes on fixed coordinates, so a label that grows
+   * overlaps its neighbour rather than reflowing -- when German runs long, the
+   * shorter true phrasing wins over the closer one.
+   */
+  heroGraph: {
+    satelliteValues: { "recs.3": "on" },
+    hubs: {
+      ai: {
+        label: "AI answers",
+        satellites: {
+          0: "ChatGPT",
+          1: "Gemini",
+          2: "AI Mode",
+          3: "citations",
+        },
+        metrics: {
+          0: "ChatGPT visibility",
+          1: "Gemini visibility",
+          2: "Google AI Mode",
+        },
+        capabilities: {
+          0: {
+            label: "Did they name you?",
+            description:
+              "Check how products and the brand appear across AI shopping surfaces.",
+          },
+          1: {
+            label: "What changed?",
+            description:
+              "Ask the same shopper questions again and show what changed.",
+          },
+          2: {
+            label: "Questions you appear for",
+            description:
+              "Measure whether products are present for the shopper questions that matter.",
+          },
+          3: {
+            label: "Who was chosen instead?",
+            description:
+              "Observe products that appear instead of or alongside the merchant catalog.",
+          },
+          4: {
+            label: "What sources support it?",
+            description:
+              "Track the sources that support how the product is described.",
+          },
+        },
+      },
+      search: {
+        label: "Search results",
+        satellites: {
+          0: "JSON-LD",
+          1: "indexable",
+          2: "queries",
+          3: "snippets",
+        },
+        metrics: {
+          0: "JSON-LD coverage",
+          1: "Indexability",
+          2: "Query match",
+        },
+        capabilities: {
+          0: {
+            label: "Queries finding you",
+            description:
+              "Connect search results to the products shoppers are trying to find.",
+          },
+          1: {
+            label: "Machine-readable facts",
+            description:
+              "Structured product information available to search and shopping systems.",
+          },
+          2: {
+            label: "Can the page be found?",
+            description:
+              "Whether important product pages can be found and indexed.",
+          },
+          3: {
+            label: "Does the wording match?",
+            description: "How well product facts match real shopper searches.",
+          },
+          4: {
+            label: "What search can show",
+            description:
+              "Visible and structured product data that can support richer search results.",
+          },
+        },
+      },
+      catalog: {
+        label: "Products considered",
+        satellites: {
+          0: "fields",
+          1: "freshness",
+          2: "variants",
+          3: "stock",
+        },
+        metrics: {
+          0: "Completeness",
+          1: "Freshness",
+          2: "Variant coverage",
+        },
+        capabilities: {
+          0: {
+            label: "Products available",
+            description:
+              "The products and variants shoppers can actually choose.",
+          },
+          1: {
+            label: "Variants shoppers can choose",
+            description:
+              "Variant-level product facts available when shoppers choose.",
+          },
+          2: {
+            label: "Facts worth adding",
+            description: "Product facts that may make choosing easier.",
+          },
+          3: {
+            label: "Approved product changes",
+            description:
+              "Merchant-approved product changes prepared for the storefront.",
+          },
+          4: {
+            label: "Variant choices",
+            description:
+              "Coverage of variant-level product truth across the catalog.",
+          },
+          5: {
+            label: "Availability matches",
+            description:
+              "Agreement between catalog availability and visible storefront state.",
+          },
+        },
+      },
+      brand: {
+        label: "Brand trust",
+        satellites: {
+          0: "claims",
+          1: "identity",
+          2: "trust",
+          3: "evidence",
+        },
+        metrics: {
+          0: "Approved claims",
+          1: "Identity coverage",
+          2: "Trust proof",
+        },
+        capabilities: {
+          0: {
+            label: "Who you are",
+            description:
+              "Brand information available when shoppers compare you with alternatives.",
+          },
+          1: {
+            label: "Current brand info",
+            description: "Keep the brand information shoppers see up to date.",
+          },
+          2: {
+            label: "Claims shoppers can trust",
+            description: "Claims with enough proof to reuse safely.",
+          },
+          3: {
+            label: "Policies and proof",
+            description:
+              "Policies, proof, and trust information attached to the brand.",
+          },
+          4: {
+            label: "Same story everywhere",
+            description:
+              "Consistency between approved brand context and what shoppers encounter.",
+          },
+        },
+      },
+      truth: {
+        label: "Product facts",
+        satellites: {
+          0: "price",
+          1: "shipping",
+          2: "reviews",
+          3: "facts",
+        },
+        metrics: {
+          0: "Facts covered",
+          1: "Shipping facts",
+          2: "Structured facts",
+        },
+        capabilities: {
+          0: {
+            label: "Price & availability",
+            description:
+              "Canonical price, availability and offer-state agreement.",
+          },
+          1: {
+            label: "Price matches",
+            description:
+              "Price consistency across catalog, schema and the visible product page.",
+          },
+          2: {
+            label: "Delivery answer",
+            description:
+              "Shipping information available in the data and on the page.",
+          },
+          3: {
+            label: "Review proof",
+            description: "Whether reviews are visible where shoppers decide.",
+          },
+          4: {
+            label: "Facts match the page",
+            description:
+              "Whether structured product data matches what shoppers see on the page.",
+          },
+          5: {
+            label: "Check again after change",
+            description:
+              "Check the same product information after an approved change.",
+          },
+        },
+      },
+      creative: {
+        label: "What they see",
+        satellites: {
+          0: "images",
+          1: "video",
+          2: "brand fit",
+          3: "assets",
+        },
+        metrics: {
+          0: "Product image coverage",
+          1: "Brand consistency",
+          2: "Video coverage",
+        },
+        capabilities: {
+          0: {
+            label: "What shoppers see first",
+            description:
+              "The images and content shoppers see before they compare in detail.",
+          },
+          1: {
+            label: "Product imagery",
+            description:
+              "Images that help shoppers understand the product and use case.",
+          },
+          2: {
+            label: "Product video",
+            description:
+              "Video that can answer questions static product facts cannot.",
+          },
+          3: {
+            label: "Is the proof clear?",
+            description:
+              "Check whether the images or video support the product claim.",
+          },
+          4: {
+            label: "Available product proof",
+            description:
+              "Reusable assets tied to the product and brand context.",
+          },
+          5: {
+            label: "Use-case content",
+            description:
+              "Content that helps shoppers understand whether the product fits their need.",
+          },
+        },
+      },
+      campaigns: {
+        label: "Ads they see",
+        satellites: {
+          0: "Google Ads",
+          1: "Meta Ads",
+          2: "landing",
+          3: "tracking",
+        },
+        metrics: {
+          0: "Google Ads readiness",
+          1: "Meta Ads readiness",
+          2: "Landing readiness",
+        },
+        capabilities: {
+          0: {
+            label: "Can the ad land well?",
+            description:
+              "Check whether the product, tracking, and landing experience support the promise in the ad.",
+          },
+          1: {
+            label: "Offer and message",
+            description:
+              "The promise a shopper sees before arriving at the product or store.",
+          },
+          2: {
+            label: "Approved campaign change",
+            description:
+              "A merchant-approved campaign change tied to the reason behind it.",
+          },
+          3: {
+            label: "Does the landing answer?",
+            description:
+              "Check whether the landing page answers the question the ad created.",
+          },
+          4: {
+            label: "Creative variants",
+            description:
+              "Alternative messages and creative for the same product and shopper need.",
+          },
+          5: {
+            label: "What earns the click",
+            description: "See which product message gets shopper attention.",
+          },
+          6: {
+            label: "Who clicked and bought?",
+            description:
+              "Connect campaign response with the downstream buying path.",
+          },
+          7: {
+            label: "What the traffic cost",
+            description:
+              "Keep paid traffic cost separate from the purchases that follow.",
+          },
+        },
+      },
+      onsite: {
+        label: "Store search",
+        satellites: {
+          0: "retrieval",
+          1: "top 3",
+          2: "zero result",
+          3: "filters",
+        },
+        metrics: {
+          0: "Retrieval coverage",
+          1: "Top-3 placement",
+          2: "Zero-result rate",
+        },
+        capabilities: {
+          0: {
+            label: "What shoppers searched",
+            description:
+              "The words shoppers use when they are trying to find the right product.",
+          },
+          1: {
+            label: "Which products appeared",
+            description:
+              "Where relevant products appear in onsite search results.",
+          },
+          2: {
+            label: "Where search failed",
+            description:
+              "Shopping searches that return no useful product result.",
+          },
+          3: {
+            label: "What they did next",
+            description: "Shopper behavior after a search result is shown.",
+          },
+          4: {
+            label: "What shapes the ranking",
+            description:
+              "Rules and product data that influence which options a shopper sees.",
+          },
+        },
+      },
+      recs: {
+        label: "What gets suggested",
+        satellites: {
+          0: "coverage",
+          1: "affinity",
+          2: "rules",
+          3: "holdout",
+        },
+        metrics: {
+          0: "Catalog coverage",
+          1: "Affinity confidence",
+          2: "Holdout coverage",
+        },
+        capabilities: {
+          0: {
+            label: "What was recommended",
+            description:
+              "The products the storefront places in front of the shopper.",
+          },
+          1: {
+            label: "Why these products?",
+            description:
+              "The merchandising rules and product data that shape recommendations.",
+          },
+          2: {
+            label: "Fit to shopper need",
+            description:
+              "How well the product matches what the shopper appears to want.",
+          },
+          3: {
+            label: "Eligible products",
+            description:
+              "How much of the relevant catalog can participate in recommendations.",
+          },
+          4: {
+            label: "Did recommendations help?",
+            description:
+              "Compare recommendation exposure with what shoppers did afterward.",
+          },
+        },
+      },
+      pdp: {
+        label: "Product page",
+        satellites: {
+          0: "evidence",
+          1: "policy",
+          2: "trust",
+          3: "content",
+        },
+        metrics: {
+          0: "Questions answered",
+          1: "Policy clarity",
+          2: "Trust coverage",
+        },
+        capabilities: {
+          0: {
+            label: "Questions answered",
+            description:
+              "Product-page information available for the questions shoppers ask before choosing.",
+          },
+          1: {
+            label: "What is missing?",
+            description:
+              "Find gaps in the product page without pretending every gap caused the choice.",
+          },
+          2: {
+            label: "Check after the change",
+            description:
+              "Check the same product-page information after an approved change.",
+          },
+          3: {
+            label: "Facts match the page",
+            description:
+              "Agreement between visible page content and structured product facts.",
+          },
+          4: {
+            label: "Size & fit",
+            description:
+              "Fit guidance and size recommendations that help shoppers choose the right variant.",
+          },
+          5: {
+            label: "Reviews & trust",
+            description:
+              "Reviews and trust information visible when shoppers decide.",
+          },
+          6: {
+            label: "Returns & delivery",
+            description:
+              "Policy and delivery information visible before the shopper commits.",
+          },
+        },
+      },
+      behavior: {
+        label: "What they do next",
+        satellites: {
+          0: "engagement",
+          1: "friction",
+          2: "searches",
+          3: "replay",
+        },
+        metrics: {
+          0: "Interaction rate",
+          1: "Friction sessions",
+          2: "Searches observed",
+        },
+        capabilities: {
+          0: {
+            label: "What shoppers did",
+            description:
+              "Navigation, engagement, commerce, and friction events around the buying path.",
+          },
+          1: {
+            label: "Where they hesitated",
+            description:
+              "Shopper behavior that may point to uncertainty or friction.",
+          },
+          2: {
+            label: "What they searched",
+            description:
+              "Search behavior connected to what the shopper did afterward.",
+          },
+          3: {
+            label: "What they opened",
+            description:
+              "Which products, pages, and information the shopper actually viewed.",
+          },
+          4: {
+            label: "Where they left",
+            description:
+              "The point in the journey where a shopper stopped moving forward.",
+          },
+          5: {
+            label: "Session replay",
+            description:
+              "Replay to understand shopper friction without pretending it proves the cause.",
+          },
+          6: {
+            label: "Interaction patterns",
+            description:
+              "See which parts of a page shoppers use or ignore across many sessions.",
+          },
+        },
+      },
+      checkout: {
+        label: "Checkout",
+        satellites: {
+          0: "complete",
+          1: "payment",
+          2: "drop-off",
+          3: "errors",
+        },
+        metrics: {
+          0: "Completion",
+          1: "Payment success",
+          2: "Drop-off",
+        },
+        capabilities: {
+          0: {
+            label: "Where checkout stopped",
+            description: "Observed shopper loss during the purchase path.",
+          },
+          1: {
+            label: "Payment success",
+            description:
+              "Observed payment completion across tracked checkout sessions.",
+          },
+          2: {
+            label: "Delivery friction",
+            description:
+              "Delivery cost and timing that can change a shopper's final choice.",
+          },
+          3: {
+            label: "Technical errors",
+            description:
+              "Runtime errors that may interfere with purchase completion.",
+          },
+          4: {
+            label: "Did the fix hold?",
+            description:
+              "Check the same checkout data after an approved change.",
+          },
+        },
+      },
+      revenue: {
+        label: "Purchase",
+        satellites: {
+          0: "orders",
+          1: "CVR",
+          2: "AOV",
+          3: "impact",
+        },
+        metrics: {
+          0: "Orders",
+          1: "Conversion rate",
+          2: "Observed impact",
+        },
+        capabilities: {
+          0: {
+            label: "Was there a purchase?",
+            description: "Booked orders and revenue used as proof of purchase.",
+          },
+          1: {
+            label: "What changed after?",
+            description:
+              "Before-and-after measurement tied to a completed change.",
+          },
+          2: {
+            label: "Observed vs attributed",
+            description:
+              "Keep directly observed and attributed revenue separate.",
+          },
+          3: {
+            label: "Conversion path",
+            description:
+              "Where shoppers move forward or stop across the buying journey.",
+          },
+          4: {
+            label: "Which shoppers changed?",
+            description: "See how results differ across shopper groups.",
+          },
+          5: {
+            label: "Does revenue reconcile?",
+            description:
+              "Check that tracked revenue matches the store's revenue data.",
+          },
+        },
+      },
+      marketplaces: {
+        label: "Marketplaces",
+        satellites: {
+          0: "Amazon",
+          1: "eBay",
+          2: "Otto",
+          3: "Galaxus",
+        },
+        metrics: {
+          0: "Amazon visibility",
+          1: "eBay visibility",
+          2: "Buy Box coverage",
+        },
+        capabilities: {
+          0: {
+            label: "Who wins the Buy Box?",
+            description:
+              "Share of tracked listings currently winning the buy box against competing sellers.",
+          },
+          1: {
+            label: "Can shoppers compare it?",
+            description:
+              "Required marketplace fields and imagery present across tracked SKUs.",
+          },
+          2: {
+            label: "Does the price match?",
+            description:
+              "Tracked listings priced in line with the merchant's own storefront.",
+          },
+          3: {
+            label: "Where does it rank?",
+            description:
+              "Median tracked position within its marketplace category page.",
+          },
+          4: {
+            label: "Is there enough proof?",
+            description:
+              "Tracked products with enough reviews to help shoppers choose.",
+          },
+        },
+      },
+    },
+  },
+
   rail: {
     ariaLabel: "Research finding",
     eyebrow: "New research",
