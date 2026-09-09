@@ -25,12 +25,34 @@ type Package = {
   includes: string;
 };
 
-const FOUNDATION: Package = {
-  name: "Foundation",
-  line: "Every store gets this, and it is the part that decides what to do next.",
-  includes:
-    "Growth plan queue · commerce ledger · connection health · catalog sync · impact measurement",
-};
+/**
+ * Foundation is the anchor of the story, so it is a panel with its parts
+ * named one by one rather than a card with a run of middots. The parts are
+ * the admin bundle's own list: operator action queue, commerce ledger,
+ * connection health, minimum catalog sync, impact measurement.
+ */
+const FOUNDATION_PARTS: { name: string; detail: string }[] = [
+  {
+    name: "Growth plan",
+    detail: "The queue of what to do next, ranked, with the evidence attached.",
+  },
+  {
+    name: "Commerce ledger",
+    detail: "Orders, revenue, and products kept as one record.",
+  },
+  {
+    name: "Connection health",
+    detail: "Whether every source is still reporting, and since when.",
+  },
+  {
+    name: "Catalog sync",
+    detail: "Your products, current enough to be checked against.",
+  },
+  {
+    name: "Impact measurement",
+    detail: "What an applied change did, read after the fact.",
+  },
+];
 
 const ADDED: Package[] = [
   {
@@ -94,7 +116,13 @@ function ActLabel({
   );
 }
 
-function PackageCard({ item, dark = false }: { item: Package; dark?: boolean }) {
+function PackageCard({
+  item,
+  dark = false,
+}: {
+  item: Package;
+  dark?: boolean;
+}) {
   return (
     <div
       className={`flex min-h-full flex-col border-b px-0 py-6 sm:border-b-0 sm:border-r sm:px-6 sm:first:pl-0 sm:last:border-r-0 sm:last:pr-0 ${
@@ -150,12 +178,40 @@ export default function PlatformCapabilities() {
         <Reveal delay={0.04}>
           <div className="mt-12 border-t-2 border-ink-deep pt-7 lg:mt-16">
             <ActLabel step="01">Always on</ActLabel>
-            <div className="mt-5 grid gap-6 lg:grid-cols-[minmax(0,0.72fr)_minmax(0,1.28fr)] lg:gap-16">
-              <p className="max-w-[24ch] text-[22px] leading-[1.25] tracking-[-0.01em] text-ink-deep">
-                One core, on the first day, before anything is bought.
-              </p>
+            <div className="mt-5 grid gap-8 lg:grid-cols-[minmax(0,0.72fr)_minmax(0,1.28fr)] lg:gap-16">
               <div>
-                <PackageCard item={FOUNDATION} />
+                <p className="max-w-[24ch] text-[22px] leading-[1.25] tracking-[-0.01em] text-ink-deep">
+                  One core, on the first day, before anything is bought.
+                </p>
+                <p className="mt-4 max-w-[34ch] text-[14px] leading-[1.7] text-black/60">
+                  It is the part that decides what to do next, so no store runs
+                  without it and nobody pays extra for it.
+                </p>
+              </div>
+              <div className="border border-black/12 bg-ground-2 px-6 py-6 sm:px-7 sm:py-7">
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+                  <p className="text-[17px] font-semibold tracking-[-0.01em] text-ink-deep">
+                    Foundation
+                  </p>
+                  <span className="inline-flex items-center rounded-md border border-signal-ink/35 px-2 py-0.5 font-mono text-[10.5px] font-semibold uppercase tracking-[0.1em] text-signal-ink">
+                    Included with every plan
+                  </span>
+                </div>
+                <div className="mt-6 grid gap-x-8 sm:grid-cols-2 lg:grid-cols-3">
+                  {FOUNDATION_PARTS.map((part) => (
+                    <div
+                      key={part.name}
+                      className="border-t border-black/14 pt-3 pb-4"
+                    >
+                      <p className="text-[13.5px] font-semibold text-ink-deep">
+                        {part.name}
+                      </p>
+                      <p className="mt-1.5 max-w-[30ch] text-[12.5px] leading-[1.55] text-black/58">
+                        {part.detail}
+                      </p>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
