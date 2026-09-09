@@ -253,7 +253,7 @@ const FOREGROUND_TYPE: Record<
   GraphLayoutName,
   { capability: number; hub: number; satellite: number; value: number }
 > = {
-  mobile: { capability: 8, hub: 8, satellite: 8, value: 7 },
+  mobile: { capability: 13, hub: 14, satellite: 13, value: 11 },
   tablet: { capability: 13.5, hub: 14, satellite: 14, value: 12 },
   desktop: { capability: 14.5, hub: 15, satellite: 15, value: 13 },
   wide: { capability: 13, hub: 13.5, satellite: 13.5, value: 11.5 },
@@ -262,26 +262,29 @@ const FOREGROUND_TYPE: Record<
 
 const GRAPH_LAYOUTS: Record<GraphLayoutName, GraphLayout> = {
   mobile: {
-    width: 720,
-    height: 1180,
+    // Match the phone hero's real aspect ratio instead of shrinking a tall
+    // desktop-like canvas into it. At ~390 x 672 CSS px this viewBox renders
+    // at ~0.75x, which keeps hub labels around 10px on screen rather than 4-6.
+    width: 520,
+    height: 900,
     capabilityLimit: 2,
     capabilityRadius: 0.82,
     satelliteRadius: 0.9,
     positions: {
-      ai: { x: 86, y: 150 },
-      search: { x: 300, y: 92 },
-      catalog: { x: 150, y: 330 },
-      brand: { x: 520, y: 230 },
-      truth: { x: 350, y: 430 },
-      creative: { x: 612, y: 390 },
-      campaigns: { x: 630, y: 590 },
-      onsite: { x: 128, y: 610 },
-      recs: { x: 330, y: 735 },
-      pdp: { x: 92, y: 850 },
-      behavior: { x: 520, y: 835 },
-      checkout: { x: 380, y: 1035 },
-      revenue: { x: 632, y: 1040 },
-      marketplaces: { x: 220, y: 500 },
+      ai: { x: 70, y: 120 },
+      search: { x: 250, y: 70 },
+      catalog: { x: 120, y: 260 },
+      brand: { x: 395, y: 175 },
+      truth: { x: 265, y: 330 },
+      creative: { x: 450, y: 320 },
+      campaigns: { x: 445, y: 480 },
+      onsite: { x: 75, y: 520 },
+      recs: { x: 250, y: 570 },
+      pdp: { x: 110, y: 690 },
+      behavior: { x: 375, y: 670 },
+      checkout: { x: 255, y: 820 },
+      revenue: { x: 455, y: 800 },
+      marketplaces: { x: 90, y: 400 },
     },
   },
   tablet: {
@@ -1988,7 +1991,9 @@ export default function HeroSurfaceShift() {
         data-layout={layoutName}
         data-short={shortViewport || undefined}
         viewBox={`0 0 ${graphLayout.width} ${graphHeight}`}
-        preserveAspectRatio="xMidYMid meet"
+        preserveAspectRatio={
+          layoutName === "mobile" ? "xMidYMid slice" : "xMidYMid meet"
+        }
         className={`pointer-events-none absolute inset-0 h-full w-full ${autoJourneyVisible ? "hero-kg-auto-running" : ""} ${renderedForegroundHubId ? "hero-kg-focused" : ""}`}
         onPointerMove={handlePointerMove}
         onPointerLeave={() => {
@@ -2208,7 +2213,9 @@ export default function HeroSurfaceShift() {
           aria-hidden="true"
           data-layout={layoutName}
           viewBox={`0 0 ${graphLayout.width} ${graphHeight}`}
-          preserveAspectRatio="xMidYMid meet"
+          preserveAspectRatio={
+            layoutName === "mobile" ? "xMidYMid slice" : "xMidYMid meet"
+          }
           style={
             {
               "--kg-expand": foregroundProgressRef.current,
@@ -2822,7 +2829,18 @@ export default function HeroSurfaceShift() {
         svg[data-layout="ultrawide"] .hero-kg-cap-label { font-size: 9.6px; }
         svg[data-layout="ultrawide"] .hero-kg-sat-label { font-size: 11px; }
         svg[data-layout="ultrawide"] .hero-kg-sat-value { font-size: 9.5px; }
-        .hero-kg-center-wash-mobile { width: 88vw; height: 64%; }
+        /* Mobile is not a desktop graph miniaturised into 390px. Its own
+           520 x 900 viewBox matches the phone hero, so these sizes target
+           actual phone-readable labels after SVG scaling.
+           The focused layer can show its small local cluster because mobile
+           limits each hub to two capability nodes. */
+        svg[data-layout="mobile"] .hero-kg-hub-label { font-size: 15px; letter-spacing: 0.025em; }
+        svg[data-layout="mobile"] .hero-kg-hub.hero-kg-auto-muted .hero-kg-hub-label { font-size: 14.5px; }
+        svg[data-layout="mobile"].hero-kg-foreground .hero-kg-hub-label { font-size: 15px; }
+        svg[data-layout="mobile"].hero-kg-foreground .hero-kg-cap-label { display: block; font-size: 13px; }
+        svg[data-layout="mobile"].hero-kg-foreground .hero-kg-sat-label { display: block; font-size: 13px; }
+        svg[data-layout="mobile"].hero-kg-foreground .hero-kg-sat-value { display: block; font-size: 11px; }
+        .hero-kg-center-wash-mobile { width: 82vw; height: 64%; }
         .hero-kg-center-wash-tablet { width: 78vw; height: 68%; }
         .hero-kg-center-wash-wide { width: min(980px, 50vw); height: 70%; }
         .hero-kg-center-wash-ultrawide { width: min(1040px, 42vw); height: 68%; }
