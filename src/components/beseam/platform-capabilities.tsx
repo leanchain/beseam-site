@@ -7,29 +7,33 @@ import { Reveal } from "@/components/beseam/reveal";
  * `frontend/src/app/(app)/admin/components/service-capability-bundles.ts`:
  * three sections (`BUNDLE_SECTIONS`), one always-included Foundation, the
  * packages a store adds, and four products that share one storefront signal.
- * The wording here is the merchant-facing version of those bundle
- * descriptions; the shape is theirs, not a marketing invention.
+ * Names and parts are that file's `primaryFeatures` in merchant words; the
+ * shape is theirs, not a marketing invention.
+ *
+ * Each added package carries the situation that calls for it, because the
+ * question a visitor actually has is not "what is in it" but "is this me".
  *
  * Advertising is deliberately absent. Every key in that bundle is
  * `FeatureMaturity.EXPERIMENTAL` in `backend/src/modules/entitlements/registry.py`,
  * so it resolves to disabled under production surface mode -- a page that
  * sold it would be selling something a merchant cannot switch on.
  *
- * A list of names, never a plan matrix: the tracker's landing-page ruling
- * forbids rebuilding the product-suite grid here.
+ * A story, never a plan matrix: the tracker's landing-page ruling forbids
+ * rebuilding the product-suite grid here.
  */
 
 type Package = {
   name: string;
   line: string;
-  includes: string;
+  trigger?: string;
+  parts: string[];
 };
 
 /**
  * Foundation is the anchor of the story, so it is a panel with its parts
- * named one by one rather than a card with a run of middots. The parts are
- * the admin bundle's own list: operator action queue, commerce ledger,
- * connection health, minimum catalog sync, impact measurement.
+ * named one by one. The parts are the admin bundle's own list: operator
+ * action queue, commerce ledger, connection health, minimum catalog sync,
+ * impact measurement.
  */
 const FOUNDATION_PARTS: { name: string; detail: string }[] = [
   {
@@ -57,101 +61,172 @@ const FOUNDATION_PARTS: { name: string; detail: string }[] = [
 const ADDED: Package[] = [
   {
     name: "Visibility",
-    line: "Who gets named when shoppers ask AI assistants, checked on a schedule.",
-    includes:
-      "AI visibility workspace · your own checks · scheduled monitoring · Search Console sync",
+    line: "Who gets named when a shopper asks an assistant instead of searching.",
+    trigger:
+      "Buyers start with a model, and nobody in the building knows what it says about you.",
+    parts: [
+      "AI visibility workspace",
+      "Checks you write yourself",
+      "Scheduled crawl",
+      "Search Console sync",
+    ],
   },
   {
     name: "Commerce readiness",
-    line: "Whether the catalog and the pages can answer the question that decides the sale.",
-    includes:
-      "Catalog workspace · store health · page inspection · product and content proposals",
+    line: "Whether the catalog and the pages answer the question that decides the sale.",
+    trigger:
+      "Traffic arrives, and from there the product page has to carry it alone.",
+    parts: [
+      "Catalog workspace",
+      "Store health",
+      "Page inspection",
+      "Product and content proposals, review-only",
+    ],
   },
   {
     name: "Creative Studio",
-    line: "Making the assets a change needs, with review before anything is used.",
-    includes: "Media library · moderation · image and video generation",
+    line: "The assets a change needs, made and moderated where the change lives.",
+    trigger: "The fix is a missing photo or a video, not a sentence.",
+    parts: ["Media library", "Moderation", "Image and video generation"],
   },
 ];
 
 const TRACKER: Package[] = [
   {
     name: "Analytics",
-    line: "Revenue, funnels, cohorts, journeys, and onsite-search intelligence.",
-    includes: "",
+    line: "What the store earned, and the path people took to get there.",
+    parts: [
+      "Revenue and funnels",
+      "Cohorts and journeys",
+      "Onsite-search intelligence",
+      "Every source revocable on its own",
+    ],
   },
   {
     name: "Behavior",
-    line: "Why buyers leave: sessions, replay, heatmaps, zone-level evidence.",
-    includes: "",
+    line: "Why buyers leave the page they were meant to buy on.",
+    parts: ["Session replay", "Heatmaps", "Zone-level evidence"],
   },
   {
     name: "Personalization",
-    line: "Experiments, decisioning, and recommendation placements, measured against a holdout.",
-    includes: "",
+    line: "Changing what a shopper sees, and proving the change earned it.",
+    parts: [
+      "Experiments",
+      "Decisioning",
+      "Recommendation placements",
+      "Measured against a holdout",
+    ],
   },
   {
     name: "Reliability",
-    line: "Web vitals, errors, monitors, and incidents that threaten commerce.",
-    includes: "",
+    line: "The slow pages and quiet errors that cost orders without an alert.",
+    parts: ["Web vitals", "Errors", "Monitors and alerts", "Incidents"],
   },
+];
+
+/** The three steps every tracker-backed product shares, said once. */
+const SIGNAL_CHAIN = [
+  "One tracker on the storefront",
+  "Daily aggregation",
+  "Four products reading it",
 ];
 
 function ActLabel({
   step,
+  dark = false,
   children,
 }: {
   step: string;
+  dark?: boolean;
   children: React.ReactNode;
 }) {
   return (
     <div className="flex items-baseline gap-3">
-      <span className="font-mono text-[11px] font-semibold tabular-nums text-signal-ink">
+      <span
+        className={`font-mono text-[11px] font-semibold tabular-nums ${
+          dark ? "text-signal" : "text-signal-ink"
+        }`}
+      >
         {step}
       </span>
-      <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.12em] text-black/58">
+      <p
+        className={`font-mono text-[11px] font-semibold uppercase tracking-[0.12em] ${
+          dark ? "text-white/58" : "text-black/58"
+        }`}
+      >
         {children}
       </p>
     </div>
   );
 }
 
-function PackageCard({
-  item,
+function PartsList({
+  parts,
   dark = false,
 }: {
-  item: Package;
+  parts: string[];
   dark?: boolean;
 }) {
   return (
-    <div
-      className={`flex min-h-full flex-col border-b px-0 py-6 sm:border-b-0 sm:border-r sm:px-6 sm:first:pl-0 sm:last:border-r-0 sm:last:pr-0 ${
-        dark ? "border-white/14" : "border-black/12"
-      }`}
-    >
-      <p
-        className={`text-[17px] font-semibold tracking-[-0.01em] ${
-          dark ? "text-white" : "text-ink-deep"
-        }`}
-      >
-        {item.name}
-      </p>
-      <p
-        className={`mt-2 max-w-[38ch] text-[13.5px] leading-[1.6] ${
-          dark ? "text-white/70" : "text-black/62"
-        }`}
-      >
-        {item.line}
-      </p>
-      {item.includes ? (
-        <p
-          className={`mt-4 max-w-[40ch] text-[11.5px] leading-[1.6] ${
-            dark ? "text-white/48" : "text-black/48"
+    <ul className="grid gap-y-1.5">
+      {parts.map((part) => (
+        <li
+          key={part}
+          className={`flex gap-2.5 text-[12.5px] leading-[1.5] ${
+            dark ? "text-white/58" : "text-black/58"
           }`}
         >
-          {item.includes}
+          <span
+            aria-hidden
+            className={`mt-[0.5em] h-px w-2 shrink-0 ${
+              dark ? "bg-white/32" : "bg-black/28"
+            }`}
+          />
+          {part}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+/** Light ledger row: name, the situation that calls for it, the parts. */
+function PackageRow({ item }: { item: Package }) {
+  return (
+    <div className="grid gap-5 border-t border-black/14 py-7 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1fr)_minmax(0,0.95fr)] lg:gap-12">
+      <div>
+        <p className="text-[18px] font-semibold tracking-[-0.01em] text-ink-deep">
+          {item.name}
         </p>
-      ) : null}
+        <p className="mt-2 max-w-[30ch] text-[13.5px] leading-[1.6] text-black/62">
+          {item.line}
+        </p>
+      </div>
+      <div>
+        <p className="font-mono text-[10.5px] font-semibold uppercase tracking-[0.1em] text-signal-ink">
+          Add it when
+        </p>
+        <p className="mt-2 max-w-[34ch] text-[14px] leading-[1.65] text-ink-deep">
+          {item.trigger}
+        </p>
+      </div>
+      <PartsList parts={item.parts} />
+    </div>
+  );
+}
+
+/** Dark card for the tracker family. */
+function TrackerCard({ item }: { item: Package }) {
+  return (
+    <div className="border-t border-white/16 py-6">
+      <p className="text-[17px] font-semibold tracking-[-0.01em] text-white">
+        {item.name}
+      </p>
+      <p className="mt-2 max-w-[32ch] text-[13.5px] leading-[1.6] text-white/68">
+        {item.line}
+      </p>
+      <div className="mt-4">
+        <PartsList parts={item.parts} dark />
+      </div>
     </div>
   );
 }
@@ -217,16 +292,22 @@ export default function PlatformCapabilities() {
           </div>
         </Reveal>
 
-        {/* Act two: what a store adds. */}
+        {/* Act two: what a store adds, and the situation that asks for it. */}
         <Reveal delay={0.06}>
-          <div className="mt-12 border-t border-black/16 pt-7">
+          <div className="mt-14 border-t border-black/16 pt-7">
             <ActLabel step="02">Added when the store needs it</ActLabel>
-            <p className="mt-5 max-w-[46ch] text-[22px] leading-[1.25] tracking-[-0.01em] text-ink-deep">
-              Three ways to work on what the core found.
-            </p>
-            <div className="mt-6 grid sm:grid-cols-3">
+            <div className="mt-5 grid gap-6 lg:grid-cols-[minmax(0,0.72fr)_minmax(0,1.28fr)] lg:gap-16">
+              <p className="max-w-[24ch] text-[22px] leading-[1.25] tracking-[-0.01em] text-ink-deep">
+                Three ways to work on what the core found.
+              </p>
+              <p className="max-w-[46ch] self-end text-[14px] leading-[1.7] text-black/60">
+                Each one answers a different kind of problem, so a store carries
+                the ones its own findings keep pointing at.
+              </p>
+            </div>
+            <div className="mt-8 border-b border-black/14">
               {ADDED.map((item) => (
-                <PackageCard key={item.name} item={item} />
+                <PackageRow key={item.name} item={item} />
               ))}
             </div>
           </div>
@@ -234,26 +315,39 @@ export default function PlatformCapabilities() {
 
         {/* Act three: the family that shares one signal. */}
         <Reveal delay={0.08}>
-          <div className="mt-12 bg-ink-deep px-6 py-9 text-white sm:px-8 sm:py-10">
-            <div className="flex items-baseline gap-3">
-              <span className="font-mono text-[11px] font-semibold tabular-nums text-signal">
-                03
-              </span>
-              <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.12em] text-white/58">
-                One signal, four products
+          <div className="mt-14 bg-ink-deep px-6 py-10 text-white sm:px-9 sm:py-12">
+            <ActLabel step="03" dark>
+              One signal, four products
+            </ActLabel>
+            <div className="mt-5 grid gap-6 lg:grid-cols-[minmax(0,0.72fr)_minmax(0,1.28fr)] lg:gap-16">
+              <p className="max-w-[24ch] text-[22px] leading-[1.25] tracking-[-0.01em] text-white">
+                The tracker you turn on once pays for four things.
+              </p>
+              <p className="max-w-[46ch] self-end text-[14px] leading-[1.7] text-white/64">
+                These are the products that need your own traffic behind them.
+                Switch on any one and the ingestion is already running for the
+                rest, so the second one costs a decision, not a rollout.
               </p>
             </div>
-            <p className="mt-5 max-w-[34ch] text-[22px] leading-[1.25] tracking-[-0.01em] text-white">
-              The storefront signal you turn on once pays for four things.
-            </p>
-            <p className="mt-3 max-w-[56ch] text-[14px] leading-[1.65] text-white/64">
-              Analytics, behavior, personalization and reliability all read the
-              same tracker. Switch on any one of them and the ingestion is
-              already running for the rest.
-            </p>
-            <div className="mt-8 grid border-t border-white/16 pt-2 sm:grid-cols-2 lg:grid-cols-4">
+
+            <div className="mt-8 flex flex-wrap items-center gap-x-3 gap-y-2 border-t border-white/16 pt-3 pb-4">
+              {SIGNAL_CHAIN.map((step, index) => (
+                <span key={step} className="flex items-center gap-3">
+                  {index > 0 ? (
+                    <span aria-hidden className="text-[11px] text-white/32">
+                      &rarr;
+                    </span>
+                  ) : null}
+                  <span className="font-mono text-[11px] uppercase tracking-[0.1em] text-white/60">
+                    {step}
+                  </span>
+                </span>
+              ))}
+            </div>
+
+            <div className="grid gap-x-12 sm:grid-cols-2">
               {TRACKER.map((item) => (
-                <PackageCard key={item.name} item={item} dark />
+                <TrackerCard key={item.name} item={item} />
               ))}
             </div>
           </div>
