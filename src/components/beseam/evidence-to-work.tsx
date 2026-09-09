@@ -1,5 +1,7 @@
 import { ActionsScreen } from "@/components/beseam/app-screens";
 import { Reveal } from "@/components/beseam/reveal";
+import { getDictionary } from "@/i18n";
+import type { Locale } from "@/i18n/locale-rules.mjs";
 
 /**
  * Product-first proof that evidence becomes an approvable change rather than
@@ -17,7 +19,9 @@ import { Reveal } from "@/components/beseam/reveal";
  * queue lines up with the beats above and below it rather than sitting in its
  * own inset column.
  */
-export default function EvidenceToWork() {
+export default function EvidenceToWork({ locale = "en" }: { locale?: Locale }) {
+  const t = getDictionary(locale);
+
   return (
     <section
       id="actions"
@@ -26,7 +30,7 @@ export default function EvidenceToWork() {
       <div className="mx-auto max-w-[92rem] px-5 py-16 sm:px-8 sm:py-24 lg:px-10 lg:py-28">
         <Reveal>
           <h2 className="max-w-[26ch] text-balance font-display text-[clamp(2.2rem,3.3vw,3.4rem)] font-normal leading-[1.04] tracking-[-0.02em] text-ink-deep">
-            Beseam finds what to improve next.
+            {t.sections.actions.heading}
           </h2>
 
           {/* No section label row above the table. This beat used to stack

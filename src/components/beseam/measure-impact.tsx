@@ -1,5 +1,7 @@
 import { ImpactScreen } from "@/components/beseam/app-screens";
 import { Reveal } from "@/components/beseam/reveal";
+import { getDictionary } from "@/i18n";
+import type { Locale } from "@/i18n/locale-rules.mjs";
 
 /**
  * The measured outcome beat: keep the original signal, approved change, and
@@ -13,7 +15,9 @@ import { Reveal } from "@/components/beseam/reveal";
  * columns are close enough in height that centring reads as one row, and it
  * keeps this beat aligned with the section it sits under.
  */
-export default function MeasureImpact() {
+export default function MeasureImpact({ locale = "en" }: { locale?: Locale }) {
+  const t = getDictionary(locale);
+
   return (
     <section id="impact" className="scroll-mt-24 bg-ink-deep text-white">
       <div className="mx-auto max-w-[92rem] px-5 py-16 sm:px-8 sm:py-24 lg:px-10 lg:py-28">
@@ -26,11 +30,10 @@ export default function MeasureImpact() {
           <div className="grid gap-10 lg:grid-cols-[minmax(0,0.72fr)_minmax(0,1.28fr)] lg:items-center lg:gap-16">
             <div>
               <h2 className="max-w-[18ch] text-balance font-display text-[clamp(2.25rem,3.4vw,3.5rem)] font-normal leading-[1.05] tracking-[-0.02em]">
-                It only matters if the outcome moves.
+                {t.sections.impact.heading}
               </h2>
               <p className="mt-5 max-w-[44ch] text-[15px] leading-[1.7] text-white/64">
-                After a change, Beseam asks the same shopper questions again —
-                and shows whether the answers now name your store.
+                {t.sections.impact.body}
               </p>
             </div>
             <ImpactScreen />
