@@ -215,8 +215,10 @@ export const de: Dictionary = {
             question: "Wasserdichtigkeit",
             answer: "20.000 mm",
           },
+          // "beim" statt "zum" läuft in der 145px breiten, abgeschnittenen
+          // Zeile über -- gemessen, nicht geschätzt.
           breathable: {
-            question: "Atmungsaktiv beim Pendeln",
+            question: "Atmungsaktiv zum Pendeln",
             answer: "Nicht beantwortet",
           },
           suitJacket: {
@@ -297,9 +299,11 @@ export const de: Dictionary = {
         two: "Zwei Assistenten",
         every: "Jeder Assistent",
       },
+      // Die Spaltenüberschriften bleiben kürzer als die englischen: die
+      // mittlere Spalte ist auf schmalen Viewports ohnehin schon zu eng.
       columns: {
         category: "Kategorie",
-        question: "Größte Uneinigkeit der Assistenten",
+        question: "Größte Uneinigkeit",
         solo: "Marken, nur ein Assistent",
       },
       outOf: (total: number) => ` von ${total}`,
