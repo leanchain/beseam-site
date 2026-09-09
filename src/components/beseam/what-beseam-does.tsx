@@ -21,6 +21,8 @@ import {
   ScrollDeal,
   ScrollDealFallback,
 } from "@/components/beseam/scroll-deal";
+import { getDictionary, type Dictionary } from "@/i18n";
+import type { Locale } from "@/i18n/locale-rules.mjs";
 
 /**
  * The four-step flow: a shopper asks a buying question, the assistant either
@@ -88,21 +90,15 @@ const vig = (index: number, base?: string): CSSProperties =>
  * need to be real, take them from `category-benchmarks.ts` and print the
  * engine and date with them.
  */
-const ASKED = "waterproof jacket for commuting, size M, under €200";
-
 /**
- * What the assistant read out of the question before it answered. Every cell
- * is derivable from `ASKED` on its own -- no invented constraint the shopper
- * never gave -- because the panel is claiming the assistant understood the
- * question, and a cell with nothing behind it in the query would be a lie
- * about how these engines work.
+ * The shopper's question and what the assistant read out of it before it
+ * answered live in `src/i18n/en.ts` under `sections.oneSystem.discovery`.
+ * Every badge is derivable from the question on its own -- no invented
+ * constraint the shopper never gave -- because the panel is claiming the
+ * assistant understood the question, and a cell with nothing behind it in the
+ * query would be a lie about how these engines work. That has to survive
+ * translation: check it again in any locale that rewrites the question.
  */
-const PARSED = [
-  { label: "Use case", value: "Commuting" },
-  { label: "Material", value: "Waterproof" },
-  { label: "Size", value: "Size M" },
-  { label: "Price", value: "Under €200" },
-] as const;
 
 /**
  * The two listings the answer leads with, shown the way an assistant shows
@@ -143,55 +139,66 @@ const PRODUCT = { name: "City Shell", price: "€149" } as const;
 
 /**
  * The four things a shopper wants to know before buying this jacket, and what
- * the product page says back. Two are answered, two are not.
- *
- * `ADDED_CONTEXT` below answers those same two, by name. That is the whole
- * argument of the row -- panel two finds the gap, panel three closes it -- so
- * the two lists have to keep matching. Change a question here and change it
- * there, or the section stops being one story and becomes three drawings.
+ * the product page says back, are `store.questions` in the dictionary; two of
+ * them are answered again by `personalization.added`. That is the whole
+ * argument of the row -- panel two finds the gap, panel three closes it -- and
+ * the two are paired here by their dictionary key rather than by matching the
+ * question text, which is what lets the pairing survive translation. Add a
+ * question and the last panel has nothing to flip; drop one and the section
+ * stops being one story and becomes three drawings.
  */
-const PAGE_QUESTIONS = [
-  { question: "Waterproof rating", answer: "20,000 mm", answered: true },
-  {
-    question: "Breathable for commuting",
-    answer: "Not answered",
-    answered: false,
-  },
-  {
-    question: "Fits over a suit jacket",
-    answer: "Not answered",
-    answered: false,
-  },
-  { question: "Return window", answer: "60 days", answered: true },
-] as const;
+const ADDED_QUESTION_KEYS: readonly string[] = ["breathable", "suitJacket"];
 
-const ADDED_CONTEXT = [
-  { question: "Breathable for commuting", answer: "3-layer shell, pit zips" },
-  { question: "Fits over a suit jacket", answer: "Regular cut, size up" },
-] as const;
+/** Panel two draws a cross on exactly the rows panel three fills in. */
+function isAnswered(key: string) {
+  return !ADDED_QUESTION_KEYS.includes(key);
+}
 
-const DOMAINS = [
-  {
-    title: "Get found",
-    capabilities: ["AI answers", "Search", "Product feeds"],
-    detail: "If shoppers never see you, they cannot choose you.",
-    Icon: Radar,
-  },
-  {
-    title: "See why shoppers hesitate",
-    capabilities: ["Product pages", "On-site search", "Behavior"],
-    detail: "Find the unanswered question that makes the shopper hesitate.",
-    Icon: MousePointer2,
-  },
-  {
-    title: "Help shoppers choose",
-    capabilities: ["Recommendations", "Personalization"],
-    detail: "Add the missing information that helps the shopper choose.",
-    Icon: ShoppingBag,
-  },
-] as const;
+function answeredPageFor(t: Dictionary) {
+  const { questions } = t.sections.oneSystem.store;
+  const { added } = t.sections.oneSystem.personalization;
+  const addedFor: Record<string, string | undefined> = {
+    breathable: added.breathable,
+    suitJacket: added.suitJacket,
+  };
 
-function DiscoveryVignette() {
+  return Object.entries(questions).map(([key, row]) => ({
+    key,
+    question: row.question,
+    answer: addedFor[key] ?? row.answer,
+    added: Boolean(addedFor[key]),
+  }));
+}
+
+/**
+ * The icon and the order are structure, so they stay here; the title, the
+ * chips and the line under the panel come from the dictionary.
+ */
+function domainsFor(t: Dictionary) {
+  const { getFound, hesitate, choose } = t.sections.oneSystem.domains;
+  return [
+    {
+      ...getFound,
+      capabilities: Object.values(getFound.capabilities),
+      Icon: Radar,
+    },
+    {
+      ...hesitate,
+      capabilities: Object.values(hesitate.capabilities),
+      Icon: MousePointer2,
+    },
+    {
+      ...choose,
+      capabilities: Object.values(choose.capabilities),
+      Icon: ShoppingBag,
+    },
+  ];
+}
+
+function DiscoveryVignette({ t }: { t: Dictionary }) {
+  const discovery = t.sections.oneSystem.discovery;
+  const parsed = Object.entries(discovery.parsed);
+
   return (
     <div
       aria-hidden="true"
@@ -199,7 +206,7 @@ function DiscoveryVignette() {
     >
       <div className="flex shrink-0 items-center justify-between gap-2 border-b border-black/10 pb-2">
         <span className="vig-step font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-black/60">
-          Buying question
+          {discovery.buyingQuestion}
         </span>
         {/* The engine mark and the word EXAMPLE travel together, in the panel's
             own frame: this is what an assistant answer looks like, and it is
@@ -210,19 +217,20 @@ function DiscoveryVignette() {
             className="h-[15px] w-[15px] shrink-0 text-ink-deep/55"
           />
           <span className="border border-black/15 px-1.5 py-px font-mono text-[11px] font-semibold uppercase tracking-[0.09em] text-black/45">
-            Example
+            {discovery.example}
           </span>
         </div>
       </div>
 
       {/* Typed, because a shopper types it. Fifty-one characters, which is
           the count `steps(51)` in globals.css is pacing -- edit the string
-          and the timing function has to move with it. */}
+          and the timing function has to move with it. Every locale's `asked`
+          is 51 characters for that reason. */}
       <span
         className="vig-type mt-2 max-w-full shrink-0 text-[12.5px] font-semibold leading-[1.3] text-ink-deep"
-        style={{ "--vig-chars": ASKED.length } as CSSProperties}
+        style={{ "--vig-chars": discovery.asked.length } as CSSProperties}
       >
-        {ASKED}
+        {discovery.asked}
       </span>
 
       {/* The assistant taking the question apart before it answers. This is
@@ -240,13 +248,13 @@ function DiscoveryVignette() {
           so the labels went rather than the type size. `Size M` says its own
           field; the other three already did. */}
       <ul className="mt-2.5 flex shrink-0 flex-wrap gap-1.5 border-b border-black/10 pb-2.5">
-        {PARSED.map((field, index) => (
+        {parsed.map(([key, value], index) => (
           <li
-            key={field.label}
+            key={key}
             className="vig-step shrink-0 whitespace-nowrap rounded-md border border-black/12 px-1.5 py-0.5 text-[11px] font-medium text-ink-deep"
             style={vig(index, "1.15s")}
           >
-            {field.value}
+            {value}
           </li>
         ))}
       </ul>
@@ -288,7 +296,7 @@ function DiscoveryVignette() {
         className="vig-step mt-2 shrink-0 font-mono text-[11px] text-black/40"
         style={vig(6, "1.25s")}
       >
-        and seven more, none of them yours
+        {discovery.andMore}
       </p>
 
       <div
@@ -297,7 +305,7 @@ function DiscoveryVignette() {
       >
         <X className="h-3.5 w-3.5 shrink-0" />
         <span className="font-mono text-[12px] font-semibold uppercase tracking-[0.06em]">
-          Your store, not named
+          {discovery.verdict}
         </span>
       </div>
     </div>
@@ -306,7 +314,10 @@ function DiscoveryVignette() {
 
 const SIZES = ["S", "M", "L", "XL"] as const;
 
-function StoreVignette() {
+function StoreVignette({ t }: { t: Dictionary }) {
+  const store = t.sections.oneSystem.store;
+  const questions = Object.entries(store.questions);
+
   return (
     <div
       aria-hidden="true"
@@ -321,7 +332,7 @@ function StoreVignette() {
         style={vig(0, "0.2s")}
       >
         <p className="truncate font-mono text-[11.5px] uppercase tracking-[0.07em] text-black/55">
-          Home / Jackets / {PRODUCT.name}
+          {store.breadcrumb(PRODUCT.name)}
         </p>
         <div className="mt-1 flex items-baseline justify-between gap-3">
           <span className="min-w-0 truncate text-[15px] font-semibold leading-[1.2] text-ink-deep">
@@ -368,13 +379,13 @@ function StoreVignette() {
               ))}
             </span>
             <span className="truncate font-mono text-[11.5px] text-black/45">
-              128 reviews
+              {store.reviews}
             </span>
           </span>
 
           <div className="mt-2.5 flex items-center gap-1.5">
             <span className="shrink-0 font-mono text-[11.5px] uppercase tracking-[0.07em] text-black/45">
-              Size
+              {store.size}
             </span>
             {SIZES.map((size) => (
               <span
@@ -395,10 +406,10 @@ function StoreVignette() {
               wrong, and a rust-coloured buy button would outshout the two
               crosses the panel exists to show. */}
           <span className="mt-2.5 flex items-center justify-center bg-ink-deep py-[7px] font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-white">
-            Add to cart
+            {store.addToCart}
           </span>
           <span className="mt-1.5 truncate font-mono text-[11.5px] text-black/55">
-            In stock · ships tomorrow
+            {store.stock}
           </span>
         </div>
       </div>
@@ -412,35 +423,38 @@ function StoreVignette() {
           className="vig-step shrink-0 font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-black/60"
           style={vig(1, "0.2s")}
         >
-          What shoppers ask here
+          {store.whatShoppersAsk}
         </span>
 
         {/* The rows share the height the block has, rather than bunching
             under the label with the verdict stranded below them. */}
         <ul className="mt-1.5 flex min-h-0 flex-1 flex-col">
-          {PAGE_QUESTIONS.map((row, index) => (
-            <li
-              key={row.question}
-              className="vig-step flex flex-1 items-center gap-2 border-b border-black/8 last:border-0"
-              style={vig(index + 2, "0.2s")}
-            >
-              {row.answered ? (
-                <Check className="h-3.5 w-3.5 shrink-0 text-black/35" />
-              ) : (
-                <X className="h-3.5 w-3.5 shrink-0 text-signal-ink" />
-              )}
-              <span className="min-w-0 flex-1 truncate text-[12px] text-ink-deep">
-                {row.question}
-              </span>
-              <span
-                className={`shrink-0 font-mono text-[11px] ${
-                  row.answered ? "text-black/50" : "text-signal-ink"
-                }`}
+          {questions.map(([key, row], index) => {
+            const answered = isAnswered(key);
+            return (
+              <li
+                key={key}
+                className="vig-step flex flex-1 items-center gap-2 border-b border-black/8 last:border-0"
+                style={vig(index + 2, "0.2s")}
               >
-                {row.answer}
-              </span>
-            </li>
-          ))}
+                {answered ? (
+                  <Check className="h-3.5 w-3.5 shrink-0 text-black/35" />
+                ) : (
+                  <X className="h-3.5 w-3.5 shrink-0 text-signal-ink" />
+                )}
+                <span className="min-w-0 flex-1 truncate text-[12px] text-ink-deep">
+                  {row.question}
+                </span>
+                <span
+                  className={`shrink-0 font-mono text-[11px] ${
+                    answered ? "text-black/50" : "text-signal-ink"
+                  }`}
+                >
+                  {row.answer}
+                </span>
+              </li>
+            );
+          })}
         </ul>
 
         {/* The verdict is the panel, so it stamps rather than drifts in. It
@@ -451,32 +465,13 @@ function StoreVignette() {
         >
           <X className="h-3.5 w-3.5 shrink-0" />
           <span className="font-mono text-[12px] font-semibold uppercase tracking-[0.06em]">
-            Two questions unanswered
+            {store.verdict}
           </span>
         </div>
       </div>
     </div>
   );
 }
-
-/**
- * The four rows as the shopper finds them once Beseam has filled the gaps:
- * `PAGE_QUESTIONS` is the page, `ADDED_CONTEXT` is what was added, and the
- * match is made here rather than by hand. Break the pairing and the last
- * panel prints "Not answered" in green, which is exactly the kind of drift
- * that should be visible instead of quietly plausible.
- */
-const ANSWERED_PAGE = PAGE_QUESTIONS.map((row) => {
-  const added = ADDED_CONTEXT.find((entry) => entry.question === row.question);
-  return {
-    question: row.question,
-    answer: added ? added.answer : row.answer,
-    added: Boolean(added),
-  };
-});
-
-/** What the shopper asked for in panel one, carried onto the page. */
-const SHOPPER_WANTS = ["waterproof", "size M", "commuting"] as const;
 
 /** The one green in the section: the colour of the shopper deciding. */
 const CHOSE = "#1a6b43";
@@ -487,7 +482,13 @@ const CHOSE = "#1a6b43";
  * reader comparing two layouts; this one has them comparing the two rows
  * that flipped, which is the argument the section is making.
  */
-function PersonalizationVignette() {
+function PersonalizationVignette({ t }: { t: Dictionary }) {
+  const store = t.sections.oneSystem.store;
+  const personalization = t.sections.oneSystem.personalization;
+  // What the shopper asked for in panel one, carried onto the page.
+  const wants = Object.entries(personalization.wants);
+  const answeredPage = answeredPageFor(t);
+
   return (
     <div
       aria-hidden="true"
@@ -498,7 +499,7 @@ function PersonalizationVignette() {
         style={vig(0, "0.2s")}
       >
         <p className="truncate font-mono text-[11.5px] uppercase tracking-[0.07em] text-black/55">
-          Home / Jackets / {PRODUCT.name}
+          {store.breadcrumb(PRODUCT.name)}
         </p>
         <div className="mt-1 flex items-baseline justify-between gap-3">
           <span className="min-w-0 truncate text-[15px] font-semibold leading-[1.2] text-ink-deep">
@@ -517,11 +518,11 @@ function PersonalizationVignette() {
         style={vig(1, "0.2s")}
       >
         <span className="shrink-0 font-mono text-[11.5px] uppercase tracking-[0.07em] text-black/45">
-          For this shopper
+          {personalization.forThisShopper}
         </span>
-        {SHOPPER_WANTS.map((want) => (
+        {wants.map(([key, want]) => (
           <span
-            key={want}
+            key={key}
             className="shrink-0 rounded-sm bg-white px-1.5 py-px font-mono text-[11.5px] text-black/55 ring-1 ring-black/10"
           >
             {want}
@@ -559,13 +560,13 @@ function PersonalizationVignette() {
               ))}
             </span>
             <span className="truncate font-mono text-[11.5px] text-black/45">
-              128 reviews
+              {store.reviews}
             </span>
           </span>
 
           <div className="mt-2 flex items-center gap-1.5">
             <span className="shrink-0 font-mono text-[11.5px] uppercase tracking-[0.07em] text-black/45">
-              Size
+              {store.size}
             </span>
             {SIZES.map((size) => (
               <span
@@ -588,7 +589,7 @@ function PersonalizationVignette() {
             style={{ backgroundColor: CHOSE }}
           >
             <CheckCircle2 className="h-3.5 w-3.5 shrink-0" strokeWidth={2} />
-            Added to cart
+            {personalization.addedToCart}
           </span>
         </div>
       </div>
@@ -603,21 +604,21 @@ function PersonalizationVignette() {
           style={vig(2, "0.2s")}
         >
           <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-black/60">
-            What shoppers ask here
+            {store.whatShoppersAsk}
           </span>
           <span
             className="flex shrink-0 items-center gap-1 font-mono text-[11.5px] font-semibold uppercase tracking-[0.07em]"
             style={{ color: CHOSE }}
           >
             <WandSparkles className="h-3 w-3 shrink-0" />
-            Two added
+            {personalization.twoAdded}
           </span>
         </div>
 
         <ul className="mt-1.5 flex min-h-0 flex-1 flex-col">
-          {ANSWERED_PAGE.map((row, index) => (
+          {answeredPage.map((row, index) => (
             <li
-              key={row.question}
+              key={row.key}
               className="vig-step flex flex-1 items-center gap-2 border-b border-black/8 last:border-0"
               style={vig(index + 3, "0.2s")}
             >
@@ -648,7 +649,7 @@ function PersonalizationVignette() {
         >
           <CheckCircle2 className="h-3.5 w-3.5 shrink-0" strokeWidth={2} />
           <span className="font-mono text-[12px] font-semibold uppercase tracking-[0.06em]">
-            All four answered
+            {personalization.verdict}
           </span>
         </div>
       </div>
@@ -674,7 +675,11 @@ const CELL_RULES = [
   "sm:pl-0 xl:border-l xl:pl-5",
 ] as const;
 
-export default function WhatBeseamDoes() {
+export default function WhatBeseamDoes({ locale = "en" }: { locale?: Locale }) {
+  const t = getDictionary(locale);
+  const oneSystem = t.sections.oneSystem;
+  const domains = domainsFor(t);
+
   return (
     <section id="one-system" className="scroll-mt-24 bg-ground">
       <div className="mx-auto max-w-[92rem] px-5 py-16 sm:px-8 sm:py-24 lg:px-10 lg:py-28">
@@ -689,18 +694,16 @@ export default function WhatBeseamDoes() {
               <div className="grid gap-8 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:items-end lg:gap-16">
                 <div>
                   <h2 className="max-w-[18ch] text-balance font-display text-[clamp(2.3rem,3.8vw,3.9rem)] font-normal leading-[1.03] tracking-[-0.02em] text-ink-deep">
-                    Being considered doesn’t mean being chosen.
+                    {oneSystem.heading}
                   </h2>
                 </div>
                 <p className="max-w-[50ch] text-[16px] leading-[1.7] text-black/64">
-                  Beseam follows the shopper from discovery to purchase to find
-                  where confidence drops, questions go unanswered, or the
-                  journey stops.
+                  {oneSystem.body}
                 </p>
               </div>
             </Reveal>
           }
-          cells={DOMAINS.map((domain, index) => {
+          cells={domains.map((domain, index) => {
             const Vignette = VIGNETTES[index];
             return {
               key: domain.title,
@@ -759,7 +762,7 @@ export default function WhatBeseamDoes() {
                     ) : null}
                   </div>
                   <div className="mt-4">
-                    <Vignette />
+                    <Vignette t={t} />
                   </div>
                   <p className="mt-3.5 max-w-[33ch] text-[14.5px] leading-[1.55] text-black/64">
                     {domain.detail}
@@ -806,16 +809,13 @@ export default function WhatBeseamDoes() {
                     against. */}
                 <div>
                   <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.12em] text-signal">
-                    Nothing ships without you
+                    {oneSystem.gate.eyebrow}
                   </p>
                   <p className="mt-3 max-w-[38ch] text-[15px] leading-[1.65] text-white/72">
-                    Every customer-facing change waits at step 03 until you
-                    approve it.
+                    {oneSystem.gate.body}
                   </p>
                   <p className="mt-5 max-w-[40ch] border-t border-white/12 pt-4 text-[14px] leading-[1.6] text-white/56">
-                    And step 05 checks the same journey it started from — AI
-                    appearances, product visits, add to cart — so a change is
-                    measured against the state it changed.
+                    {oneSystem.gate.note}
                   </p>
                 </div>
                 <LoopDiagram tone="dark" detail animate />
