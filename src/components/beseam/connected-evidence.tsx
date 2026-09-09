@@ -4,6 +4,8 @@ import { ArrowRight, X } from "lucide-react";
 
 import { Reveal } from "@/components/beseam/reveal";
 import { SequenceReveal } from "@/components/beseam/sequence-reveal";
+import { getDictionary, type Dictionary } from "@/i18n";
+import type { Locale } from "@/i18n/locale-rules.mjs";
 
 /**
  * The trace forks on purpose. A single-file chain shows a story any tool could
@@ -32,58 +34,40 @@ import { SequenceReveal } from "@/components/beseam/sequence-reveal";
  * and manufactured evidence is the one thing this product must never show.
  * Replace with a real scan when one is cleared for publication.
  */
-const QUERIES = [
-  { label: "Searched", value: "“waterproof jacket”" },
-  { label: "Then added", value: "... “for commuting”" },
-] as const;
+/**
+ * Which branch held is structure, not copy: it decides the colour, the plate
+ * and the wire, so it stays here while the words come from the dictionary.
+ * Translating a branch can never move the cause to a different one.
+ */
+type CandidateCopy = { domain: string; claim: string; why: string };
+type CauseCandidate = CandidateCopy & { cause: true };
+type RuledOut = CandidateCopy & { verdict: string; cause: false };
+type Candidate = CauseCandidate | RuledOut;
 
-const SIGNAL = "Got the same jackets back, then left without opening one.";
+function candidatesFor(t: Dictionary): readonly Candidate[] {
+  const candidates = t.sections.proof.candidates;
+  return [
+    { ...candidates.onsiteSearch, cause: false },
+    { ...candidates.productPages, cause: true },
+    { ...candidates.availability, cause: false },
+  ];
+}
 
-const CANDIDATES = [
-  {
-    domain: "Onsite search",
-    verdict: "Search works",
-    claim: "The refinement returned nothing at all.",
-    cause: false,
-    why: "It still returns the waterproof jackets.",
-  },
-  {
-    domain: "Product pages",
-    claim: "None of those jackets mention commuting.",
-    cause: true,
-    why: "Not in the titles, the descriptions, or the tags.",
-  },
-  {
-    domain: "Availability",
-    verdict: "Stock is fine",
-    claim: "The jackets it returned are out of stock.",
-    cause: false,
-    why: "Almost all are in stock in the shopper’s market.",
-  },
-] as const;
+type MobileFinding = {
+  domain: string;
+  finding: string;
+  detail: string;
+  issue: boolean;
+};
 
-type RuledOut = Extract<(typeof CANDIDATES)[number], { cause: false }>;
-
-const MOBILE_FINDINGS = [
-  {
-    domain: "Onsite search",
-    finding: "Search works.",
-    detail: "The refined query still returns the waterproof jackets.",
-    issue: false,
-  },
-  {
-    domain: "Product pages",
-    finding: "Commuting language is missing.",
-    detail: "Not in the titles, descriptions, or tags.",
-    issue: true,
-  },
-  {
-    domain: "Availability",
-    finding: "Stock is available.",
-    detail: "Almost all returned jackets are in stock in the shopper’s market.",
-    issue: false,
-  },
-] as const;
+function mobileFindingsFor(t: Dictionary): readonly MobileFinding[] {
+  const findings = t.sections.proof.mobile.findings;
+  return [
+    { ...findings.onsiteSearch, issue: false },
+    { ...findings.productPages, issue: true },
+    { ...findings.availability, issue: false },
+  ];
+}
 
 /**
  * Edges land on the centre of each node. Two columns with a 1.5rem gap put the
@@ -227,7 +211,15 @@ function Tails() {
  *
  * The panel is absolutely positioned so opening it cannot move the graph.
  */
-function RuledOutBranch({ item, seqRow }: { item: RuledOut; seqRow: number }) {
+function RuledOutBranch({
+  item,
+  seqRow,
+  ruledOutLabel,
+}: {
+  item: RuledOut;
+  seqRow: number;
+  ruledOutLabel: string;
+}) {
   return (
     <div
       data-seq-row
@@ -248,7 +240,7 @@ function RuledOutBranch({ item, seqRow }: { item: RuledOut; seqRow: number }) {
       </button>
       <div className="branch-detail absolute inset-x-0 top-full z-10 mt-2 border border-white/16 bg-ink-deep px-4 py-3.5">
         <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.1em] text-white/44">
-          Ruled out
+          {ruledOutLabel}
         </p>
         <p className="mt-2 text-[13px] leading-[1.5] text-white/52 line-through decoration-white/28">
           {item.claim}
@@ -261,9 +253,11 @@ function RuledOutBranch({ item, seqRow }: { item: RuledOut; seqRow: number }) {
   );
 }
 
-function MobileTrace() {
-  const issue = MOBILE_FINDINGS.find((item) => item.issue);
-  const ruledOut = MOBILE_FINDINGS.filter((item) => !item.issue);
+function MobileTrace({ t }: { t: Dictionary }) {
+  const proof = t.sections.proof;
+  const findings = mobileFindingsFor(t);
+  const issue = findings.find((item) => item.issue);
+  const ruledOut = findings.filter((item) => !item.issue);
 
   return (
     <div className="lg:hidden">
@@ -273,22 +267,22 @@ function MobileTrace() {
             <span className="font-mono text-[11px] font-semibold tabular-nums text-signal">
               01
             </span>
-            <StepLabel>What the shopper did</StepLabel>
+            <StepLabel>{proof.mobile.whatTheShopperDid}</StepLabel>
           </div>
           <div className="mt-3 flex flex-wrap items-center gap-2 text-[12px]">
             <span className="bg-white/[0.06] px-2 py-1 text-white/78">
-              waterproof jacket
+              {proof.mobile.query}
             </span>
             <ArrowRight
               className="h-3.5 w-3.5 text-signal"
               aria-hidden="true"
             />
             <span className="bg-signal/[0.08] px-2 py-1 text-signal">
-              + for commuting
+              {proof.mobile.refinement}
             </span>
           </div>
           <p className="mt-3 text-[15px] leading-[1.5] text-white/88">
-            Same jackets returned. The shopper left without opening one.
+            {proof.mobile.signal}
           </p>
         </div>
 
@@ -297,7 +291,7 @@ function MobileTrace() {
             <span className="font-mono text-[11px] font-semibold tabular-nums text-signal">
               02
             </span>
-            <StepLabel>Strongest evidence</StepLabel>
+            <StepLabel>{proof.strongestEvidence}</StepLabel>
           </div>
           <div className="mt-3 flex flex-wrap gap-2">
             {ruledOut.map((item) => (
@@ -329,23 +323,23 @@ function MobileTrace() {
             <span className="font-mono text-[11px] font-semibold tabular-nums text-signal">
               03
             </span>
-            <StepLabel>Proposed change</StepLabel>
+            <StepLabel>{proof.proposedChange}</StepLabel>
           </div>
           <p className="mt-3 text-[15px] font-medium leading-[1.5] text-white/90">
-            Add the commuting use case to the returned jacket product pages.
+            {proof.change}
           </p>
           <div className="mt-4 flex items-center gap-2 text-[11px] font-semibold text-white/80">
-            <span>You approve</span>
+            <span>{proof.approve}</span>
             <ArrowRight
               className="h-3 w-3 shrink-0 text-signal"
               aria-hidden="true"
             />
-            <span>Beseam applies it</span>
+            <span>{proof.applies}</span>
             <ArrowRight
               className="h-3 w-3 shrink-0 text-signal"
               aria-hidden="true"
             />
-            <span>Check again</span>
+            <span>{proof.checkAgain}</span>
           </div>
         </div>
       </div>
@@ -353,7 +347,16 @@ function MobileTrace() {
   );
 }
 
-export default function ConnectedEvidence() {
+export default function ConnectedEvidence({
+  locale = "en",
+}: {
+  locale?: Locale;
+}) {
+  const t = getDictionary(locale);
+  const proof = t.sections.proof;
+  const queries = Object.entries(proof.queries);
+  const candidates = candidatesFor(t);
+
   return (
     <section
       id="proof"
@@ -364,15 +367,11 @@ export default function ConnectedEvidence() {
           <div className="grid gap-8 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:items-end lg:gap-16">
             <div>
               <h2 className="max-w-[16ch] text-balance font-display text-[clamp(2.25rem,3.4vw,3.5rem)] font-normal leading-[1.05] tracking-[-0.02em]">
-                See what gets in the way of the choice.
+                {proof.heading}
               </h2>
             </div>
             <div className="max-w-[50ch] text-[16px] leading-[1.75] text-white/72">
-              <p>
-                Beseam looks at what the shopper did, checks product, search,
-                and stock data, rules out weaker explanations, then turns the
-                strongest finding into a change you can approve and check again.
-              </p>
+              <p>{proof.body}</p>
             </div>
           </div>
         </Reveal>
@@ -381,21 +380,19 @@ export default function ConnectedEvidence() {
           <div className="mt-10 lg:border lg:border-white/16 lg:bg-white/[0.02]">
             <div className="flex flex-wrap items-center justify-between gap-3 border-y border-white/12 py-3 lg:border-t-0 lg:border-b lg:px-6">
               <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.12em] text-signal">
-                Example trace
+                {proof.traceLabel}
               </p>
-              <p className="text-[12px] text-white/56">
-                Onsite discovery &middot; schematic
-              </p>
+              <p className="text-[12px] text-white/56">{proof.traceScope}</p>
             </div>
 
             <div className="relative pb-8 pt-6 sm:pb-10 sm:pt-9 lg:px-10">
-              <MobileTrace />
+              <MobileTrace t={t} />
 
               <div className="hidden lg:block">
                 <div className="grid grid-cols-2 gap-6">
-                  {QUERIES.map((query, i) => (
+                  {queries.map(([key, query], i) => (
                     <div
-                      key={query.value}
+                      key={key}
                       data-seq-row
                       style={{ "--seq-row": i } as CSSProperties}
                       className="relative text-center"
@@ -421,16 +418,16 @@ export default function ConnectedEvidence() {
                   <span className="mb-3 flex justify-center">
                     <NodeDot />
                   </span>
-                  <StepLabel>What happened next</StepLabel>
+                  <StepLabel>{proof.whatHappenedNext}</StepLabel>
                   <p className="mt-2 text-[clamp(1.1rem,1.7vw,1.4rem)] leading-[1.4] text-white/92">
-                    {SIGNAL}
+                    {proof.signal}
                   </p>
                 </div>
 
                 <Fork />
 
                 <div className="grid grid-cols-3 items-stretch gap-14">
-                  {CANDIDATES.map((item, i) =>
+                  {candidates.map((item, i) =>
                     item.cause ? (
                       <div key={item.domain} className="flex flex-col">
                         <span className="mb-4 flex justify-center">
@@ -448,7 +445,7 @@ export default function ConnectedEvidence() {
                             {item.claim}
                           </p>
                           <p className="self-start bg-signal px-2 py-1 font-mono text-[11px] font-semibold uppercase tracking-[0.1em] text-[#16110e]">
-                            Strongest evidence
+                            {proof.strongestEvidence}
                           </p>
                           <p className="mt-auto pt-1 text-[13px] leading-[1.6] text-white/78">
                             {item.why}
@@ -460,7 +457,11 @@ export default function ConnectedEvidence() {
                         <span className="mb-4 flex justify-center">
                           <NodeDot tone="dead" />
                         </span>
-                        <RuledOutBranch item={item} seqRow={i + 3} />
+                        <RuledOutBranch
+                          item={item}
+                          seqRow={i + 3}
+                          ruledOutLabel={proof.ruledOut}
+                        />
                       </div>
                     ),
                   )}
@@ -468,13 +469,12 @@ export default function ConnectedEvidence() {
 
                 <Tails />
                 <div className="border border-signal/45 bg-signal/[0.05] px-6 py-5 text-center">
-                  <StepLabel>Proposed change</StepLabel>
+                  <StepLabel>{proof.proposedChange}</StepLabel>
                   <p className="mt-2.5 text-[17px] font-medium leading-[1.5] text-white/94">
-                    Add the commuting use case to the returned jacket product
-                    pages.
+                    {proof.change}
                   </p>
                   <p className="mt-3 font-mono text-[11.5px] font-semibold uppercase tracking-[0.08em] text-white/62">
-                    You approve → Beseam applies it → Check again
+                    {`${proof.approve} → ${proof.applies} → ${proof.checkAgain}`}
                   </p>
                 </div>
               </div>
