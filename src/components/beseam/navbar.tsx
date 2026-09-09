@@ -12,10 +12,14 @@ import LanguageSwitcher from "@/components/beseam/language-switcher";
 import TrackedLink from "@/components/beseam/tracked-link";
 import UntranslatedNotice from "@/components/beseam/untranslated-notice";
 import { useDictionary } from "@/i18n/use-locale";
+import { LOCALIZED_ROUTES, normalizePath } from "@/i18n/locale-rules.mjs";
 import { APP_LOGIN_URL } from "@/lib/app-urls";
 import { cn } from "@/lib/utils";
 // Fieldbook stays reachable from the footer; primary nav keeps only what a
 // buyer needs to understand and start: product, method, research.
+// Every homepage, not just the English one. Derived from LOCALIZED_ROUTES so
+// that adding a locale cannot leave a translated homepage behind.
+const HOME_PATHS = new Set(["/", LOCALIZED_ROUTES["/"]]);
 const NAV_LINKS = [
   { key: "platform", href: "/platform" },
   { key: "howWeWork", href: "/how-we-work" },
@@ -32,7 +36,7 @@ export default function BeseamNavbar() {
   // The homepage hero carries its own scan form, so the navbar CTA would ask
   // for the same action twice above the fold. Everywhere else it is the only
   // primary action in view and stays put.
-  const showCta = pathname !== "/" || pastHero;
+  const showCta = !HOME_PATHS.has(normalizePath(pathname ?? "/")) || pastHero;
 
   useEffect(() => {
     const onScroll = () => {
