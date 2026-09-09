@@ -724,6 +724,225 @@ export const de: Dictionary = {
     },
   },
 
+  // Die fünf Schrittnamen stehen zweimal: als Beschriftung im Ring und in
+  // `desc`. Wer einen Schritt umbenennt, benennt ihn in `desc` mit um.
+  loop: {
+    title: "Der Beseam-Kreislauf",
+    desc: "Fünf Schritte im Kreis angeordnet, jeder Pfeil zeigt auf den nächsten: Finden, Vorbereiten, Freigeben, Umsetzen, Messen. Messen führt zurück zu Finden.",
+    steps: {
+      find: { label: "Finden", detail: "was zu verbessern ist" },
+      prepare: { label: "Planen", detail: "Änderung" },
+      approve: { label: "Freigeben", detail: "Sie entscheiden" },
+      apply: { label: "Umsetzen", detail: "Beseam setzt um" },
+      measure: { label: "Messen", detail: "gleicher Weg" },
+    },
+    // Die Beschriftungen 02 und 05 stehen an den seitlichen Rändern der
+    // viewBox und werden dort abgeschnitten. Gemessen: 02 hat rund 68px, 05
+    // hat 74,2px Platz. Deshalb "Planen" statt "Vorbereiten", "Änderung" ohne
+    // Artikel und "gleicher Weg" (73,3px) statt "derselbe Weg" (76,6px).
+    // Wer diese vier Zeichenketten verlängert, schneidet sie ab.
+    centre: { line1: "Fortlaufender", line2: "Kreislauf" },
+    caption: "Messen beendet die Arbeit nicht. Es startet das nächste Finden.",
+  },
+
+  systemMap: {
+    signalsAriaLabel: "Informationen entlang der Kaufreise",
+    columns: {
+      signals: { label: "Signale", note: "Feste Menge" },
+      journey: { label: "Eine Kaufreise", note: "Abdeckung" },
+      useCases: {
+        label: "Was Teams damit tun",
+        note: "Die Liste wächst weiter",
+        noLinkNote: "Verbundene Abdeckung",
+      },
+    },
+    feedsBefore: "Speist ",
+    feedsBetween: " von ",
+    // "Input — was X liest" läuft bei 1024px aus der Spalte (die Zeile bricht
+    // nicht um). "Input für X" sagt dasselbe und bleibt kürzer als die
+    // englische Zeile, deshalb bleibt `inputAfter` leer.
+    inputBefore: "Input für ",
+    inputAfter: "",
+    platformLabel: "Plattform",
+    platformQuestion: "Wofür entscheidet sich die Kundschaft?",
+    explore: "Plattform ansehen",
+    signalsUsed: "Genutzte Signale:",
+    servedLive: "Live ausgespielt",
+    moreLabel: "+ mehr",
+    moreDetail:
+      "Kampagnen, Zuverlässigkeit, Experimente, Segmente, Media Studio, Marktplätze, Passform. Nicht jede Funktion ist für jeden Shop freigeschaltet.",
+    hint: "Signal wählen, um zu sehen, was es speist",
+    // `scope` und `caveat` sitzen in schmalen Spalten mit fester Zeilenhöhe:
+    // die deutschen Zeilen bleiben deshalb so lang wie die englischen, nicht
+    // so nah wie möglich am englischen Wortlaut.
+    signals: {
+      discovery: {
+        label: "KI-Sichtbarkeit",
+        layer: "Extern",
+        scope: "Wo Produkte in die Auswahl kommen – oder nicht.",
+        caveat:
+          "Datierte, wiederholbare Stichproben. Nie die verborgene Ranking-Logik eines Modells.",
+        does: "Sichtbarkeit in der Auswahl",
+      },
+      store: {
+        label: "Shop & Produkt",
+        layer: "Im Shop",
+        scope: "Was die Seite beantwortet und was sie anbietet.",
+        caveat:
+          "Nur öffentliche Shop-Daten. Kein Login, keine privaten Kundendaten.",
+        does: "Katalog- und Seitenqualität",
+      },
+      behavior: {
+        // Weiches Trennzeichen (U+00AD): "Kundenverhalten" ist ein Wort ohne
+        // Umbruchstelle und schiebt sich sonst bei 1024px über das Ebenen-
+        // Kürzel rechts daneben. Die englische Zeile bricht an ihrem Leerraum.
+        label: "Kunden­verhalten",
+        layer: "Kaufreise",
+        scope: "Was Kundschaft verfeinert, öffnet, ignoriert, abbricht.",
+        caveat:
+          "Was die Kundschaft getan hat. Warum, bleibt eine Hypothese, bis es geprüft ist.",
+        does: "Proaktive Personalisierung",
+      },
+      revenue: {
+        label: "Umsatz",
+        layer: "Ergebnis",
+        scope: "Was sich verändert hat, nachdem gehandelt wurde.",
+        caveat:
+          "Gemessen nach der Umsetzung, an denselben Fragen, die die Lücke zeigten.",
+        does: "Wirkung und Attribution",
+      },
+    },
+    short: {
+      discovery: "Sichtbarkeit",
+      store: "Shop",
+      behavior: "Verhalten",
+      revenue: "Umsatz",
+    },
+    cards: {
+      aiAnswerVisibility: {
+        name: "Sichtbarkeit in KI-Antworten",
+        detail:
+          "Genannt bei den Fragen, die zählen – und was die Antwort stützte.",
+      },
+      competitors: {
+        name: "Wer stattdessen gewählt wird",
+        detail: "Was an Ihrer Stelle erscheint, über die Zeit verfolgt.",
+      },
+      agentReadiness: {
+        name: "Agent-Tauglichkeit",
+        detail: "Ob Shopping-Agenten den Shop überhaupt lesen können.",
+      },
+      catalogTruth: {
+        name: "Katalogwahrheit",
+        detail: "Felder, Varianten, Aktualität und Bestand, wie sie ankommen.",
+      },
+      productPageEvidence: {
+        name: "Belege auf der Produktseite",
+        detail: "Was die Seite beantwortet und was sie offen lässt.",
+      },
+      storeHealth: {
+        name: "Shop-Zustand und Crawlbarkeit",
+        detail: "Indexierbarkeit, strukturierte Fakten, Maschinenlesbarkeit.",
+      },
+      brandClaims: {
+        name: "Markenaussagen und Vertrauen",
+        detail: "Aussagen mit genug Belegen, um sie sicher weiterzuverwenden.",
+      },
+      personalizedSearch: {
+        name: "Personalisierte Suche und Empfehlungen",
+        detail: "Ergebnisse und Platzierungen, live ausgespielt und gemessen.",
+      },
+      whyBuyersLeave: {
+        name: "Warum Kundschaft abspringt",
+        detail: "Sitzungen, Replay, Heatmaps und die Reibung, die sie zeigen.",
+      },
+      funnels: {
+        name: "Funnels, Kohorten, Kaufreisen",
+        detail: "Wo Kundschaft weitergeht und wer stehen bleibt.",
+      },
+      revenueAttribution: {
+        name: "Umsatz und Attribution",
+        detail:
+          "Umsatz, beobachtete Änderungen, Attribution und Schätzungen bleiben getrennt.",
+      },
+      whatChanged: {
+        name: "Was sich verändert hat",
+        detail: "Vorher und nachher, an eine erledigte Änderung gebunden.",
+      },
+      oneChangeList: {
+        name: "Eine Änderungsliste",
+        detail:
+          "Jede vorgeschlagene Änderung mit Zuständigkeit, Freigabestatus und Prüfung danach.",
+      },
+    },
+  },
+
+  appScreens: {
+    illustrative: "Beispielhafte Darstellung · keine Kundenergebnisse.",
+    actions: {
+      columns: {
+        change: "Änderung",
+        salesShare: "Umsatzanteil",
+        effort: "Aufwand",
+        status: "Status",
+      },
+      efforts: { quick: "Schnell", hard: "Aufwendig" },
+      rows: {
+        commuting: {
+          title:
+            "Den Anwendungsfall Pendeln auf der Produktseite von Urban Shell ergänzen.",
+          why: "Die Kundschaft suchte eine Jacke zum Pendeln, und die Produktseite beantwortet nirgends, ob sie dafür geeignet ist.",
+          band: "Top 5 % Ihres verbuchten Umsatzes",
+          step: "Freigabe nötig",
+        },
+        layers: {
+          title: "Erklären, wie Urban Shell über Alltagskleidung passt.",
+          why: "Die Kundschaft öffnete die Größentabelle, und die Passform über weiterer Kleidung bleibt im Entscheidungsmoment offen.",
+          band: "Oberes Viertel des verbuchten Umsatzes",
+          step: "In Arbeit",
+        },
+        recheck: {
+          title:
+            "Die Pendel-Fragen nach der Änderung an der Produktseite erneut stellen.",
+          why: "Dieselbe Kauffrage erneut stellen, bevor gesagt wird, die Änderung habe der Sichtbarkeit geholfen.",
+          band: "Nicht gemessen",
+          step: "Wird gemessen",
+        },
+      },
+      note: "Jede Änderung hält zusammen, was Beseam gefunden hat, wer zuständig ist, welchen Status sie hat und was danach zu prüfen ist.",
+    },
+    impact: {
+      title: "Ergebnisse",
+      meta: "Beispielwerte",
+      verified: "Änderung bestätigt",
+      windowLabel: "Messzeitraum",
+      windowValue: "28 Tage",
+      // Die Delta-Spalte ist 4,75rem breit und bricht nicht um: "%-Pkt." und
+      // "Zitate" stehen für Prozentpunkte und zitierende Antworten, weil die
+      // ausgeschriebenen Wörter aus der Spalte laufen.
+      rows: {
+        naming: {
+          metric: "Antworten zum Pendeln, die Urban Shell nennen",
+          before: "9 %",
+          after: "23 %",
+          delta: "+14 %-Pkt.",
+        },
+        citing: {
+          metric: "Antworten, die Ihre Produktseite zitieren",
+          before: "1 von 12",
+          after: "1 von 4",
+          delta: "+3 Zitate",
+        },
+        position: {
+          metric: "Ihre Position, wenn Sie genannt werden",
+          before: "5.",
+          after: "2.",
+          delta: "+3 Plätze",
+        },
+      },
+    },
+  },
+
   rail: {
     ariaLabel: "Forschungsergebnis",
     eyebrow: "Neue Studie",

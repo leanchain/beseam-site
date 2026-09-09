@@ -760,6 +760,248 @@ const enDictionary = {
     },
   },
 
+  /**
+   * `loop-diagram.tsx`. The five step labels and the accessibility
+   * description name the same five steps, so a locale that renames a step has
+   * to rename it in `desc` too, or the picture and the sentence describing it
+   * stop agreeing. Geometry, the gate flag and the step order stay in the
+   * component: they are identical in every locale.
+   */
+  loop: {
+    title: "The Beseam operating loop",
+    desc: "Five steps arranged in a circle, each arrow pointing to the next: Find, Prepare, Approve, Apply, Measure. Measure leads back to Find.",
+    steps: {
+      find: { label: "Find", detail: "what to improve" },
+      prepare: { label: "Prepare", detail: "the change" },
+      approve: { label: "Approve", detail: "you decide" },
+      apply: { label: "Apply", detail: "Beseam ships it" },
+      measure: { label: "Measure", detail: "the same journey" },
+    },
+    /**
+     * Two keys, not one string: they are drawn as two `<text>` elements at
+     * fixed baselines inside the ring, so the break is geometry rather than
+     * wrapping. A locale that needs one word can repeat the shorter half.
+     *
+     * Both lines are clipped by the svg's viewBox, so keep them short --
+     * roughly 14 characters is what fits at the 15px mono size.
+     */
+    centre: { line1: "Continuous", line2: "loop" },
+    caption: "Measure does not end the work. It starts the next Find.",
+  },
+
+  /**
+   * `connected-system-map.tsx`. Signal ids, wire geometry, hues, the icon set
+   * and which use case reads which signal stay in the component; only what is
+   * read lives here. The input tokens (`product_pages`, `add_to_cart`) are
+   * deliberately absent: they are field names shown as field names, not prose,
+   * and translating them would invent identifiers nothing emits.
+   */
+  systemMap: {
+    signalsAriaLabel: "Information across the shopper journey",
+    columns: {
+      signals: { label: "Signals", note: "Fixed set" },
+      journey: { label: "One shopper journey", note: "Coverage" },
+      useCases: {
+        label: "What teams run on it",
+        note: "The list keeps growing",
+        /** Stands in for the explore link where the section links nowhere. */
+        noLinkNote: "Connected coverage",
+      },
+    },
+    /**
+     * Split around their numbers rather than interpolated, because both sit
+     * between two counts the component computes. German keeps the same order,
+     * so the halves stay halves.
+     */
+    feedsBefore: "Feeds ",
+    feedsBetween: " of ",
+    inputBefore: "Input — what ",
+    inputAfter: " reads",
+    platformLabel: "Platform",
+    platformQuestion: "What will this shopper choose?",
+    explore: "Explore the platform",
+    signalsUsed: "Signals used:",
+    servedLive: "Served live",
+    moreLabel: "+ more",
+    moreDetail:
+      "Campaigns, reliability, experiments, segments, media studio, marketplaces, fit. Not every capability is enabled for every store.",
+    hint: "Select a signal to light what it feeds",
+    /**
+     * `scope` sits in a fixed 2.25rem slot and `caveat` under a 16rem column,
+     * so both are two lines of a narrow measure: keep a locale's version close
+     * to the English length rather than closer to the English wording.
+     */
+    signals: {
+      discovery: {
+        label: "AI discovery",
+        layer: "Off-site",
+        scope: "Where products enter — or miss — the shortlist.",
+        caveat:
+          "Point-in-time samples, dated and repeatable. Never a model’s hidden ranking logic.",
+        does: "Shortlist visibility",
+      },
+      store: {
+        label: "Store & product",
+        layer: "Storefront",
+        scope: "What the page answers, and what it offers next.",
+        caveat:
+          "Public storefront data only. No store login, no private customer data.",
+        does: "Catalog and page readiness",
+      },
+      behavior: {
+        label: "Shopper behavior",
+        layer: "Journey",
+        scope: "What shoppers refine, open, ignore, and abandon.",
+        caveat:
+          "What shoppers did. Why it happened stays a hypothesis until it is tested.",
+        does: "Proactive personalization",
+      },
+      revenue: {
+        label: "Revenue",
+        layer: "Outcome",
+        scope: "What changed after the decision was acted on.",
+        caveat:
+          "Measured after the change ships, against the same questions that exposed the gap.",
+        does: "Impact and attribution",
+      },
+    },
+    /** Card-width names for the signals a use case reads. */
+    short: {
+      discovery: "Discovery",
+      store: "Store",
+      behavior: "Behavior",
+      revenue: "Revenue",
+    },
+    /** One entry per real surface in the product. */
+    cards: {
+      aiAnswerVisibility: {
+        name: "AI answer visibility",
+        detail:
+          "Named for the questions that matter, and what supported the answer.",
+      },
+      competitors: {
+        name: "Competitors chosen instead",
+        detail: "What appears in your place, tracked over time.",
+      },
+      agentReadiness: {
+        name: "Agent readiness",
+        detail: "Whether shopping agents can read the storefront at all.",
+      },
+      catalogTruth: {
+        name: "Catalog truth",
+        detail:
+          "Fields, variants, freshness, and stock as a shopper meets them.",
+      },
+      productPageEvidence: {
+        name: "Product page evidence",
+        detail: "What the page answers, and what it leaves open.",
+      },
+      storeHealth: {
+        name: "Store health and crawlability",
+        detail: "Indexability, structured facts, machine readability.",
+      },
+      brandClaims: {
+        name: "Brand claims and trust",
+        detail: "Claims with enough evidence behind them to reuse safely.",
+      },
+      personalizedSearch: {
+        name: "Personalized search and recommendations",
+        detail: "Ranked results and placements, served live and measured.",
+      },
+      whyBuyersLeave: {
+        name: "Why buyers leave",
+        detail: "Sessions, replay, heatmaps, and the friction they show.",
+      },
+      funnels: {
+        name: "Funnels, cohorts, journeys",
+        detail: "Where shoppers move forward, and who stops.",
+      },
+      revenueAttribution: {
+        name: "Revenue and attribution",
+        detail:
+          "Actual revenue, observed changes, attribution, and estimates stay separate.",
+      },
+      whatChanged: {
+        name: "What changed",
+        detail: "Before and after, tied to one completed change.",
+      },
+      oneChangeList: {
+        name: "One change list",
+        detail:
+          "Every proposed change with an owner, approval status, and a check afterward.",
+      },
+    },
+  },
+
+  /**
+   * `app-screens.tsx` -- the two rebuilt product screens. Row order, which row
+   * leads, the effort tone and the column geometry stay in the component. The
+   * ledger's figures live here because they are illustrative, and how a figure
+   * is written is part of the locale: "1 in 12" is "1 von 12", and a delta has
+   * to stay inside a 4.75rem column in every language.
+   */
+  appScreens: {
+    illustrative: "Illustrative example · not customer results.",
+    actions: {
+      columns: {
+        change: "Change",
+        salesShare: "Sales share",
+        effort: "Effort",
+        status: "Status",
+      },
+      efforts: { quick: "Quick", hard: "Hard" },
+      rows: {
+        commuting: {
+          title: "Add the commuting use case to the Urban Shell product page.",
+          why: "The shopper asked for a commuting jacket, and the product page never answers whether this one fits that use case.",
+          band: "Top 5% of your booked sales",
+          step: "Needs approval",
+        },
+        layers: {
+          title: "Explain how Urban Shell fits over everyday layers.",
+          why: "The shopper opened the size guide, and fit over layers is still unanswered at the decision point.",
+          band: "Top quarter of booked sales",
+          step: "In motion",
+        },
+        recheck: {
+          title:
+            "Ask the commuter questions again after the product-page change.",
+          why: "Ask the same shopping question again before saying the change helped discovery.",
+          band: "Not measured",
+          step: "Measuring",
+        },
+      },
+      note: "Every change keeps what Beseam found, the owner, status, and what to check afterward together.",
+    },
+    impact: {
+      title: "Results",
+      meta: "Example figures",
+      verified: "Change verified",
+      windowLabel: "Measured window",
+      windowValue: "28 days",
+      rows: {
+        naming: {
+          metric: "Commuter answers naming Urban Shell",
+          before: "9%",
+          after: "23%",
+          delta: "+14 pts",
+        },
+        citing: {
+          metric: "Answers citing your own product page",
+          before: "1 in 12",
+          after: "1 in 4",
+          delta: "+3 answers",
+        },
+        position: {
+          metric: "Where you sit when you are named",
+          before: "5th",
+          after: "2nd",
+          delta: "+3 places",
+        },
+      },
+    },
+  },
+
   rail: {
     ariaLabel: "Research finding",
     eyebrow: "New research",
