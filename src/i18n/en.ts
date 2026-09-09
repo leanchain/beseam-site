@@ -38,6 +38,15 @@ const enDictionary = {
   // switching to it or arriving with a German-language signal, so telling
   // them in English that German is unavailable here defeats the purpose.
   // Do not "fix" this by translating it back to English.
+  // The consent banner is client-rendered, so it never appears in the exported
+  // HTML and was missed by every static sweep of the German page.
+  cookies: {
+    ariaLabel: "Cookie choices",
+    text: "Essential cookies keep the site working. Optional analytics load only after you accept.",
+    policy: "Privacy policy",
+    reject: "Reject analytics",
+    accept: "Accept analytics",
+  },
   notice: {
     text: "Diese Seite gibt es noch nicht auf Deutsch.",
     link: "Zur deutschen Startseite",

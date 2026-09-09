@@ -22,6 +22,13 @@ export const de: Dictionary = {
     short: { en: "EN", de: "DE" },
     names: { en: "English", de: "Deutsch" },
   },
+  cookies: {
+    ariaLabel: "Cookie-Auswahl",
+    text: "Essenzielle Cookies halten die Website funktionsfähig. Optionale Analyse-Cookies werden erst geladen, wenn Sie zustimmen.",
+    policy: "Datenschutzerklärung",
+    reject: "Analyse ablehnen",
+    accept: "Analyse akzeptieren",
+  },
   notice: {
     text: "Diese Seite gibt es noch nicht auf Deutsch.",
     link: "Zur deutschen Startseite",
