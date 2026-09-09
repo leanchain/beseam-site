@@ -463,15 +463,73 @@ const OPTIMISTIC_STEPS: Step[] = [
   },
 ];
 
+// The storefront read and the catalog read finish inside the POST. Everything
+// after them -- the product-page sample, the questions, the answers -- is the
+// slow half, and it is the half the address buys. So the rail breaks there and
+// the ask sits in the seam: what already ran is above it, what is still coming
+// is below it.
+const LIGHT_STEP_KEYS = new Set(["storefront", "catalog"]);
+
+function StepRow({ step }: { step: Step }) {
+  return (
+    <li className="flex items-start gap-3">
+      <StepMark state={step.state} />
+      <div className="min-w-0">
+        <p
+          className={`text-[14px] leading-snug ${
+            step.state === "pending"
+              ? "text-black/44"
+              : "font-medium text-ink-deep"
+          }`}
+        >
+          {step.label}
+        </p>
+        {step.detail ? (
+          <p className="mt-0.5 text-[12.5px] leading-relaxed text-black/54">
+            {step.detail}
+          </p>
+        ) : null}
+        {step.state === "active" && step.progress && step.progress.total > 0 ? (
+          <div
+            className="mt-1.5 h-1 w-full max-w-[220px] overflow-hidden rounded-full bg-black/10"
+            role="progressbar"
+            aria-valuenow={step.progress.done}
+            aria-valuemin={0}
+            aria-valuemax={step.progress.total}
+            aria-label={`${step.progress.done} of ${step.progress.total}`}
+          >
+            <div
+              className="h-full rounded-full bg-[#1a6b43] transition-[width] duration-500 ease-out"
+              style={{
+                width: `${Math.round(
+                  (Math.min(step.progress.done, step.progress.total) /
+                    step.progress.total) *
+                    100,
+                )}%`,
+              }}
+            />
+          </div>
+        ) : null}
+      </div>
+    </li>
+  );
+}
+
 function ScanProgress({
   steps,
   domain,
+  interlude,
 }: {
   steps: Step[];
   domain: string | null;
+  /** Rendered between the finished light steps and the slow ones. */
+  interlude?: ReactNode;
 }) {
   const visible = steps.filter((step) => step.state !== "skipped");
   if (!visible.length) return null;
+
+  const lightSteps = visible.filter((step) => LIGHT_STEP_KEYS.has(step.key));
+  const heavySteps = visible.filter((step) => !LIGHT_STEP_KEYS.has(step.key));
 
   // Position inside the very list rendered below — no second progress model.
   // The active step when there is one; otherwise the next step not yet done, so
@@ -506,51 +564,24 @@ function ScanProgress({
         inside Beseam.
       </p>
       <ol className="mt-4 space-y-3">
-        {visible.map((step) => (
-          <li key={step.key} className="flex items-start gap-3">
-            <StepMark state={step.state} />
-            <div className="min-w-0">
-              <p
-                className={`text-[14px] leading-snug ${
-                  step.state === "pending"
-                    ? "text-black/44"
-                    : "font-medium text-ink-deep"
-                }`}
-              >
-                {step.label}
-              </p>
-              {step.detail ? (
-                <p className="mt-0.5 text-[12.5px] leading-relaxed text-black/54">
-                  {step.detail}
-                </p>
-              ) : null}
-              {step.state === "active" &&
-              step.progress &&
-              step.progress.total > 0 ? (
-                <div
-                  className="mt-1.5 h-1 w-full max-w-[220px] overflow-hidden rounded-full bg-black/10"
-                  role="progressbar"
-                  aria-valuenow={step.progress.done}
-                  aria-valuemin={0}
-                  aria-valuemax={step.progress.total}
-                  aria-label={`${step.progress.done} of ${step.progress.total}`}
-                >
-                  <div
-                    className="h-full rounded-full bg-[#1a6b43] transition-[width] duration-500 ease-out"
-                    style={{
-                      width: `${Math.round(
-                        (Math.min(step.progress.done, step.progress.total) /
-                          step.progress.total) *
-                          100,
-                      )}%`,
-                    }}
-                  />
-                </div>
-              ) : null}
-            </div>
-          </li>
+        {(interlude ? lightSteps : visible).map((step) => (
+          <StepRow key={step.key} step={step} />
         ))}
       </ol>
+      {interlude ? (
+        <>
+          {/* The address buys the slow half, so it stands between the two
+              halves rather than under all of them. */}
+          <div className="mt-5 border-t border-black/12 pt-5">{interlude}</div>
+          {heavySteps.length ? (
+            <ol start={lightSteps.length + 1} className="mt-5 space-y-3">
+              {heavySteps.map((step) => (
+                <StepRow key={step.key} step={step} />
+              ))}
+            </ol>
+          ) : null}
+        </>
+      ) : null}
     </section>
   );
 }
@@ -3332,13 +3363,27 @@ export default function AnswerCheck({
   // A domain someone already ran to completion is the one path where the whole
   // audit renders with nothing asked for it, so `ready` asks too — the address
   // buys the link rather than the probe. `rejected` never asks: there is no
-  // audit to send. `queued`/`running` are mid-probe, already past the gate.
+  // audit to send.
   const scanIsComplete = result?.status === "ready";
+
+  // The storefront and catalog reads finish inside the POST, so by the first
+  // payload the visitor already has their platform, product count and prices
+  // on screen. That is the moment to ask: something has been given, and the
+  // product-page sample behind the ask is minutes of work, not seconds.
+  // Waiting for `awaiting_verification` asked at the end of the slow half
+  // instead of the start of it.
+  const lightStageDone = Boolean(
+    result?.steps.some(
+      (step) => step.key === "catalog" && step.state === "done",
+    ),
+  );
   const showEmailAsk = Boolean(
     !handOffTo &&
     result &&
     !result.reject_reason &&
-    (result.status === "awaiting_verification" || scanIsComplete),
+    (lightStageDone ||
+      result.status === "awaiting_verification" ||
+      scanIsComplete),
   );
 
   const focusEmailField = () => {
@@ -3346,6 +3391,112 @@ export default function AnswerCheck({
     field?.scrollIntoView({ block: "center", behavior: "smooth" });
     (field as HTMLInputElement | null)?.focus({ preventScroll: true });
   };
+
+  // The one place the address is asked. It sits in the seam of the progress
+  // rail: the storefront and catalog reads are above it, done; the
+  // product-page sample, the questions and the answers are below it, and they
+  // are the minutes. Sending does not replace the page -- progress keeps
+  // animating and findings keep landing while the link sits in the inbox.
+  const emailAsk = showEmailAsk ? (
+    <div className="border border-black/18 bg-white p-5 sm:p-6">
+      {verificationSent ? (
+        <>
+          <p className="flex items-center gap-2 text-[13px] font-semibold text-[#1a6b43]">
+            <MailCheck className="h-4 w-4" aria-hidden="true" />
+            Sent to {email.trim()}
+          </p>
+          <p className="mt-2.5 text-[18px] font-semibold tracking-[-0.01em] text-ink-deep">
+            {scanIsComplete
+              ? "Your link is in your inbox."
+              : "One click in your inbox and we keep going."}
+          </p>
+          <p className="mt-1.5 max-w-[54ch] text-[13.5px] leading-relaxed text-[#5f5a55]">
+            {scanIsComplete
+              ? "Nothing on this page goes away. The link opens this same audit whenever you want it back."
+              : "Nothing on this page goes away in the meantime. Open the link and we ask the assistants about your products, then show you the whole audit."}
+          </p>
+          {/* A sent state with no exit strands anyone who mistyped their
+                  address or never received the mail. */}
+          <button
+            type="button"
+            onClick={() => setVerificationSent(false)}
+            className="mt-4 inline-flex min-h-11 items-center text-[13px] font-semibold text-ink-deep underline decoration-black/30 underline-offset-4 transition-colors hover:text-signal-ink hover:decoration-signal-ink"
+          >
+            Send it to a different email
+          </button>
+        </>
+      ) : (
+        <form
+          onSubmit={onVerificationSubmit}
+          noValidate
+          className="grid items-start gap-x-10 gap-y-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,26rem)]"
+        >
+          <div>
+            <label
+              className="text-[16px] font-semibold tracking-[-0.01em] text-ink-deep"
+              htmlFor="answer-check-email"
+            >
+              Where do we send your audit?
+            </label>
+            <p className="mt-1.5 max-w-[54ch] text-[13px] leading-relaxed text-[#5f5a55]">
+              {scanIsComplete
+                ? `The audit for ${result?.domain ?? "your store"} is complete. Leave an address and we send you the link, so it is yours to open and keep.`
+                : `We are reading ${result?.domain ?? "your store"} now. Leave an address and we send one link — click it and we also ask the assistants about your products.`}
+            </p>
+          </div>
+          <div>
+            <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto]">
+              <input
+                id="answer-check-email"
+                type="email"
+                autoComplete="email"
+                value={email}
+                onChange={(event) => {
+                  setEmail(event.target.value);
+                  if (verificationError) setVerificationError("");
+                }}
+                placeholder="you@company.com"
+                aria-invalid={Boolean(verificationError)}
+                className={inputClass}
+              />
+              <button
+                type="submit"
+                disabled={verificationSubmitting}
+                className="group inline-flex min-h-12 items-center justify-center gap-2 bg-signal-ink px-6 text-[15px] font-semibold text-white disabled:opacity-70"
+              >
+                {verificationSubmitting ? "Sending…" : "Send it"}
+                <ArrowRight
+                  aria-hidden="true"
+                  className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
+                />
+              </button>
+            </div>
+            <p className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[12.5px] font-medium text-[#3b3833]">
+              {["No account", "No card", "One email, no marketing list"].map(
+                (item) => (
+                  <span key={item} className="inline-flex items-center gap-1.5">
+                    <Check
+                      aria-hidden="true"
+                      className="h-3.5 w-3.5 text-[#1f7a4d]"
+                    />
+                    {item}
+                  </span>
+                ),
+              )}
+            </p>
+            {verificationError ? (
+              <p
+                role="alert"
+                className="mt-3 text-[13px] leading-relaxed text-[#b3261e]"
+              >
+                {verificationError}
+              </p>
+            ) : null}
+          </div>
+        </form>
+      )}
+    </div>
+  ) : null;
 
   return (
     <div>
@@ -3459,129 +3610,20 @@ export default function AnswerCheck({
           <ScanProgress
             steps={result && !submitting ? result.steps : OPTIMISTIC_STEPS}
             domain={result?.domain ?? (domain.trim() || null)}
+            interlude={emailAsk}
           />
         </div>
       ) : null}
 
-      {/* The one place the address is asked. It sits directly under the
-          progress rail, so the visitor hands it over while the scan is visibly
-          working for them rather than before anything has run. Sending does not
-          replace the page: progress keeps animating and findings keep landing
-          while the link sits in the inbox. */}
-      {/* Generous above, seamed below: the ask is about the audit, so it reads
-          as that block's header strip rather than a card adrift between the
-          domain row and the findings. */}
-      {showEmailAsk ? (
-        <div
-          className={`mx-auto mt-8 w-full border border-black/18 bg-white p-5 sm:p-6 ${columnClass}`}
-        >
-          {verificationSent ? (
-            <>
-              <p className="flex items-center gap-2 text-[13px] font-semibold text-[#1a6b43]">
-                <MailCheck className="h-4 w-4" aria-hidden="true" />
-                Sent to {email.trim()}
-              </p>
-              <p className="mt-2.5 text-[18px] font-semibold tracking-[-0.01em] text-ink-deep">
-                {scanIsComplete
-                  ? "Your link is in your inbox."
-                  : "One click in your inbox and we keep going."}
-              </p>
-              <p className="mt-1.5 max-w-[54ch] text-[13.5px] leading-relaxed text-[#5f5a55]">
-                {scanIsComplete
-                  ? "Nothing on this page goes away. The link opens this same audit whenever you want it back."
-                  : "Nothing on this page goes away in the meantime. Open the link and we ask the assistants about your products, then show you the whole audit."}
-              </p>
-              {/* A sent state with no exit strands anyone who mistyped their
-                  address or never received the mail. */}
-              <button
-                type="button"
-                onClick={() => setVerificationSent(false)}
-                className="mt-4 inline-flex min-h-11 items-center text-[13px] font-semibold text-ink-deep underline decoration-black/30 underline-offset-4 transition-colors hover:text-signal-ink hover:decoration-signal-ink"
-              >
-                Send it to a different email
-              </button>
-            </>
-          ) : (
-            <form
-              onSubmit={onVerificationSubmit}
-              noValidate
-              className="grid items-start gap-x-10 gap-y-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,26rem)]"
-            >
-              <div>
-                <label
-                  className="text-[16px] font-semibold tracking-[-0.01em] text-ink-deep"
-                  htmlFor="answer-check-email"
-                >
-                  Where do we send your audit?
-                </label>
-                <p className="mt-1.5 max-w-[54ch] text-[13px] leading-relaxed text-[#5f5a55]">
-                  {scanIsComplete
-                    ? `The audit for ${result?.domain ?? "your store"} is complete. Leave an address and we send you the link, so it is yours to open and keep.`
-                    : `We are reading ${result?.domain ?? "your store"} now. Leave an address and we send one link — click it and we also ask the assistants about your products.`}
-                </p>
-              </div>
-              <div>
-                <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto]">
-                  <input
-                    id="answer-check-email"
-                    type="email"
-                    autoComplete="email"
-                    value={email}
-                    onChange={(event) => {
-                      setEmail(event.target.value);
-                      if (verificationError) setVerificationError("");
-                    }}
-                    placeholder="you@company.com"
-                    aria-invalid={Boolean(verificationError)}
-                    className={inputClass}
-                  />
-                  <button
-                    type="submit"
-                    disabled={verificationSubmitting}
-                    className="group inline-flex min-h-12 items-center justify-center gap-2 bg-signal-ink px-6 text-[15px] font-semibold text-white disabled:opacity-70"
-                  >
-                    {verificationSubmitting ? "Sending…" : "Send it"}
-                    <ArrowRight
-                      aria-hidden="true"
-                      className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
-                    />
-                  </button>
-                </div>
-                <p className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[12.5px] font-medium text-[#3b3833]">
-                  {[
-                    "No account",
-                    "No card",
-                    "One email, no marketing list",
-                  ].map((item) => (
-                    <span
-                      key={item}
-                      className="inline-flex items-center gap-1.5"
-                    >
-                      <Check
-                        aria-hidden="true"
-                        className="h-3.5 w-3.5 text-[#1f7a4d]"
-                      />
-                      {item}
-                    </span>
-                  ))}
-                </p>
-                {verificationError ? (
-                  <p
-                    role="alert"
-                    className="mt-3 text-[13px] leading-relaxed text-[#b3261e]"
-                  >
-                    {verificationError}
-                  </p>
-                ) : null}
-              </div>
-            </form>
-          )}
-        </div>
+      {/* Without a progress rail to sit inside -- a finished audit reopened
+          from a link -- the ask stands on its own, seamed to the card. */}
+      {showProgress ? null : emailAsk ? (
+        <div className={`mx-auto mt-8 w-full ${columnClass}`}>{emailAsk}</div>
       ) : null}
 
       {result ? (
         <div
-          className={`mx-auto max-w-[72rem] ${showEmailAsk ? "-mt-px" : "mt-4"}`}
+          className={`mx-auto max-w-[72rem] ${showEmailAsk && !showProgress ? "-mt-px" : "mt-4"}`}
         >
           {/* The poll budget ran out with work still outstanding. Name what did
               finish, so the evidence already on the card is not thrown into
