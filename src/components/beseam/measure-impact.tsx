@@ -36,7 +36,7 @@ export default function MeasureImpact({ locale = "en" }: { locale?: Locale }) {
                 {t.sections.impact.body}
               </p>
             </div>
-            <ImpactScreen />
+            <ImpactScreen locale={locale} />
           </div>
         </Reveal>
       </div>

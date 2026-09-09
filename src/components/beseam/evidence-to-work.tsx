@@ -42,10 +42,10 @@ export default function EvidenceToWork({ locale = "en" }: { locale?: Locale }) {
               four columns rather than repeat the beat. */}
           <div className="mt-9 min-w-0 sm:mt-11">
             <div className="sm:hidden">
-              <ActionsScreen compact />
+              <ActionsScreen compact locale={locale} />
             </div>
             <div className="hidden sm:block">
-              <ActionsScreen />
+              <ActionsScreen locale={locale} />
             </div>
           </div>
         </Reveal>
