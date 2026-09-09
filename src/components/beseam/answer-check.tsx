@@ -34,6 +34,7 @@ import type {
   Step,
 } from "@/components/beseam/answer-check-types";
 import { BookReviewCta } from "@/components/beseam/book-review-cta";
+import { deriveDeepAuditCardState } from "@/components/beseam/answer-check-state";
 import { ChannelIcon } from "@/components/beseam/channel-icon";
 import { fixExampleFor } from "@/components/beseam/fix-examples";
 import TrackedLink from "@/components/beseam/tracked-link";
@@ -67,6 +68,9 @@ export function isScanInFlight(result: AnswerCheckResult) {
 export function hasUsableFreeStage(result: AnswerCheckResult) {
   if (result.reject_reason) return true;
   if ((result.page_audits ?? []).length > 0) return true;
+  if (result.homepage_audit != null) return true;
+  if ((result.site_inventory?.urls_discovered ?? 0) > 0) return true;
+  if (result.site_description?.title || result.site_description?.description) return true;
   if (PENDING_PAGE_AUDIT_STATUSES.has(result.page_audits_status ?? "")) {
     return true;
   }
@@ -1768,15 +1772,15 @@ function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
   const discoveryNotes = discoveryFileNotes(copy);
   const findings = sortedFindings(result);
   const audits = result.page_audits ?? [];
-  const pageAuditStatus =
-    result.page_audits_status ?? (audits.length ? "complete" : "not_started");
-  const pageAuditsInFlight =
-    pageAuditStatus === "queued" || pageAuditStatus === "running";
-  // Not running, not failed, nothing read: the close read of the product pages
-  // has not been bought yet. Say what opens it, rather than reporting an
-  // inspection that "was not available" -- a failure the visitor cannot act on.
-  const pageAuditsGated =
-    pageAuditStatus === "not_started" && audits.length === 0;
+  const homepageAudit = result.homepage_audit;
+  const entityAudits = result.entity_page_audits ?? [];
+  const homepageDetailed =
+    homepageAudit && "checks_evaluated" in homepageAudit ? homepageAudit : null;
+  const homepageOk = Boolean(homepageDetailed?.ok);
+  const deepAuditState = deriveDeepAuditCardState(result);
+  const pageAuditStatus = deepAuditState.status;
+  const pageAuditsInFlight = deepAuditState.inFlight;
+  const pageAuditsGated = deepAuditState.gated;
   const catalogFindings = findings.filter(
     (finding) =>
       finding.source !== "page_audit" && finding.source !== "catalog_sample",
@@ -2167,10 +2171,12 @@ function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
       </Fold>
 
       <Fold
-        title={copy.summary.catalog}
+        title={result.site_kind === "brand_site" ? copy.summary.productCatalog : copy.summary.catalog}
         summary={
-          catalog
-            ? copy.summary.catalogSummary(
+          result.site_kind === "brand_site"
+            ? copy.summary.noCatalogBrandSite
+            : catalog
+              ? copy.summary.catalogSummary(
                 catalogCheckedLabel,
                 catalog.products_with_gaps,
                 catalog.unavailable_products,
@@ -2373,13 +2379,123 @@ function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
           </div>
         ) : (
           <div className="bg-white px-5 py-4 text-[12.5px] text-black/54 sm:px-6">
-            {copy.summary.catalogLimited}
+            {result.site_kind === "brand_site" ? copy.summary.noCatalogBrandSite : copy.summary.catalogLimited}
           </div>
         )}
       </Fold>
+
+      <Fold
+        defaultOpen
+        title={copy.summary.homepage}
+        summary={
+          pageAuditsGated
+            ? copy.summary.homepageGated
+            : pageAuditsInFlight && !homepageAudit
+              ? copy.summary.homepageReading
+              : homepageAudit?.ok === false
+                ? copy.summary.homepageFailed
+                : homepageDetailed?.score != null
+                  ? copy.summary.homepageSummary(
+                      Math.round(homepageDetailed.score),
+                      homepageDetailed.checks_failed,
+                      homepageDetailed.checks_evaluated,
+                    )
+                  : homepageOk
+                    ? copy.summary.homepageCompleted
+                    : copy.summary.homepageReading
+        }
+      >
+        {pageAuditsGated ? (
+          <p className="bg-white px-5 py-4 text-[12.5px] leading-relaxed text-black/54 sm:px-6">
+            {copy.summary.homepageGated}
+          </p>
+        ) : pageAuditsInFlight && !homepageAudit ? (
+          <div className="flex items-start gap-3 bg-white px-5 py-5 sm:px-6">
+            <Loader2 className="mt-0.5 h-4 w-4 animate-spin text-signal-ink" />
+            <p className="text-[12.5px] font-semibold text-ink-deep">
+              {copy.summary.homepageReading}
+            </p>
+          </div>
+        ) : homepageAudit?.ok === false ? (
+          <p className="bg-white px-5 py-4 text-[12.5px] text-black/54 sm:px-6">
+            {copy.summary.homepageFailed}
+          </p>
+        ) : homepageDetailed ? (
+          <div className="bg-white">
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-black/10 px-5 py-4 sm:px-6">
+              <div>
+                <p className="text-[12.5px] font-semibold text-ink-deep">
+                  {homepageDetailed.title ?? homepageDetailed.url}
+                </p>
+                <p className="mt-1 text-[11px] text-black/46">
+                  {copy.summary.needAttentionOf(
+                    homepageDetailed.checks_failed,
+                    homepageDetailed.checks_evaluated,
+                  )}
+                </p>
+              </div>
+              {homepageDetailed.report_id ? (
+                <a
+                  href={`${APP_REPORT_URL}/${homepageDetailed.report_id}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-1.5 text-[11.5px] font-semibold text-ink-deep underline decoration-black/18 underline-offset-4 hover:text-signal-ink"
+                >
+                  {copy.summary.openFullReport}
+                  <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+                </a>
+              ) : null}
+            </div>
+            {homepageDetailed.findings?.length ? (
+              <ul className="divide-y divide-black/10 px-5 sm:px-6">
+                {homepageDetailed.findings.slice(0, 4).map((finding) => (
+                  <li key={`${finding.code}-${finding.url ?? "home"}`} className="py-3">
+                    <p className="text-[11.5px] font-semibold text-ink-deep">
+                      {finding.headline ?? finding.title}
+                    </p>
+                    <p className="mt-1 text-[11px] leading-relaxed text-black/50">
+                      {finding.why ?? finding.detail}
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            ) : null}
+            {entityAudits.length ? (
+              <div className="border-t border-black/10 bg-[#fffaf7] px-5 py-4 sm:px-6">
+                <p className="text-[11px] font-semibold text-ink-deep">{copy.summary.trustPages}</p>
+                <div className="mt-2 divide-y divide-black/10 border-y border-black/10 bg-white px-3">
+                  {entityAudits.map((audit) => {
+                    const detailed = "checks_evaluated" in audit ? audit : null;
+                    const label = audit.role === "about" ? copy.summary.aboutPage : copy.summary.contactPage;
+                    return (
+                      <div key={`${audit.role}-${audit.url}`} className="flex items-center justify-between gap-4 py-3">
+                        <div className="min-w-0">
+                          <p className="text-[11.5px] font-semibold text-ink-deep">{label}</p>
+                          <p className="mt-0.5 truncate text-[11px] text-black/46">
+                            {audit.ok === false
+                              ? copy.summary.pageCouldNotRead
+                              : detailed?.findings?.[0]?.headline ?? detailed?.findings?.[0]?.title ?? audit.url}
+                          </p>
+                        </div>
+                        {detailed?.score != null ? (
+                          <span className="shrink-0 text-[11px] font-semibold text-ink-deep">
+                            {copy.summary.health(Math.round(detailed.score))}
+                          </span>
+                        ) : null}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            ) : null}
+          </div>
+        ) : null}
+      </Fold>
+
       {/* Store and Catalog stay shut: their summary lines already carry the
           numbers. Product pages opens by default -- it is the only one whose
           value is the per-check detail, not the one-line count. */}
+      {deepAuditState.showProductPages ? (
       <Fold
         defaultOpen
         title={copy.summary.productPages}
@@ -2509,6 +2625,7 @@ function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
           </>
         )}
       </Fold>
+      ) : null}
     </section>
   );
 }
