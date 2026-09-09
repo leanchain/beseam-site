@@ -61,7 +61,7 @@ export default function MobileStickyCta() {
     <div
       data-mobile-sticky-cta
       data-print-hide
-      className="fixed bottom-4 left-4 right-[5.5rem] z-40 md:hidden"
+      className="fixed bottom-4 left-4 right-4 z-40 md:hidden"
     >
       <TrackedLink
         href="/scan"

@@ -2,9 +2,6 @@
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
-import Link from "next/link";
-import { ArrowRight } from "lucide-react";
-
 import ConnectedSystemMap from "@/components/beseam/connected-system-map";
 import { Reveal } from "@/components/beseam/reveal";
 
@@ -22,8 +19,9 @@ type DecisionBridgeProps = {
   body?: string;
   exploreHref?: string | null;
   exploreLabel?: string;
-  /** Homepage-only mobile/tablet reduction. Supplying this also enables the
-   * desktop section-level sticky story: the whole section pins, not just map. */
+  /** Homepage copy still marks this as the section that gets the desktop
+   * scroll-pinned treatment. The visual itself is now the same connected map
+   * at every breakpoint; there is no separate mobile summary. */
   compact?: CompactBridgeCopy;
   surfaceClassName?: string;
 };
@@ -94,7 +92,7 @@ export default function DecisionBridge({
       const stageRect = stage.getBoundingClientRect();
       const panelHeight = panel.getBoundingClientRect().height;
       const scrollDistance = Math.max(stageRect.height - panelHeight, 1);
-      const stickyTop = 88; // 5.5rem, below the sticky site header.
+      const stickyTop = 88;
       setScrollProgress(
         Math.max(0, Math.min(1, (stickyTop - stageRect.top) / scrollDistance)),
       );
@@ -155,69 +153,11 @@ export default function DecisionBridge({
 
           <Reveal delay={0.05}>
             <div className={stageHeight === null ? "mt-12 lg:mt-16" : "mt-8"}>
-              {compact ? (
-                <>
-                  <div className="lg:hidden">
-                    <div className="overflow-hidden border border-black/14 bg-white">
-                      <div className="grid grid-cols-2">
-                        {compact.inputs.map((input, index) => (
-                          <div
-                            key={input}
-                            className={`px-4 py-5 text-center text-[14px] font-semibold text-ink-deep sm:px-5 ${
-                              index % 2 !== 0 ? "border-l border-black/12" : ""
-                            } ${index >= 2 ? "border-t border-black/12" : ""}`}
-                          >
-                            {input}
-                          </div>
-                        ))}
-                      </div>
-
-                      <div className="flex items-center justify-center bg-ink-deep px-5 py-5 text-center text-[16px] font-semibold text-white">
-                        {compact.center}
-                      </div>
-
-                      <div className="grid grid-cols-2 bg-ground">
-                        {compact.outputs.map((output, index) => (
-                          <div
-                            key={output}
-                            className={`px-4 py-5 text-center text-[14px] leading-[1.45] text-black/68 sm:px-5 ${
-                              index % 2 !== 0 ? "border-l border-black/12" : ""
-                            } ${index >= 2 ? "border-t border-black/12" : ""}`}
-                          >
-                            {output}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    {exploreHref ? (
-                      <Link
-                        href={exploreHref}
-                        className="group mt-6 inline-flex min-h-10 items-center gap-2 text-[14px] font-semibold text-ink-deep underline decoration-black/25 underline-offset-6 hover:decoration-signal-ink"
-                      >
-                        {compact.link}
-                        <ArrowRight
-                          aria-hidden="true"
-                          className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
-                        />
-                      </Link>
-                    ) : null}
-                  </div>
-
-                  <div className="hidden lg:block">
-                    <ConnectedSystemMap
-                      exploreHref={exploreHref}
-                      exploreLabel={exploreLabel}
-                      scrollProgress={scrollProgress}
-                    />
-                  </div>
-                </>
-              ) : (
-                <ConnectedSystemMap
-                  exploreHref={exploreHref}
-                  exploreLabel={exploreLabel}
-                />
-              )}
+              <ConnectedSystemMap
+                exploreHref={exploreHref}
+                exploreLabel={exploreLabel}
+                scrollProgress={stageHeight === null ? undefined : scrollProgress}
+              />
             </div>
           </Reveal>
         </div>

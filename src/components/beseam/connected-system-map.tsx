@@ -296,12 +296,14 @@ export default function ConnectedSystemMap({
                   type="button"
                   aria-pressed={selected}
                   aria-controls="decision-readout use-case-grid"
-                  onMouseEnter={() => {
+                  onPointerEnter={(event) => {
+                    if (event.pointerType !== "mouse") return;
                     interactionRef.current = true;
                     setActiveUseCaseId(null);
                     setActiveId(signal.id);
                   }}
-                  onMouseLeave={() => {
+                  onPointerLeave={(event) => {
+                    if (event.pointerType !== "mouse") return;
                     interactionRef.current = false;
                   }}
                   onFocus={() => {
@@ -316,7 +318,7 @@ export default function ConnectedSystemMap({
                     setActiveUseCaseId(null);
                     setActiveId(signal.id);
                   }}
-                  className={`group relative flex min-h-[6.75rem] flex-col justify-center border-black/12 px-4 py-4 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-signal-ink sm:px-5 ${
+                  className={`group relative flex min-h-[5.75rem] touch-manipulation flex-col justify-center border-black/12 px-4 py-4 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-signal-ink sm:min-h-[6.75rem] sm:px-5 ${
                     index > 0 ? "border-t" : ""
                   } ${index % 2 === 1 ? "sm:border-l lg:border-l-0" : ""} ${
                     index > 1 ? "sm:border-t" : ""
@@ -569,7 +571,7 @@ export default function ConnectedSystemMap({
 
             <ul
               id="use-case-grid"
-              className="relative z-10 grid h-full grid-cols-2 gap-2 p-2 sm:gap-2.5 sm:p-2.5"
+              className="relative z-10 grid h-full grid-cols-1 gap-2 p-2 sm:grid-cols-2 sm:gap-2.5 sm:p-2.5"
             >
               {USE_CASES.map((item, index) => {
                 const card = t.cards[item.id];
@@ -596,12 +598,16 @@ export default function ConnectedSystemMap({
                     <button
                       type="button"
                       aria-pressed={activeUseCaseId === item.id}
-                      onMouseEnter={activate}
-                      onMouseLeave={release}
+                      onPointerEnter={(event) => {
+                        if (event.pointerType === "mouse") activate();
+                      }}
+                      onPointerLeave={(event) => {
+                        if (event.pointerType === "mouse") release();
+                      }}
                       onFocus={activate}
                       onBlur={release}
                       onClick={activate}
-                      className={`relative h-full w-full cursor-pointer rounded-md border px-3.5 py-2.5 text-left transition-[background-color,border-color,box-shadow] duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal-ink sm:px-4 ${
+                      className={`relative min-h-[5.75rem] w-full touch-manipulation cursor-pointer rounded-md border px-4 py-3.5 text-left transition-[background-color,border-color,box-shadow,transform] duration-300 active:scale-[0.995] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal-ink sm:min-h-0 sm:px-4 sm:py-2.5 ${
                         related ? "bg-white" : "bg-ground"
                       }`}
                       style={{
@@ -634,16 +640,26 @@ export default function ConnectedSystemMap({
                           .join(", ")}
                         .
                       </span>
-                      <p
-                        className={`mt-2 text-[13px] font-semibold leading-[1.3] transition-colors duration-300 ${
-                          related ? "text-ink-deep" : "text-black/64"
-                        }`}
-                      >
-                        {card.name}
-                      </p>
-                      <div className="relative mt-1 hidden min-h-[2.05rem] sm:block">
+                      <div className="mt-2 flex items-start justify-between gap-3">
                         <p
-                          className={`text-[11.5px] leading-[1.45] text-black/62 transition-opacity duration-300 ${
+                          className={`text-[13.5px] font-semibold leading-[1.3] transition-colors duration-300 sm:text-[13px] ${
+                            related ? "text-ink-deep" : "text-black/64"
+                          }`}
+                        >
+                          {card.name}
+                        </p>
+                        <ArrowRight
+                          aria-hidden="true"
+                          className={`mt-0.5 h-3.5 w-3.5 shrink-0 transition-[color,transform,opacity] duration-300 sm:hidden ${
+                            related
+                              ? "translate-x-0.5 text-signal-ink opacity-100"
+                              : "text-black/30 opacity-65"
+                          }`}
+                        />
+                      </div>
+                      <div className="relative mt-1.5 min-h-[2.2rem]">
+                        <p
+                          className={`text-[12px] leading-[1.5] text-black/62 transition-opacity duration-300 sm:text-[11.5px] ${
                             related ? "opacity-100" : "opacity-0"
                           }`}
                         >

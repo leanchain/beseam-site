@@ -1148,15 +1148,6 @@ html.theme-transition::view-transition-new(root) {
   caret-color: var(--beseam-ink);
 }
 
-/* On mobile, the Crisp launcher only joins the sticky conversion controls once
- * the bottom CTA is visible. CSS owns this so it also works when Crisp loads
- * after the CTA state changes; desktop chat remains unaffected. */
-@media (max-width: 767px) {
-  body:not(.mobile-sticky-cta-visible) .crisp-client {
-    display: none !important;
-  }
-}
-
 /* Print
  *
  * A scan is evidence a merchant forwards to a developer, an agency, or a boss.

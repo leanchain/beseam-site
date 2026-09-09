@@ -6,7 +6,9 @@ import { useDictionary } from "@/i18n/use-locale";
 
 /**
  * Decorative "more below" affordance pinned to the bottom of the full-height
- * hero. Present on load, fades out as soon as the visitor starts scrolling,
+ * hero. Desktop/tablet only: phones already communicate vertical scrolling through
+ * the native page gesture, so a mouse-shaped affordance there is redundant.
+ * Present on load, fades out as soon as the visitor starts scrolling,
  * and returns if they scroll back to the very top. Purely decorative --
  * aria-hidden, and the mouse-wheel dot is dropped under reduced motion
  * rather than frozen mid-animation (see .hero-scroll-wheel in globals.css).
@@ -27,7 +29,7 @@ export default function HeroScrollCue() {
   return (
     <div
       aria-hidden="true"
-      className={`pointer-events-none absolute inset-x-0 bottom-6 z-10 flex flex-col items-center gap-2 transition-opacity duration-300 sm:bottom-8 ${
+      className={`pointer-events-none absolute inset-x-0 bottom-8 z-10 hidden flex-col items-center gap-2 transition-opacity duration-300 md:flex ${
         atTop ? "opacity-100" : "opacity-0"
       }`}
     >
