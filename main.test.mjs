@@ -265,6 +265,90 @@ test("a domain-only scan reaches the API with a null email", async () => {
   });
 });
 
+function navigation(
+  path,
+  {
+    country = null,
+    acceptLanguage = null,
+    cookie = null,
+    userAgent = "Mozilla/5.0 (Macintosh) Chrome/140.0.0.0 Safari/537.36",
+    method = "GET",
+  } = {},
+) {
+  const headers = { "user-agent": userAgent };
+  if (acceptLanguage) headers["accept-language"] = acceptLanguage;
+  if (cookie) headers.cookie = cookie;
+  if (country) headers["cf-ipcountry"] = country;
+  return new Request(`https://beseam.com${path}`, { method, headers });
+}
+
+const ASSET_ENV = {
+  ASSETS: { fetch: async () => new Response("asset", { status: 200 }) },
+};
+
+test("a German visitor is redirected to the German page", async () => {
+  const response = await worker.fetch(
+    navigation("/", { country: "DE" }),
+    ASSET_ENV,
+  );
+  assert.equal(response.status, 302);
+  assert.equal(response.headers.get("location"), "/de");
+  assert.equal(response.headers.get("cache-control"), "private, no-store");
+  assert.match(response.headers.get("vary"), /Cookie/);
+});
+
+test("the redirect keeps the campaign query", async () => {
+  const response = await worker.fetch(
+    navigation("/?utm_source=x", { country: "AT" }),
+    ASSET_ENV,
+  );
+  assert.equal(response.headers.get("location"), "/de?utm_source=x");
+});
+
+test("/scan redirects to /de/scan", async () => {
+  const response = await worker.fetch(
+    navigation("/scan", { country: "CH" }),
+    ASSET_ENV,
+  );
+  assert.equal(response.headers.get("location"), "/de/scan");
+});
+
+test("a German speaker outside DACH is redirected", async () => {
+  const response = await worker.fetch(
+    navigation("/", {
+      country: "US",
+      acceptLanguage: "de-DE,de;q=0.9,en;q=0.8",
+    }),
+    ASSET_ENV,
+  );
+  assert.equal(response.headers.get("location"), "/de");
+});
+
+test("an explicit English choice is never overridden", async () => {
+  const response = await worker.fetch(
+    navigation("/", { country: "DE", cookie: "bs_lang=en" }),
+    ASSET_ENV,
+  );
+  assert.equal(response.status, 200);
+});
+
+test("crawlers, overrides, non-navigations and other routes are served the asset", async () => {
+  for (const request of [
+    navigation("/", {
+      country: "DE",
+      userAgent: "Mozilla/5.0 (compatible; Googlebot/2.1)",
+    }),
+    navigation("/?lang=en", { country: "DE" }),
+    navigation("/", { country: "DE", method: "POST" }),
+    navigation("/platform", { country: "DE" }),
+    navigation("/de", { country: "DE" }),
+    navigation("/", { country: "US" }),
+  ]) {
+    const response = await worker.fetch(request, ASSET_ENV);
+    assert.equal(response.status, 200, `${request.method} ${request.url}`);
+  }
+});
+
 test("a rate-limited scan keeps its status and its Retry-After", async () => {
   const response = await withFetch(
     async () =>

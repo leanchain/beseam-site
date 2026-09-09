@@ -1,3 +1,5 @@
+import { redirectTargetFor } from "./src/i18n/locale-rules.mjs";
+
 const ALLOWED_ORIGINS = new Set([
   "https://beseam.com",
   "https://www.beseam.com",
@@ -343,9 +345,7 @@ async function submitReview(lead, env) {
     "</p><p><strong>Work email:</strong> " +
     escapeHtml(email) +
     "</p>" +
-    (store
-      ? "<p><strong>Store:</strong> " + escapeHtml(store) + "</p>"
-      : "") +
+    (store ? "<p><strong>Store:</strong> " + escapeHtml(store) + "</p>" : "") +
     "<p><strong>Message:</strong><br>" +
     escapeHtml(message || "Not provided").replaceAll("\n", "<br>") +
     "</p><p><strong>Attribution:</strong><br><code>" +
@@ -573,7 +573,10 @@ async function verifyAnswerCheck(url, env) {
       return Response.redirect(scan.toString(), 302);
     }
     if (/^\d+$/.test(reportId)) {
-      const appBase = (env.APP_BASE_URL || DEFAULT_APP_BASE).replace(/\/+$/, "");
+      const appBase = (env.APP_BASE_URL || DEFAULT_APP_BASE).replace(
+        /\/+$/,
+        "",
+      );
       return Response.redirect(`${appBase}/report/${reportId}`, 302);
     }
     scan.searchParams.set("domain", payload.domain);
@@ -606,6 +609,36 @@ async function forwardJson(target, init) {
   }
 }
 
+/**
+ * First visit, no remembered choice, German signal -> the German page.
+ *
+ * 302 rather than 301: this is a default, not a property of the URL, and a
+ * cached 301 in a visitor's browser would outlive their later switch to
+ * English. `private, no-store` plus `Vary` is what stops the CDN handing one
+ * visitor's redirect to the next.
+ */
+function localeRedirect(request, url) {
+  const target = redirectTargetFor({
+    method: request.method,
+    pathname: url.pathname,
+    search: url.search,
+    cookieHeader: request.headers.get("cookie"),
+    acceptLanguage: request.headers.get("accept-language"),
+    country: request.cf?.country || request.headers.get("cf-ipcountry"),
+    userAgent: request.headers.get("user-agent"),
+    hasLangParam: url.searchParams.has("lang"),
+  });
+  if (!target) return null;
+  return new Response(null, {
+    status: 302,
+    headers: {
+      location: target,
+      "cache-control": "private, no-store",
+      vary: "Cookie, Accept-Language, CF-IPCountry",
+    },
+  });
+}
+
 const worker = {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -634,6 +667,9 @@ const worker = {
         ? submitReview(parsed.lead, env)
         : submitScanLead(parsed.lead, env);
     }
+    const redirected = localeRedirect(request, url);
+    if (redirected) return redirected;
+
     // Local development: `npm run dev` runs this worker in front of `next dev`,
     // so everything that is not an API route is handed to Next (keeping HMR)
     // instead of the exported ./out directory, which is stale or absent.
