@@ -244,6 +244,235 @@ export function ActionsScreen({ compact = false }: { compact?: boolean } = {}) {
 }
 
 /**
+ * The three screens below follow the same rule as the two above: rebuilt in
+ * HTML, cropped to what a visitor needs, and worded from the app itself.
+ *
+ * - Home keeps four of `Portfolio status`'s seven columns (Store, Health,
+ *   Open actions, Top issue) -- `frontend/src/components/overview/OverviewDashboard.tsx`.
+ * - Discovery keeps the journey stage cards, their own labels and summaries,
+ *   and the badge vocabulary Healthy / Early / Waiting / Unavailable --
+ *   `frontend/src/components/monitoring/ShoppingJourneyView.tsx` and
+ *   `frontend/src/lib/copy/visibility.ts`.
+ * - Products is schema-driven in the app, so its columns are not quoted; the
+ *   schematic shows the row anatomy instead -- a product, what is wrong at the
+ *   decision point, and its state.
+ *
+ * No store names anywhere: a made-up merchant reads as a customer reference.
+ */
+
+const PORTFOLIO_ROW = {
+  store: "Your store",
+  health: "Healthy",
+  actions: "3",
+  issue: "Jackets never answer the commuting question",
+} as const;
+
+/** /overview, cropped to the state and the one issue that leads. */
+export function OverviewScreen() {
+  return (
+    <div className="min-w-0 border border-black/14 bg-white">
+      <ScreenChrome title="Home" meta="Example figures" />
+
+      <div className="grid border-b border-black/12 sm:grid-cols-2">
+        <div className="border-b border-black/12 px-4 py-3 sm:border-b-0 sm:border-r sm:px-5">
+          <p className="font-mono text-[11px] uppercase tracking-[0.08em] text-black/50">
+            Booked revenue
+          </p>
+          <p className="mt-1.5 text-[19px] font-semibold tabular-nums text-ink-deep">
+            +6.4%{" "}
+            <span className="text-[12px] font-normal text-black/55">
+              vs previous 30 days
+            </span>
+          </p>
+        </div>
+        <div className="px-4 py-3 sm:px-5">
+          <p className="font-mono text-[11px] uppercase tracking-[0.08em] text-black/50">
+            Store state
+          </p>
+          <p className="mt-1.5 text-[13px] text-black/70">
+            <span className="font-semibold text-ink-deep">Healthy</span> · data
+            current through today
+          </p>
+        </div>
+      </div>
+
+      <div
+        className="grid gap-4 border-b border-black/12 px-4 py-2.5 font-mono text-[11px] font-semibold uppercase tracking-[0.1em] text-black/50 sm:px-5"
+        style={{
+          gridTemplateColumns: "minmax(0,0.7fr) 5.5rem 5.5rem minmax(0,1.4fr)",
+        }}
+      >
+        <span>Store</span>
+        <span>Health</span>
+        <span>Open actions</span>
+        <span>Top issue</span>
+      </div>
+      <div
+        className="grid items-center gap-4 px-4 py-3 sm:px-5"
+        style={{
+          gridTemplateColumns: "minmax(0,0.7fr) 5.5rem 5.5rem minmax(0,1.4fr)",
+        }}
+      >
+        <span className="truncate text-[13px] font-medium text-ink-deep">
+          {PORTFOLIO_ROW.store}
+        </span>
+        <span className="inline-flex shrink-0 items-center justify-self-start rounded-md border border-[#1f7a4d]/35 bg-[#1f7a4d]/[0.08] px-1.5 py-0.5 text-[11px] font-medium text-[#1a6b43]">
+          {PORTFOLIO_ROW.health}
+        </span>
+        <span className="text-[13px] tabular-nums text-black/70">
+          {PORTFOLIO_ROW.actions}
+        </span>
+        <span className="truncate text-[13px] text-black/70">
+          {PORTFOLIO_ROW.issue}
+        </span>
+      </div>
+
+      <p className="border-t border-black/10 px-4 py-2.5 text-[11px] leading-[1.5] text-black/50 sm:px-5">
+        Illustrative example · not customer results.
+      </p>
+    </div>
+  );
+}
+
+const JOURNEY_STAGES = [
+  {
+    label: "Total visibility",
+    summary: "All tracked shopping queries",
+    rate: "41%",
+    state: "Early",
+    detail: "12 of 30 completed checks",
+  },
+  {
+    label: "Category questions",
+    summary: "Shoppers discovering, comparing, and narrowing down products",
+    rate: "18%",
+    state: "Waiting",
+    detail: "4 of 22 completed checks",
+  },
+  {
+    label: "Brand/Product questions",
+    summary: "Shoppers asking about your brand or products by name",
+    rate: "73%",
+    state: "Healthy",
+    detail: "16 of 22 completed checks",
+  },
+] as const;
+
+const STAGE_TONE: Record<string, string> = {
+  Healthy: "border-[#1f7a4d]/35 bg-[#1f7a4d]/[0.08] text-[#1a6b43]",
+  Early: "border-signal-ink/30 bg-signal-ink/[0.07] text-signal-ink",
+  Waiting: "border-black/20 bg-black/[0.04] text-black/62",
+};
+
+/** /visibility, cropped to the journey stages and how much is measured. */
+export function DiscoveryScreen() {
+  return (
+    <div className="min-w-0 border border-black/14 bg-white">
+      <ScreenChrome title="Discovery" meta="Example figures" />
+
+      <div className="grid sm:grid-cols-3">
+        {JOURNEY_STAGES.map((stage) => (
+          <div
+            key={stage.label}
+            className="border-b border-black/12 px-4 py-4 last:border-b-0 sm:border-b-0 sm:border-r sm:px-5 sm:last:border-r-0"
+          >
+            <div className="flex items-start justify-between gap-2">
+              <p className="text-[13px] font-semibold leading-[1.3] text-ink-deep">
+                {stage.label}
+              </p>
+              <span
+                className={`inline-flex shrink-0 items-center rounded-md border px-1.5 py-0.5 text-[10.5px] font-medium ${
+                  STAGE_TONE[stage.state] ?? STAGE_TONE.Waiting
+                }`}
+              >
+                {stage.state}
+              </span>
+            </div>
+            <p className="mt-1.5 text-[11.5px] leading-[1.45] text-black/55">
+              {stage.summary}
+            </p>
+            <p className="mt-4 text-[26px] font-semibold leading-none tabular-nums text-ink-deep">
+              {stage.rate}
+            </p>
+            <p className="mt-1.5 text-[11px] leading-[1.45] text-black/55">
+              {stage.detail}
+            </p>
+          </div>
+        ))}
+      </div>
+
+      <p className="border-t border-black/10 px-4 py-2.5 text-[11px] leading-[1.5] text-black/50 sm:px-5">
+        Illustrative example · not customer results.
+      </p>
+    </div>
+  );
+}
+
+const CATALOG_ROWS = [
+  {
+    product: "Urban Shell jacket",
+    gap: "No commuting use case on the page",
+    state: "Fix ready",
+  },
+  {
+    product: "Urban Shell jacket",
+    gap: "Fit over everyday layers unanswered",
+    state: "Fix ready",
+  },
+  {
+    product: "Trail Light shell",
+    gap: "Waterproof rating missing from the description",
+    state: "Verified live",
+  },
+] as const;
+
+/** /products, cropped to row anatomy: the product, the gap, the state. */
+export function CatalogScreen() {
+  return (
+    <div className="min-w-0 border border-black/14 bg-white">
+      <ScreenChrome title="Products" meta="Example figures" />
+
+      <div
+        className="grid gap-4 border-b border-black/12 px-4 py-2.5 font-mono text-[11px] font-semibold uppercase tracking-[0.1em] text-black/50 sm:px-5"
+        style={{ gridTemplateColumns: "minmax(0,0.8fr) minmax(0,1.4fr) 7rem" }}
+      >
+        <span>Product</span>
+        <span>What the page leaves open</span>
+        <span>State</span>
+      </div>
+
+      {CATALOG_ROWS.map((row) => (
+        <div
+          key={`${row.product}-${row.gap}`}
+          className="grid items-center gap-4 border-b border-black/10 px-4 py-3 last:border-b-0 sm:px-5"
+          style={{
+            gridTemplateColumns: "minmax(0,0.8fr) minmax(0,1.4fr) 7rem",
+          }}
+        >
+          <span className="truncate text-[13px] font-medium text-ink-deep">
+            {row.product}
+          </span>
+          <span className="truncate text-[13px] text-black/70">{row.gap}</span>
+          <span
+            className={`inline-flex shrink-0 items-center justify-self-start rounded-md border px-1.5 py-0.5 text-[11px] font-medium ${
+              row.state === "Verified live"
+                ? "border-[#1f7a4d]/35 bg-[#1f7a4d]/[0.08] text-[#1a6b43]"
+                : "border-black/20 bg-black/[0.04] text-black/62"
+            }`}
+          >
+            {row.state}
+          </span>
+        </div>
+      ))}
+
+      <p className="border-t border-black/10 px-4 py-2.5 text-[11px] leading-[1.5] text-black/50 sm:px-5">
+        Illustrative example · not customer results.
+      </p>
+    </div>
+  );
+}
+
+/**
  * Figures are illustrative and the frame says so. This follows the same standard as the
  * specimens in ShopperLoss, which carry invented brand names under an
  * “Example” stamp. A percentage with no stamp would read as a case study.

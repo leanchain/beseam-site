@@ -2,9 +2,9 @@ import Link from "next/link";
 
 import { ArrowRight } from "lucide-react";
 
-import { ActionsScreen, ImpactScreen } from "@/components/beseam/app-screens";
-import DecisionBridge from "@/components/beseam/decision-bridge";
 import PipelineGraphic from "@/components/beseam/pipeline-graphic";
+import PlatformDepth from "@/components/beseam/platform-depth";
+import PlatformSurfaces from "@/components/beseam/platform-surfaces";
 import { Reveal } from "@/components/beseam/reveal";
 import TrackedLink from "@/components/beseam/tracked-link";
 import { APP_REGISTER_URL } from "@/lib/app-urls";
@@ -118,76 +118,13 @@ export default function PlatformPageContent({
         </div>
       </section>
 
-      <DecisionBridge
-        surfaceClassName="bg-ground-2"
-        eyebrow="How the platform fits together"
-        heading="Follow the shopper before, during, and after the visit."
-        body="AI discovery, product pages, shopper behavior, and revenue show different parts of the same journey. Pick one to see what Beseam checks, what it may change, and what it measures afterward."
-        exploreHref={null}
-      />
+      {/* The connected-system map lives on the homepage (`#system`). Running
+          it here too made /platform a second telling of the same argument;
+          this page answers the question the homepage cannot -- what you
+          actually open, and what opens later. */}
+      <PlatformSurfaces />
 
-      <section className="border-y border-black/16 bg-white">
-        <div className="mx-auto max-w-[92rem] px-5 py-20 sm:px-8 sm:py-24 lg:px-10 lg:py-28">
-          <Reveal>
-            <div className="grid gap-8 lg:grid-cols-[minmax(0,0.82fr)_minmax(0,1.18fr)] lg:items-end lg:gap-16">
-              <div>
-                <p className="font-mono text-[12px] font-semibold uppercase tracking-[0.14em] text-signal-ink">
-                  From signal to outcome
-                </p>
-                <h2 className="mt-7 max-w-[17ch] text-balance font-display text-[clamp(2.3rem,3.8vw,3.9rem)] font-normal leading-[1.03] tracking-[-0.02em] text-ink-deep">
-                  Find what to change. Then check what happened.
-                </h2>
-              </div>
-              <p className="max-w-[52ch] text-[16px] leading-[1.75] text-black/64">
-                Beseam does not ask you to manage every tool yourself. It keeps
-                finding what is worth improving and prepares customer-facing
-                changes for your approval. Results shows what happened after
-                each change.
-              </p>
-            </div>
-          </Reveal>
-
-          <div className="mt-14 grid gap-10 lg:grid-cols-2 lg:gap-12">
-            <Reveal delay={0.04}>
-              <div>
-                <div className="mb-5">
-                  <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.1em] text-signal-ink">
-                    Growth plan
-                  </p>
-                  <h3 className="mt-3 text-[20px] font-semibold text-ink-deep">
-                    See what Beseam is moving forward.
-                  </h3>
-                  <p className="mt-2 max-w-[48ch] text-[14px] leading-[1.65] text-black/60">
-                    What Beseam found, the proposed change, your approval, what
-                    was applied, and the result stay together in one place.
-                  </p>
-                </div>
-                <ActionsScreen />
-              </div>
-            </Reveal>
-
-            <Reveal delay={0.08}>
-              <div>
-                <div className="mb-5">
-                  <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.1em] text-signal-ink">
-                    Results
-                  </p>
-                  <h3 className="mt-3 text-[20px] font-semibold text-ink-deep">
-                    Keep the result next to the change.
-                  </h3>
-                  <p className="mt-2 max-w-[48ch] text-[14px] leading-[1.65] text-black/60">
-                    Directly measured results stay separate from estimates so a
-                    useful result does not turn into an inflated claim.
-                  </p>
-                </div>
-                <div className="bg-ink-deep p-1">
-                  <ImpactScreen />
-                </div>
-              </div>
-            </Reveal>
-          </div>
-        </div>
-      </section>
+      <PlatformDepth />
 
       <section className="border-b border-technical-rule bg-ink-deep text-white">
         <div className="mx-auto max-w-[92rem] px-5 py-20 sm:px-8 sm:py-24 lg:px-10 lg:py-28">
