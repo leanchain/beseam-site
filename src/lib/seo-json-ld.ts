@@ -1,7 +1,6 @@
 import type { Locale } from "@/i18n/locale-rules.mjs";
 import { getDictionary } from "@/i18n";
 import { SITE_URL } from "@/lib/seo";
-import { STORE_HEALTH_FAQS } from "@/lib/store-health-faqs";
 
 const HOME_PATH: Record<Locale, string> = {
   en: "/",
@@ -18,8 +17,9 @@ const HOME_PATH: Record<Locale, string> = {
  * and the product, not this page, so their `@id`/`url` stay anchored to
  * `SITE_URL` regardless of locale. `WebPage` and the `FAQPage` wrapper are
  * page-scoped, so their `@id`/`url` follow the locale's path. The FAQ
- * questions/answers themselves stay English in this task -- Task 7 owns that
- * copy.
+ * questions and answers come from `t.faq.items` -- the same source the visible
+ * FAQ section renders -- so the German page's structured data is German, and
+ * a crawler is never told something in a language the page does not say it in.
  */
 export function homeJsonLd(locale: Locale) {
   const t = getDictionary(locale);
@@ -57,7 +57,7 @@ export function homeJsonLd(locale: Locale) {
         "@type": "FAQPage",
         "@id": `${url}#faq`,
         name: "Questions about Beseam",
-        mainEntity: STORE_HEALTH_FAQS.map((faq) => ({
+        mainEntity: Object.values(t.faq.items).map((faq) => ({
           "@type": "Question",
           name: faq.question,
           acceptedAnswer: { "@type": "Answer", text: faq.answer },
