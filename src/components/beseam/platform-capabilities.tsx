@@ -1,157 +1,132 @@
 import { Reveal } from "@/components/beseam/reveal";
 
 /**
- * What the platform can do, in full, without a single fabricated screenshot.
+ * The platform told the way the product itself packages it.
  *
- * Every line is a real capability behind a real entitlement key in
- * `frontend/src/lib/entitlements.ts`, described in the app's own words from
- * `frontend/src/lib/primary-navigation.ts`. `dayOne` marks the ones that
- * survive at `guided` depth -- what a store gets on the first login. The rest
- * carry `minDepth: 'expert'` there, which is what "opens later" means: it is
- * a depth and entitlement fact, not a price list.
+ * Source of truth is the admin's own capability model --
+ * `frontend/src/app/(app)/admin/components/service-capability-bundles.ts`:
+ * three sections (`BUNDLE_SECTIONS`), one always-included Foundation, the
+ * packages a store adds, and four products that share one storefront signal.
+ * The wording here is the merchant-facing version of those bundle
+ * descriptions; the shape is theirs, not a marketing invention.
  *
- * Deliberately a list, not a matrix: no plan columns, no checkmarks, no
- * comparison ticks. The tracker's landing-page ruling forbids rebuilding the
- * product-suite grid, and a merchant reading this has one question -- is the
- * thing I need in here -- which names answer faster than a table.
+ * Advertising is deliberately absent. Every key in that bundle is
+ * `FeatureMaturity.EXPERIMENTAL` in `backend/src/modules/entitlements/registry.py`,
+ * so it resolves to disabled under production surface mode -- a page that
+ * sold it would be selling something a merchant cannot switch on.
+ *
+ * A list of names, never a plan matrix: the tracker's landing-page ruling
+ * forbids rebuilding the product-suite grid here.
  */
 
-type Capability = {
+type Package = {
   name: string;
-  detail: string;
-  dayOne?: boolean;
+  line: string;
+  includes: string;
 };
 
-const AREAS: { area: string; scope: string; items: Capability[] }[] = [
+const FOUNDATION: Package = {
+  name: "Foundation",
+  line: "Every store gets this, and it is the part that decides what to do next.",
+  includes:
+    "Growth plan queue · commerce ledger · connection health · catalog sync · impact measurement",
+};
+
+const ADDED: Package[] = [
   {
-    area: "Discovery",
-    scope: "Off-site",
-    items: [
-      {
-        name: "AI shopping visibility",
-        detail:
-          "Shopper questions asked across assistants, who gets named, and how often you do.",
-        dayOne: true,
-      },
-      {
-        name: "Competitors and citations",
-        detail:
-          "Which brands appear in your place, and which sources the answers cite.",
-        dayOne: true,
-      },
-      {
-        name: "Agent readiness",
-        detail:
-          "Whether shopping agents can read the storefront well enough to use it.",
-        dayOne: true,
-      },
-    ],
+    name: "Visibility",
+    line: "Who gets named when shoppers ask AI assistants, checked on a schedule.",
+    includes:
+      "AI visibility workspace · your own checks · scheduled monitoring · Search Console sync",
   },
   {
-    area: "Products",
-    scope: "Catalog",
-    items: [
-      {
-        name: "Catalog truth",
-        detail:
-          "Product issues, channel readiness, fixes, publication, and verification.",
-        dayOne: true,
-      },
-      {
-        name: "Brand",
-        detail:
-          "Approved brand identity, trust evidence, and the source material used across commerce.",
-      },
-      {
-        name: "Merchandising",
-        detail:
-          "Recommendation placements, merchandising controls, catalog coverage, and measured incrementality.",
-      },
-    ],
+    name: "Commerce readiness",
+    line: "Whether the catalog and the pages can answer the question that decides the sale.",
+    includes:
+      "Catalog workspace · store health · page inspection · product and content proposals",
   },
   {
-    area: "Store",
-    scope: "Storefront",
-    items: [
-      {
-        name: "Store health",
-        detail:
-          "Whether the store is healthy enough to sell and advertise safely.",
-      },
-      {
-        name: "Inspection",
-        detail:
-          "Page evidence, technical issues, remediation, and post-change verification.",
-      },
-      {
-        name: "Reliability",
-        detail:
-          "Monitoring, incidents, performance, and runtime errors that threaten commerce.",
-      },
-    ],
-  },
-  {
-    area: "Conversion",
-    scope: "Journey",
-    items: [
-      {
-        name: "Analytics",
-        detail:
-          "Revenue, funnels, cohorts, journeys, reports, and onsite-search intelligence.",
-      },
-      {
-        name: "Behavior",
-        detail:
-          "Why buyers leave, sessions, replay, heatmaps, and zone-level evidence.",
-      },
-      {
-        name: "Optimization",
-        detail:
-          "Experiments, personalization, decisioning, and optimization missions.",
-      },
-    ],
-  },
-  {
-    area: "Campaigns",
-    scope: "Paid and creative",
-    items: [
-      {
-        name: "Google & Meta",
-        detail:
-          "Connect, validate, draft, approve, publish, and measure campaigns safely.",
-      },
-      {
-        name: "Creative Studio",
-        detail:
-          "Create product, brand, organic, and advertising image and video assets.",
-      },
-    ],
-  },
-  {
-    area: "Plan and proof",
-    scope: "Every store",
-    items: [
-      {
-        name: "Store state",
-        detail:
-          "Current store state, largest commercial issue, and the next decision to make.",
-        dayOne: true,
-      },
-      {
-        name: "Growth plan",
-        detail:
-          "One ranked plan for opportunities, approvals, execution, and proof.",
-        dayOne: true,
-      },
-      {
-        name: "Results",
-        detail:
-          "Verified outcomes with booked, observed, attributed, and modeled money kept separate.",
-        dayOne: true,
-      },
-    ],
+    name: "Creative Studio",
+    line: "Making the assets a change needs, with review before anything is used.",
+    includes: "Media library · moderation · image and video generation",
   },
 ];
+
+const TRACKER: Package[] = [
+  {
+    name: "Analytics",
+    line: "Revenue, funnels, cohorts, journeys, and onsite-search intelligence.",
+    includes: "",
+  },
+  {
+    name: "Behavior",
+    line: "Why buyers leave: sessions, replay, heatmaps, zone-level evidence.",
+    includes: "",
+  },
+  {
+    name: "Personalization",
+    line: "Experiments, decisioning, and recommendation placements, measured against a holdout.",
+    includes: "",
+  },
+  {
+    name: "Reliability",
+    line: "Web vitals, errors, monitors, and incidents that threaten commerce.",
+    includes: "",
+  },
+];
+
+function ActLabel({
+  step,
+  children,
+}: {
+  step: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="flex items-baseline gap-3">
+      <span className="font-mono text-[11px] font-semibold tabular-nums text-signal-ink">
+        {step}
+      </span>
+      <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.12em] text-black/58">
+        {children}
+      </p>
+    </div>
+  );
+}
+
+function PackageCard({ item, dark = false }: { item: Package; dark?: boolean }) {
+  return (
+    <div
+      className={`flex min-h-full flex-col border-b px-0 py-6 sm:border-b-0 sm:border-r sm:px-6 sm:first:pl-0 sm:last:border-r-0 sm:last:pr-0 ${
+        dark ? "border-white/14" : "border-black/12"
+      }`}
+    >
+      <p
+        className={`text-[17px] font-semibold tracking-[-0.01em] ${
+          dark ? "text-white" : "text-ink-deep"
+        }`}
+      >
+        {item.name}
+      </p>
+      <p
+        className={`mt-2 max-w-[38ch] text-[13.5px] leading-[1.6] ${
+          dark ? "text-white/70" : "text-black/62"
+        }`}
+      >
+        {item.line}
+      </p>
+      {item.includes ? (
+        <p
+          className={`mt-4 max-w-[40ch] text-[11.5px] leading-[1.6] ${
+            dark ? "text-white/48" : "text-black/48"
+          }`}
+        >
+          {item.includes}
+        </p>
+      ) : null}
+    </div>
+  );
+}
 
 export default function PlatformCapabilities() {
   return (
@@ -160,53 +135,81 @@ export default function PlatformCapabilities() {
         <Reveal>
           <div className="grid gap-10 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:items-end lg:gap-20">
             <h2 className="max-w-[15ch] font-display text-[clamp(2.2rem,3.6vw,3.4rem)] font-normal leading-[1.04] tracking-[-0.02em] text-ink-deep">
-              Everything the platform can do.
+              It starts small and grows with the store.
             </h2>
             <p className="max-w-[52ch] text-[16px] leading-[1.7] text-black/64">
-              One system, six areas of work. The ones marked{" "}
-              <span className="font-semibold text-ink-deep">day one</span> are
-              live as soon as a store is connected; the rest open as a store has
-              the data and the reason to use them.
+              Beseam is not a bundle of tools you pick from on day one. Every
+              store starts with the same working core, adds the parts its own
+              situation calls for, and grows into the ones that need a season of
+              data behind them.
             </p>
           </div>
         </Reveal>
 
-        <Reveal delay={0.05}>
-          <div className="mt-12 grid border-t-2 border-ink-deep sm:grid-cols-2 lg:grid-cols-3">
-            {AREAS.map(({ area, scope, items }) => (
-              <div
-                key={area}
-                className="border-b border-black/12 px-0 py-7 sm:border-r sm:px-6 sm:first:pl-0 lg:px-8 lg:[&:nth-child(3n)]:border-r-0 lg:[&:nth-child(3n+1)]:pl-0"
-              >
-                <div className="flex items-baseline justify-between gap-3">
-                  <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.12em] text-signal-ink">
-                    {area}
-                  </p>
-                  <p className="font-mono text-[10.5px] uppercase tracking-[0.08em] text-black/40">
-                    {scope}
-                  </p>
-                </div>
-
-                <ul className="mt-5 flex flex-col gap-5">
-                  {items.map(({ name, detail, dayOne }) => (
-                    <li key={name}>
-                      <p className="flex flex-wrap items-baseline gap-x-2 text-[15px] font-semibold leading-[1.3] text-ink-deep">
-                        {name}
-                        {dayOne ? (
-                          <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-[#1a6b43]">
-                            Day one
-                          </span>
-                        ) : null}
-                      </p>
-                      <p className="mt-1 max-w-[42ch] text-[13px] leading-[1.55] text-black/60">
-                        {detail}
-                      </p>
-                    </li>
-                  ))}
-                </ul>
+        {/* Act one: what is always there. */}
+        <Reveal delay={0.04}>
+          <div className="mt-12 border-t-2 border-ink-deep pt-7 lg:mt-16">
+            <ActLabel step="01">Always on</ActLabel>
+            <div className="mt-5 grid gap-6 lg:grid-cols-[minmax(0,0.72fr)_minmax(0,1.28fr)] lg:gap-16">
+              <p className="max-w-[24ch] text-[22px] leading-[1.25] tracking-[-0.01em] text-ink-deep">
+                One core, on the first day, before anything is bought.
+              </p>
+              <div>
+                <PackageCard item={FOUNDATION} />
               </div>
-            ))}
+            </div>
           </div>
+        </Reveal>
+
+        {/* Act two: what a store adds. */}
+        <Reveal delay={0.06}>
+          <div className="mt-12 border-t border-black/16 pt-7">
+            <ActLabel step="02">Added when the store needs it</ActLabel>
+            <p className="mt-5 max-w-[46ch] text-[22px] leading-[1.25] tracking-[-0.01em] text-ink-deep">
+              Three ways to work on what the core found.
+            </p>
+            <div className="mt-6 grid sm:grid-cols-3">
+              {ADDED.map((item) => (
+                <PackageCard key={item.name} item={item} />
+              ))}
+            </div>
+          </div>
+        </Reveal>
+
+        {/* Act three: the family that shares one signal. */}
+        <Reveal delay={0.08}>
+          <div className="mt-12 bg-ink-deep px-6 py-9 text-white sm:px-8 sm:py-10">
+            <div className="flex items-baseline gap-3">
+              <span className="font-mono text-[11px] font-semibold tabular-nums text-signal">
+                03
+              </span>
+              <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.12em] text-white/58">
+                One signal, four products
+              </p>
+            </div>
+            <p className="mt-5 max-w-[34ch] text-[22px] leading-[1.25] tracking-[-0.01em] text-white">
+              The storefront signal you turn on once pays for four things.
+            </p>
+            <p className="mt-3 max-w-[56ch] text-[14px] leading-[1.65] text-white/64">
+              Analytics, behavior, personalization and reliability all read the
+              same tracker. Switch on any one of them and the ingestion is
+              already running for the rest.
+            </p>
+            <div className="mt-8 grid border-t border-white/16 pt-2 sm:grid-cols-2 lg:grid-cols-4">
+              {TRACKER.map((item) => (
+                <PackageCard key={item.name} item={item} dark />
+              ))}
+            </div>
+          </div>
+        </Reveal>
+
+        {/* The line that matters more than the list. */}
+        <Reveal delay={0.1}>
+          <p className="mt-10 max-w-[68ch] border-l-2 border-signal-ink pl-5 text-[15px] leading-[1.7] text-black/70">
+            Nothing that touches the storefront rides along with a package.
+            Publishing a change, running an action, and paid generation are
+            switched on one at a time, by you, on purpose.
+          </p>
         </Reveal>
       </div>
     </section>

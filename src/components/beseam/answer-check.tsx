@@ -324,6 +324,55 @@ const FREE_SCAN_RETURNS = [
   ],
 ] as const;
 
+// The three limits of the free read, as a row. Exported because they belong
+// next to the field on /scan -- a boundary a visitor reads after typing is a
+// boundary that arrived too late.
+export function ScanAssurances({ className = "" }: { className?: string }) {
+  return (
+    <ul className={`flex flex-wrap items-center gap-x-5 gap-y-2 ${className}`}>
+      {[
+        // Not "no login" any more: the scan is sent to an email address, and a
+        // promise the form immediately breaks is worse than no promise.
+        "No account, no card",
+        "Public storefront pages only",
+        "No access to your store",
+      ].map((item) => (
+        <li
+          key={item}
+          className="flex items-center gap-2 text-[13px] font-medium text-[#3b3833]"
+        >
+          <Check
+            aria-hidden="true"
+            className="h-3.5 w-3.5 shrink-0 text-[#1f7a4d]"
+          />
+          {item}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+// What comes back, as opposed to what gets read. Exported so /scan can put it
+// under the field, where it answers "was that worth typing" rather than
+// competing with the field for a visitor who has not typed yet.
+export function ScanReturns() {
+  return (
+    <dl className="border-t border-black/12">
+      {FREE_SCAN_RETURNS.map(([term, detail]) => (
+        <div
+          key={term}
+          className="grid gap-1 border-b border-black/12 py-3.5 sm:grid-cols-[minmax(0,17rem)_minmax(0,1fr)] sm:gap-6"
+        >
+          <dt className="text-[14px] font-semibold text-ink-deep">{term}</dt>
+          <dd className="max-w-[62ch] text-[13.5px] leading-[1.6] text-black/62">
+            {detail}
+          </dd>
+        </div>
+      ))}
+    </dl>
+  );
+}
+
 export function FreeScanPromise({ compact = false }: { compact?: boolean }) {
   return (
     <div className="mx-auto w-full max-w-3xl text-left">
@@ -344,43 +393,12 @@ export function FreeScanPromise({ compact = false }: { compact?: boolean }) {
         demand, and shopper questions come later, not here.
       </p>
 
-      <ul className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2">
-        {[
-          // Not "no login" any more: the scan is sent to an email address, and a
-          // promise the form immediately breaks is worse than no promise.
-          "No account, no card",
-          "Public storefront pages only",
-          "No access to your store",
-        ].map((item) => (
-          <li
-            key={item}
-            className="flex items-center gap-2 text-[13px] font-medium text-[#3b3833]"
-          >
-            <Check
-              aria-hidden="true"
-              className="h-3.5 w-3.5 shrink-0 text-[#1f7a4d]"
-            />
-            {item}
-          </li>
-        ))}
-      </ul>
+      <ScanAssurances className="mt-4" />
 
       {compact ? null : (
-        <dl className="mt-6 border-t border-black/12">
-          {FREE_SCAN_RETURNS.map(([term, detail]) => (
-            <div
-              key={term}
-              className="grid gap-1 border-b border-black/12 py-3.5 sm:grid-cols-[minmax(0,17rem)_minmax(0,1fr)] sm:gap-6"
-            >
-              <dt className="text-[14px] font-semibold text-ink-deep">
-                {term}
-              </dt>
-              <dd className="max-w-[62ch] text-[13.5px] leading-[1.6] text-black/62">
-                {detail}
-              </dd>
-            </div>
-          ))}
-        </dl>
+        <div className="mt-6">
+          <ScanReturns />
+        </div>
       )}
     </div>
   );
@@ -2973,6 +2991,7 @@ export default function AnswerCheck({
   placement = "homepage_hero",
   formNote,
   preamble,
+  belowForm,
   showPromise = false,
   handOffTo,
   glowInput = false,
@@ -2999,6 +3018,14 @@ export default function AnswerCheck({
    * no business sitting on top of the thing.
    */
   preamble?: ReactNode;
+  /**
+   * The scope and the returns, rendered under the field. Everything a visitor
+   * needs in order to judge the scan but not in order to start one belongs
+   * here: put it above the field and the field lands a screen down, which is
+   * what this page did before. It retires the moment a scan starts -- an
+   * argument for the thing has no business sitting next to the thing running.
+   */
+  belowForm?: ReactNode;
   /**
    * Render the free-scan promise above the field. On by default nowhere: the
    * homepage hero already carries its own framing, while a visitor landing
@@ -3418,6 +3445,10 @@ export default function AnswerCheck({
       ) : null}
 
       {inResultMode ? null : formNote}
+
+      {belowForm && !inResultMode && !result && !submitting ? (
+        <div className="mt-14">{belowForm}</div>
+      ) : null}
 
       {/* One progress surface, and only while something is genuinely
           outstanding. The storefront read happens inside the POST, so without

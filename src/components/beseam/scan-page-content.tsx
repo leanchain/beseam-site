@@ -1,6 +1,9 @@
 import { ArrowRight } from "lucide-react";
 
-import LiveAnswerCheck from "@/components/beseam/answer-check";
+import LiveAnswerCheck, {
+  ScanAssurances,
+  ScanReturns,
+} from "@/components/beseam/answer-check";
 import { BookReviewCta } from "@/components/beseam/book-review-cta";
 import TrackedLink from "@/components/beseam/tracked-link";
 import type { Locale } from "@/i18n/locale-rules.mjs";
@@ -52,59 +55,88 @@ export default function ScanPageContent({ locale }: { locale: Locale }) {
         <div className="mx-auto max-w-[76rem]">
           <LiveAnswerCheck
             placement="ai_discovery_scan"
-            showPromise
             preamble={
               <>
-                <h1 className="mx-auto max-w-[22ch] text-balance text-center font-display text-[clamp(2.8rem,5vw,4.8rem)] font-normal leading-[1] tracking-[-0.025em]">
+                {/* The word "free" used to arrive in the `FreeScanPromise`
+                    heading that sat above the field. That block moved below
+                    the field, so the label moves up here -- it is the reason a
+                    cold visitor keeps reading, and it costs one line. */}
+                <p className="text-center text-[12.5px] font-semibold uppercase tracking-[0.16em] text-black/45">
+                  Free store scan
+                </p>
+                <h1 className="mx-auto mt-5 max-w-[22ch] text-balance text-center font-display text-[clamp(2.8rem,5vw,4.8rem)] font-normal leading-[1] tracking-[-0.025em]">
                   See what may stop shoppers from buying.
                 </h1>
-                {/* Name the assessment before anyone types, in one line. The
-                    full "what this is / what it is not" wording lives once, in
-                    `FreeScanPromise` directly above the field — repeating it
-                    here put the same paragraph on the page twice. */}
-                <p className="mx-auto mt-7 max-w-[58ch] text-center text-[17px] leading-[1.7] text-black/64">
+                {/* Two lines and then the field. The scope of the read, what
+                    comes back and the boundary of a one-off scan are all worth
+                    saying -- they are just not worth saying before the one
+                    action this page has, which they used to push a full screen
+                    down. They now sit under the field, in `belowForm`. */}
+                <p className="mx-auto mt-7 max-w-[52ch] text-center text-[17px] leading-[1.7] text-black/64">
                   Enter your domain and the scan starts. We read your public
                   store the way a search engine or an AI assistant reads it, and
                   the findings land on this page as they arrive.
                 </p>
-
-                {/* What is actually in the audit, before anyone types. Naming
-                    the groups of checks is the difference between "we read your
-                    store" and a scope a merchant can judge -- and the last cell
-                    is honest that the free read is one slice of the product. */}
-                <div className="mt-12">
-                  <div className="grid gap-px border border-black/12 bg-black/12 sm:grid-cols-2 lg:grid-cols-4">
-                    {SCAN_CONTENTS.map((item) => (
-                      <div key={item.label} className="bg-white p-5">
-                        <p className="text-[13px] font-semibold text-ink-deep">
-                          {item.label}
-                        </p>
-                        <p className="mt-2 text-[12.5px] leading-[1.6] text-black/58">
-                          {item.detail}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                  <p className="mt-4 text-[13.5px] leading-[1.6] text-black/62">
-                    Every finding names the products behind it and links to the
-                    pages we read.{" "}
-                    <a
-                      href="#beyond-the-scan"
-                      className="font-semibold text-ink-deep underline decoration-black/25 underline-offset-4 hover:decoration-signal-ink"
-                    >
-                      This is one read of what the app does continuously →
-                    </a>
+                <div className="mb-9 mt-7 flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
+                  <ScanAssurances />
+                  <p className="text-[13px] text-black/50">
+                    Usually about a minute.
                   </p>
                 </div>
-
-                {/* The boundary line sits with the promise, so the one-off
-                    nature of the scan is known before a domain is typed rather
-                    than discovered at the end of it. */}
-                <p className="mx-auto mb-5 mt-12 max-w-3xl text-left text-[14.5px] font-semibold leading-[1.55] tracking-[-0.01em] text-ink-deep">
-                  This scan reads your store once. Beseam keeps checking, and
-                  proves what changed.
-                </p>
               </>
+            }
+            belowForm={
+              <div className="mx-auto w-full max-w-3xl text-left">
+                {/* What is actually in the audit. Naming the groups of checks
+                    is the difference between "we read your store" and a scope a
+                    merchant can judge -- and the last cell is honest that the
+                    free read is one slice of the product. */}
+                <h2 className="text-[15px] font-semibold tracking-[-0.015em] text-ink-deep">
+                  What the scan reads
+                </h2>
+                <div className="mt-4 grid gap-px border border-black/12 bg-black/12 sm:grid-cols-2">
+                  {SCAN_CONTENTS.map((item) => (
+                    <div key={item.label} className="bg-white p-5">
+                      <p className="text-[13px] font-semibold text-ink-deep">
+                        {item.label}
+                      </p>
+                      <p className="mt-2 text-[12.5px] leading-[1.6] text-black/58">
+                        {item.detail}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+                {/* The kind of assessment, and the one it is not. A merchant
+                    who typed a domain expecting keyword analysis has to be able
+                    to correct that before the findings arrive and do it for
+                    us. */}
+                <p className="mt-4 max-w-[62ch] text-[13.5px] leading-[1.6] text-black/62">
+                  Every finding names the products behind it and links to the
+                  pages we read. It is not a keyword report — we do not measure
+                  search demand, and shopper questions come later, not here.
+                </p>
+
+                <h2 className="mt-12 text-[15px] font-semibold tracking-[-0.015em] text-ink-deep">
+                  What you get back
+                </h2>
+                <div className="mt-4">
+                  <ScanReturns />
+                </div>
+
+                {/* The boundary line closes the section it belongs to: the
+                    one-off nature of the scan is the reason the dark panel
+                    below it exists. */}
+                <p className="mt-8 text-[14.5px] font-semibold leading-[1.55] tracking-[-0.01em] text-ink-deep">
+                  This scan reads your store once. Beseam keeps checking, and
+                  proves what changed.{" "}
+                  <a
+                    href="#beyond-the-scan"
+                    className="font-semibold text-ink-deep underline decoration-black/25 underline-offset-4 hover:decoration-signal-ink"
+                  >
+                    See what runs continuously →
+                  </a>
+                </p>
+              </div>
             }
             formNote={
               // Same reassurance the homepage hero used to carry, moved here:
