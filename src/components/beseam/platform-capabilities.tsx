@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import { Reveal } from "@/components/beseam/reveal";
 
 /**
@@ -321,7 +323,7 @@ export default function PlatformCapabilities() {
             </ActLabel>
             <div className="mt-5 grid gap-6 lg:grid-cols-[minmax(0,0.72fr)_minmax(0,1.28fr)] lg:gap-16">
               <p className="max-w-[24ch] text-[22px] leading-[1.25] tracking-[-0.01em] text-white">
-                The tracker you turn on once pays for four things.
+                One tracker. All four run on it.
               </p>
               <p className="max-w-[46ch] self-end text-[14px] leading-[1.7] text-white/64">
                 These are the products that need your own traffic behind them.
@@ -353,13 +355,32 @@ export default function PlatformCapabilities() {
           </div>
         </Reveal>
 
-        {/* The line that matters more than the list. */}
+        {/* The two lines that matter more than the list: what never rides
+            along with a package, and where the free part ends. The commercial
+            boundary lives here rather than in a band of its own -- a platform
+            page that stops to price itself stops telling the story, and /scan
+            is where the free read is actually taken. No price and no trial
+            length is stated, because none is configured in billing. */}
         <Reveal delay={0.1}>
-          <p className="mt-10 max-w-[68ch] border-l-2 border-signal-ink pl-5 text-[15px] leading-[1.7] text-black/70">
-            Nothing that touches the storefront rides along with a package.
-            Publishing a change, running an action, and paid generation are
-            switched on one at a time, by you, on purpose.
-          </p>
+          <div className="mt-10 max-w-[68ch] border-l-2 border-signal-ink pl-5 text-[15px] leading-[1.7] text-black/70">
+            <p>
+              Nothing that touches the storefront rides along with a package.
+              Publishing a change, running an action, and paid generation are
+              switched on one at a time, by you, on purpose.
+            </p>
+            <p className="mt-4">
+              Finding out starts free:{" "}
+              <Link
+                href="/scan"
+                className="font-semibold text-ink-deep underline decoration-signal-ink/40 underline-offset-4 transition-colors hover:text-signal-ink hover:decoration-signal-ink"
+              >
+                the storefront read
+              </Link>{" "}
+              needs no account, and the answer check needs a verified work
+              email. Changing the store and watching what the change did is the
+              subscription.
+            </p>
+          </div>
         </Reveal>
       </div>
     </section>

@@ -2,13 +2,13 @@ import Link from "next/link";
 
 import { ArrowRight } from "lucide-react";
 
+import { ActionsScreen } from "@/components/beseam/app-screens";
 import PipelineGraphic from "@/components/beseam/pipeline-graphic";
 import PlatformCapabilities from "@/components/beseam/platform-capabilities";
 import { Reveal } from "@/components/beseam/reveal";
 import TrackedLink from "@/components/beseam/tracked-link";
 import { APP_REGISTER_URL } from "@/lib/app-urls";
 import type { MarketingPageData } from "@/lib/marketing-pages";
-
 export default function PlatformPageContent({
   page,
 }: {
@@ -117,12 +117,54 @@ export default function PlatformPageContent({
         </div>
       </section>
 
-      {/* The connected-system map lives on the homepage (`#system`), and the
-          growth-plan and results screens are the homepage's proof. What this
-          page owes a visitor is the full extent of the thing: every capability
-          it has, and which ones are live on day one. */}
-      <PlatformCapabilities />
+      {/* Before the capability list, the thing itself.
 
+          This page used to go from the hero straight into three acts of
+          prose, and a visitor could read the whole platform without ever
+          seeing what a merchant logs into. The two screens the rest of the
+          site already uses -- the Growth plan and the results ledger, drawn in
+          HTML rather than screenshotted (`app-screens.tsx`) -- carry the
+          product truth here too: the change Beseam prepared, and what it
+          measured afterwards. Both frames stamp themselves illustrative.
+
+          The connected-system map stays on the homepage (`#system`). What
+          this page owes a visitor after the screens is the full extent of the
+          thing: every capability it has, and which ones are live on day one. */}
+      <section className="border-b border-rule bg-ground-2">
+        <div className="mx-auto max-w-[92rem] px-5 py-16 sm:px-8 sm:py-20 lg:px-10 lg:py-24">
+          <Reveal>
+            <div className="grid gap-6 lg:grid-cols-[minmax(0,0.65fr)_minmax(0,1.35fr)] lg:items-end lg:gap-20">
+              <h2 className="max-w-[17ch] font-display text-[clamp(2rem,3.2vw,2.9rem)] font-normal leading-[1.06] tracking-[-0.02em] text-ink-deep">
+                What a merchant actually opens.
+              </h2>
+              <p className="max-w-[52ch] self-end text-[15px] leading-[1.72] text-black/62">
+                One queue of changes: what Beseam found, which shopper question
+                it came from, how much of your booked sales it touches, and the
+                approval it still needs before a shopper sees it.
+              </p>
+            </div>
+          </Reveal>
+          {/* The queue alone, at the full measure. The results ledger belongs
+              to the pipeline below, whose Measure panel already carries those
+              figures -- printing them twice on one page made the second copy
+              read as a different measurement. Four columns do not survive half
+              a grid, and the compact card view needs `min-w-0` or it blows the
+              mobile page out horizontally (the homepage's `EvidenceToWork`
+              carries the same guard). */}
+          <Reveal delay={0.06}>
+            <div className="mt-8 min-w-0">
+              <div className="sm:hidden">
+                <ActionsScreen compact />
+              </div>
+              <div className="hidden sm:block">
+                <ActionsScreen />
+              </div>
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
+      <PlatformCapabilities />
       <section className="border-b border-technical-rule bg-ink-deep text-white">
         <div className="mx-auto max-w-[92rem] px-5 py-20 sm:px-8 sm:py-24 lg:px-10 lg:py-28">
           <Reveal>
@@ -146,32 +188,9 @@ export default function PlatformPageContent({
         </div>
       </section>
 
-      {/* After the dark act the page runs three light beats before the
-          oxblood close. They step down the ground ramp rather than repeating
-          one value, so each boundary is visible without a rule doing the work. */}
-      <section className="border-y border-rule bg-panel-white">
-        <div className="mx-auto grid max-w-[92rem] gap-10 px-5 py-16 sm:px-8 sm:py-20 lg:grid-cols-[minmax(0,0.7fr)_minmax(0,1.3fr)] lg:gap-20 lg:px-10 lg:py-24">
-          <div>
-            <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.1em] text-signal-ink">
-              Current boundary
-            </p>
-            <h2 className="mt-5 max-w-[18ch] font-display text-[clamp(2rem,3.2vw,2.9rem)] font-normal leading-[1.06] tracking-[-0.02em] text-ink-deep">
-              What Beseam does not claim.
-            </h2>
-          </div>
-          <ul className="grid gap-px border border-rule bg-rule sm:grid-cols-2">
-            {page.limits.map((limit) => (
-              <li
-                key={limit}
-                className="bg-panel-white px-5 py-5 text-[14px] leading-relaxed text-foreground"
-              >
-                {limit}
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
-
+      {/* After the dark act the page runs two light beats before the oxblood
+          close. They step down the ground ramp rather than repeating one
+          value, so each boundary is visible without a rule doing the work. */}
       <section className="border-b border-rule bg-ground-2">
         <div className="mx-auto grid max-w-[92rem] gap-10 px-5 py-16 sm:px-8 sm:py-20 lg:grid-cols-[minmax(0,0.65fr)_minmax(0,1.35fr)] lg:gap-20 lg:px-10 lg:py-24">
           <div>
@@ -206,39 +225,44 @@ export default function PlatformPageContent({
         </div>
       </section>
 
+      {/* The related links are a pager, not a section: one flat row of
+          destinations between the FAQ and the close. The signal hairline under
+          each label is the only motion. */}
       {page.related.length > 0 ? (
-        <section className="border-b border-rule bg-ground-3">
-          <div className="mx-auto max-w-[92rem] px-5 py-14 sm:px-8 sm:py-16 lg:px-10 lg:py-20">
-            <div className="grid gap-8 lg:grid-cols-[minmax(14rem,0.45fr)_minmax(0,1fr)] lg:gap-16">
-              <div>
-                <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.1em] text-signal-ink">
-                  Keep exploring
-                </p>
-                <h2 className="mt-4 text-[24px] font-semibold tracking-[-0.02em] text-ink-deep">
-                  Go deeper where it matters.
-                </h2>
-              </div>
-              <nav
-                aria-label="Related platform pages"
-                className="border-t border-rule"
+        <nav
+          aria-label="Related platform pages"
+          className="border-b border-rule bg-ground-3"
+        >
+          <ul className="mx-auto grid max-w-[92rem] divide-y divide-rule px-5 sm:grid-cols-3 sm:divide-x sm:divide-y-0 sm:px-8 lg:px-10">
+            {page.related.map((item) => (
+              <li
+                key={item.href}
+                className="sm:px-7 sm:first:pl-0 sm:last:pr-0"
               >
-                {page.related.map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className="group flex min-h-14 items-center justify-between gap-5 border-b border-rule py-4 text-[15px] font-semibold text-ink-deep"
-                  >
-                    {item.label}
+                <Link
+                  href={item.href}
+                  className="group flex flex-col gap-2.5 py-7 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal-ink sm:py-8"
+                >
+                  <span className="flex items-start justify-between gap-5">
+                    <span className="max-w-[22ch] text-[16px] font-semibold leading-[1.3] tracking-[-0.01em] text-ink-deep transition-colors group-hover:text-signal-ink">
+                      {item.label}
+                    </span>
                     <ArrowRight
-                      className="h-4 w-4 shrink-0 text-signal-ink transition-transform group-hover:translate-x-1"
+                      className="mt-0.5 h-4 w-4 shrink-0 text-black/45 transition duration-300 ease-out group-hover:translate-x-1 group-hover:text-signal-ink"
                       aria-hidden="true"
                     />
-                  </Link>
-                ))}
-              </nav>
-            </div>
-          </div>
-        </section>
+                  </span>
+                  <span
+                    aria-hidden="true"
+                    className="relative hidden h-px w-full bg-black/12 sm:block"
+                  >
+                    <span className="absolute inset-0 origin-left scale-x-0 bg-signal-ink transition-transform duration-300 ease-out group-hover:scale-x-100 group-focus-visible:scale-x-100 motion-reduce:transition-none" />
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
       ) : null}
 
       <section className="bg-pigment text-white">

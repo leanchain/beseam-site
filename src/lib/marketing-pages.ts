@@ -36,7 +36,10 @@ export type MarketingPageData = {
     points: string[];
     icon?: LucideIcon;
   }>;
-  limits: string[];
+  // The detail pages carry an explicit "what Beseam does not claim" block.
+  // /platform states its boundaries inside the capability acts instead, so the
+  // field is optional rather than an empty list rendering an empty box.
+  limits?: string[];
   faqs: MarketingFaq[];
   related: Array<{ label: string; href: string }>;
 };
@@ -197,12 +200,6 @@ export const MARKETING_PAGES: Record<string, MarketingPageData> = {
         ],
       },
     ],
-    limits: [
-      "Not every capability or source is enabled for every store.",
-      "Beseam does not claim an exact cause when the data only shows a possible explanation or a pattern.",
-      "No single composite score replaces the underlying evidence and freshness state.",
-      "Customer-facing publishing requires explicit brand-owner approval before the change is applied.",
-    ],
     faqs: [
       {
         question: "What do I need to connect first?",
@@ -226,7 +223,7 @@ export const MARKETING_PAGES: Record<string, MarketingPageData> = {
       },
     ],
     related: [
-      { label: "How Beseam works", href: "/how-we-work" },
+      { label: "How we work", href: "/how-we-work" },
       { label: "AI shopping discovery", href: "/ai-visibility-monitoring" },
       { label: "See Beseam work", href: "/#proof" },
     ],

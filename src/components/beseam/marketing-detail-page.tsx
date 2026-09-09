@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { ArrowRight } from "lucide-react";
+
 import { ActionsScreen, ImpactScreen } from "@/components/beseam/app-screens";
 import PipelineGraphic from "@/components/beseam/pipeline-graphic";
 import TrackedLink from "@/components/beseam/tracked-link";
@@ -329,28 +330,30 @@ export default function MarketingDetailPage({
         </div>
       </section>
 
-      <section className="border-y border-rule bg-panel-white">
-        <div className="section-pad-tight mx-auto grid max-w-6xl gap-10 px-6 lg:grid-cols-[minmax(0,0.7fr)_minmax(0,1.3fr)] lg:gap-20">
-          <div>
-            <p className="text-[14px] font-semibold text-signal-ink">
-              Current product boundary
-            </p>
-            <h2 className="editorial-subheading mt-4 text-ink">
-              What Beseam does not claim
-            </h2>
+      {page.limits && page.limits.length > 0 ? (
+        <section className="border-y border-rule bg-panel-white">
+          <div className="section-pad-tight mx-auto grid max-w-6xl gap-10 px-6 lg:grid-cols-[minmax(0,0.7fr)_minmax(0,1.3fr)] lg:gap-20">
+            <div>
+              <p className="text-[14px] font-semibold text-signal-ink">
+                Current product boundary
+              </p>
+              <h2 className="editorial-subheading mt-4 text-ink">
+                What Beseam does not claim
+              </h2>
+            </div>
+            <ul className="grid gap-px border border-rule bg-rule sm:grid-cols-2">
+              {page.limits.map((limit) => (
+                <li
+                  key={limit}
+                  className="bg-panel-white px-5 py-5 text-[14px] leading-relaxed text-foreground"
+                >
+                  {limit}
+                </li>
+              ))}
+            </ul>
           </div>
-          <ul className="grid gap-px border border-rule bg-rule sm:grid-cols-2">
-            {page.limits.map((limit) => (
-              <li
-                key={limit}
-                className="bg-panel-white px-5 py-5 text-[14px] leading-relaxed text-foreground"
-              >
-                {limit}
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
+        </section>
+      ) : null}
 
       <section className="border-b border-rule bg-ground">
         <div className="section-pad-tight mx-auto grid max-w-6xl gap-10 px-6 lg:grid-cols-[minmax(0,0.65fr)_minmax(0,1.35fr)] lg:gap-20">
