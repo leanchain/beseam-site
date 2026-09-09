@@ -1490,6 +1490,48 @@ function ProductTile({ product }: { product: ShownProduct }) {
     </li>
   );
 }
+// Level 2 in the card's depth scale: anything openable sits on the warm ground
+// so it reads as a lid, and its contents open onto white.
+// Declared at module scope, not inside the section that renders it: a component
+// defined in a render body is a new type on every render, so each streaming
+// update remounted the <details> and shut whatever the merchant had opened.
+function Fold({
+  title,
+  summary,
+  defaultOpen = false,
+  children,
+}: {
+  title: string;
+  summary: string;
+  defaultOpen?: boolean;
+  children: React.ReactNode;
+}) {
+  return (
+    <details
+      open={defaultOpen}
+      className="group/fold border-b border-black/14 bg-[#fffaf7]"
+    >
+      <summary className="flex cursor-pointer list-none items-center justify-between gap-5 px-5 py-4 transition-colors hover:bg-[#fdf1e9] sm:px-6 [&::-webkit-details-marker]:hidden">
+        <div className="min-w-0">
+          <h3 className="text-[14px] font-semibold text-ink-deep">{title}</h3>
+          <p className="mt-1 text-[12.5px] leading-relaxed text-black/56">
+            {summary}
+          </p>
+        </div>
+        <span className="flex min-h-11 shrink-0 items-center gap-2 text-[12px] font-semibold text-ink-deep">
+          <span className="group-open/fold:hidden">Details</span>
+          <span className="hidden group-open/fold:inline">Close</span>
+          <ChevronDown
+            className="h-4 w-4 transition-transform group-open/fold:rotate-180"
+            aria-hidden="true"
+          />
+        </span>
+      </summary>
+      <div className="border-t border-black/12 bg-white">{children}</div>
+    </details>
+  );
+}
+
 function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
   const findings = sortedFindings(result);
   const audits = result.page_audits ?? [];
@@ -1647,42 +1689,6 @@ function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
     );
     return { ...area, ...counts };
   });
-
-  const Fold = ({
-    title,
-    summary,
-    children,
-  }: {
-    title: string;
-    summary: string;
-    children: React.ReactNode;
-  }) => (
-    // Level 2 in the card's depth scale: anything openable sits on the warm
-    // ground so it reads as a lid, and its contents open onto white. Before
-    // this, every section and every row was the same white and the card was one
-    // undifferentiated sheet.
-    // Summary first. The merchant can open the catalog/page evidence when it
-    // helps, without making every technical section compete on first render.
-    <details className="group/fold border-b border-black/14 bg-[#fffaf7]">
-      <summary className="flex cursor-pointer list-none items-center justify-between gap-5 px-5 py-4 transition-colors hover:bg-[#fdf1e9] sm:px-6 [&::-webkit-details-marker]:hidden">
-        <div className="min-w-0">
-          <h3 className="text-[14px] font-semibold text-ink-deep">{title}</h3>
-          <p className="mt-1 text-[12.5px] leading-relaxed text-black/56">
-            {summary}
-          </p>
-        </div>
-        <span className="flex min-h-11 shrink-0 items-center gap-2 text-[12px] font-semibold text-ink-deep">
-          <span className="group-open/fold:hidden">Details</span>
-          <span className="hidden group-open/fold:inline">Close</span>
-          <ChevronDown
-            className="h-4 w-4 transition-transform group-open/fold:rotate-180"
-            aria-hidden="true"
-          />
-        </span>
-      </summary>
-      <div className="border-t border-black/12 bg-white">{children}</div>
-    </details>
-  );
 
   const catalogCheckedLabel = catalog
     ? `${catalog.products_checked}${catalog.products_capped ? "+" : ""} products checked`
@@ -2093,7 +2099,11 @@ function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
           </div>
         )}
       </Fold>
+      {/* Store and Catalog stay shut: their summary lines already carry the
+          numbers. Product pages opens by default -- it is the only one whose
+          value is the per-check detail, not the one-line count. */}
       <Fold
+        defaultOpen
         title="Product pages"
         summary={
           pageAuditsInFlight
