@@ -1232,4 +1232,90 @@ export const de: Dictionary = {
       },
     },
   },
+
+  scan: {
+    eyebrow: "Kostenloser Shop-Scan",
+    heading: "Sehen Sie, was den Kauf verhindern kann.",
+    intro:
+      "Geben Sie Ihre Domain ein, und der Scan startet. Wir lesen Ihren öffentlichen Shop so, wie eine Suchmaschine oder ein KI-Assistent ihn liest, und die Befunde erscheinen auf dieser Seite, sobald sie vorliegen.",
+    duration: "Dauert meist etwa eine Minute.",
+    promiseBody:
+      "Wir lesen Ihren öffentlichen Shop so, wie eine Suchmaschine oder ein KI-Assistent ihn liest: Ihre Produktseiten, Ihre Katalogdaten und Ihre Website-Einstellungen. Den Link zu Ihrer Analyse schicken wir Ihnen per E-Mail — Sie sehen, was diese Systeme sehen, und was zuerst zu beheben ist. Es ist kein Keyword-Report — wir messen keine Suchnachfrage, und Kundenfragen kommen später, nicht hier.",
+    assurances: [
+      "Kein Konto, keine Karte",
+      "Nur öffentliche Shop-Seiten",
+      "Kein Zugriff auf Ihren Shop",
+    ],
+    formNote: {
+      line: "Der kostenlose Scan liest Ihren Shop einmal.",
+      // Ausgeschrieben, nicht aus `loop.steps` zusammengesetzt: dort heißt
+      // Schritt 02 "Planen", weil im Ring nur 68px Platz sind. In einem Satz
+      // steht "Vorbereiten".
+      loop: "Beseam: Finden → Vorbereiten → Freigeben → Umsetzen → Messen",
+    },
+    form: {
+      domainLabel: "Shop-Domain",
+      // Beispiel-Domain, nicht Marke: "ihrshop.de" zeigt einem deutschen
+      // Besucher das erwartete Format, "yourstore.com" zeigt ein fremdes.
+      domainPlaceholder: "ihrshop.de",
+      submit: "Shop scannen",
+      submitting: "Wir lesen Ihren Shop…",
+      again: "Anderen Shop scannen",
+      startNote:
+        "Wir lesen Ihren Shop sofort. Kein Konto, keine Karte. Eine E-Mail-Adresse geben Sie erst an, wenn die Befunde auf dem Bildschirm stehen, damit wir Ihnen die Analyse schicken können.",
+    },
+    contentsHeading: "Was der Scan liest",
+    contents: [
+      {
+        label: "Ihr Shop-Auftritt",
+        detail:
+          "Robots-Datei, Sitemap und ob Such- und KI-Crawler überhaupt hereingelassen werden.",
+      },
+      {
+        label: "Ihre Katalogdaten",
+        detail:
+          "Kategorien, Marke, Beschreibungen, Bilder, Variantenoptionen, SKUs und Barcodes, Verfügbarkeit, Dubletten.",
+      },
+      {
+        label: "Ihre Produktseiten",
+        detail:
+          "Wir lesen eine Stichprobe von Seiten vollständig und vergleichen sie mit Ihrem Katalog — Namen, Preise und Bestände, die nicht zusammenpassen.",
+      },
+      {
+        label: "Eine Beispiel-KI-Antwort",
+        detail:
+          "Ein Blick darauf, wie Assistenten Ihren Shop heute beschreiben. Hier einmal gefragt; in der App regelmässig.",
+      },
+    ],
+    notKeywordReport:
+      "Jeder Befund nennt die Produkte dahinter und verlinkt die Seiten, die wir gelesen haben. Es ist kein Keyword-Report — wir messen keine Suchnachfrage, und Kundenfragen kommen später, nicht hier.",
+    returnsHeading: "Was Sie zurückbekommen",
+    returns: [
+      {
+        term: "Was wir finden können",
+        detail:
+          "Wie viele Ihrer Produkte öffentlich sind, dazu eine Stichprobe vollständig gelesener Produktseiten.",
+      },
+      {
+        term: "Wo Sie Kundschaft verlieren können",
+        detail:
+          "In klaren Worten: welche Produkte übersprungen werden können, schwer zu vergleichen oder schwer zu kaufen sind.",
+      },
+      {
+        term: "Was zuerst zu beheben ist",
+        detail:
+          "Ein nächster Schritt je Befund, mit dem Beleg darunter. Ein öffentlicher Scan kann keine Umsatzwirkung beweisen, und wir behaupten es nicht.",
+      },
+    ],
+    once: "Dieser Scan liest Ihren Shop einmal. Beseam prüft weiter und belegt, was sich verändert hat.",
+    continuous: "Sehen, was fortlaufend läuft →",
+    beyond: {
+      heading: "Fragen nach Plan, und eine erneute Prüfung nach der Behebung.",
+      body: "In Beseam lesen und bearbeiten Sie die Kundenfragen, bevor eine davon läuft, die Antworten bleiben als Beleg erhalten, Behebungen werden danach geordnet, was sich zuerst lohnt, und dieselben Fragen werden nach einer Änderung erneut gestellt, damit Sie sehen, was sich bewegt hat.",
+      review:
+        "Oder bringen Sie Ihren Shop in eine zwanzigminütige Durchsprache: An einem echten Befund zeigen wir, was Beseam gefunden hat, was es ändern würde und was es danach erneut prüft.",
+      start: "Fortlaufende Prüfung starten",
+      book: "Beseam an meinem Shop sehen",
+    },
+  },
 };

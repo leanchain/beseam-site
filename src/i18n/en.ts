@@ -8,6 +8,19 @@
  * Values that interpolate are functions rather than format strings, so the
  * arguments are type-checked per locale instead of failing at runtime.
  */
+
+/**
+ * Lists that are rendered in order and whose length is part of the design are
+ * typed as fixed-length tuples. A plain array would widen to `string[]`, and
+ * a locale that shipped three of four cards would render three cards and pass
+ * the typecheck -- exactly the silent-English failure this file exists to
+ * prevent.
+ */
+type Triple<T> = readonly [T, T, T];
+type Quad<T> = readonly [T, T, T, T];
+type Labelled = { label: string; detail: string };
+type Termed = { term: string; detail: string };
+
 const enDictionary = {
   nav: {
     skipToContent: "Skip to content",
@@ -1305,6 +1318,115 @@ const enDictionary = {
         answer:
           "Beseam asks the same shopper questions again after the change and shows whether the answers now name your store. The before-and-after stays with the change, and Beseam does not claim the change caused something the data cannot prove.",
       },
+    },
+  },
+
+  /**
+   * The /scan page body (`scan-page-content.tsx`) plus the two blocks it
+   * borrows from `answer-check.tsx` -- `assurances` and `returns`, which are
+   * rendered on /scan and on /playbook.
+   *
+   * `assurances`, `contents` and `returns` are ordered tuples, not keyed
+   * objects: each is rendered in order and read as a sequence, and the order
+   * is the same in every locale. The tuple types make a locale that drops or
+   * adds an entry a type error rather than a short list.
+   */
+  scan: {
+    eyebrow: "Free store scan",
+    heading: "See what may stop shoppers from buying.",
+    intro:
+      "Enter your domain and the scan starts. We read your public store the way a search engine or an AI assistant reads it, and the findings land on this page as they arrive.",
+    duration: "Usually about a minute.",
+    // `FreeScanPromise`'s longer version of `intro`: it runs above the field
+    // on /playbook, where the visitor has not come for a scan and needs the
+    // scope, the delivery and the disclaimer in one paragraph.
+    promiseBody:
+      "We read your public store the way a search engine or an AI assistant reads it: your product pages, your catalog data, and your site settings. We email you the link to your audit, so you get what they can see, and what to fix first. It is not a keyword report — we do not measure search demand, and shopper questions come later, not here.",
+    // The three limits of the free read. A boundary a visitor reads after
+    // typing is a boundary that arrived too late.
+    assurances: [
+      "No account, no card",
+      "Public storefront pages only",
+      "No access to your store",
+    ] as Triple<string>,
+    formNote: {
+      line: "Free scan reads your store once.",
+      // Spelled out rather than composed from `loop.steps`: those labels are
+      // cut to fit a diagram ring ("Planen", not "Vorbereiten"), and a label
+      // sized for 68px has no business in a sentence.
+      loop: "Beseam: Find → Prepare → Approve → Apply → Measure",
+    },
+    /**
+     * The field itself, in `answer-check.tsx`. Everything past the submit --
+     * progress steps, findings, errors -- is still English in both locales;
+     * that is a separate task, and it is a large one. These are the strings a
+     * visitor reads before they act.
+     */
+    form: {
+      domainLabel: "Store domain",
+      domainPlaceholder: "yourstore.com",
+      submit: "Scan my store",
+      submitting: "Reading your store…",
+      again: "Scan another store",
+      startNote:
+        "We start reading your store now. No account, no card. You give us an email once the findings are on screen, so we can send you the audit.",
+    },
+    contentsHeading: "What the scan reads",
+    // The four groups of checks the public scan actually runs, in the order
+    // they run (`storefront.py`, `page_audit.py`). The fourth is deliberately
+    // the limit rather than a feature: a one-off sample, not the ongoing
+    // product.
+    contents: [
+      {
+        label: "Your storefront",
+        detail:
+          "Robots file, sitemap, and whether search and AI crawlers are allowed in at all.",
+      },
+      {
+        label: "Your catalog data",
+        detail:
+          "Categories, brand, descriptions, images, variant options, SKUs and barcodes, availability, duplicates.",
+      },
+      {
+        label: "Your product pages",
+        detail:
+          "We read a sample of pages in full, then compare them with your catalog — names, prices and stock that do not match.",
+      },
+      {
+        label: "A sample AI answer",
+        detail:
+          "One look at how assistants describe your store today. Asked once here; asked on a schedule in the app.",
+      },
+    ] as Quad<Labelled>,
+    notKeywordReport:
+      "Every finding names the products behind it and links to the pages we read. It is not a keyword report — we do not measure search demand, and shopper questions come later, not here.",
+    returnsHeading: "What you get back",
+    returns: [
+      {
+        term: "What we can find",
+        detail:
+          "How many of your products are public, plus a sample of product pages read end to end.",
+      },
+      {
+        term: "Where shoppers may lose you",
+        detail:
+          "In plain words: which products may get skipped, be hard to choose between, or be hard to buy.",
+      },
+      {
+        term: "What to fix first",
+        detail:
+          "One next step per finding, with the evidence under it. A public scan cannot prove revenue impact, and we do not claim it.",
+      },
+    ] as Triple<Termed>,
+    once: "This scan reads your store once. Beseam keeps checking, and proves what changed.",
+    continuous: "See what runs continuously →",
+    beyond: {
+      heading: "Questions on a schedule, and a recheck after the fix.",
+      body: "In Beseam you read and edit the shopper questions before any of them run, the answers are kept as evidence, fixes are ordered by what is worth doing first, and the same questions are asked again after a change so you can see what moved.",
+      review:
+        "Or bring your store to a twenty-minute review, and we will use one real finding to show what Beseam found, what it would change, and what it checks again afterward.",
+      start: "Start ongoing checks",
+      book: "See Beseam on my store",
     },
   },
 };

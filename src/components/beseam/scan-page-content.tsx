@@ -6,44 +6,22 @@ import LiveAnswerCheck, {
 } from "@/components/beseam/answer-check";
 import { BookReviewCta } from "@/components/beseam/book-review-cta";
 import TrackedLink from "@/components/beseam/tracked-link";
+import { getDictionary } from "@/i18n";
 import type { Locale } from "@/i18n/locale-rules.mjs";
 import { APP_REGISTER_URL } from "@/lib/app-urls";
 
-// The four groups of checks the public scan actually runs, in the order they
-// run (`storefront.py`, `page_audit.py`). The fourth is deliberately the limit
-// rather than a feature: a one-off sample, not the ongoing product.
-const SCAN_CONTENTS = [
-  {
-    label: "Your storefront",
-    detail:
-      "Robots file, sitemap, and whether search and AI crawlers are allowed in at all.",
-  },
-  {
-    label: "Your catalog data",
-    detail:
-      "Categories, brand, descriptions, images, variant options, SKUs and barcodes, availability, duplicates.",
-  },
-  {
-    label: "Your product pages",
-    detail:
-      "We read a sample of pages in full, then compare them with your catalog — names, prices and stock that do not match.",
-  },
-  {
-    label: "A sample AI answer",
-    detail:
-      "One look at how assistants describe your store today. Asked once here; asked on a schedule in the app.",
-  },
-] as const;
-
 /**
  * The scan page's body, shared by `src/app/scan/page.tsx` and
- * `src/app/[locale]/scan/page.tsx` so there is one place to translate when
- * Task 10 moves this copy to German -- not two files that can drift. This
- * task keeps the body English on both routes; `locale` is threaded through
- * only so it is in place for that later change.
+ * `src/app/[locale]/scan/page.tsx` so there is one place to translate rather
+ * than two files that can drift.
+ *
+ * This is a server component, so it takes the locale as a prop and reads the
+ * dictionary directly. The two blocks it borrows from `answer-check.tsx`
+ * (`ScanAssurances`, `ScanReturns`) are client components and read the same
+ * dictionary through `useDictionary`, off the path.
  */
 export default function ScanPageContent({ locale }: { locale: Locale }) {
-  void locale;
+  const t = getDictionary(locale).scan;
 
   return (
     <section className="min-h-screen bg-[#faf1eb] text-ink-deep">
@@ -62,10 +40,10 @@ export default function ScanPageContent({ locale }: { locale: Locale }) {
                     the field, so the label moves up here -- it is the reason a
                     cold visitor keeps reading, and it costs one line. */}
                 <p className="text-center text-[12.5px] font-semibold uppercase tracking-[0.16em] text-black/45">
-                  Free store scan
+                  {t.eyebrow}
                 </p>
                 <h1 className="mx-auto mt-5 max-w-[22ch] text-balance text-center font-display text-[clamp(2.8rem,5vw,4.8rem)] font-normal leading-[1] tracking-[-0.025em]">
-                  See what may stop shoppers from buying.
+                  {t.heading}
                 </h1>
                 {/* Two lines and then the field. The scope of the read, what
                     comes back and the boundary of a one-off scan are all worth
@@ -73,15 +51,11 @@ export default function ScanPageContent({ locale }: { locale: Locale }) {
                     action this page has, which they used to push a full screen
                     down. They now sit under the field, in `belowForm`. */}
                 <p className="mx-auto mt-7 max-w-[52ch] text-center text-[17px] leading-[1.7] text-black/64">
-                  Enter your domain and the scan starts. We read your public
-                  store the way a search engine or an AI assistant reads it, and
-                  the findings land on this page as they arrive.
+                  {t.intro}
                 </p>
                 <div className="mb-9 mt-7 flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
                   <ScanAssurances />
-                  <p className="text-[13px] text-black/50">
-                    Usually about a minute.
-                  </p>
+                  <p className="text-[13px] text-black/50">{t.duration}</p>
                 </div>
               </>
             }
@@ -92,10 +66,10 @@ export default function ScanPageContent({ locale }: { locale: Locale }) {
                     merchant can judge -- and the last cell is honest that the
                     free read is one slice of the product. */}
                 <h2 className="text-[15px] font-semibold tracking-[-0.015em] text-ink-deep">
-                  What the scan reads
+                  {t.contentsHeading}
                 </h2>
                 <div className="mt-4 grid gap-px border border-black/12 bg-black/12 sm:grid-cols-2">
-                  {SCAN_CONTENTS.map((item) => (
+                  {t.contents.map((item) => (
                     <div key={item.label} className="bg-white p-5">
                       <p className="text-[13px] font-semibold text-ink-deep">
                         {item.label}
@@ -111,13 +85,11 @@ export default function ScanPageContent({ locale }: { locale: Locale }) {
                     to correct that before the findings arrive and do it for
                     us. */}
                 <p className="mt-4 max-w-[62ch] text-[13.5px] leading-[1.6] text-black/62">
-                  Every finding names the products behind it and links to the
-                  pages we read. It is not a keyword report — we do not measure
-                  search demand, and shopper questions come later, not here.
+                  {t.notKeywordReport}
                 </p>
 
                 <h2 className="mt-12 text-[15px] font-semibold tracking-[-0.015em] text-ink-deep">
-                  What you get back
+                  {t.returnsHeading}
                 </h2>
                 <div className="mt-4">
                   <ScanReturns />
@@ -127,13 +99,12 @@ export default function ScanPageContent({ locale }: { locale: Locale }) {
                     one-off nature of the scan is the reason the dark panel
                     below it exists. */}
                 <p className="mt-8 text-[14.5px] font-semibold leading-[1.55] tracking-[-0.01em] text-ink-deep">
-                  This scan reads your store once. Beseam keeps checking, and
-                  proves what changed.{" "}
+                  {t.once}{" "}
                   <a
                     href="#beyond-the-scan"
                     className="font-semibold text-ink-deep underline decoration-black/25 underline-offset-4 hover:decoration-signal-ink"
                   >
-                    See what runs continuously →
+                    {t.continuous}
                   </a>
                 </p>
               </div>
@@ -142,11 +113,8 @@ export default function ScanPageContent({ locale }: { locale: Locale }) {
               // Same reassurance the homepage hero used to carry, moved here:
               // it belongs between the field and the result, not the hero.
               <p className="mx-auto mt-2 max-w-3xl text-center text-[12.5px] leading-snug text-black/54">
-                Free scan reads your store once.
-                <span className="block">
-                  Beseam: Find &rarr; Prepare &rarr; Approve &rarr; Apply &rarr;
-                  Measure
-                </span>
+                {t.formNote.line}
+                <span className="block">{t.formNote.loop}</span>
               </p>
             }
           />
@@ -163,18 +131,13 @@ export default function ScanPageContent({ locale }: { locale: Locale }) {
           <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
             <div>
               <h2 className="max-w-[25ch] font-display text-[clamp(1.9rem,3.2vw,3rem)] font-normal leading-[1.04] tracking-[-0.025em]">
-                Questions on a schedule, and a recheck after the fix.
+                {t.beyond.heading}
               </h2>
               <p className="mt-5 max-w-2xl text-[15px] leading-relaxed text-white/66">
-                In Beseam you read and edit the shopper questions before any of
-                them run, the answers are kept as evidence, fixes are ordered by
-                what is worth doing first, and the same questions are asked
-                again after a change so you can see what moved.
+                {t.beyond.body}
               </p>
               <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-white/54">
-                Or bring your store to a twenty-minute review, and we will use
-                one real finding to show what Beseam found, what it would
-                change, and what it checks again afterward.
+                {t.beyond.review}
               </p>
             </div>
             <div className="flex flex-col gap-3 sm:flex-row lg:flex-col lg:items-stretch">
@@ -186,7 +149,7 @@ export default function ScanPageContent({ locale }: { locale: Locale }) {
                 preserveUtm
                 className="group inline-flex min-h-12 items-center justify-center gap-2 bg-white px-6 text-[15px] font-semibold text-ink-deep transition-colors hover:bg-signal hover:text-ink-deep"
               >
-                Start ongoing checks
+                {t.beyond.start}
                 <ArrowRight
                   aria-hidden="true"
                   className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
@@ -194,7 +157,7 @@ export default function ScanPageContent({ locale }: { locale: Locale }) {
               </TrackedLink>
               <BookReviewCta
                 location="scan_page"
-                label="See Beseam on my store"
+                label={t.beyond.book}
                 className="border border-white/45 bg-transparent text-white hover:bg-white hover:text-ink-deep"
               />
             </div>

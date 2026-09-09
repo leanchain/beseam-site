@@ -11,6 +11,8 @@ import {
 
 import { useRouter } from "next/navigation";
 
+import { useDictionary } from "@/i18n/use-locale";
+
 import {
   ArrowRight,
   Check,
@@ -309,34 +311,20 @@ function countLabel(count: number, noun: string) {
 
 // ── What the free scan promises, before anyone types a domain ───────────────
 
-const FREE_SCAN_RETURNS = [
-  [
-    "What we can find",
-    "How many of your products are public, plus a sample of product pages read end to end.",
-  ],
-  [
-    "Where shoppers may lose you",
-    "In plain words: which products may get skipped, be hard to choose between, or be hard to buy.",
-  ],
-  [
-    "What to fix first",
-    "One next step per finding, with the evidence under it. A public scan cannot prove revenue impact, and we do not claim it.",
-  ],
-] as const;
-
 // The three limits of the free read, as a row. Exported because they belong
 // next to the field on /scan -- a boundary a visitor reads after typing is a
 // boundary that arrived too late.
+//
+// The copy comes from the dictionary, not from a constant here: this renders
+// on /scan, /de/scan and /playbook, and `useDictionary` reads the locale off
+// the path, which is the only locale signal a static export has. Not "no
+// login" any more, in either language: the scan is sent to an email address,
+// and a promise the form immediately breaks is worse than no promise.
 export function ScanAssurances({ className = "" }: { className?: string }) {
+  const t = useDictionary();
   return (
     <ul className={`flex flex-wrap items-center gap-x-5 gap-y-2 ${className}`}>
-      {[
-        // Not "no login" any more: the scan is sent to an email address, and a
-        // promise the form immediately breaks is worse than no promise.
-        "No account, no card",
-        "Public storefront pages only",
-        "No access to your store",
-      ].map((item) => (
+      {t.scan.assurances.map((item) => (
         <li
           key={item}
           className="flex items-center gap-2 text-[13px] font-medium text-[#3b3833]"
@@ -356,9 +344,10 @@ export function ScanAssurances({ className = "" }: { className?: string }) {
 // under the field, where it answers "was that worth typing" rather than
 // competing with the field for a visitor who has not typed yet.
 export function ScanReturns() {
+  const t = useDictionary();
   return (
     <dl className="border-t border-black/12">
-      {FREE_SCAN_RETURNS.map(([term, detail]) => (
+      {t.scan.returns.map(({ term, detail }) => (
         <div
           key={term}
           className="grid gap-1 border-b border-black/12 py-3.5 sm:grid-cols-[minmax(0,17rem)_minmax(0,1fr)] sm:gap-6"
@@ -374,23 +363,20 @@ export function ScanReturns() {
 }
 
 export function FreeScanPromise({ compact = false }: { compact?: boolean }) {
+  const t = useDictionary();
   return (
     <div className="mx-auto w-full max-w-3xl text-left">
       <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
         <h2 className="text-[19px] font-semibold tracking-[-0.015em] text-ink-deep">
-          Free store scan
+          {t.scan.eyebrow}
         </h2>
-        <p className="text-[13px] text-black/56">Usually about a minute.</p>
+        <p className="text-[13px] text-black/56">{t.scan.duration}</p>
       </div>
       {/* The kind of assessment, and the one it is not. A merchant who types a
           domain expecting keyword analysis has to be able to correct that here,
           before the findings arrive and do it for us. */}
       <p className="mt-2 max-w-[62ch] text-[14.5px] leading-[1.65] text-black/68">
-        We read your public store the way a search engine or an AI assistant
-        reads it: your product pages, your catalog data, and your site settings.
-        We email you the link to your audit, so you get what they can see, and
-        what to fix first. It is not a keyword report — we do not measure search
-        demand, and shopper questions come later, not here.
+        {t.scan.promiseBody}
       </p>
 
       <ScanAssurances className="mt-4" />
@@ -3074,6 +3060,9 @@ export default function AnswerCheck({
 }) {
   const { trackEvent } = useAnalytics();
   const router = useRouter();
+  // Only the field and its labels read from this so far. The scan result,
+  // its progress steps and its errors are still English in both locales.
+  const t = useDictionary();
   const [domain, setDomain] = useState("");
   const [email, setEmail] = useState("");
   const [website, setWebsite] = useState("");
@@ -3345,10 +3334,10 @@ export default function AnswerCheck({
       }`}
     >
       {submitting
-        ? "Reading your store…"
+        ? t.scan.form.submitting
         : inResultMode
-          ? "Scan another store"
-          : "Scan my store"}
+          ? t.scan.form.again
+          : t.scan.form.submit}
       <ArrowRight
         aria-hidden="true"
         className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
@@ -3524,7 +3513,7 @@ export default function AnswerCheck({
           <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto]">
             <div>
               <label className="sr-only" htmlFor="answer-check-domain">
-                Store domain
+                {t.scan.form.domainLabel}
               </label>
               <input
                 id="answer-check-domain"
@@ -3533,7 +3522,7 @@ export default function AnswerCheck({
                   setDomain(event.target.value);
                   if (error) setError("");
                 }}
-                placeholder="yourstore.com"
+                placeholder={t.scan.form.domainPlaceholder}
                 aria-invalid={Boolean(error)}
                 className={inputClass}
                 style={
@@ -3550,9 +3539,7 @@ export default function AnswerCheck({
           </div>
           {handOffTo ? null : (
             <p className="mt-2.5 max-w-[62ch] text-[12.5px] leading-relaxed text-black/58">
-              We start reading your store now. No account, no card. You give us
-              an email once the findings are on screen, so we can send you the
-              audit.
+              {t.scan.form.startNote}
             </p>
           )}
           <label className="sr-only" aria-hidden="true">
