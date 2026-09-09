@@ -845,7 +845,7 @@ const enDictionary = {
      */
     feedsBefore: "Feeds ",
     feedsBetween: " of ",
-    inputBefore: "Input — what ",
+    inputBefore: "Input: what ",
     inputAfter: " reads",
     platformLabel: "Platform",
     platformQuestion: "What will this shopper choose?",
@@ -863,7 +863,7 @@ const enDictionary = {
       discovery: {
         label: "AI discovery",
         layer: "Off-site",
-        scope: "Where products enter — or miss — the shortlist.",
+        scope: "Where products enter, or miss, the shortlist.",
         caveat:
           "Point-in-time samples, dated and repeatable. Never a model’s hidden ranking logic.",
         does: "Shortlist visibility",
@@ -1197,7 +1197,7 @@ const enDictionary = {
       gate: {
         eyebrow: "Nothing ships without you",
         body: "Every customer-facing change waits at step 03 until you approve it.",
-        note: "And step 05 checks the same journey it started from — AI appearances, product visits, add to cart — so a change is measured against the state it changed.",
+        note: "And step 05 checks the same journey it started from (AI appearances, product visits, add to cart) so a change is measured against the state it changed.",
       },
     },
 
@@ -1263,7 +1263,7 @@ const enDictionary = {
     // #impact -- measure-impact.tsx
     impact: {
       heading: "It only matters if the outcome moves.",
-      body: "After a change, Beseam asks the same shopper questions again — and shows whether the answers now name your store.",
+      body: "After a change, Beseam asks the same shopper questions again, and shows whether the answers now name your store.",
     },
 
     // #promise -- first-month-promise.tsx. Two block spans, not one balanced
@@ -1291,40 +1291,46 @@ const enDictionary = {
   faq: {
     heading: "FAQ",
     items: {
-      connect: {
-        question: "What do I need to connect to get started?",
-        answer:
-          "Start with your domain. Add store, analytics, search, behavior, or customer data only when it helps Beseam understand the problem or make an approved change.",
-      },
       scanVsBeseam: {
         question: "What's the difference between the free scan and Beseam?",
         answer:
-          "The free scan is a one-time snapshot of your public storefront. Beseam keeps monitoring after that, connects your store and other useful signals, turns findings into proposed changes, applies supported changes after approval, and checks what happened afterward.",
+          "The free scan is a one-time look at your public storefront. Beseam keeps working after that: it connects the signals that matter, finds what deserves attention, prepares changes, applies supported changes after approval, and checks what happened afterward.",
+      },
+      watch: {
+        question: "What does Beseam actually watch?",
+        answer:
+          "Depending on what you connect, Beseam can use AI and search discovery, catalog and storefront data, shopper behavior, fit, experiments, reliability, campaigns, conversion, orders, and revenue. You do not need every source; Beseam uses the evidence relevant to the problem being investigated.",
       },
       priority: {
-        question: "How does Beseam decide what to fix first?",
+        question: "How does Beseam decide what deserves attention first?",
         answer:
-          "Beseam looks at what shoppers did, what happened on the store, and what changed in sales. It separates facts from possible explanations and shows what is most worth fixing first, with the reason attached.",
+          "Beseam brings the evidence for a problem into one place, separates observed facts from possible explanations, and weighs things such as evidence strength, affected products or journeys, business context, effort, and risk. The reason a change is prioritized stays attached to the work.",
       },
       changes: {
         question: "What can Beseam actually change?",
         answer:
-          "With the right access, Beseam can change product data, content, merchandising, onsite search, recommendations, and other editable parts of the store. What it can apply depends on the system you connect and the approval rules you choose.",
+          "Where the connected system supports it, Beseam can prepare or apply changes to product data, content, merchandising, onsite search, recommendations and personalization, fit and sizing experiences, experiments, creative assets, campaigns, and other editable parts of the buying journey. Customer-facing changes follow your approval rules.",
+      },
+      alongside: {
+        question:
+          "Does Beseam replace my analytics, personalization, or monitoring tools?",
+        answer:
+          "Not necessarily. Existing tools can remain specialist sources of evidence. Beseam's job is to connect useful signals around the same product, shopper question, journey, or business problem, turn the strongest findings into work, and keep the result attached. Exact integrations depend on your setup.",
       },
       approval: {
         question: "What needs approval before it goes live?",
         answer:
-          "You choose the rules. Beseam prepares customer-facing changes and applies them only after the required approval. Changes that need brand judgment stop for review. Where the system supports rollback, Beseam keeps the previous state.",
-      },
-      cadence: {
-        question: "How often does Beseam check?",
-        answer:
-          "It keeps running after the first scan. Beseam re-asks a rotating sample of your shopper questions every day, so an answer that changes is caught when it changes, and a weekly email tells you what moved, what is waiting for your approval, and what to fix next. You do not have to open it every day.",
+          "You set the rules. Beseam can keep checking, gathering evidence, and preparing work without waiting for you, but customer-facing changes that require approval do not go live until they have it. Changes that need brand judgment stop for review.",
       },
       measurement: {
-        question: "How does Beseam measure whether a change helped?",
+        question: "How does Beseam know whether a change worked?",
         answer:
-          "Beseam asks the same shopper questions again after the change and shows whether the answers now name your store. The before-and-after stays with the change, and Beseam does not claim the change caused something the data cannot prove.",
+          "Beseam checks the signal that exposed the problem again. That might be the same AI shopping question, a storefront or reliability check, shopper behavior, an experiment, campaign performance, conversion, orders, or revenue. The before-and-after stays with the change, and Beseam keeps observed movement separate from causation the evidence cannot prove.",
+      },
+      connect: {
+        question: "What do I need to connect to get started?",
+        answer:
+          "Start with your domain. For ongoing work, connect the store first, then add analytics, behavior, search, campaign, customer, or revenue data only when it helps explain a problem, make an approved change, or measure what happened.",
       },
     },
   },
@@ -1353,7 +1359,7 @@ const enDictionary = {
       readingDomain: (domain: string) => `Reading ${domain}`,
       readingStorefront: "Reading your storefront",
       resultsAsTheyArrive:
-        "We show useful findings as soon as they are ready — you do not have to wait for everything.",
+        "We show useful findings as soon as they are ready. You do not have to wait for everything.",
       questionsLater:
         "This first read is the snapshot. Beseam is where the checks keep running after it.",
       progress: (done: number, total: number) => `${done} of ${total}`,
@@ -1473,7 +1479,7 @@ const enDictionary = {
         agents:
           "Notes for AI agents browsing your store on a shopper's behalf. Optional.",
         skill:
-          "Describes what an assistant can do on your store, in a format some AI tools read. Very new and optional — skip it unless you already work with AI agents.",
+          "Describes what an assistant can do on your store, in a format some AI tools read. Very new and optional. Skip it unless you already work with AI agents.",
         ucp: "A machine-readable card describing your store for commerce agents. Optional.",
       },
     },
@@ -1483,13 +1489,13 @@ const enDictionary = {
         "A public scan can only reach so far. This is exactly how far it went, and what continues after it.",
       did: "What this scan did",
       didPublic:
-        "Read your public storefront the way any visitor can — no login, no store access.",
+        "Read your public storefront the way any visitor can: no login, no store access.",
       didPages: (count: number) =>
         `Ran the page checks over ${count} ${count === 1 ? "product page" : "product pages"}, plus your robots file, sitemap and crawler access.`,
       didPagesSample:
         "Ran the page checks over a sample of your product pages, plus your robots file, sitemap and crawler access.",
       didCatalog:
-        "Compared your catalog data against what each page actually renders — names, prices, availability.",
+        "Compared your catalog data against what each page actually renders: names, prices, availability.",
       not: "What it did not do",
       notKeepAsking:
         "Keep asking. The assistant answers above were sampled once, on this run.",
@@ -1528,14 +1534,14 @@ const enDictionary = {
       afterConnection: "Checked after connection",
       start: "Continue free with this store",
       carryStore: (domain: string) =>
-        `${domain} is carried into setup — you will not start over.`,
+        `${domain} is carried into setup. You will not start over.`,
       closingEyebrow: "Seen enough?",
       closingTitle: "Keep this store under watch in Beseam.",
       reviewWithFinding: "Prefer to walk through this with us?",
       reviewWithoutFinding: "Prefer to walk through this with us?",
       startingWith: (headline: string) => `Starting with “${headline}”`,
       reviewBody:
-        "In 20 minutes, we use one finding from this scan to show the full loop on your store — evidence, proposed change, approval, and recheck.",
+        "In 20 minutes, we use one finding from this scan to show the full loop on your store: evidence, proposed change, approval, and recheck.",
       reviewCta: "Book a 20-minute store review",
     },
     visibility: {
@@ -1651,7 +1657,7 @@ const enDictionary = {
       homepageSample:
         "Homepage paths are sampled here. True orphan coverage needs the full internal-link graph.",
       emergingFiles: (present: number, total: number) =>
-        `Those four are emerging conventions for telling AI assistants what your store is and how to use it. ${present} of ${total} are published. None of them is required, none is known to affect how you rank in search today, and a missing one is not a fault. We report them because the stores that publish them are easier for assistants to read correctly — not because you are doing anything wrong without them.`,
+        `Those four are emerging conventions for telling AI assistants what your store is and how to use it. ${present} of ${total} are published. None of them is required, none is known to affect how you rank in search today, and a missing one is not a fault. We report them because the stores that publish them are easier for assistants to read correctly, not because you are doing anything wrong without them.`,
       catalogQuestion: "Can products be understood and distinguished?",
       countsChecked: "counts below cover the products checked",
       withGap: (count: number) => `${count} products with at least one gap`,
@@ -1835,13 +1841,13 @@ const enDictionary = {
     eyebrow: "Free store scan",
     heading: "See what makes your products harder to find, choose, or buy.",
     intro:
-      "Enter your store domain. Beseam reads the public storefront and shows where products may get missed, become hard to compare, or create buying friction — with evidence and what to fix first.",
+      "Enter your store domain. Beseam reads the public storefront and shows where products may get missed, become hard to compare, or create buying friction, with evidence and what to fix first.",
     duration: "Usually about a minute.",
     // `FreeScanPromise`'s longer version of `intro`: it runs above the field
     // on /playbook, where the visitor has not come for a scan and needs the
     // scope, the delivery and the disclaimer in one paragraph.
     promiseBody:
-      "We read your public store the way a search engine or an AI assistant reads it: your product pages, your catalog data, and your site settings. We email you the link to your audit, so you get what they can see, and what to fix first. It is not a keyword report — we do not measure search demand, and shopper questions come later, not here.",
+      "We read your public store the way a search engine or an AI assistant reads it: your product pages, your catalog data, and your site settings. We email you the link to your audit, so you get what they can see, and what to fix first. It is not a keyword report. We do not measure search demand, and shopper questions come later, not here.",
     // The three limits of the free read. A boundary a visitor reads after
     // typing is a boundary that arrived too late.
     assurances: [
@@ -1892,7 +1898,7 @@ const enDictionary = {
       {
         label: "Your product pages",
         detail:
-          "We read a sample of pages in full, then compare them with your catalog — names, prices and stock that do not match.",
+          "We read a sample of pages in full, then compare them with your catalog: names, prices and stock that do not match.",
       },
       {
         label: "A sample AI answer",
@@ -1901,7 +1907,7 @@ const enDictionary = {
       },
     ] as Quad<Labelled>,
     notKeywordReport:
-      "Every finding names the products behind it and links to the pages we read. It is not a keyword report — we do not measure search demand, and shopper questions come later, not here.",
+      "Every finding names the products behind it and links to the pages we read. It is not a keyword report. We do not measure search demand, and shopper questions come later, not here.",
     returnsHeading: "What you get back",
     returns: [
       {

@@ -25,7 +25,7 @@ export const metadata: Metadata = buildPublicMetadata({
 
 const CONTENTS = [
   { label: "What happens after you start", href: "#stages" },
-  { label: "What Beseam handles — and what you decide", href: "#roles" },
+  { label: "What Beseam handles, and what you decide", href: "#roles" },
   { label: "The rules we keep", href: "#rules" },
   { label: "Questions people ask", href: "#questions" },
 ] as const;
@@ -90,7 +90,7 @@ const ARTIFACTS = [
   {
     name: "The original signal",
     detail:
-      "The shopper question, answer, page, journey, or outcome that started the work — kept in its original context.",
+      "The shopper question, answer, page, journey, or outcome that started the work, kept in its original context.",
   },
   {
     name: "The evidence",
@@ -137,34 +137,34 @@ const REFUSALS = [
 
 const FAQS = [
   {
-    question: "What do I need to connect?",
+    question: "Can Beseam make a change without us approving it?",
     answer:
-      "Nothing for the first public scan except your domain. For ongoing work, start with the store. Add analytics, behavior, search, customer, or revenue data only when it helps explain a problem, rank the work, or measure what changed.",
+      "Customer-facing changes follow the approval rules you set. Beseam can keep monitoring, gathering evidence, and preparing work without waiting for you, but a change that requires approval does not go live until it has it.",
   },
   {
     question: "How much work does my team have to do?",
     answer:
-      "Your team sets the boundaries, gives Beseam the access it needs, and decides on customer-facing changes. Beseam handles the recurring checks, evidence gathering, prioritization, proposed work, supported implementation after approval, and re-checking.",
+      "Your team sets the boundaries, gives Beseam the access it needs, and makes the decisions that require judgment. Beseam handles recurring checks, evidence gathering, prioritization, proposed work, supported implementation after approval, and re-checking.",
   },
   {
     question: "How soon do we get the first change?",
     answer:
-      "As soon as there is a finding worth acting on and enough context to propose a responsible change. Beseam does not manufacture a first-week edit just to make onboarding look busy.",
+      "As soon as there is a finding worth acting on and enough context to propose a responsible change. Beseam does not manufacture an edit just to make onboarding look busy.",
   },
   {
     question: "What if we say no to a change?",
     answer:
-      "It does not ship. The rejection remains part of the work record, and your rules should prevent the same unsuitable idea from repeatedly coming back as if nothing was learned.",
+      "It does not ship. The rejection remains part of the work record, and the decision becomes context for future work instead of the same unsuitable idea returning as if nothing was learned.",
   },
   {
     question: "Is this an agency or a managed service?",
     answer:
-      "Beseam is software. The product keeps the monitoring, evidence, proposed work, approvals, and measurement connected. Early setup can be hands-on because the rules matter, but the goal is not to create an ongoing consulting dependency.",
+      "Beseam is software. It keeps monitoring, evidence, proposed work, approvals, execution where supported, and measurement connected. Setup can be hands-on because the rules matter, but the product is designed to reduce ongoing manual coordination rather than create a consulting dependency.",
   },
   {
     question: "What if a change does not help?",
     answer:
-      "Then the re-check should show that. Beseam keeps the flat result next to the change and uses it as evidence for what to revisit or try next rather than turning it into a success story.",
+      "Then the re-check should show that. Beseam keeps the flat or uncertain result next to the change and uses it as evidence for what to revisit or investigate next rather than turning every completed change into a success story.",
   },
 ] as const;
 
@@ -192,13 +192,23 @@ export default function HowWeWorkPage() {
     <>
       <section className="border-b border-black/14 bg-ground">
         <div className="mx-auto max-w-[92rem] px-5 pb-14 pt-20 sm:px-8 sm:pb-16 sm:pt-24 lg:px-10 lg:pb-20 lg:pt-28">
+          <nav
+            aria-label="Breadcrumb"
+            className="text-[13px] text-muted-foreground"
+          >
+            <Link href="/" className="hover:text-signal-ink">
+              Beseam
+            </Link>
+            <span aria-hidden className="mx-2">
+              /
+            </span>
+            <span>How we work</span>
+          </nav>
+
           <Reveal>
-            <div className="grid gap-10 lg:grid-cols-[minmax(0,1.05fr)_minmax(20rem,0.8fr)] lg:items-end lg:gap-20">
+            <div className="mt-10 grid gap-10 lg:grid-cols-[minmax(0,1.05fr)_minmax(20rem,0.8fr)] lg:items-end lg:gap-20">
               <div>
-                <p className="font-mono text-[12px] font-semibold uppercase tracking-[0.14em] text-signal-ink">
-                  How we work
-                </p>
-                <h1 className="mt-6 max-w-[15ch] text-balance font-display text-[clamp(3rem,5.8vw,5rem)] font-normal leading-[0.98] tracking-[-0.03em] text-ink-deep">
+                <h1 className="max-w-[15ch] text-balance font-display text-[clamp(3rem,5.8vw,5rem)] font-normal leading-[0.98] tracking-[-0.03em] text-ink-deep">
                   Beseam does the checking. You make the decisions.
                 </h1>
               </div>

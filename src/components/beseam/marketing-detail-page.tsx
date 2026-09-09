@@ -121,10 +121,7 @@ export default function MarketingDetailPage({
 
           <div className="mt-10 grid gap-8 lg:grid-cols-[minmax(0,1.12fr)_minmax(18rem,0.68fr)] lg:items-end lg:gap-16">
             <div>
-              <p className="text-[14px] font-semibold text-signal-ink">
-                {page.eyebrow}
-              </p>
-              <h1 className="mt-4 max-w-[17ch] text-balance font-display text-[clamp(2.6rem,5.4vw,4.5rem)] font-normal leading-[1.02] tracking-[-0.02em] text-ink">
+              <h1 className="max-w-[17ch] text-balance font-display text-[clamp(2.6rem,5.4vw,4.5rem)] font-normal leading-[1.02] tracking-[-0.02em] text-ink">
                 {page.headline}
               </h1>
             </div>
@@ -153,7 +150,6 @@ export default function MarketingDetailPage({
           </p>
         </div>
       </section>
-
       <section className="border-b border-rule bg-panel-white">
         <div className="section-pad-tight mx-auto max-w-6xl px-6">
           <div className="grid gap-10 lg:grid-cols-[minmax(14rem,0.45fr)_minmax(0,1fr)] lg:gap-16">

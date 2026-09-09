@@ -16,14 +16,16 @@ export const metadata: Metadata = buildPublicMetadata({
 const RESOURCES = [
   {
     title: "AI shopping data",
-    detail: "Public shopping questions and the brands named by each AI assistant.",
+    detail:
+      "Public shopping questions and the brands named by each AI assistant.",
     href: "/data",
     label: "Browse the data",
     Icon: Database,
   },
   {
     title: "JSON dataset",
-    detail: "Full run metadata, assistant totals, questions, and brand appearances.",
+    detail:
+      "Full run metadata, assistant totals, questions, and brand appearances.",
     href: "/data/ai-shopping.json",
     label: "Open JSON",
     Icon: Braces,
@@ -37,7 +39,8 @@ const RESOURCES = [
   },
   {
     title: "BeseamBot",
-    detail: "User-Agent, crawl rules, request pacing, and how to control access.",
+    detail:
+      "User-Agent, crawl rules, request pacing, and how to control access.",
     href: "/bot",
     label: "Crawler information",
     Icon: Bot,
@@ -49,12 +52,18 @@ export default function AgentsPage() {
     <div className="bg-ground text-ink-deep">
       <section className="border-b border-black/18">
         <div className="mx-auto max-w-[92rem] px-5 py-20 sm:px-8 sm:py-24 lg:px-10 lg:py-28">
-          <Reveal className="grid gap-12 lg:grid-cols-[minmax(0,0.82fr)_minmax(22rem,0.68fr)] lg:items-end lg:gap-20">
+          <nav className="text-[13px] text-muted-foreground">
+            <Link href="/" className="hover:text-signal-ink">
+              Beseam
+            </Link>
+            <span aria-hidden className="mx-2">
+              /
+            </span>
+            <span>Agents</span>
+          </nav>
+          <Reveal className="mt-10 grid gap-12 lg:grid-cols-[minmax(0,0.82fr)_minmax(22rem,0.68fr)] lg:items-end lg:gap-20">
             <div>
-              <p className="font-mono text-[12px] font-semibold uppercase tracking-[0.14em] text-signal-ink">
-                For AI shopping agents
-              </p>
-              <h1 className="mt-7 max-w-[15ch] font-display text-[clamp(2.8rem,6vw,4.7rem)] font-normal leading-[1] tracking-[-0.025em]">
+              <h1 className="max-w-[15ch] font-display text-[clamp(2.8rem,6vw,4.7rem)] font-normal leading-[1] tracking-[-0.025em]">
                 Public Beseam data, made easy for machines to read.
               </h1>
             </div>
@@ -65,7 +74,8 @@ export default function AgentsPage() {
                 downloaded, or crawled.
               </p>
               <p className="mt-5 text-[14px] leading-relaxed text-black/54">
-                This is research data, not a live product feed or recommendation API.
+                This is research data, not a live product feed or recommendation
+                API.
               </p>
             </div>
           </Reveal>
@@ -147,15 +157,38 @@ export default function AgentsPage() {
             </div>
             <div className="border-t border-black/22">
               {[
-                ["AGENTS.md", "Available", "Agent-readable guide to Beseam's public files and how to interpret the data."],
-                ["llms.txt", "Available", "Compact index of the public pages and machine-readable data."],
-                ["MCP", "Not exposed yet", "No public MCP endpoint is advertised on beseam.com today."],
-                ["A2A", "Not exposed yet", "No A2A Agent Card is published until there is an actual A2A service behind it."],
+                [
+                  "AGENTS.md",
+                  "Available",
+                  "Agent-readable guide to Beseam's public files and how to interpret the data.",
+                ],
+                [
+                  "llms.txt",
+                  "Available",
+                  "Compact index of the public pages and machine-readable data.",
+                ],
+                [
+                  "MCP",
+                  "Not exposed yet",
+                  "No public MCP endpoint is advertised on beseam.com today.",
+                ],
+                [
+                  "A2A",
+                  "Not exposed yet",
+                  "No A2A Agent Card is published until there is an actual A2A service behind it.",
+                ],
               ].map(([name, status, detail]) => (
-                <div key={name} className="grid gap-2 border-b border-black/16 py-5 sm:grid-cols-[9rem_9rem_minmax(0,1fr)] sm:gap-5">
+                <div
+                  key={name}
+                  className="grid gap-2 border-b border-black/16 py-5 sm:grid-cols-[9rem_9rem_minmax(0,1fr)] sm:gap-5"
+                >
                   <span className="font-semibold">{name}</span>
-                  <span className="font-mono text-[11px] uppercase tracking-[0.08em] text-signal-ink">{status}</span>
-                  <span className="text-[14px] leading-[1.6] text-black/60">{detail}</span>
+                  <span className="font-mono text-[11px] uppercase tracking-[0.08em] text-signal-ink">
+                    {status}
+                  </span>
+                  <span className="text-[14px] leading-[1.6] text-black/60">
+                    {detail}
+                  </span>
                 </div>
               ))}
             </div>
@@ -166,7 +199,9 @@ export default function AgentsPage() {
       <section className="border-b border-black/18 bg-ground">
         <div className="mx-auto grid max-w-[92rem] gap-12 px-5 py-16 sm:px-8 sm:py-20 lg:grid-cols-2 lg:gap-20 lg:px-10 lg:py-24">
           <div>
-            <h2 className="text-[22px] font-semibold">What you can use it for</h2>
+            <h2 className="text-[22px] font-semibold">
+              What you can use it for
+            </h2>
             <ul className="mt-6 border-t border-black/18">
               {[
                 "Compare which assistants named the same brands.",
@@ -174,7 +209,10 @@ export default function AgentsPage() {
                 "Study how much brand overlap changes by question.",
                 "Cite the public report and method behind the dataset.",
               ].map((item) => (
-                <li key={item} className="border-b border-black/14 py-4 text-[14px] leading-[1.6] text-black/62">
+                <li
+                  key={item}
+                  className="border-b border-black/14 py-4 text-[14px] leading-[1.6] text-black/62"
+                >
                   {item}
                 </li>
               ))}
@@ -189,7 +227,10 @@ export default function AgentsPage() {
                 "Not private customer or merchant data.",
                 "Not proof of why an assistant named or missed a brand.",
               ].map((item) => (
-                <li key={item} className="border-b border-black/14 py-4 text-[14px] leading-[1.6] text-black/62">
+                <li
+                  key={item}
+                  className="border-b border-black/14 py-4 text-[14px] leading-[1.6] text-black/62"
+                >
                   {item}
                 </li>
               ))}
@@ -205,8 +246,8 @@ export default function AgentsPage() {
               Want another public format or dataset?
             </h2>
             <p className="mt-4 max-w-[58ch] text-[14px] leading-[1.7] text-white/62">
-              Tell us what your shopping agent needs. We can use that feedback to
-              decide what public data to expose next.
+              Tell us what your shopping agent needs. We can use that feedback
+              to decide what public data to expose next.
             </p>
           </div>
           <Link

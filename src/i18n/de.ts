@@ -785,7 +785,7 @@ export const de: Dictionary = {
     },
     feedsBefore: "Speist ",
     feedsBetween: " von ",
-    // "Input — was X liest" läuft bei 1024px aus der Spalte (die Zeile bricht
+    // "Input: was X liest" läuft bei 1024px aus der Spalte (die Zeile bricht
     // nicht um). "Input für X" sagt dasselbe und bleibt kürzer als die
     // englische Zeile, deshalb bleibt `inputAfter` leer.
     inputBefore: "Input für ",
@@ -1129,7 +1129,7 @@ export const de: Dictionary = {
       gate: {
         eyebrow: "Nichts geht ohne Sie live",
         body: "Jede kundenseitige Änderung wartet bei Schritt 03 auf Ihre Freigabe.",
-        note: "Und Schritt 05 prüft denselben Weg, an dem er begonnen hat — KI-Nennungen, Produktbesuche, Warenkorb — damit eine Änderung an dem Zustand gemessen wird, den sie verändert hat.",
+        note: "Und Schritt 05 prüft denselben Weg, an dem er begonnen hat (KI-Nennungen, Produktbesuche, Warenkorb), damit eine Änderung an dem Zustand gemessen wird, den sie verändert hat.",
       },
     },
 
@@ -1191,7 +1191,7 @@ export const de: Dictionary = {
 
     impact: {
       heading: "Es zählt nur, wenn sich das Ergebnis bewegt.",
-      body: "Nach einer Änderung stellt Beseam dieselben Kundenfragen erneut — und zeigt, ob die Antworten jetzt Ihren Shop nennen.",
+      body: "Nach einer Änderung stellt Beseam dieselben Kundenfragen erneut und zeigt, ob die Antworten jetzt Ihren Shop nennen.",
     },
 
     promise: {
@@ -1209,41 +1209,47 @@ export const de: Dictionary = {
   faq: {
     heading: "FAQ",
     items: {
-      connect: {
-        question: "Was muss ich verbinden, um zu starten?",
-        answer:
-          "Beginnen Sie mit Ihrer Domain. Shop-, Analyse-, Such-, Verhaltens- oder Kundendaten kommen erst dazu, wenn sie Beseam helfen, das Problem zu verstehen oder eine freigegebene Änderung umzusetzen.",
-      },
       scanVsBeseam: {
         question:
           "Was ist der Unterschied zwischen dem kostenlosen Scan und Beseam?",
         answer:
-          "Der kostenlose Scan ist eine einmalige Momentaufnahme Ihres öffentlichen Shops. Beseam beobachtet danach weiter, verbindet Ihren Shop mit weiteren nützlichen Signalen, macht aus Befunden konkrete Änderungsvorschläge, setzt unterstützte Änderungen nach Ihrer Freigabe um und prüft anschliessend, was sich verändert hat.",
+          "Der kostenlose Scan ist eine einmalige Prüfung Ihres öffentlichen Shops. Beseam arbeitet danach weiter: Es verbindet die relevanten Signale, findet, was Aufmerksamkeit verdient, bereitet Änderungen vor, setzt unterstützte Änderungen nach Freigabe um und prüft anschliessend, was passiert ist.",
+      },
+      watch: {
+        question: "Was beobachtet Beseam eigentlich?",
+        answer:
+          "Je nach Anbindung kann Beseam KI- und Suchsichtbarkeit, Katalog- und Shopdaten, Kundenverhalten, Passform, Experimente, Zuverlässigkeit, Kampagnen, Conversion, Bestellungen und Umsatz nutzen. Sie brauchen nicht jede Quelle; Beseam nutzt die Belege, die für das untersuchte Problem relevant sind.",
       },
       priority: {
-        question: "Wie entscheidet Beseam, was zuerst behoben wird?",
+        question: "Wie entscheidet Beseam, was zuerst Aufmerksamkeit verdient?",
         answer:
-          "Beseam sieht sich an, was Ihre Kundschaft getan hat, was im Shop passiert ist und was sich im Umsatz verändert hat. Es trennt Fakten von möglichen Erklärungen und zeigt, was sich zuerst zu beheben lohnt – mit der Begründung dabei.",
+          "Beseam bringt die Belege zu einem Problem an einen Ort, trennt beobachtete Fakten von möglichen Erklärungen und berücksichtigt unter anderem Belegstärke, betroffene Produkte oder Kaufreisen, Geschäftskontext, Aufwand und Risiko. Die Begründung für die Priorität bleibt mit der Arbeit verbunden.",
       },
       changes: {
         question: "Was kann Beseam tatsächlich ändern?",
         answer:
-          "Mit den passenden Zugriffsrechten kann Beseam Produktdaten, Inhalte, Merchandising, die Shop-Suche, Empfehlungen und andere bearbeitbare Teile des Shops ändern. Was umgesetzt werden kann, hängt vom angebundenen System und den Freigaberegeln ab, die Sie wählen.",
+          "Wo das angebundene System es unterstützt, kann Beseam Änderungen an Produktdaten, Inhalten, Merchandising, Shop-Suche, Empfehlungen und Personalisierung, Passform- und Grössenerlebnissen, Experimenten, kreativen Assets, Kampagnen und anderen bearbeitbaren Teilen der Kaufreise vorbereiten oder umsetzen. Kundenseitige Änderungen folgen Ihren Freigaberegeln.",
+      },
+      alongside: {
+        question:
+          "Ersetzt Beseam meine Analyse-, Personalisierungs- oder Monitoring-Tools?",
+        answer:
+          "Nicht unbedingt. Bestehende Tools können spezialisierte Belegquellen bleiben. Beseam verbindet relevante Signale rund um dasselbe Produkt, dieselbe Kundenfrage, Kaufreise oder dasselbe Geschäftsproblem, macht aus den stärksten Befunden konkrete Arbeit und hält das Ergebnis damit verbunden. Welche Integrationen verfügbar sind, hängt von Ihrem Setup ab.",
       },
       approval: {
         question: "Was braucht eine Freigabe, bevor es live geht?",
         answer:
-          "Sie legen die Regeln fest. Beseam bereitet kundenseitige Änderungen vor und setzt sie erst nach der erforderlichen Freigabe um. Änderungen, die eine Markenentscheidung verlangen, bleiben zur Prüfung liegen. Wo das System ein Rollback unterstützt, sichert Beseam den vorherigen Stand.",
-      },
-      cadence: {
-        question: "Wie oft prüft Beseam?",
-        answer:
-          "Nach dem ersten Scan läuft es weiter. Beseam stellt täglich eine wechselnde Auswahl Ihrer Kundenfragen erneut, damit eine Antwort, die sich ändert, sofort auffällt. Eine wöchentliche E-Mail sagt Ihnen, was sich bewegt hat, was auf Ihre Freigabe wartet und was als Nächstes zu beheben ist. Sie müssen sie nicht jeden Tag öffnen.",
+          "Sie legen die Regeln fest. Beseam kann weiter prüfen, Belege sammeln und Arbeit vorbereiten, ohne auf Sie zu warten. Kundenseitige Änderungen, die eine Freigabe erfordern, gehen jedoch erst danach live. Änderungen, die Markenurteil brauchen, bleiben zur Prüfung liegen.",
       },
       measurement: {
-        question: "Wie misst Beseam, ob eine Änderung geholfen hat?",
+        question: "Wie erkennt Beseam, ob eine Änderung funktioniert hat?",
         answer:
-          "Beseam stellt nach der Änderung dieselben Kundenfragen erneut und zeigt, ob die Antworten jetzt Ihren Shop nennen. Der Vorher-Nachher-Vergleich bleibt bei der Änderung, und Beseam behauptet nicht, die Änderung habe etwas bewirkt, was die Daten nicht belegen können.",
+          "Beseam prüft das Signal erneut, das das Problem sichtbar gemacht hat. Das kann dieselbe KI-Kauffrage, eine Shop- oder Zuverlässigkeitsprüfung, Kundenverhalten, ein Experiment, Kampagnenleistung, Conversion, Bestellungen oder Umsatz sein. Der Vorher-Nachher-Vergleich bleibt bei der Änderung, und beobachtete Bewegung bleibt getrennt von Kausalität, die die Daten nicht belegen können.",
+      },
+      connect: {
+        question: "Was muss ich verbinden, um zu starten?",
+        answer:
+          "Beginnen Sie mit Ihrer Domain. Für die laufende Arbeit verbinden Sie zuerst den Shop und ergänzen Analyse-, Verhaltens-, Such-, Kampagnen-, Kunden- oder Umsatzdaten nur dann, wenn sie helfen, ein Problem zu erklären, eine freigegebene Änderung umzusetzen oder das Ergebnis zu messen.",
       },
     },
   },
@@ -1262,7 +1268,7 @@ export const de: Dictionary = {
       readingDomain: (domain: string) => `${domain} wird gelesen`,
       readingStorefront: "Ihr Shop wird gelesen",
       resultsAsTheyArrive:
-        "Nützliche Befunde erscheinen, sobald sie bereit sind — Sie müssen nicht auf alles warten.",
+        "Nützliche Befunde erscheinen, sobald sie bereit sind. Sie müssen nicht auf alles warten.",
       questionsLater:
         "Dieser erste Scan ist die Momentaufnahme. In Beseam laufen die Prüfungen danach weiter.",
       progress: (done: number, total: number) => `${done} von ${total}`,
@@ -1387,7 +1393,7 @@ export const de: Dictionary = {
         agents:
           "Hinweise für KI-Agenten, die Ihren Shop im Auftrag von Kundinnen und Kunden durchsuchen. Optional.",
         skill:
-          "Beschreibt in einem Format, das einige KI-Werkzeuge lesen, was ein Assistent in Ihrem Shop tun kann. Sehr neu und optional — überspringen Sie dies, sofern Sie nicht bereits mit KI-Agenten arbeiten.",
+          "Beschreibt in einem Format, das einige KI-Werkzeuge lesen, was ein Assistent in Ihrem Shop tun kann. Sehr neu und optional. Überspringen Sie dies, sofern Sie nicht bereits mit KI-Agenten arbeiten.",
         ucp: "Eine maschinenlesbare Beschreibung Ihres Shops für Commerce-Agenten. Optional.",
       },
     },
@@ -1397,13 +1403,13 @@ export const de: Dictionary = {
         "Ein öffentlicher Scan reicht nur bis zu einem gewissen Punkt. Hier sehen Sie genau, wie weit er ging und was danach weiterläuft.",
       did: "Was dieser Scan getan hat",
       didPublic:
-        "Ihren öffentlichen Shop so gelesen, wie es jeder Besucher kann — ohne Anmeldung und ohne Shop-Zugriff.",
+        "Ihren öffentlichen Shop so gelesen, wie es jeder Besucher kann: ohne Anmeldung und ohne Shop-Zugriff.",
       didPages: (count: number) =>
         `Die Seitenprüfungen auf ${count} ${count === 1 ? "Produktseite" : "Produktseiten"} ausgeführt, plus robots.txt, Sitemap und Crawler-Zugriff.`,
       didPagesSample:
         "Die Seitenprüfungen auf einer Stichprobe Ihrer Produktseiten ausgeführt, plus robots.txt, Sitemap und Crawler-Zugriff.",
       didCatalog:
-        "Ihre Katalogdaten mit dem verglichen, was jede Seite tatsächlich ausgibt — Namen, Preise und Verfügbarkeit.",
+        "Ihre Katalogdaten mit dem verglichen, was jede Seite tatsächlich ausgibt: Namen, Preise und Verfügbarkeit.",
       not: "Was er nicht getan hat",
       notKeepAsking:
         "Nicht weiter gefragt. Die KI-Antworten oben wurden bei diesem Durchlauf einmalig erhoben.",
@@ -1443,7 +1449,7 @@ export const de: Dictionary = {
       afterConnection: "Nach Verbindung geprüft",
       start: "Kostenlos mit diesem Shop fortfahren",
       carryStore: (domain: string) =>
-        `${domain} wird in die Einrichtung übernommen — Sie starten nicht von vorn.`,
+        `${domain} wird in die Einrichtung übernommen. Sie starten nicht von vorn.`,
       closingEyebrow: "Genug gesehen?",
       closingTitle: "Lassen Sie Beseam diesen Shop weiter beobachten.",
       reviewWithFinding: "Möchten Sie das lieber gemeinsam mit uns durchgehen?",
@@ -1451,7 +1457,7 @@ export const de: Dictionary = {
         "Möchten Sie das lieber gemeinsam mit uns durchgehen?",
       startingWith: (headline: string) => `Ausgehend von „${headline}“`,
       reviewBody:
-        "In 20 Minuten nutzen wir einen Befund aus diesem Scan und zeigen den vollständigen Kreislauf an Ihrem Shop — Beleg, vorgeschlagene Änderung, Freigabe und erneute Prüfung.",
+        "In 20 Minuten nutzen wir einen Befund aus diesem Scan und zeigen den vollständigen Kreislauf an Ihrem Shop: Beleg, vorgeschlagene Änderung, Freigabe und erneute Prüfung.",
       reviewCta: "20-minütige Shop-Durchsprache buchen",
     },
     visibility: {
@@ -1571,7 +1577,7 @@ export const de: Dictionary = {
       homepageSample:
         "Homepage-Pfade werden hier nur stichprobenartig geprüft. Echte Abdeckung verwaister Seiten braucht den vollständigen internen Linkgraphen.",
       emergingFiles: (present: number, total: number) =>
-        `Diese vier Dateien sind neue Konventionen, um KI-Assistenten mitzuteilen, was Ihr Shop ist und wie er genutzt werden kann. ${present} von ${total} sind veröffentlicht. Keine davon ist erforderlich, keine ist heute nachweislich ein Rankingfaktor, und eine fehlende Datei ist kein Fehler. Wir zeigen sie, weil veröffentlichende Shops für Assistenten leichter korrekt zu lesen sind — nicht weil Sie ohne sie etwas falsch machen.`,
+        `Diese vier Dateien sind neue Konventionen, um KI-Assistenten mitzuteilen, was Ihr Shop ist und wie er genutzt werden kann. ${present} von ${total} sind veröffentlicht. Keine davon ist erforderlich, keine ist heute nachweislich ein Rankingfaktor, und eine fehlende Datei ist kein Fehler. Wir zeigen sie, weil veröffentlichende Shops für Assistenten leichter korrekt zu lesen sind, nicht weil Sie ohne sie etwas falsch machen.`,
       catalogQuestion: "Können Produkte verstanden und unterschieden werden?",
       countsChecked: "die Werte unten beziehen sich auf die geprüften Produkte",
       withGap: (count: number) =>
@@ -1701,7 +1707,7 @@ export const de: Dictionary = {
       differentAddress: "Andere Adresse verwenden",
       confirmTitle: "Bestätigen Sie Ihre E-Mail, um beides zu öffnen",
       confirmBody:
-        "Wir senden einen Link. Ein Klick öffnet beides — ohne Konto, ohne Karte und ohne Marketingliste.",
+        "Wir senden einen Link. Ein Klick öffnet beides: ohne Konto, ohne Karte und ohne Marketingliste.",
       addEmail: "E-Mail hinzufügen",
       privacyPrefix: "Siehe unsere",
       privacy: "Datenschutzerklärung",
@@ -1760,10 +1766,10 @@ export const de: Dictionary = {
     heading:
       "Sehen Sie, was Ihre Produkte schwerer auffindbar, vergleichbar oder kaufbar macht.",
     intro:
-      "Geben Sie Ihre Shop-Domain ein. Beseam liest den öffentlichen Shop und zeigt, wo Produkte übersehen werden, schwer vergleichbar sind oder Kaufhürden schaffen können — mit Belegen und dem sinnvollsten nächsten Schritt.",
+      "Geben Sie Ihre Shop-Domain ein. Beseam liest den öffentlichen Shop und zeigt, wo Produkte übersehen werden, schwer vergleichbar sind oder Kaufhürden schaffen können, mit Belegen und dem sinnvollsten nächsten Schritt.",
     duration: "Dauert meist etwa eine Minute.",
     promiseBody:
-      "Wir lesen Ihren öffentlichen Shop so, wie eine Suchmaschine oder ein KI-Assistent ihn liest: Ihre Produktseiten, Ihre Katalogdaten und Ihre Website-Einstellungen. Den Link zu Ihrer Analyse schicken wir Ihnen per E-Mail — Sie sehen, was diese Systeme sehen, und was zuerst zu beheben ist. Es ist kein Keyword-Report — wir messen keine Suchnachfrage, und Kundenfragen kommen später, nicht hier.",
+      "Wir lesen Ihren öffentlichen Shop so, wie eine Suchmaschine oder ein KI-Assistent ihn liest: Ihre Produktseiten, Ihre Katalogdaten und Ihre Website-Einstellungen. Den Link zu Ihrer Analyse schicken wir Ihnen per E-Mail. Sie sehen, was diese Systeme sehen, und was zuerst zu beheben ist. Es ist kein Keyword-Report. Wir messen keine Suchnachfrage, und Kundenfragen kommen später, nicht hier.",
     assurances: [
       "Kein Konto, keine Karte",
       "Nur öffentliche Shop-Seiten",
@@ -1804,7 +1810,7 @@ export const de: Dictionary = {
       {
         label: "Ihre Produktseiten",
         detail:
-          "Wir lesen eine Stichprobe von Seiten vollständig und vergleichen sie mit Ihrem Katalog — Namen, Preise und Bestände, die nicht zusammenpassen.",
+          "Wir lesen eine Stichprobe von Seiten vollständig und vergleichen sie mit Ihrem Katalog: Namen, Preise und Bestände, die nicht zusammenpassen.",
       },
       {
         label: "Eine Beispiel-KI-Antwort",
@@ -1813,7 +1819,7 @@ export const de: Dictionary = {
       },
     ],
     notKeywordReport:
-      "Jeder Befund nennt die Produkte dahinter und verlinkt die Seiten, die wir gelesen haben. Es ist kein Keyword-Report — wir messen keine Suchnachfrage, und Kundenfragen kommen später, nicht hier.",
+      "Jeder Befund nennt die Produkte dahinter und verlinkt die Seiten, die wir gelesen haben. Es ist kein Keyword-Report. Wir messen keine Suchnachfrage, und Kundenfragen kommen später, nicht hier.",
     returnsHeading: "Was Sie zurückbekommen",
     returns: [
       {

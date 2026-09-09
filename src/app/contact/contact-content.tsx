@@ -2,6 +2,7 @@
 
 import { useRef, useState, type FormEvent } from "react";
 
+import Link from "next/link";
 import { Mail } from "lucide-react";
 
 import { BookReviewCta } from "@/components/beseam/book-review-cta";
@@ -168,12 +169,21 @@ export default function ContactContent() {
     <div className="bg-ground text-[#151515]">
       <section className="border-b border-black/18">
         <div className="mx-auto max-w-[92rem] px-5 py-20 sm:px-8 sm:py-24 lg:px-10 lg:py-28">
-          <Reveal className="grid gap-12 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:items-end lg:gap-20">
+          <nav
+            aria-label="Breadcrumb"
+            className="text-[13px] text-muted-foreground"
+          >
+            <Link href="/" className="hover:text-signal-ink">
+              Beseam
+            </Link>
+            <span aria-hidden className="mx-2">
+              /
+            </span>
+            <span>Contact</span>
+          </nav>
+          <Reveal className="mt-10 grid gap-12 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:items-end lg:gap-20">
             <div>
-              <p className="font-mono text-[12px] font-semibold uppercase tracking-[0.14em] text-signal-ink">
-                Contact
-              </p>
-              <h1 className="mt-7 max-w-[16ch] font-display text-[clamp(2.8rem,6.2vw,4.5rem)] font-normal leading-[1] tracking-[-0.02em] text-ink-deep">
+              <h1 className="max-w-[16ch] font-display text-[clamp(2.8rem,6.2vw,4.5rem)] font-normal leading-[1] tracking-[-0.02em] text-ink-deep">
                 Questions before you commit?
               </h1>
             </div>
@@ -184,7 +194,6 @@ export default function ContactContent() {
           </Reveal>
         </div>
       </section>
-
       <section className="border-b border-black/18 bg-ground-2">
         <div className="mx-auto max-w-[92rem] px-5 py-16 sm:px-8 sm:py-20 lg:px-10 lg:py-24">
           <Reveal className="flex flex-col gap-6 border border-black/18 bg-white p-7 sm:flex-row sm:items-center sm:justify-between md:p-9">

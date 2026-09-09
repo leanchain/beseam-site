@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { ArrowLeft, ArrowRight, ExternalLink } from "lucide-react";
+import { ArrowRight, ExternalLink } from "lucide-react";
 import type { Metadata } from "next";
 
 import { BookReviewCta } from "@/components/beseam/book-review-cta";
@@ -141,20 +141,28 @@ export default async function ComparisonPage({
 
       <header className="border-b border-black/18">
         <div className="mx-auto max-w-[92rem] px-5 pb-18 pt-10 sm:px-8 sm:pb-24 sm:pt-14 lg:px-10 lg:pb-28">
-          <Link
-            href="/compare"
-            className="inline-flex items-center gap-2 text-[12px] font-semibold text-black/62 transition-colors hover:text-signal-ink"
+          <nav
+            aria-label="Breadcrumb"
+            className="text-[13px] text-muted-foreground"
           >
-            <ArrowLeft className="h-3.5 w-3.5" />
-            All comparisons
-          </Link>
+            <Link href="/" className="hover:text-signal-ink">
+              Beseam
+            </Link>
+            <span aria-hidden className="mx-2">
+              /
+            </span>
+            <Link href="/compare" className="hover:text-signal-ink">
+              Comparisons
+            </Link>
+            <span aria-hidden className="mx-2">
+              /
+            </span>
+            <span>Beseam vs {comparison.name}</span>
+          </nav>
 
-          <div className="mt-12 grid gap-12 lg:grid-cols-[minmax(0,0.92fr)_minmax(22rem,0.58fr)] lg:items-end lg:gap-20">
+          <div className="mt-10 grid gap-12 lg:grid-cols-[minmax(0,0.92fr)_minmax(22rem,0.58fr)] lg:items-end lg:gap-20">
             <div>
-              <p className="font-mono text-[12px] font-semibold uppercase tracking-[0.14em] text-signal-ink">
-                Beseam vs {comparison.name}
-              </p>
-              <h1 className="mt-7 max-w-[18ch] font-serif text-[clamp(2.8rem,5.7vw,4.5rem)] font-normal leading-[1] tracking-[-0.02em]">
+              <h1 className="max-w-[18ch] font-serif text-[clamp(2.8rem,5.7vw,4.5rem)] font-normal leading-[1] tracking-[-0.02em]">
                 {comparison.headline}
               </h1>
             </div>

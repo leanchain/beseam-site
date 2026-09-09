@@ -240,15 +240,24 @@ export default function ManifestoPage() {
 
       <section className="border-b border-black/18">
         <div className="mx-auto max-w-[92rem] px-5 py-20 sm:px-8 sm:py-24 lg:px-10 lg:py-32">
-          <Reveal className="grid gap-12 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] lg:items-end lg:gap-20">
+          <nav
+            aria-label="Breadcrumb"
+            className="text-[13px] text-muted-foreground"
+          >
+            <Link href="/" className="hover:text-signal-ink">
+              Beseam
+            </Link>
+            <span aria-hidden className="mx-2">
+              /
+            </span>
+            <span>Manifesto</span>
+          </nav>
+          <Reveal className="mt-10 grid gap-12 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] lg:items-end lg:gap-20">
             <div>
-              <p className="font-mono text-[12px] font-semibold uppercase tracking-[0.14em] text-signal-ink">
-                The Beseam manifesto
-              </p>
               {/* The sentence is a contrast, so the contrast is drawn rather
                   than left for the reader to find: the old job in receding
                   ink, the new one in the signal colour. */}
-              <h1 className="mt-7 max-w-[19ch] text-balance font-serif text-[clamp(2.8rem,6.1vw,4rem)] font-normal leading-[1] tracking-[-0.02em] text-ink-deep">
+              <h1 className="max-w-[19ch] text-balance font-serif text-[clamp(2.8rem,6.1vw,4rem)] font-normal leading-[1] tracking-[-0.02em] text-ink-deep">
                 Shopping is moving from{" "}
                 <span className="whitespace-nowrap text-black/42">finding</span>{" "}
                 products to{" "}

@@ -98,12 +98,21 @@ export default function ComparePage() {
 
       <section className="border-b border-black/18">
         <div className="mx-auto max-w-[92rem] px-5 pb-20 pt-16 sm:px-8 sm:pb-24 sm:pt-20 lg:px-10 lg:pb-28 lg:pt-24">
-          <div className="grid gap-12 lg:grid-cols-[minmax(0,0.88fr)_minmax(22rem,0.62fr)] lg:items-end lg:gap-20">
+          <nav
+            aria-label="Breadcrumb"
+            className="text-[13px] text-muted-foreground"
+          >
+            <Link href="/" className="hover:text-signal-ink">
+              Beseam
+            </Link>
+            <span aria-hidden className="mx-2">
+              /
+            </span>
+            <span>Comparisons</span>
+          </nav>
+          <div className="mt-10 grid gap-12 lg:grid-cols-[minmax(0,0.88fr)_minmax(22rem,0.62fr)] lg:items-end lg:gap-20">
             <div>
-              <p className="font-mono text-[12px] font-semibold uppercase tracking-[0.14em] text-signal-ink">
-                Compare Beseam
-              </p>
-              <h1 className="mt-7 max-w-[18ch] font-serif text-[clamp(2.8rem,6vw,4.5rem)] font-normal leading-[1] tracking-[-0.02em]">
+              <h1 className="max-w-[18ch] font-serif text-[clamp(2.8rem,6vw,4.5rem)] font-normal leading-[1] tracking-[-0.02em]">
                 See how Beseam differs from the tools you already use.
               </h1>
             </div>

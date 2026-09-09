@@ -126,12 +126,7 @@ export default function BenchmarksPage() {
     temporalCoverage: BENCHMARK_RUN.askedOn,
     isAccessibleForFree: true,
     inLanguage: "en",
-    keywords: [
-      "AI shopping report",
-      "AI shopping",
-      "ecommerce",
-      ...categories,
-    ],
+    keywords: ["AI shopping report", "AI shopping", "ecommerce", ...categories],
     measurementTechnique:
       "The same public shopper question is asked across the configured engines. Only completed answers are counted, each naming is attributed to the engine that made it, and each published figure states its denominator.",
     variableMeasured: [
@@ -152,13 +147,20 @@ export default function BenchmarksPage() {
 
       <section>
         <div className="mx-auto max-w-[92rem] px-5 pb-16 pt-20 sm:px-8 sm:pt-28 lg:px-10">
-          <Reveal>
-            <p className="font-mono text-[12px] font-semibold uppercase tracking-[0.14em] text-signal-ink">
-              Beseam AI Shopping Report
-            </p>
-            <h1 className="mt-6 max-w-[20ch] text-balance font-display text-[clamp(2.6rem,5vw,4.5rem)] font-normal leading-[1.02] tracking-[-0.02em] text-ink-deep">
-              AI assistants often recommend different brands.
-            </h1>
+          <nav
+            aria-label="Breadcrumb"
+            className="text-[13px] text-muted-foreground"
+          >
+            <Link href="/" className="hover:text-signal-ink">
+              Beseam
+            </Link>
+            <span aria-hidden className="mx-2">
+              /
+            </span>
+            <span>AI Shopping Report</span>
+          </nav>
+          <Reveal className="mt-10">
+            <h1 className="max-w-[20ch] text-balance font-display text-[clamp(2.6rem,5vw,4.5rem)] font-normal leading-[1.02] tracking-[-0.02em] text-ink-deep"></h1>
             <p className="mt-8 max-w-[68ch] text-[17px] leading-[1.7] text-black/68">
               We asked the same {BENCHMARK_RUN.questions} shopping questions to{" "}
               {BENCHMARK_RUN.engines.join(", ")} across{" "}
@@ -185,11 +187,12 @@ export default function BenchmarksPage() {
             <figure className="mt-14 border-t-2 border-ink-deep pt-6">
               <figcaption className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
                 <h2 className="max-w-[26ch] text-balance font-display text-[clamp(1.7rem,2.6vw,2.4rem)] font-normal leading-[1.1] tracking-[-0.015em] text-ink-deep">
-                  {soloShare}% of brand appearances happened on just one assistant.
+                  {soloShare}% of brand appearances happened on just one
+                  assistant.
                 </h2>
                 <span className="font-mono text-[12px] uppercase tracking-[0.1em] text-black/55">
-                  <span className="tabular-nums">{totalNamings}</span> appearances,
-                  by assistants naming
+                  <span className="tabular-nums">{totalNamings}</span>{" "}
+                  appearances, by assistants naming
                 </span>
               </figcaption>
 

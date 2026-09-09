@@ -55,7 +55,7 @@ export const MARKETING_PAGES: Record<string, MarketingPageData> = {
     intro:
       "Beseam asks the same shopping questions across AI assistants and keeps each answer with the products and competitors it mentions. When your product is missing, Beseam checks the product and store details you can change, then prepares the strongest change for your approval.",
     proofLine:
-      "You see the actual answer and the facts behind it—not a vague visibility score or a guess about how the AI ranks products.",
+      "You see the actual answer and the facts behind it, not a vague visibility score or a guess about how the AI ranks products.",
     observations: [
       {
         title: "The shopping question",
@@ -115,20 +115,36 @@ export const MARKETING_PAGES: Record<string, MarketingPageData> = {
     ],
     faqs: [
       {
-        question: "Is this AI visibility monitoring?",
+        question: "What does Beseam actually measure in an AI answer?",
         answer:
-          "This page covers the observable part people often call AI visibility monitoring. Inside Beseam, those answers are one discovery signal that can be connected with product, store, behavior, conversion, and revenue evidence.",
+          "Beseam keeps the shopping question with the observed answer, the products and merchants named, and the sources or citations the surface exposes. It treats the result as a dated observation rather than a hidden ranking score.",
       },
       {
-        question: "Which AI assistants can Beseam test?",
+        question: "Which AI assistants and shopping surfaces can Beseam check?",
         answer:
-          "Configured targets can include assistants and shopping-answer surfaces such as ChatGPT, Gemini, Perplexity, Claude, Google AI experiences and Microsoft Copilot. Available coverage depends on the configured test surface.",
+          "Configured targets can include surfaces such as ChatGPT, Gemini, Claude, Perplexity, Microsoft Copilot, Google AI experiences, and traditional search. Available coverage depends on the configured monitoring setup.",
       },
       {
         question:
-          "Can Beseam tell me exactly why a competitor ranked above me?",
+          "Can Beseam tell me exactly why another product was recommended?",
         answer:
-          "Not from hidden model logic. Beseam records the observed answer and compares it with product evidence you control, then separates supported facts from likely causes and hypotheses.",
+          "Not from hidden model logic. Beseam records what was observed, compares it with product and store evidence you control, and separates supported facts from likely causes and hypotheses.",
+      },
+      {
+        question: "What happens when my product is missing from an answer?",
+        answer:
+          "Beseam can inspect the relevant product, page, catalog, structured data, availability, claims, and other connected evidence to find gaps you can actually change. The original question stays attached to the investigation.",
+      },
+      {
+        question: "Can Beseam make a change and test the same question again?",
+        answer:
+          "Yes, where the connected system supports the change. Beseam can prepare it for approval, apply supported changes after approval, and then ask the same shopping question again so the before-and-after answers stay together.",
+      },
+      {
+        question:
+          "How is this different from a traditional AI visibility tracker?",
+        answer:
+          "AI visibility tracking is one part of Beseam. Beseam can carry a missed shopping question into product and store evidence, shopper behavior, an approved change, and the relevant outcome afterward instead of stopping at the visibility report.",
       },
     ],
     related: [
@@ -142,7 +158,7 @@ export const MARKETING_PAGES: Record<string, MarketingPageData> = {
     slug: "platform",
     eyebrow: "Platform",
     headline:
-      "One place to see where shoppers choose you — and where they don't.",
+      "One place to see where shoppers choose you, and where they don't.",
     metaTitle: "Beseam Platform | From Shopper Signals to Measured Changes",
     description:
       "Beseam connects AI discovery, product and store evidence, shopper behavior, and outcomes. It turns those signals into changes you can approve, apply, and measure.",
@@ -203,24 +219,46 @@ export const MARKETING_PAGES: Record<string, MarketingPageData> = {
     ],
     faqs: [
       {
-        question: "What do I need to connect first?",
+        question: "Do I need to use every Beseam capability?",
         answer:
-          "You can start with your domain. The free scan reads the public storefront without an account. For ongoing work, connect the store first; add analytics, behavior, search, or other data only when it helps explain a problem or measure a change.",
+          "No. Start with the storefront and store connection, then turn on deeper discovery, analytics, behavior, fit, personalization, reliability, creative, campaign, or revenue capabilities only when they help answer a real question or execute the work you want Beseam to handle.",
       },
       {
-        question: "Is Beseam another analytics dashboard?",
+        question: "What kinds of systems can Beseam connect to?",
         answer:
-          "No. Beseam uses the signals it can observe to decide what is worth looking at next, keeps the evidence attached, and turns the strongest findings into specific work. The queue is the product; the underlying dashboards are evidence when you need them.",
+          "Beseam can work with commerce and catalog data plus connected analytics, behavior, search, reliability, campaign, customer, and revenue sources. The exact integrations and write capabilities depend on the store and systems you connect.",
       },
       {
-        question: "What can Beseam actually change?",
+        question: "Can Beseam work alongside tools we already use?",
         answer:
-          "With the right connection, Beseam can prepare changes to product data, content, merchandising, onsite search, recommendations, and other editable parts of the store. What it can apply directly depends on the connected system. Customer-facing changes require your approval.",
+          "Yes. Existing analytics, replay, experimentation, reliability, advertising, or other specialist tools can remain in place. Beseam can use their evidence where connected and keep it attached to the product, journey, action, and outcome being investigated.",
       },
       {
-        question: "How do I know whether a change helped?",
+        question:
+          "How do findings from different parts of the journey stay connected?",
         answer:
-          "Beseam checks the relevant signal again after the change: the same shopper question, the same page or journey, or a before-and-after outcome when the data supports it. It shows what moved without claiming causation the evidence cannot establish.",
+          "Beseam keeps the original observation, affected product or journey, supporting evidence, proposed change, approval state, and later measurement in the same work record. Discovery, store, behavior, and outcome evidence can contribute without becoming separate inboxes.",
+      },
+      {
+        question: "What can Beseam apply directly?",
+        answer:
+          "That depends on the connected system. Beseam can prepare work across product data, content, merchandising, search, recommendations and personalization, fit, experiments, creative assets, campaigns, and store changes; supported writes can be applied after the required approval, while unsupported work stays as a concrete handoff.",
+      },
+      {
+        question:
+          "How do Creative Studio, fit, personalization, and campaigns fit into the platform?",
+        answer:
+          "They are not separate stories bolted onto an AI-search product. They are capabilities that can use the same product, shopper, store, and outcome context. Availability depends on what is enabled for the store, and campaign capabilities are only available where campaign access is enabled.",
+      },
+      {
+        question: "How are customer-facing changes controlled?",
+        answer:
+          "You set the approval rules. Beseam can keep monitoring and preparing work automatically, but customer-facing changes that require approval stay pending until someone with the right authority approves them.",
+      },
+      {
+        question: "How is impact measured across different kinds of changes?",
+        answer:
+          "Beseam re-checks the evidence appropriate to the original problem: an AI answer, product or store condition, shopper behavior, experiment, reliability signal, campaign performance, conversion, orders, or revenue. Observed movement stays separate from causal claims the evidence cannot establish.",
       },
     ],
     related: [
