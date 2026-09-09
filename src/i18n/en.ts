@@ -50,7 +50,7 @@ const enDictionary = {
   notice: {
     text: "Diese Seite gibt es noch nicht auf Deutsch.",
     link: "Zur deutschen Startseite",
-    dismiss: "Hinweis schließen",
+    dismiss: "Hinweis schliessen",
   },
   footer: {
     homeAriaLabel: "Beseam home",

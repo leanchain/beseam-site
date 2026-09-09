@@ -1,5 +1,16 @@
 import type { Dictionary } from "./en";
 
+/**
+ * Swiss orthography: this file has no ß anywhere, and must not grow one.
+ * Switzerland dropped the letter, and Beseam is Swiss -- the footer says so.
+ * Every ß is written ss (Grösse, schliessen, heisst, grösser). A German
+ * reader sees a Swiss spelling, not a mistake; do not "correct" these back.
+ *
+ * It is not free: ss is one character wider than ß, so any ß-bearing string
+ * that sits in a measured or clipped box grew by a character when this rule
+ * was applied. The measurements noted in the comments below already account
+ * for it.
+ */
 export const de: Dictionary = {
   nav: {
     skipToContent: "Zum Inhalt springen",
@@ -7,7 +18,7 @@ export const de: Dictionary = {
     primaryAriaLabel: "Hauptnavigation",
     mobileAriaLabel: "Mobile Navigation",
     openNavigation: "Navigation öffnen",
-    closeNavigation: "Navigation schließen",
+    closeNavigation: "Navigation schliessen",
     links: {
       platform: "Plattform",
       howWeWork: "So arbeiten wir",
@@ -32,7 +43,7 @@ export const de: Dictionary = {
   notice: {
     text: "Diese Seite gibt es noch nicht auf Deutsch.",
     link: "Zur deutschen Startseite",
-    dismiss: "Hinweis schließen",
+    dismiss: "Hinweis schliessen",
   },
   footer: {
     homeAriaLabel: "Beseam Startseite",
@@ -540,9 +551,9 @@ export const de: Dictionary = {
               "Übereinstimmung von sichtbarem Inhalt und strukturierten Fakten.",
           },
           4: {
-            label: "Größe & Passform",
+            label: "Grösse & Passform",
             description:
-              "Hinweise zu Passform und Größe für die richtige Variante.",
+              "Hinweise zu Passform und Grösse für die richtige Variante.",
           },
           5: {
             label: "Bewertungen & Vertrauen",
@@ -905,7 +916,7 @@ export const de: Dictionary = {
         },
         layers: {
           title: "Erklären, wie Urban Shell über Alltagskleidung passt.",
-          why: "Die Kundschaft öffnete die Größentabelle, und die Passform über weiterer Kleidung bleibt im Entscheidungsmoment offen.",
+          why: "Die Kundschaft öffnete die Grössentabelle, und die Passform über weiterer Kleidung bleibt im Entscheidungsmoment offen.",
           band: "Oberes Viertel des verbuchten Umsatzes",
           step: "In Arbeit",
         },
@@ -966,7 +977,7 @@ export const de: Dictionary = {
   sections: {
     proof: {
       heading: "Sehen Sie, was der Entscheidung im Weg steht.",
-      body: "Beseam sieht sich an, was die Kundschaft getan hat, prüft Produkt-, Such- und Bestandsdaten, schließt schwächere Erklärungen aus und macht aus dem stärksten Befund eine Änderung, die Sie freigeben und erneut prüfen können.",
+      body: "Beseam sieht sich an, was die Kundschaft getan hat, prüft Produkt-, Such- und Bestandsdaten, schliesst schwächere Erklärungen aus und macht aus dem stärksten Befund eine Änderung, die Sie freigeben und erneut prüfen können.",
       traceLabel: "Beispielanalyse",
       traceScope: "Suche im Shop · schematisch",
       queries: {
@@ -1034,20 +1045,21 @@ export const de: Dictionary = {
     },
 
     oneSystem: {
-      heading: "Genannt zu werden heißt nicht, gewählt zu werden.",
+      heading: "Genannt zu werden heisst nicht, gewählt zu werden.",
       body: "Beseam verfolgt die Kundschaft von der Entdeckung bis zum Kauf, um zu finden, wo das Vertrauen sinkt, Fragen offen bleiben oder der Weg endet.",
       discovery: {
         buyingQuestion: "Kauffrage",
         example: "Beispiel",
-        // 52 Zeichen, eines mehr als das englische Original: DIN 5008 setzt
-        // ein Leerzeichen vor das Euro-Zeichen. `--vig-chars` in
-        // what-beseam-does.tsx zählt diese Zeichenkette, und globals.css
-        // liest die Zahl von dort -- die Länge darf sich also unterscheiden.
-        asked: "wasserdichte Jacke zum Pendeln, Größe M, unter 200 €",
+        // 53 Zeichen, zwei mehr als das englische Original: DIN 5008 setzt ein
+        // Leerzeichen vor das Euro-Zeichen, und "Grösse" ist schweizerisch
+        // geschrieben. what-beseam-does.tsx zählt diese Zeichenkette selbst
+        // und setzt Breite und Schrittzahl danach -- die Länge darf sich
+        // also von der englischen unterscheiden.
+        asked: "wasserdichte Jacke zum Pendeln, Grösse M, unter 200 €",
         parsed: {
           useCase: "Pendeln",
           material: "Wasserdicht",
-          size: "Größe M",
+          size: "Grösse M",
           price: "Unter 200 €",
         },
         andMore: "und sieben weitere, keine davon Ihre",
@@ -1056,7 +1068,7 @@ export const de: Dictionary = {
       store: {
         breadcrumb: (product: string) => `Start / Jacken / ${product}`,
         reviews: "128 Bewertungen",
-        size: "Größe",
+        size: "Grösse",
         addToCart: "In den Warenkorb",
         stock: "Auf Lager · Lieferung morgen",
         whatShoppersAsk: "Was hier gefragt wird",
@@ -1083,14 +1095,14 @@ export const de: Dictionary = {
         forThisShopper: "Für diese Person",
         wants: {
           waterproof: "wasserdicht",
-          size: "Größe M",
+          size: "Grösse M",
           commuting: "Pendeln",
         },
         addedToCart: "Hinzugefügt",
         twoAdded: "Zwei ergänzt",
         added: {
           breathable: "3-Lagen-Shell, Unterarmbelüftung",
-          suitJacket: "Normale Passform, größer",
+          suitJacket: "Normale Passform, grösser",
         },
         verdict: "Alle vier beantwortet",
       },
@@ -1153,7 +1165,7 @@ export const de: Dictionary = {
       // mittlere Spalte ist auf schmalen Viewports ohnehin schon zu eng.
       columns: {
         category: "Kategorie",
-        question: "Größte Uneinigkeit",
+        question: "Grösste Uneinigkeit",
         solo: "Marken, nur ein Assistent",
       },
       outOf: (total: number) => ` von ${total}`,

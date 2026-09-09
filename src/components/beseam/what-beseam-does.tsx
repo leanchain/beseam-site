@@ -224,8 +224,9 @@ function DiscoveryVignette({ t }: { t: Dictionary }) {
 
       {/* Typed, because a shopper types it. One step per character, so the
           count has to be this string's own length -- and locales differ:
-          German needs the DIN space before the euro sign, which English does
-          not. `steps(var(--vig-chars))` does not work (Chromium resolves it
+          German needs the DIN space before the euro sign, and writes Groesse
+          the Swiss way, so its line is two characters longer than English.
+          `steps(var(--vig-chars))` does not work (Chromium resolves it
           to `ease`), so the step count is set here, from the same number.
           globals.css keeps `steps(51), step-end` as the standing fallback. */}
       <span
