@@ -161,7 +161,23 @@ export function ScrollDeal({
     // measured panel counts: a stage sized off `100vh` would pin for however
     // much taller than the panel the screen happens to be.
     const resize = () => {
-      if (window.getComputedStyle(panel).position === "sticky") {
+      // The CSS media query says when pinning is *allowed*. The content still
+      // has to fit below the site header. If it does not, sticky positioning
+      // will preserve the panel's bottom by sliding its top above the viewport,
+      // which leaves only a slice of the section heading visible. Disable the
+      // pin for that viewport instead of clipping the story the user is reading.
+      stage.removeAttribute("data-deal-unpinned");
+      const stickyStyle = window.getComputedStyle(panel);
+      const stickyTop = parseFloat(stickyStyle.top) || 0;
+      const stickyAllowed = stickyStyle.position === "sticky";
+      const availableHeight = (window.innerHeight || 1) - stickyTop - 16;
+      const contentFits = panel.offsetHeight <= availableHeight;
+
+      if (stickyAllowed && !contentFits) {
+        stage.setAttribute("data-deal-unpinned", "");
+      }
+
+      if (stickyAllowed && contentFits) {
         const height = Math.round(
           panel.offsetHeight + panels.length * (window.innerHeight || 1) * 0.32,
         );

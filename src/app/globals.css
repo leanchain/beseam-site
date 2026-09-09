@@ -922,11 +922,11 @@ html.theme-transition::view-transition-new(root) {
 }
 
 @media (min-width: 1280px) and (min-height: 880px) and (prefers-reduced-motion: no-preference) {
-  .deal-stage {
+  .deal-stage:not([data-deal-unpinned]) {
     height: var(--deal-stage-height);
   }
 
-  .deal-panel {
+  .deal-stage:not([data-deal-unpinned]) .deal-panel {
     position: sticky;
     top: 5.5rem;
   }

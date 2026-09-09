@@ -145,14 +145,18 @@ export default function LanguageSwitcher({
           if (open) close(false);
           else openMenu();
         }}
-        className="inline-flex min-h-11 items-center gap-1.5 px-2 text-[14px] font-semibold text-black/62 transition-colors hover:text-signal-ink focus-visible:ring-2 focus-visible:ring-signal-ink"
+        className={cn(
+          "inline-flex min-h-11 items-center gap-1.5 text-[14px] font-semibold text-black/62 transition-colors hover:text-signal-ink focus-visible:ring-2 focus-visible:ring-signal-ink",
+          placement === "mobile_nav" ? "w-full px-3" : "px-2",
+        )}
       >
         <Globe aria-hidden="true" className="h-4 w-4" />
-        {t.switcher.short[locale]}
+        {placement === "mobile_nav" ? t.switcher.names[locale] : t.switcher.short[locale]}
         <ChevronDown
           aria-hidden="true"
           className={cn(
             "h-3.5 w-3.5 transition-transform",
+            placement === "mobile_nav" && "ml-auto",
             open && "rotate-180",
           )}
         />
@@ -164,7 +168,12 @@ export default function LanguageSwitcher({
           role="listbox"
           aria-label={t.switcher.listboxAriaLabel}
           tabIndex={-1}
-          className="absolute right-0 top-full z-50 mt-1 min-w-[10rem] border border-black/14 bg-ground shadow-lg"
+          className={cn(
+            "absolute top-full z-50 mt-1 border border-black/14 bg-ground shadow-lg",
+            placement === "mobile_nav"
+              ? "left-0 right-0 min-w-0"
+              : "right-0 min-w-[10rem]",
+          )}
         >
           {LOCALES.map((option, index) => (
             <li

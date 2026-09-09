@@ -203,7 +203,7 @@ function DiscoveryVignette({ t }: { t: Dictionary }) {
   return (
     <div
       aria-hidden="true"
-      className="flex h-[23rem] flex-col rounded-md bg-white p-3.5 ring-1 ring-black/10"
+      className="flex h-[23rem] min-w-0 flex-col overflow-hidden rounded-md bg-white p-3.5 ring-1 ring-black/10"
     >
       <div className="flex shrink-0 items-center justify-between gap-2 border-b border-black/10 pb-2">
         <span className="vig-step font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-black/60">
@@ -692,9 +692,10 @@ export default function WhatBeseamDoes({ locale = "en" }: { locale?: Locale }) {
   return (
     <section id="one-system" className="scroll-mt-24 bg-ground">
       <div className="mx-auto max-w-[92rem] px-5 py-16 sm:px-8 sm:py-24 lg:px-10 lg:py-28">
-        {/* Heading, row and loop bar are one pinned panel: the scroll stops
-            where the section starts, under the sticky site header, and what it
-            holds still is the whole section rather than a slice of it. */}
+        {/* Pin only what can fit below the site header: the heading and the
+            three journey tiles. The closing loop bar follows after the deal;
+            including it in the sticky panel makes the panel taller than a
+            normal laptop viewport and sticky positioning clips the heading. */}
         <ScrollDealFallback />
         <ScrollDeal
           className="mt-12 grid border-t-2 border-ink-deep sm:grid-cols-2 lg:mt-16 xl:grid-cols-3"
@@ -716,10 +717,10 @@ export default function WhatBeseamDoes({ locale = "en" }: { locale?: Locale }) {
             const Vignette = VIGNETTES[index];
             return {
               key: domain.title,
-              className: `relative border-b border-black/14 py-5 sm:px-5 sm:py-6 xl:border-b-0 ${CELL_RULES[index]}`,
+              className: `relative min-w-0 border-b border-black/14 py-5 sm:px-5 sm:py-6 xl:border-b-0 ${CELL_RULES[index]}`,
               content: (
-                <article>
-                  <div className="flex items-start gap-3">
+                <article className="min-w-0">
+                  <div className="flex min-w-0 items-start gap-3">
                     <span className="flex h-9 w-9 shrink-0 items-center justify-center bg-signal-ink text-white">
                       <domain.Icon
                         aria-hidden="true"
@@ -780,35 +781,37 @@ export default function WhatBeseamDoes({ locale = "en" }: { locale?: Locale }) {
               ),
             };
           })}
-          footer={
-            <div className="mt-5 border-y border-white/10 bg-ink-deep px-5 py-6 text-white sm:px-6 sm:py-7 lg:px-8">
-              <div className="grid gap-6 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:items-center lg:gap-12">
-                <div>
-                  <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.12em] text-signal">
-                    {oneSystem.gate.eyebrow}
-                  </p>
-                  <p className="mt-3 max-w-[38ch] text-[15px] leading-[1.65] text-white/72">
-                    {oneSystem.gate.body}
-                  </p>
-                  <p className="mt-5 max-w-[40ch] border-t border-white/12 pt-4 text-[14px] leading-[1.6] text-white/56">
-                    {oneSystem.gate.note}
-                  </p>
-                  <Link
-                    href="/platform"
-                    className="group mt-5 inline-flex min-h-10 items-center gap-2 text-[14px] font-semibold text-white underline decoration-white/25 underline-offset-6 hover:decoration-signal"
-                  >
-                    {t.sections.system.compact.link}
-                    <ArrowRight
-                      aria-hidden="true"
-                      className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
-                    />
-                  </Link>
-                </div>
+        />
+        <Reveal>
+          <div className="mt-5 min-w-0 border-y border-white/10 bg-ink-deep px-5 py-6 text-white sm:px-6 sm:py-7 lg:px-8">
+            <div className="grid min-w-0 gap-6 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:items-center lg:gap-12">
+              <div className="min-w-0">
+                <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.12em] text-signal">
+                  {oneSystem.gate.eyebrow}
+                </p>
+                <p className="mt-3 max-w-[38ch] text-[15px] leading-[1.65] text-white/72">
+                  {oneSystem.gate.body}
+                </p>
+                <p className="mt-5 max-w-[40ch] border-t border-white/12 pt-4 text-[14px] leading-[1.6] text-white/56">
+                  {oneSystem.gate.note}
+                </p>
+                <Link
+                  href="/platform"
+                  className="group mt-5 inline-flex min-h-10 items-center gap-2 text-[14px] font-semibold text-white underline decoration-white/25 underline-offset-6 hover:decoration-signal"
+                >
+                  {t.sections.system.compact.link}
+                  <ArrowRight
+                    aria-hidden="true"
+                    className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
+                  />
+                </Link>
+              </div>
+              <div className="min-w-0">
                 <LoopDiagram tone="dark" detail animate locale={locale} />
               </div>
             </div>
-          }
-        />
+          </div>
+        </Reveal>
       </div>
     </section>
   );
