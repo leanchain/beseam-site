@@ -27,6 +27,10 @@ const enDictionary = {
   switcher: {
     triggerAriaLabel: "Change language",
     listboxAriaLabel: "Language",
+    // `short` is the navbar trigger, `names` the open list. A code is enough
+    // once you are already looking at the control; the choice itself is
+    // spelled out, each language in its own language.
+    short: { en: "EN", de: "DE" },
     names: { en: "English", de: "Deutsch" },
   },
   // These three strings are German in BOTH dictionaries, deliberately: the

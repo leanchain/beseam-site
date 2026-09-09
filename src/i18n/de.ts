@@ -19,6 +19,7 @@ export const de: Dictionary = {
   switcher: {
     triggerAriaLabel: "Sprache wechseln",
     listboxAriaLabel: "Sprache",
+    short: { en: "EN", de: "DE" },
     names: { en: "English", de: "Deutsch" },
   },
   notice: {

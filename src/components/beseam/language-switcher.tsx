@@ -148,7 +148,7 @@ export default function LanguageSwitcher({
         className="inline-flex min-h-11 items-center gap-1.5 px-2 text-[14px] font-semibold text-black/62 transition-colors hover:text-signal-ink focus-visible:ring-2 focus-visible:ring-signal-ink"
       >
         <Globe aria-hidden="true" className="h-4 w-4" />
-        {t.switcher.names[locale]}
+        {t.switcher.short[locale]}
         <ChevronDown
           aria-hidden="true"
           className={cn(
