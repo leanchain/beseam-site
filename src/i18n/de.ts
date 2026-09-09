@@ -37,8 +37,8 @@ export const de: Dictionary = {
   footer: {
     homeAriaLabel: "Beseam Startseite",
     tagline: {
-      before: "Machen Sie es leichter, Produkte zu",
-      highlight: "finden, auszuwählen und zu kaufen",
+      before: "Produkte leichter",
+      highlight: "finden, wählen, kaufen",
     },
     description:
       "Beseam beobachtet fortlaufend die Kaufreise, findet, was sich zu verbessern lohnt, setzt genehmigte Änderungen um, wo dies unterstützt wird, und misst, was sich verändert hat.",
@@ -76,7 +76,7 @@ export const de: Dictionary = {
       },
     },
     copyright: (year: number) => `© ${year} Beseam. Alle Rechte vorbehalten.`,
-    privacy: "Datenschutz",
+    privacy: "Datenschutzerklärung",
     terms: "Nutzungsbedingungen",
     bot: "BeseamBot",
     madeWith: "Mit Liebe in der Schweiz gemacht",
@@ -87,21 +87,22 @@ export const de: Dictionary = {
       title:
         "Beseam | Sehen Sie, warum die KI sich für einen anderen entschieden hat",
       description:
-        "Beseam zeigt Ihnen, wo KI-Einkaufsassistenten Ihre Produkte auslassen, warum das passiert, was zu beheben ist und ob die Behebung funktioniert hat. Kostenloser Store-Scan; kundenseitige Änderungen nur mit Ihrer Zustimmung.",
+        "Beseam zeigt Ihnen, wo KI-Einkaufsassistenten Ihre Produkte auslassen, warum das passiert, was zu beheben ist und ob die Behebung funktioniert hat. Kostenloser Shop-Scan; kundenseitige Änderungen nur mit Ihrer Zustimmung.",
       imageAlt: "Beseam findet, behebt und misst E-Commerce-Wachstumschancen",
     },
     scan: {
-      title: "Kostenloser Store-Scan | Beseam",
+      title: "Kostenloser Shop-Scan | Beseam",
       description:
-        "Eine technische Auffindbarkeits-Analyse Ihres öffentlichen Storefronts: was Suchmaschinen und KI-Assistenten auf Ihren Produktseiten, in Ihren Katalogdaten und Ihren Website-Signalen sehen können – und was zuerst verbessert werden sollte. Keine Anmeldung, kein Store-Zugriff nötig. Kein Keyword-Report.",
+        "Eine technische Auffindbarkeits-Analyse Ihres öffentlichen Shops: was Suchmaschinen und KI-Assistenten auf Ihren Produktseiten, in Ihren Katalogdaten und Ihren Website-Signalen sehen können – und was zuerst verbessert werden sollte. Keine Anmeldung, kein Shop-Zugriff nötig. Kein Keyword-Report.",
     },
   },
 
-  // Der Akzent steht im Deutschen mitten im Satz, nicht am Ende: "jemand
-  // anderen" ist die Stelle, an der es wehtut.
+  // Der Akzent steht im Deutschen mitten im Satz, nicht am Ende: "einen
+  // anderen" ist die Stelle, an der es wehtut. "Einen" und nicht "jemand":
+  // gewählt wurde ein anderes Produkt, keine Person.
   hero: {
     headlineBefore: "Sehen Sie, warum die KI ",
-    headlineAccent: "jemand anderen",
+    headlineAccent: "einen anderen",
     headlineAfter: " gewählt hat.",
     sub: "Beseam beobachtet fortlaufend die KI-Sichtbarkeit, Ihren Shop und Ihre Kundschaft, findet, was sich zu verbessern lohnt, setzt Ihre freigegebenen Änderungen um und zeigt Ihnen deren Wirkung.",
     scanReturns: {
@@ -952,7 +953,9 @@ export const de: Dictionary = {
 
   rail: {
     ariaLabel: "Forschungsergebnis",
-    eyebrow: "Neue Studie",
+    // Nicht "Studie": das deutsche Wort verspricht Design, Stichprobe und
+    // Begutachtung. Dahinter steht ein wiederholter Benchmark-Lauf.
+    eyebrow: "Neue Auswertung",
     // Geschütztes Leerzeichen vor dem Prozentzeichen: die Zeile ist einzeilig
     // und die Zahl darf nicht von ihrer Einheit getrennt umbrechen.
     finding: (share: number) =>
@@ -1036,9 +1039,11 @@ export const de: Dictionary = {
       discovery: {
         buyingQuestion: "Kauffrage",
         example: "Beispiel",
-        // Genau 51 Zeichen, wie das englische Original: `steps(51)` in
-        // globals.css tippt diese Zeichenkette Zeichen für Zeichen.
-        asked: "wasserdichte Jacke zum Pendeln, Größe M, unter 200€",
+        // 52 Zeichen, eines mehr als das englische Original: DIN 5008 setzt
+        // ein Leerzeichen vor das Euro-Zeichen. `--vig-chars` in
+        // what-beseam-does.tsx zählt diese Zeichenkette, und globals.css
+        // liest die Zahl von dort -- die Länge darf sich also unterscheiden.
+        asked: "wasserdichte Jacke zum Pendeln, Größe M, unter 200 €",
         parsed: {
           useCase: "Pendeln",
           material: "Wasserdicht",
@@ -1053,7 +1058,7 @@ export const de: Dictionary = {
         reviews: "128 Bewertungen",
         size: "Größe",
         addToCart: "In den Warenkorb",
-        stock: "Auf Lager · Versand morgen",
+        stock: "Auf Lager · Lieferung morgen",
         whatShoppersAsk: "Was hier gefragt wird",
         questions: {
           waterproofRating: {
@@ -1070,7 +1075,7 @@ export const de: Dictionary = {
             question: "Passt über ein Sakko",
             answer: "Nicht beantwortet",
           },
-          returnWindow: { question: "Rückgabefrist", answer: "60 Tage" },
+          returnWindow: { question: "Rückgabefrist", answer: "30 Tage" },
         },
         verdict: "Zwei Fragen offen",
       },
@@ -1084,7 +1089,7 @@ export const de: Dictionary = {
         addedToCart: "Hinzugefügt",
         twoAdded: "Zwei ergänzt",
         added: {
-          breathable: "3-Lagen-Shell, Pit-Zips",
+          breathable: "3-Lagen-Shell, Unterarmbelüftung",
           suitJacket: "Normale Passform, größer",
         },
         verdict: "Alle vier beantwortet",
@@ -1170,7 +1175,7 @@ export const de: Dictionary = {
 
     promise: {
       headingLine1: "Kostenlos starten.",
-      headingLine2: "Zahlen, wenn es sich beweist.",
+      headingLine2: "Bezahlen, wenn die Wirkung messbar ist.",
       body: "Beseam beobachtet, bereitet die Änderung vor, setzt sie nach Ihrer Freigabe um und zeigt Ihnen, was sich bewegt hat – ein Abo statt Tool plus Agentur. Testen Sie kostenlos und sehen Sie die Wirkung, bevor Sie etwas zahlen.",
       cta: "Kostenlos starten",
     },

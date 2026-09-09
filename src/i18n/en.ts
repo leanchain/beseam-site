@@ -1103,10 +1103,11 @@ const enDictionary = {
       discovery: {
         buyingQuestion: "Buying question",
         example: "Example",
-        /**
-         * Typed one character at a time by `.vig-type` in globals.css, whose
-         * `steps(51)` counts this string. Any translation has to be 51
-         * characters too, or the typing and the string stop agreeing.
+/**
+         * Typed one character at a time by `.vig-type` in globals.css. The
+         * element publishes this string's `.length` as `--vig-chars`, and the
+         * CSS reads both its width and its step count from that, so a
+         * translation is free to be a different length than this one.
          */
         asked: "waterproof jacket for commuting, size M, under €200",
         // Every badge is derivable from `asked` alone -- no invented

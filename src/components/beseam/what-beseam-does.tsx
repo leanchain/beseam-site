@@ -222,13 +222,20 @@ function DiscoveryVignette({ t }: { t: Dictionary }) {
         </div>
       </div>
 
-      {/* Typed, because a shopper types it. Fifty-one characters, which is
-          the count `steps(51)` in globals.css is pacing -- edit the string
-          and the timing function has to move with it. Every locale's `asked`
-          is 51 characters for that reason. */}
+      {/* Typed, because a shopper types it. One step per character, so the
+          count has to be this string's own length -- and locales differ:
+          German needs the DIN space before the euro sign, which English does
+          not. `steps(var(--vig-chars))` does not work (Chromium resolves it
+          to `ease`), so the step count is set here, from the same number.
+          globals.css keeps `steps(51), step-end` as the standing fallback. */}
       <span
         className="vig-type mt-2 max-w-full shrink-0 text-[12.5px] font-semibold leading-[1.3] text-ink-deep"
-        style={{ "--vig-chars": discovery.asked.length } as CSSProperties}
+        style={
+          {
+            "--vig-chars": discovery.asked.length,
+            animationTimingFunction: `steps(${[...discovery.asked].length}), step-end`,
+          } as CSSProperties
+        }
       >
         {discovery.asked}
       </span>

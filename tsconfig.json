@@ -1,4 +1,5 @@
 {
+  "comment": "Only the canonical `.next` types belong in `include`. Building with a custom `distDir` makes Next append that dir here; those entries accumulated to 21 abandoned build dirs whose stale generated `validator.ts` files failed `tsc --noEmit` on a clean tree. Delete such an entry once its build dir is gone.",
   "compilerOptions": {
     "target": "ES2017",
     "lib": [
@@ -31,27 +32,11 @@
   "include": [
     "**/*.ts",
     "**/*.tsx",
-    ".next-arrow/types/**/*.ts",
-    ".next-arrow2/types/**/*.ts",
-    ".next-base/types/**/*.ts",
-    ".next-dev-b/types/**/*.ts",
-    ".next-dev-v2/types/**/*.ts",
-    ".next-dev-v3/types/**/*.ts",
-    ".next-dev-verify/types/**/*.ts",
     ".next-dev/types/**/*.ts",
-    ".next-v6/types/**/*.ts",
-    ".next-v7/types/**/*.ts",
-    ".next-v8/types/**/*.ts",
-    ".next-vB/types/**/*.ts",
-    ".next-vD/types/**/*.ts",
-    ".next-vE/types/**/*.ts",
-    ".next-vF/types/**/*.ts",
-    ".next-vG/types/**/*.ts",
-    ".next-vH/types/**/*.ts",
-    ".next-vI/types/**/*.ts",
+    ".next-hwqa/types/**/*.ts",
     ".next/types/**/*.ts",
     "next-env.d.ts",
-    ".next-dev-v4/types/**/*.ts"
+    ".next-hwqa2/types/**/*.ts"
   ],
   "exclude": [
     "node_modules",

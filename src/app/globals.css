@@ -974,8 +974,12 @@ html.theme-transition::view-transition-new(root) {
 
 /* Typed, not printed. The box is capped at the string's own length so its
  * right edge -- which carries the caret -- sits at the last character rather
- * than at the end of the column. `steps()` counts the same 51 characters as
- * `--vig-chars` on the element: change the string and both move together. */
+ * than at the end of the column. The width reads `--vig-chars`, which the
+ * element sets from the string's own `.length`. The step count cannot: a
+ * `var()` inside `steps()` resolves to `ease` in Chromium, so the element
+ * also sets `animation-timing-function` inline from that same number and the
+ * 51 below is only the fallback for the English string. It is declared after
+ * the shorthand because the shorthand would otherwise reset it. */
 @keyframes vig-type {
   from {
     max-width: 0;
@@ -1018,8 +1022,9 @@ html.theme-transition::view-transition-new(root) {
 
 [data-dealt] .vig-type {
   animation:
-    vig-type 1100ms steps(51) both,
+    vig-type 1100ms both,
     vig-caret-off 1100ms step-end both;
+  animation-timing-function: steps(51), step-end;
 }
 
 .marketing-wash {
