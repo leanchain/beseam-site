@@ -30,9 +30,17 @@ export type Finding = {
   examples?: { title: string; url: string; note?: string }[];
   evidence?: string[];
   fix_complexity?: string;
-  source?: "catalog" | "catalog_sample" | "page_audit" | "homepage_audit" | "entity_page_audit";
+  source?:
+    | "catalog"
+    | "catalog_sample"
+    | "page_audit"
+    | "homepage_audit"
+    | "entity_page_audit"
+    | "category_page_audit"
+    | "content_page_audit";
   page_type?: "HOMEPAGE" | "CATEGORY" | "PDP" | "CONTENT" | string;
-  role?: "about" | "contact" | null;
+  role?:
+    "about" | "contact" | "collection" | "article" | "blog" | "page" | null;
   affected_pages?: number;
   affected_urls?: string[];
   /**
@@ -67,7 +75,8 @@ export type PageAudit = {
   checks_unevaluated: number;
   findings: Finding[];
   page_type?: "HOMEPAGE" | "CATEGORY" | "PDP" | "CONTENT" | string;
-  role?: "about" | "contact" | null;
+  role?:
+    "about" | "contact" | "collection" | "article" | "blog" | "page" | null;
 };
 
 export type ShownProduct = {
@@ -237,11 +246,25 @@ export type AnswerCheckResult = {
   products_seen: number;
   brand_evidence?: BrandEvidence;
   page_audits?: PageAudit[];
-  homepage_audit?: PageAudit | { url: string; ok: false; error: string; page_type: "HOMEPAGE" };
+  homepage_audit?:
+    | PageAudit
+    | { url: string; ok: false; error: string; page_type: "HOMEPAGE" };
   entity_page_audits?: Array<
     (PageAudit | { url: string; ok: false; error: string }) & {
       page_type: "CONTENT";
       role: "about" | "contact";
+    }
+  >;
+  category_page_audits?: Array<
+    (PageAudit | { url: string; ok: false; error: string }) & {
+      page_type: "CATEGORY";
+      role?: "collection" | null;
+    }
+  >;
+  content_page_audits?: Array<
+    (PageAudit | { url: string; ok: false; error: string }) & {
+      page_type: "CONTENT";
+      role?: "article" | "blog" | "page" | null;
     }
   >;
   site_description?: { title: string | null; description: string | null };
@@ -249,6 +272,7 @@ export type AnswerCheckResult = {
   page_audits_status?:
     "not_started" | "queued" | "running" | "complete" | "failed" | string;
   page_audits_total?: number;
+  page_audit_plan?: { category: number; content: number };
   site_inventory?: SiteInventory;
   catalog_inventory?: CatalogInventory;
 };

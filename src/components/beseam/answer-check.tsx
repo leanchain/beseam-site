@@ -36,6 +36,7 @@ import type {
 import { BookReviewCta } from "@/components/beseam/book-review-cta";
 import {
   deriveDeepAuditCardState,
+  deriveSampledAuditGroups,
   isCatalogFinding,
 } from "@/components/beseam/answer-check-state";
 import { ChannelIcon } from "@/components/beseam/channel-icon";
@@ -1770,6 +1771,126 @@ function Fold({
   );
 }
 
+type SampledAuditRow = {
+  url: string;
+  ok: boolean;
+  error?: string | null;
+  title?: string | null;
+  score?: number | null;
+  report_id?: number | null;
+  checks_evaluated?: number;
+  checks_failed?: number;
+  findings?: Finding[];
+};
+
+function SampledAuditFold({
+  title,
+  audits,
+  gated,
+  inFlight,
+  gatedSummary,
+  readingSummary,
+  unavailableSummary,
+}: {
+  title: string;
+  audits: SampledAuditRow[];
+  gated: boolean;
+  inFlight: boolean;
+  gatedSummary: string;
+  readingSummary: string;
+  unavailableSummary: string;
+}) {
+  const copy = useDictionary().answerCheck;
+  const evaluated = audits.reduce(
+    (sum, audit) => sum + (audit.checks_evaluated ?? 0),
+    0,
+  );
+  const failedChecks = audits.reduce(
+    (sum, audit) => sum + (audit.checks_failed ?? 0),
+    0,
+  );
+  const unreadable = audits.filter((audit) => audit.ok === false).length;
+  const summary = gated
+    ? gatedSummary
+    : inFlight && audits.length === 0
+      ? readingSummary
+      : audits.length
+        ? copy.summary.sampledPageGroupSummary(
+            audits.length,
+            failedChecks,
+            evaluated,
+            unreadable,
+          )
+        : unavailableSummary;
+
+  return (
+    <Fold title={title} summary={summary}>
+      {gated ? (
+        <p className="bg-white px-5 py-4 text-[12.5px] leading-relaxed text-black/54 sm:px-6">
+          {copy.summary.sampledPageGroupGatedBody}
+        </p>
+      ) : inFlight && audits.length === 0 ? (
+        <div className="flex items-start gap-3 bg-white px-5 py-5 sm:px-6">
+          <Loader2 className="mt-0.5 h-4 w-4 animate-spin text-signal-ink" />
+          <p className="text-[12.5px] font-semibold text-ink-deep">
+            {readingSummary}
+          </p>
+        </div>
+      ) : audits.length ? (
+        <ul className="divide-y divide-black/10 bg-white">
+          {audits.map((audit, index) => {
+            const firstFinding = audit.findings?.[0];
+            return (
+              <li
+                key={audit.url}
+                className="grid gap-3 px-5 py-3.5 sm:grid-cols-[28px_minmax(0,1fr)_auto] sm:items-center sm:px-6"
+              >
+                <span className="font-mono text-[11px] text-black/38">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <div className="min-w-0">
+                  <p className="truncate text-[12.5px] font-semibold text-ink-deep">
+                    {audit.title ?? audit.url}
+                  </p>
+                  <p className="mt-0.5 truncate text-[11px] text-black/44">
+                    {audit.ok === false
+                      ? copy.summary.pageCouldNotRead
+                      : (firstFinding?.headline ??
+                        firstFinding?.title ??
+                        audit.url)}
+                  </p>
+                </div>
+                <div className="flex items-center gap-3 text-[11px] sm:justify-end">
+                  {audit.score != null ? (
+                    <span className="font-semibold text-ink-deep">
+                      {copy.summary.health(Math.round(audit.score))}
+                    </span>
+                  ) : null}
+                  {audit.report_id ? (
+                    <a
+                      href={`${APP_REPORT_URL}/${audit.report_id}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-1.5 font-semibold text-ink-deep underline decoration-black/18 underline-offset-4 hover:text-signal-ink"
+                    >
+                      {copy.summary.openReport}
+                      <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+                    </a>
+                  ) : null}
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      ) : (
+        <p className="bg-white px-5 py-4 text-[12px] text-black/54 sm:px-6">
+          {unavailableSummary}
+        </p>
+      )}
+    </Fold>
+  );
+}
+
 function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
   const copy = useDictionary().answerCheck;
   const locale = useLocale();
@@ -1778,10 +1899,13 @@ function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
   const audits = result.page_audits ?? [];
   const homepageAudit = result.homepage_audit;
   const entityAudits = result.entity_page_audits ?? [];
+  const categoryAudits = result.category_page_audits ?? [];
+  const contentAudits = result.content_page_audits ?? [];
   const homepageDetailed =
     homepageAudit && "checks_evaluated" in homepageAudit ? homepageAudit : null;
   const homepageOk = Boolean(homepageDetailed?.ok);
   const deepAuditState = deriveDeepAuditCardState(result);
+  const sampledAuditGroups = deriveSampledAuditGroups(result);
   const pageAuditStatus = deepAuditState.status;
   const pageAuditsInFlight = deepAuditState.inFlight;
   const pageAuditsGated = deepAuditState.gated;
@@ -1823,6 +1947,8 @@ function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
       : undefined;
   const rawPageTypes = inventory?.page_types ?? {};
   const entityPageTypes = inventory?.entity_page_types ?? rawPageTypes;
+  const categoryAuditCandidates = sampledAuditGroups.collectionCandidates;
+  const contentAuditCandidates = sampledAuditGroups.contentCandidates;
   const siteHosts = Object.keys(inventory?.hosts ?? {});
   const localeCount = inventory?.locales?.length ?? 0;
   const entitySuffix = inventory?.urls_capped ? "+" : "";
@@ -2514,6 +2640,20 @@ function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
         ) : null}
       </Fold>
 
+      {sampledAuditGroups.showCollections ? (
+        <SampledAuditFold
+          title={copy.summary.collectionPageAudits}
+          audits={categoryAudits}
+          gated={pageAuditsGated}
+          inFlight={pageAuditsInFlight}
+          gatedSummary={copy.summary.collectionPagesGated(
+            Math.max(categoryAuditCandidates, 1),
+          )}
+          readingSummary={copy.summary.collectionPagesReading}
+          unavailableSummary={copy.summary.collectionPagesUnavailable}
+        />
+      ) : null}
+
       {/* Store and Catalog stay shut: their summary lines already carry the
           numbers. Product pages opens by default -- it is the only one whose
           value is the per-check detail, not the one-line count. */}
@@ -2650,6 +2790,20 @@ function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
             </>
           )}
         </Fold>
+      ) : null}
+
+      {sampledAuditGroups.showContent ? (
+        <SampledAuditFold
+          title={copy.summary.contentPageAudits}
+          audits={contentAudits}
+          gated={pageAuditsGated}
+          inFlight={pageAuditsInFlight}
+          gatedSummary={copy.summary.contentPagesGated(
+            Math.max(contentAuditCandidates, 1),
+          )}
+          readingSummary={copy.summary.contentPagesReading}
+          unavailableSummary={copy.summary.contentPagesUnavailable}
+        />
       ) : null}
     </section>
   );

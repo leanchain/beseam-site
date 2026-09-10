@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import {
   deriveDeepAuditCardState,
+  deriveSampledAuditGroups,
   isCatalogFinding,
 } from "./answer-check-state.ts";
 
@@ -138,15 +139,63 @@ describe("catalog finding classification", () => {
       }),
       false,
     );
-    assert.equal(
-      isCatalogFinding({
-        code: "sample.foo",
-        title: "x",
-        detail: "x",
-        product: null,
-        source: "catalog_sample",
+    for (const [code, source] of [
+      ["sample.foo", "catalog_sample"],
+      ["category.foo", "category_page_audit"],
+      ["content.foo", "content_page_audit"],
+    ]) {
+      assert.equal(
+        isCatalogFinding({
+          code,
+          title: "x",
+          detail: "x",
+          product: null,
+          source,
+        }),
+        false,
+      );
+    }
+  });
+});
+
+describe("sampled audit group visibility", () => {
+  it("caps discovered candidates at two per group", () => {
+    const groups = deriveSampledAuditGroups(
+      result({
+        page_audit_plan: { category: 1, content: 2 },
+        site_inventory: {
+          entity_page_types: { collection: 12, article: 4, blog: 2, page: 20 },
+        },
       }),
-      false,
     );
+    assert.equal(groups.collectionCandidates, 1);
+    assert.equal(groups.contentCandidates, 2);
+    assert.equal(groups.showCollections, true);
+    assert.equal(groups.showContent, true);
+  });
+
+  it("falls back to inventory counts for legacy payloads without an audit plan", () => {
+    const groups = deriveSampledAuditGroups(
+      result({
+        site_inventory: {
+          page_types: { collection: 1, article: 1 },
+        },
+      }),
+    );
+    assert.equal(groups.collectionCandidates, 1);
+    assert.equal(groups.contentCandidates, 1);
+  });
+
+  it("shows completed groups even when discovery counts were unavailable", () => {
+    const groups = deriveSampledAuditGroups(
+      result({
+        category_page_audits: [{ url: "https://example.com/c", ok: true }],
+        content_page_audits: [{ url: "https://example.com/blog", ok: true }],
+      }),
+    );
+    assert.equal(groups.collectionCandidates, 0);
+    assert.equal(groups.contentCandidates, 0);
+    assert.equal(groups.showCollections, true);
+    assert.equal(groups.showContent, true);
   });
 });
