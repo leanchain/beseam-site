@@ -183,37 +183,33 @@ export default function CategoryBenchmarksSection({
               </figure>
 
               <div className="mt-6 border-t-2 border-ink-deep">
-                <div
-                  className="grid items-end gap-x-2 border-b border-black/12 px-1 py-2.5 font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-black/46 sm:gap-x-4"
-                  style={{
-                    gridTemplateColumns: "10.25rem minmax(0, 1fr) 7.5rem",
-                  }}
-                >
+                <div className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-x-4 border-b border-black/12 px-1 py-2.5 font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-black/46 sm:grid-cols-[10.25rem_minmax(0,1fr)_7.5rem]">
                   <span>{benchmarks.columns.category}</span>
-                  <span>{benchmarks.columns.question}</span>
-                  <span className="text-right">{benchmarks.columns.solo}</span>
+                  <span className="hidden sm:block">
+                    {benchmarks.columns.question}
+                  </span>
+                  <span className="max-w-[9.5rem] text-right leading-[1.35] sm:max-w-none sm:leading-normal">
+                    {benchmarks.columns.solo}
+                  </span>
                 </div>
                 <ul>
                   {highlights.map((benchmark) => (
                     <li
                       key={benchmark.slug}
-                      className="group grid items-center gap-x-2 border-b border-black/12 px-1 py-2.5 transition-colors hover:bg-black/[0.025] sm:gap-x-4"
-                      style={{
-                        gridTemplateColumns: "10.25rem minmax(0, 1fr) 7.5rem",
-                      }}
+                      className="group grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-2.5 border-b border-black/12 px-1 py-3.5 transition-colors hover:bg-black/[0.025] sm:grid-cols-[10.25rem_minmax(0,1fr)_7.5rem] sm:gap-y-0 sm:py-2.5"
                     >
-                      <span className="min-w-0 truncate whitespace-nowrap font-mono text-[11px] font-semibold uppercase tracking-[0.1em] text-signal-ink">
+                      <span className="min-w-0 font-mono text-[11px] font-semibold uppercase tracking-[0.1em] text-signal-ink sm:truncate sm:whitespace-nowrap">
                         {benchmark.category}
                       </span>
 
                       <Link
                         href={`/benchmarks#${benchmark.slug}`}
-                        className="min-w-0 truncate whitespace-nowrap text-[15px] leading-none text-ink-deep underline decoration-transparent underline-offset-4 transition-colors group-hover:decoration-black/30"
+                        className="col-span-2 row-start-2 min-w-0 text-[15px] leading-[1.35] text-ink-deep underline decoration-transparent underline-offset-4 transition-colors group-hover:decoration-black/30 sm:col-span-1 sm:row-start-1 sm:truncate sm:whitespace-nowrap sm:leading-none"
                       >
                         &ldquo;{benchmark.question}&rdquo;
                       </Link>
 
-                      <span className="flex items-center justify-end gap-2.5">
+                      <span className="col-start-2 row-start-1 flex items-center justify-end gap-2.5 sm:col-start-3">
                         <span
                           aria-hidden="true"
                           className="h-2 w-14 shrink-0 bg-black/[0.07] sm:w-16"
