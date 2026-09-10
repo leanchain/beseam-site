@@ -1545,6 +1545,23 @@ export const de: Dictionary = {
         `${affected}/${total} geprüfte Seiten`,
       templatePatternHint:
         "Da dies auf mehreren Seiten desselben Typs auftritt, kann die gemeinsame Vorlage statt nur einer einzelnen Seite die Ursache sein.",
+      pdpLayoutCoverage: "PDP-Layout-Abdeckung",
+      pdpLayoutCoverageSummary: (
+        detected: number,
+        covered: number,
+        audits: number,
+      ) =>
+        `${detected} ${detected === 1 ? "Layout" : "Layouts"} erkannt · ${covered} in ${audits} ${audits === 1 ? "Prüfung" : "Prüfungen"} vertreten`,
+      pdpLayoutsAllCovered: "Alle erkannten Layouts vertreten",
+      pdpLayoutsPartiallyCovered: (covered: number, detected: number) =>
+        `${covered} von ${detected} erkannten Layouts vertreten`,
+      pdpLayoutAuditCount: (count: number) => `${count} geprüft`,
+      pdpLayoutObservedCount: (count: number) =>
+        `${count} passende ${count === 1 ? "PDP-Kandidatenseite" : "PDP-Kandidatenseiten"}`,
+      pdpLayoutPublicTemplate: "Template-Schlüssel öffentlich erkennbar",
+      pdpLayoutStructural: "aus der Seitenstruktur erkannt",
+      pdpLayoutSampleNote: (count: number) =>
+        `Aus ${count} öffentlichen PDPs erkannt. Dies ist eine repräsentative Stichprobe, kein vollständiges Theme-/Template-Inventar.`,
       sampledPageGroupGatedBody:
         "Wir prüfen einige repräsentative Seiten statt jede URL zu crawlen. So bleibt der Scan schnell und prüft trotzdem die Vorlagen, die Käufer und Assistenten tatsächlich sehen.",
       publicFootprint: "Öffentliche Präsenz",

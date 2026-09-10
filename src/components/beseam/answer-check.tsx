@@ -36,6 +36,7 @@ import type {
 import { BookReviewCta } from "@/components/beseam/book-review-cta";
 import {
   deriveDeepAuditCardState,
+  derivePdpLayoutCoverage,
   deriveSampledAuditGroups,
   deriveTemplatePatterns,
   isCatalogFinding,
@@ -1947,6 +1948,13 @@ function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
   const homepageOk = Boolean(homepageDetailed?.ok);
   const deepAuditState = deriveDeepAuditCardState(result);
   const sampledAuditGroups = deriveSampledAuditGroups(result);
+  const pdpLayoutCoverage = derivePdpLayoutCoverage(result);
+  const pdpLayoutLabelByKey = new Map(
+    (pdpLayoutCoverage?.families ?? []).map((family) => [
+      family.key,
+      family.label,
+    ]),
+  );
   const categoryTemplatePatterns = deriveTemplatePatterns(
     result,
     "category_page_audit",
@@ -2753,6 +2761,65 @@ function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
             </p>
           ) : (
             <>
+              {pdpLayoutCoverage ? (
+                <div className="border-b border-black/12 bg-white px-5 py-4 sm:px-6">
+                  <div className="flex flex-wrap items-baseline justify-between gap-2">
+                    <div>
+                      <p className="text-[11px] font-semibold text-ink-deep">
+                        {copy.summary.pdpLayoutCoverage}
+                      </p>
+                      <p className="mt-1 text-[11px] leading-relaxed text-black/48">
+                        {copy.summary.pdpLayoutCoverageSummary(
+                          pdpLayoutCoverage.layoutsDetected,
+                          pdpLayoutCoverage.layoutsAudited,
+                          pdpLayoutCoverage.auditedPages,
+                        )}
+                      </p>
+                    </div>
+                    <span className="text-[10.5px] font-semibold text-black/48">
+                      {pdpLayoutCoverage.fullyCovered
+                        ? copy.summary.pdpLayoutsAllCovered
+                        : copy.summary.pdpLayoutsPartiallyCovered(
+                            pdpLayoutCoverage.layoutsAudited,
+                            pdpLayoutCoverage.layoutsDetected,
+                          )}
+                    </span>
+                  </div>
+                  <div className="mt-3 grid gap-px border border-black/10 bg-black/10 sm:grid-cols-2">
+                    {pdpLayoutCoverage.families.map((family) => (
+                      <div
+                        key={family.key}
+                        className="bg-[#fffaf7] px-3 py-2.5"
+                      >
+                        <div className="flex items-center justify-between gap-3">
+                          <p className="truncate text-[11.5px] font-semibold text-ink-deep">
+                            {family.label}
+                          </p>
+                          <span className="shrink-0 font-mono text-[10px] text-black/42">
+                            {copy.summary.pdpLayoutAuditCount(
+                              family.audited_pages,
+                            )}
+                          </span>
+                        </div>
+                        <p className="mt-1 text-[10.5px] text-black/44">
+                          {copy.summary.pdpLayoutObservedCount(
+                            family.pages_observed,
+                          )}{" "}
+                          ·{" "}
+                          {family.source === "public_markup"
+                            ? copy.summary.pdpLayoutPublicTemplate
+                            : copy.summary.pdpLayoutStructural}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                  <p className="mt-2.5 text-[10.5px] leading-relaxed text-black/38">
+                    {copy.summary.pdpLayoutSampleNote(
+                      pdpLayoutCoverage.candidatePages,
+                    )}
+                  </p>
+                </div>
+              ) : null}
               <div className="border-b border-black/12 bg-[#fffaf7] px-5 py-4 sm:px-6">
                 <p className="text-[11px] font-semibold text-ink-deep">
                   {copy.summary.sampleShows}
@@ -2793,9 +2860,17 @@ function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
                       <p className="truncate text-[12.5px] font-semibold text-ink-deep">
                         {audit.title ?? audit.url}
                       </p>
-                      <p className="mt-0.5 truncate text-[11px] text-black/44">
-                        {audit.url}
-                      </p>
+                      <div className="mt-0.5 flex min-w-0 items-center gap-2">
+                        <p className="min-w-0 truncate text-[11px] text-black/44">
+                          {audit.url}
+                        </p>
+                        {audit.template_key ? (
+                          <span className="shrink-0 rounded-full border border-black/10 bg-[#fffaf7] px-1.5 py-0.5 text-[9.5px] font-semibold text-black/46">
+                            {pdpLayoutLabelByKey.get(audit.template_key) ??
+                              audit.template_key}
+                          </span>
+                        ) : null}
+                      </div>
                     </div>
                     <div className="flex items-center gap-3 text-[11px] sm:justify-end">
                       {audit.score != null ? (

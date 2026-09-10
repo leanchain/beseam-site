@@ -1621,6 +1621,23 @@ const enDictionary = {
         `${affected}/${total} sampled pages`,
       templatePatternHint:
         "Because this repeats on multiple pages of the same type, it may come from their shared template rather than one isolated page.",
+      pdpLayoutCoverage: "PDP layout coverage",
+      pdpLayoutCoverageSummary: (
+        detected: number,
+        covered: number,
+        audits: number,
+      ) =>
+        `${detected} ${detected === 1 ? "layout" : "layouts"} detected · ${covered} represented in ${audits} ${audits === 1 ? "audit" : "audits"}`,
+      pdpLayoutsAllCovered: "All detected layouts represented",
+      pdpLayoutsPartiallyCovered: (covered: number, detected: number) =>
+        `${covered} of ${detected} detected layouts represented`,
+      pdpLayoutAuditCount: (count: number) => `${count} audited`,
+      pdpLayoutObservedCount: (count: number) =>
+        `${count} candidate ${count === 1 ? "PDP" : "PDPs"} matched`,
+      pdpLayoutPublicTemplate: "template key exposed publicly",
+      pdpLayoutStructural: "detected from page structure",
+      pdpLayoutSampleNote: (count: number) =>
+        `Detected from ${count} public ${count === 1 ? "PDP" : "PDPs"}. This is representative sampling, not a complete theme/template inventory.`,
       sampledPageGroupGatedBody:
         "We sample a few representative pages rather than crawling every URL, so the scan stays fast while still checking the template shoppers and assistants actually encounter.",
       publicFootprint: "Public footprint",

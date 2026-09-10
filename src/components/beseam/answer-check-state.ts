@@ -96,3 +96,23 @@ export function deriveTemplatePatterns(
     })
     .slice(0, 3);
 }
+
+export function derivePdpLayoutCoverage(result: AnswerCheckResult) {
+  const summary = result.pdp_template_summary;
+  if (
+    !summary ||
+    summary.layouts_detected <= 0 ||
+    summary.candidate_pages_read <= 0
+  ) {
+    return null;
+  }
+  return {
+    candidatePages: summary.candidate_pages_read,
+    layoutsDetected: summary.layouts_detected,
+    layoutsAudited: summary.layouts_audited,
+    auditedPages: summary.audited_pages,
+    fullyCovered: summary.all_detected_layouts_covered,
+    exhaustive: summary.exhaustive,
+    families: summary.families ?? [],
+  } as const;
+}

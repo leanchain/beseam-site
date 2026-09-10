@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import {
   deriveDeepAuditCardState,
+  derivePdpLayoutCoverage,
   deriveSampledAuditGroups,
   deriveTemplatePatterns,
   isCatalogFinding,
@@ -238,5 +239,61 @@ describe("template pattern derivation", () => {
       patterns.map((finding) => finding.code),
       ["seo.l1.title_present"],
     );
+  });
+});
+
+describe("PDP layout coverage", () => {
+  it("keeps sampled layout detection distinct from an exhaustive template inventory", () => {
+    const coverage = derivePdpLayoutCoverage(
+      result({
+        pdp_template_summary: {
+          mode: "public_layout_sample",
+          candidate_pages_read: 12,
+          layouts_detected: 3,
+          layouts_audited: 3,
+          audited_pages: 5,
+          all_detected_layouts_covered: true,
+          exhaustive: false,
+          families: [
+            {
+              key: "layout-a",
+              label: "PDP layout 1",
+              source: "structural",
+              pages_observed: 7,
+              audited_pages: 2,
+              confidence: 0.93,
+            },
+            {
+              key: "layout-b",
+              label: "PDP layout 2",
+              source: "structural",
+              pages_observed: 4,
+              audited_pages: 2,
+              confidence: 0.88,
+            },
+            {
+              key: "product.bundle",
+              label: "product.bundle",
+              source: "public_markup",
+              pages_observed: 1,
+              audited_pages: 1,
+              confidence: 1,
+            },
+          ],
+        },
+      }),
+    );
+
+    assert.equal(coverage.candidatePages, 12);
+    assert.equal(coverage.layoutsDetected, 3);
+    assert.equal(coverage.layoutsAudited, 3);
+    assert.equal(coverage.auditedPages, 5);
+    assert.equal(coverage.fullyCovered, true);
+    assert.equal(coverage.exhaustive, false);
+    assert.equal(coverage.families.length, 3);
+  });
+
+  it("stays hidden before a verified layout read exists", () => {
+    assert.equal(derivePdpLayoutCoverage(result()), null);
   });
 });

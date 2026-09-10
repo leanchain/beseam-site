@@ -43,6 +43,8 @@ export type Finding = {
     "about" | "contact" | "collection" | "article" | "blog" | "page" | null;
   affected_pages?: number;
   affected_urls?: string[];
+  template_key?: string | null;
+  template_source?: "public_markup" | "structural" | string | null;
   /**
    * Merchant-facing copy attached by the backend (`finding_copy.py`). These are
    * the primary strings on the result: what a shopper or search engine may be
@@ -77,6 +79,29 @@ export type PageAudit = {
   page_type?: "HOMEPAGE" | "CATEGORY" | "PDP" | "CONTENT" | string;
   role?:
     "about" | "contact" | "collection" | "article" | "blog" | "page" | null;
+  template_key?: string | null;
+  template_source?: "public_markup" | "structural" | string | null;
+  template_confidence?: number | null;
+};
+
+export type PdpTemplateFamily = {
+  key: string;
+  label: string;
+  source: "public_markup" | "structural" | string;
+  pages_observed: number;
+  audited_pages: number;
+  confidence: number;
+};
+
+export type PdpTemplateSummary = {
+  mode: "public_layout_sample" | string;
+  candidate_pages_read: number;
+  layouts_detected: number;
+  layouts_audited: number;
+  audited_pages: number;
+  all_detected_layouts_covered: boolean;
+  families: PdpTemplateFamily[];
+  exhaustive: boolean;
 };
 
 export type ShownProduct = {
@@ -273,6 +298,7 @@ export type AnswerCheckResult = {
     "not_started" | "queued" | "running" | "complete" | "failed" | string;
   page_audits_total?: number;
   page_audit_plan?: { category: number; content: number };
+  pdp_template_summary?: PdpTemplateSummary | null;
   site_inventory?: SiteInventory;
   catalog_inventory?: CatalogInventory;
 };
