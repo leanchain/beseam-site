@@ -1,10 +1,7 @@
 import type { AnswerCheckResult, Finding } from "./answer-check-types";
 
 export type HomepageAuditCardState =
-  | "gated"
-  | "reading"
-  | "failed"
-  | "complete";
+  "gated" | "reading" | "failed" | "complete";
 
 export function deriveDeepAuditCardState(result: AnswerCheckResult) {
   const audits = result.page_audits ?? [];
@@ -38,5 +35,32 @@ export function isCatalogFinding(finding: Finding): boolean {
     "catalog_sample",
     "homepage_audit",
     "entity_page_audit",
+    "category_page_audit",
+    "content_page_audit",
   ]).has(finding.source ?? "catalog");
+}
+
+export function deriveSampledAuditGroups(result: AnswerCheckResult) {
+  const pageTypes =
+    result.site_inventory?.entity_page_types ??
+    result.site_inventory?.page_types ??
+    {};
+  const collectionCandidates = Math.min(
+    result.page_audit_plan?.category ?? pageTypes.collection ?? 0,
+    2,
+  );
+  const contentCandidates = Math.min(
+    result.page_audit_plan?.content ??
+      (pageTypes.article ?? 0) + (pageTypes.blog ?? 0) + (pageTypes.page ?? 0),
+    2,
+  );
+  const collectionAudits = result.category_page_audits ?? [];
+  const contentAudits = result.content_page_audits ?? [];
+
+  return {
+    collectionCandidates,
+    contentCandidates,
+    showCollections: collectionCandidates > 0 || collectionAudits.length > 0,
+    showContent: contentCandidates > 0 || contentAudits.length > 0,
+  } as const;
 }

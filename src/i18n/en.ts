@@ -1596,6 +1596,28 @@ const enDictionary = {
       store: "Store",
       catalog: "Catalog",
       productPages: "Product pages",
+      collectionPageAudits: "Collection pages",
+      collectionPagesGated: (count: number) =>
+        `Up to ${count} representative collection ${count === 1 ? "page" : "pages"} · after email confirmation`,
+      collectionPagesReading: "Reading representative collection pages now",
+      collectionPagesUnavailable:
+        "No representative collection page was available for a close read on this run.",
+      contentPageAudits: "Editorial & content",
+      contentPagesGated: (count: number) =>
+        `Up to ${count} representative content ${count === 1 ? "page" : "pages"} · after email confirmation`,
+      contentPagesReading:
+        "Reading representative editorial and content pages now",
+      contentPagesUnavailable:
+        "No representative editorial/content page was available for a close read on this run.",
+      sampledPageGroupSummary: (
+        pages: number,
+        failed: number,
+        evaluated: number,
+        unreadable: number,
+      ) =>
+        `${pages} ${pages === 1 ? "page" : "pages"} sampled · ${failed} of ${evaluated} checks need attention${unreadable ? ` · ${unreadable} unreadable` : ""}`,
+      sampledPageGroupGatedBody:
+        "We sample a few representative pages rather than crawling every URL, so the scan stays fast while still checking the template shoppers and assistants actually encounter.",
       publicFootprint: "Public footprint",
       localePaths: "Locale paths",
       domains: "Domains",

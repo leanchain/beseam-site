@@ -1499,22 +1499,49 @@ export const de: Dictionary = {
     },
     summary: {
       productCatalog: "Produktkatalog",
-      noCatalogBrandSite: "Kein Produktkatalog gefunden. Als Markenwebsite geprüft.",
+      noCatalogBrandSite:
+        "Kein Produktkatalog gefunden. Als Markenwebsite geprüft.",
       homepage: "Ihre Startseite",
-      homepageGated: "Bestätigen Sie Ihre E-Mail; dann lesen wir Ihre Startseite genau",
+      homepageGated:
+        "Bestätigen Sie Ihre E-Mail; dann lesen wir Ihre Startseite genau",
       homepageReading: "Startseite und Vertrauensseiten werden jetzt gelesen",
-      homepageFailed: "Wir konnten Ihre Startseite bei diesem Durchlauf nicht lesen.",
+      homepageFailed:
+        "Wir konnten Ihre Startseite bei diesem Durchlauf nicht lesen.",
       homepageCompleted: "Startseitenprüfung abgeschlossen",
       homepageSummary: (score: number, failed: number, total: number) =>
         `Zustand ${score} · ${failed} von ${total} Prüfungen brauchen Aufmerksamkeit`,
       trustPages: "Vertrauensseiten",
       aboutPage: "Über-uns-Seite",
       contactPage: "Kontaktseite",
-      pageCouldNotRead: "Wir konnten diese Seite bei diesem Durchlauf nicht lesen.",
+      pageCouldNotRead:
+        "Wir konnten diese Seite bei diesem Durchlauf nicht lesen.",
       openFullReport: "Vollständigen Bericht öffnen",
       store: "Shop",
       catalog: "Katalog",
       productPages: "Produktseiten",
+      collectionPageAudits: "Kollektionsseiten",
+      collectionPagesGated: (count: number) =>
+        `Bis zu ${count} repräsentative ${count === 1 ? "Kollektionsseite" : "Kollektionsseiten"} · nach E-Mail-Bestätigung`,
+      collectionPagesReading:
+        "Repräsentative Kollektionsseiten werden jetzt gelesen",
+      collectionPagesUnavailable:
+        "Bei diesem Durchlauf war keine repräsentative Kollektionsseite für eine genaue Prüfung verfügbar.",
+      contentPageAudits: "Redaktion & Inhalte",
+      contentPagesGated: (count: number) =>
+        `Bis zu ${count} repräsentative Inhalts${count === 1 ? "seite" : "seiten"} · nach E-Mail-Bestätigung`,
+      contentPagesReading:
+        "Repräsentative redaktionelle und Inhaltsseiten werden jetzt gelesen",
+      contentPagesUnavailable:
+        "Bei diesem Durchlauf war keine repräsentative redaktionelle/Inhaltsseite für eine genaue Prüfung verfügbar.",
+      sampledPageGroupSummary: (
+        pages: number,
+        failed: number,
+        evaluated: number,
+        unreadable: number,
+      ) =>
+        `${pages} ${pages === 1 ? "Seite" : "Seiten"} geprüft · ${failed} von ${evaluated} Prüfungen brauchen Aufmerksamkeit${unreadable ? ` · ${unreadable} nicht lesbar` : ""}`,
+      sampledPageGroupGatedBody:
+        "Wir prüfen einige repräsentative Seiten statt jede URL zu crawlen. So bleibt der Scan schnell und prüft trotzdem die Vorlagen, die Käufer und Assistenten tatsächlich sehen.",
       publicFootprint: "Öffentliche Präsenz",
       localePaths: "Sprachpfade",
       domains: "Domains",
