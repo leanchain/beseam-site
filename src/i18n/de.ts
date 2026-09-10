@@ -1540,6 +1540,11 @@ export const de: Dictionary = {
         unreadable: number,
       ) =>
         `${pages} ${pages === 1 ? "Seite" : "Seiten"} geprüft · ${failed} von ${evaluated} Prüfungen brauchen Aufmerksamkeit${unreadable ? ` · ${unreadable} nicht lesbar` : ""}`,
+      templatePatterns: "Auf mehreren geprüften Seiten wiederholt",
+      templatePatternCoverage: (affected: number, total: number) =>
+        `${affected}/${total} geprüfte Seiten`,
+      templatePatternHint:
+        "Da dies auf mehreren Seiten desselben Typs auftritt, kann die gemeinsame Vorlage statt nur einer einzelnen Seite die Ursache sein.",
       sampledPageGroupGatedBody:
         "Wir prüfen einige repräsentative Seiten statt jede URL zu crawlen. So bleibt der Scan schnell und prüft trotzdem die Vorlagen, die Käufer und Assistenten tatsächlich sehen.",
       publicFootprint: "Öffentliche Präsenz",

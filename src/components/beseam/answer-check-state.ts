@@ -64,3 +64,35 @@ export function deriveSampledAuditGroups(result: AnswerCheckResult) {
     showContent: contentCandidates > 0 || contentAudits.length > 0,
   } as const;
 }
+
+export type TemplatePatternSource =
+  "category_page_audit" | "content_page_audit";
+
+export function deriveTemplatePatterns(
+  result: AnswerCheckResult,
+  source: TemplatePatternSource,
+) {
+  const severityRank: Record<string, number> = {
+    blocker: 5,
+    high: 4,
+    medium: 3,
+    low: 2,
+    info: 1,
+  };
+  return (result.findings ?? [])
+    .filter((finding) => {
+      if (finding.source !== source || (finding.affected_pages ?? 0) < 2) {
+        return false;
+      }
+      return new Set(finding.affected_urls ?? []).size >= 2;
+    })
+    .sort((left, right) => {
+      const affected = (right.affected_pages ?? 0) - (left.affected_pages ?? 0);
+      if (affected) return affected;
+      return (
+        (severityRank[right.severity ?? ""] ?? 0) -
+        (severityRank[left.severity ?? ""] ?? 0)
+      );
+    })
+    .slice(0, 3);
+}

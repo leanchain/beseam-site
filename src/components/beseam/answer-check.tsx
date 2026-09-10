@@ -37,6 +37,7 @@ import { BookReviewCta } from "@/components/beseam/book-review-cta";
 import {
   deriveDeepAuditCardState,
   deriveSampledAuditGroups,
+  deriveTemplatePatterns,
   isCatalogFinding,
 } from "@/components/beseam/answer-check-state";
 import { ChannelIcon } from "@/components/beseam/channel-icon";
@@ -1791,6 +1792,7 @@ function SampledAuditFold({
   gatedSummary,
   readingSummary,
   unavailableSummary,
+  patterns = [],
 }: {
   title: string;
   audits: SampledAuditRow[];
@@ -1799,6 +1801,7 @@ function SampledAuditFold({
   gatedSummary: string;
   readingSummary: string;
   unavailableSummary: string;
+  patterns?: Finding[];
 }) {
   const copy = useDictionary().answerCheck;
   const evaluated = audits.reduce(
@@ -1810,6 +1813,7 @@ function SampledAuditFold({
     0,
   );
   const unreadable = audits.filter((audit) => audit.ok === false).length;
+  const repeatedCodes = new Set(patterns.map((finding) => finding.code));
   const summary = gated
     ? gatedSummary
     : inFlight && audits.length === 0
@@ -1837,51 +1841,88 @@ function SampledAuditFold({
           </p>
         </div>
       ) : audits.length ? (
-        <ul className="divide-y divide-black/10 bg-white">
-          {audits.map((audit, index) => {
-            const firstFinding = audit.findings?.[0];
-            return (
-              <li
-                key={audit.url}
-                className="grid gap-3 px-5 py-3.5 sm:grid-cols-[28px_minmax(0,1fr)_auto] sm:items-center sm:px-6"
-              >
-                <span className="font-mono text-[11px] text-black/38">
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-                <div className="min-w-0">
-                  <p className="truncate text-[12.5px] font-semibold text-ink-deep">
-                    {audit.title ?? audit.url}
-                  </p>
-                  <p className="mt-0.5 truncate text-[11px] text-black/44">
-                    {audit.ok === false
-                      ? copy.summary.pageCouldNotRead
-                      : (firstFinding?.headline ??
-                        firstFinding?.title ??
-                        audit.url)}
-                  </p>
-                </div>
-                <div className="flex items-center gap-3 text-[11px] sm:justify-end">
-                  {audit.score != null ? (
-                    <span className="font-semibold text-ink-deep">
-                      {copy.summary.health(Math.round(audit.score))}
-                    </span>
-                  ) : null}
-                  {audit.report_id ? (
-                    <a
-                      href={`${APP_REPORT_URL}/${audit.report_id}`}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="inline-flex items-center gap-1.5 font-semibold text-ink-deep underline decoration-black/18 underline-offset-4 hover:text-signal-ink"
-                    >
-                      {copy.summary.openReport}
-                      <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
-                    </a>
-                  ) : null}
-                </div>
-              </li>
-            );
-          })}
-        </ul>
+        <>
+          {patterns.length ? (
+            <div className="border-b border-black/10 bg-[#fffaf7] px-5 py-4 sm:px-6">
+              <p className="text-[11px] font-semibold text-ink-deep">
+                {copy.summary.templatePatterns}
+              </p>
+              <ul className="mt-2 divide-y divide-black/10 border-y border-black/10 bg-white px-3">
+                {patterns.map((finding) => (
+                  <li key={finding.code} className="py-3">
+                    <div className="flex flex-wrap items-start justify-between gap-2">
+                      <p className="text-[11.5px] font-semibold text-ink-deep">
+                        {finding.headline ?? finding.title}
+                      </p>
+                      <span className="shrink-0 text-[10.5px] font-semibold uppercase tracking-[0.04em] text-signal-ink">
+                        {copy.summary.templatePatternCoverage(
+                          finding.affected_pages ?? 0,
+                          audits.length,
+                        )}
+                      </span>
+                    </div>
+                    <p className="mt-1 text-[11px] leading-relaxed text-black/50">
+                      {finding.why ?? finding.detail}
+                    </p>
+                    <p className="mt-1 text-[10.5px] leading-relaxed text-black/38">
+                      {copy.summary.templatePatternHint}
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
+          <ul className="divide-y divide-black/10 bg-white">
+            {audits.map((audit, index) => {
+              const firstFinding = audit.findings?.find(
+                (finding) => !repeatedCodes.has(finding.code),
+              );
+              return (
+                <li
+                  key={audit.url}
+                  className="grid gap-3 px-5 py-3.5 sm:grid-cols-[28px_minmax(0,1fr)_auto] sm:items-center sm:px-6"
+                >
+                  <span className="font-mono text-[11px] text-black/38">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <div className="min-w-0">
+                    <p className="truncate text-[12.5px] font-semibold text-ink-deep">
+                      {audit.title ?? audit.url}
+                    </p>
+                    <p className="mt-0.5 truncate text-[11px] text-black/44">
+                      {audit.ok === false
+                        ? copy.summary.pageCouldNotRead
+                        : (firstFinding?.headline ??
+                          firstFinding?.title ??
+                          audit.url)}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-3 text-[11px] sm:justify-end">
+                    {audit.score != null ? (
+                      <span className="font-semibold text-ink-deep">
+                        {copy.summary.health(Math.round(audit.score))}
+                      </span>
+                    ) : null}
+                    {audit.report_id ? (
+                      <a
+                        href={`${APP_REPORT_URL}/${audit.report_id}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center gap-1.5 font-semibold text-ink-deep underline decoration-black/18 underline-offset-4 hover:text-signal-ink"
+                      >
+                        {copy.summary.openReport}
+                        <ArrowRight
+                          className="h-3.5 w-3.5"
+                          aria-hidden="true"
+                        />
+                      </a>
+                    ) : null}
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        </>
       ) : (
         <p className="bg-white px-5 py-4 text-[12px] text-black/54 sm:px-6">
           {unavailableSummary}
@@ -1906,6 +1947,14 @@ function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
   const homepageOk = Boolean(homepageDetailed?.ok);
   const deepAuditState = deriveDeepAuditCardState(result);
   const sampledAuditGroups = deriveSampledAuditGroups(result);
+  const categoryTemplatePatterns = deriveTemplatePatterns(
+    result,
+    "category_page_audit",
+  );
+  const contentTemplatePatterns = deriveTemplatePatterns(
+    result,
+    "content_page_audit",
+  );
   const pageAuditStatus = deepAuditState.status;
   const pageAuditsInFlight = deepAuditState.inFlight;
   const pageAuditsGated = deepAuditState.gated;
@@ -2651,6 +2700,7 @@ function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
           )}
           readingSummary={copy.summary.collectionPagesReading}
           unavailableSummary={copy.summary.collectionPagesUnavailable}
+          patterns={categoryTemplatePatterns}
         />
       ) : null}
 
@@ -2803,6 +2853,7 @@ function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
           )}
           readingSummary={copy.summary.contentPagesReading}
           unavailableSummary={copy.summary.contentPagesUnavailable}
+          patterns={contentTemplatePatterns}
         />
       ) : null}
     </section>

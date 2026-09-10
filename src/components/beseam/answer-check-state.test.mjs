@@ -3,6 +3,7 @@ import { describe, it } from "node:test";
 import {
   deriveDeepAuditCardState,
   deriveSampledAuditGroups,
+  deriveTemplatePatterns,
   isCatalogFinding,
 } from "./answer-check-state.ts";
 
@@ -197,5 +198,45 @@ describe("sampled audit group visibility", () => {
     assert.equal(groups.contentCandidates, 0);
     assert.equal(groups.showCollections, true);
     assert.equal(groups.showContent, true);
+  });
+});
+
+describe("template pattern derivation", () => {
+  it("requires the same finding on at least two distinct sampled URLs", () => {
+    const repeated = {
+      code: "seo.l1.title_present",
+      title: "Title",
+      detail: "Repeated",
+      product: null,
+      source: "category_page_audit",
+      page_type: "CATEGORY",
+      role: "collection",
+      affected_pages: 2,
+      affected_urls: [
+        "https://example.com/collections/shoes",
+        "https://example.com/collections/bags",
+      ],
+      severity: "high",
+    };
+    const onePageDuplicate = {
+      ...repeated,
+      code: "seo.l1.description_present",
+      affected_urls: ["https://example.com/collections/shoes"],
+    };
+    const wrongGroup = {
+      ...repeated,
+      code: "seo.l1.h1_present",
+      source: "content_page_audit",
+    };
+
+    const patterns = deriveTemplatePatterns(
+      result({ findings: [onePageDuplicate, wrongGroup, repeated] }),
+      "category_page_audit",
+    );
+
+    assert.deepEqual(
+      patterns.map((finding) => finding.code),
+      ["seo.l1.title_present"],
+    );
   });
 });

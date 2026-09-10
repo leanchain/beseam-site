@@ -1616,6 +1616,11 @@ const enDictionary = {
         unreadable: number,
       ) =>
         `${pages} ${pages === 1 ? "page" : "pages"} sampled · ${failed} of ${evaluated} checks need attention${unreadable ? ` · ${unreadable} unreadable` : ""}`,
+      templatePatterns: "Repeated across sampled pages",
+      templatePatternCoverage: (affected: number, total: number) =>
+        `${affected}/${total} sampled pages`,
+      templatePatternHint:
+        "Because this repeats on multiple pages of the same type, it may come from their shared template rather than one isolated page.",
       sampledPageGroupGatedBody:
         "We sample a few representative pages rather than crawling every URL, so the scan stays fast while still checking the template shoppers and assistants actually encounter.",
       publicFootprint: "Public footprint",
