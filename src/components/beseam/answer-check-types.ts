@@ -30,7 +30,11 @@ export type Finding = {
   examples?: { title: string; url: string; note?: string }[];
   evidence?: string[];
   fix_complexity?: string;
-  source?: "catalog" | "catalog_sample" | "page_audit";
+  source?: "catalog" | "catalog_sample" | "page_audit" | "homepage_audit" | "entity_page_audit";
+  page_type?: "HOMEPAGE" | "CATEGORY" | "PDP" | "CONTENT" | string;
+  role?: "about" | "contact" | null;
+  affected_pages?: number;
+  affected_urls?: string[];
   /**
    * Merchant-facing copy attached by the backend (`finding_copy.py`). These are
    * the primary strings on the result: what a shopper or search engine may be
@@ -62,6 +66,8 @@ export type PageAudit = {
   checks_failed: number;
   checks_unevaluated: number;
   findings: Finding[];
+  page_type?: "HOMEPAGE" | "CATEGORY" | "PDP" | "CONTENT" | string;
+  role?: "about" | "contact" | null;
 };
 
 export type ShownProduct = {
@@ -231,6 +237,15 @@ export type AnswerCheckResult = {
   products_seen: number;
   brand_evidence?: BrandEvidence;
   page_audits?: PageAudit[];
+  homepage_audit?: PageAudit | { url: string; ok: false; error: string; page_type: "HOMEPAGE" };
+  entity_page_audits?: Array<
+    (PageAudit | { url: string; ok: false; error: string }) & {
+      page_type: "CONTENT";
+      role: "about" | "contact";
+    }
+  >;
+  site_description?: { title: string | null; description: string | null };
+  site_kind?: "store" | "brand_site";
   page_audits_status?:
     "not_started" | "queued" | "running" | "complete" | "failed" | string;
   page_audits_total?: number;
