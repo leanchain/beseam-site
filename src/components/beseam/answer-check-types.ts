@@ -37,7 +37,8 @@ export type Finding = {
     | "homepage_audit"
     | "entity_page_audit"
     | "category_page_audit"
-    | "content_page_audit";
+    | "content_page_audit"
+    | "assistant_observation";
   page_type?: "HOMEPAGE" | "CATEGORY" | "PDP" | "CONTENT" | string;
   role?:
     "about" | "contact" | "collection" | "article" | "blog" | "page" | null;
@@ -254,6 +255,8 @@ export type CatalogInventory = {
 export type AnswerCheckResult = {
   domain: string;
   status: string;
+  retryable?: boolean;
+  failure_reason?: string | null;
   brand: string | null;
   platform: string | null;
   reject_reason: string | null;

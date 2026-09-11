@@ -17,7 +17,9 @@ export function deriveDeepAuditCardState(result: AnswerCheckResult) {
   else if (inFlight && !homepage) homepageState = "reading";
   else if (homepage?.ok === false) homepageState = "failed";
   else if (homepage?.ok === true) homepageState = "complete";
-  else homepageState = status === "failed" ? "failed" : "reading";
+  else if (status === "failed" || result.status === "ready" || result.status === "failed") {
+    homepageState = "failed";
+  } else homepageState = "reading";
 
   return {
     siteKind,

@@ -1362,6 +1362,11 @@ const enDictionary = {
         "We show useful findings as soon as they are ready. You do not have to wait for everything.",
       questionsLater:
         "This first read is the snapshot. Beseam is where the checks keep running after it.",
+      quickEstimate: "First results usually arrive in under a minute.",
+      fullAuditRunning: "Full audit running",
+      fullAuditEstimate: "Usually 2–5 minutes after confirmation.",
+      progressDetails: "See scan progress",
+      currentStep: "Now",
       progress: (done: number, total: number) => `${done} of ${total}`,
       productsFound: (count: number) =>
         `${count} ${count === 1 ? "product" : "products"} found`,
@@ -1381,13 +1386,18 @@ const enDictionary = {
     },
     result: {
       productsFound: "products found",
-      answersNamed: "assistant answers named you",
+      answersNamed: "usable AI answers named you",
       answersPending: "assistant answers pending",
       opportunitiesFound: (count: number): string =>
         count === 1 ? "opportunity found" : "opportunities found",
+      prioritiesFound: (count: number): string =>
+        count === 1 ? "priority" : "priorities",
+      supportingFindings: (count: number): string =>
+        count === 1 ? "supporting finding" : "supporting findings",
       statusRejected: "Could not read this store",
       statusRunning: "Still running",
       statusFreeReady: "Free scan ready",
+      statusFailed: "Audit incomplete",
       statusComplete: "Scan complete",
       shareAria: "Share this scan",
       linkCopied: "Link copied",
@@ -1421,18 +1431,24 @@ const enDictionary = {
       details: "Details",
       close: "Close",
       headlineAll: (brand: string, total: number) =>
-        `${brand} was named in all ${total} assistant answers we sampled.`,
+        `${brand} was named in all ${total} usable AI answers we sampled.`,
       headlineNone: (brand: string, total: number) =>
-        `${brand} was named in none of the ${total} assistant answers we sampled.`,
+        `${brand} was named in none of the ${total} usable AI answers we sampled.`,
       headlineMissed: (brand: string, missed: number, total: number) =>
-        `${brand} was missing from ${missed} of the ${total} assistant answers we sampled.`,
+        `${brand} was missing from ${missed} of the ${total} usable AI answers we sampled.`,
       headlineFindings: (brand: string, count: number) =>
         `We read ${brand}’s public storefront and found ${count} ${count === 1 ? "opportunity" : "opportunities"} worth looking at.`,
+      headlinePriorities: (brand: string, count: number) =>
+        `${count} ${count === 1 ? "thing stands" : "things stand"} out on ${brand}.`,
+      prioritySupport: (count: number) =>
+        count > 0
+          ? `Start with these priorities. ${count} more ${count === 1 ? "finding stays" : "findings stay"} underneath as supporting evidence.`
+          : "Start with these priorities; the evidence underneath shows why they matter.",
       headlineReading: (brand: string) => `Reading ${brand}’s storefront now.`,
       headlineClear: (brand: string) =>
         `Nothing obvious stood out on the ${brand} pages we could read.`,
       sampledSupport:
-        "These are point-in-time samples, not a ranking. They show what shoppers were told when we asked.",
+        "These are point-in-time samples, not a ranking. Usable answers and no-answer attempts are kept separate below.",
       moreMayFollow: "More may follow as your product pages finish reading.",
       findingsSupport:
         "Each one is written below in plain words, with the evidence kept underneath it.",
@@ -1462,18 +1478,32 @@ const enDictionary = {
       startFixing: "Start fixing this in Beseam",
       evidence: "Evidence",
       checks: (count: number) => `${count} checks`,
+      moreSampledPages: (count: number) =>
+        `+ ${count} more sampled ${count === 1 ? "page" : "pages"}`,
       productsSeenOn: "Products this was seen on",
       seePage: "See the page →",
       rawCatalog: "The raw catalog file we read →",
       fullPageReport: "Full page report →",
-      heading: "Fix these first",
+      heading: "Start here",
       intro:
-        "The clearest opportunities from this public scan, ordered by what is worth looking at first. Open one for the recommendation and evidence.",
+        "These are the strongest priorities from the scan. Open one when you want the recommendation and the evidence behind it.",
       stillReading: "Still reading.",
       moreMayAppear: " More may appear as your product pages finish.",
       showOther: (count: number) =>
-        `Show the other ${count} ${count === 1 ? "finding" : "findings"}`,
+        `View ${count} supporting ${count === 1 ? "finding" : "findings"}`,
       readingPages: "Still reading your product pages.",
+      aiVisibilityTitle: "AI shopping visibility",
+      aiVisibilityAllMissed: (count: number) =>
+        `Your brand was absent from all ${count} usable AI shopping ${count === 1 ? "answer" : "answers"}.`,
+      aiVisibilitySomeMissed: (missed: number, total: number) =>
+        `Your brand was missing from ${missed} of ${total} usable AI shopping answers.`,
+      aiVisibilityWhy:
+        "When an assistant answers a buying question without naming you, the shopper can be steered toward alternatives before they ever reach your store.",
+      aiVisibilityNext:
+        "Open the questions below to see what was asked, which assistants returned a usable answer, who they named instead, and which product evidence is worth strengthening first.",
+      aiVisibilityAttempts: (usable: number, total: number) =>
+        `${usable} of ${total} assistant attempts returned a usable answer.`,
+      aiVisibilityRivals: (names: string) => `Alternatives named: ${names}.`,
       discoveryFiles: {
         llms: "A short summary of your store for AI assistants that look for one. Optional.",
         agents:
@@ -1535,8 +1565,10 @@ const enDictionary = {
       start: "Continue free with this store",
       carryStore: (domain: string) =>
         `${domain} is carried into setup. You will not start over.`,
-      closingEyebrow: "Seen enough?",
-      closingTitle: "Keep this store under watch in Beseam.",
+      closingEyebrow: "Next step",
+      closingTitle: "Keep these priorities under watch in Beseam.",
+      closingBody:
+        "Beseam keeps checking the store, prepares the strongest changes for approval, and shows you what moved after each change.",
       reviewWithFinding: "Prefer to walk through this with us?",
       reviewWithoutFinding: "Prefer to walk through this with us?",
       startingWith: (headline: string) => `Starting with “${headline}”`,
@@ -1572,13 +1604,28 @@ const enDictionary = {
         `asked to each of ${count} assistants separately`,
       title: "How you appear when shoppers ask",
       summary: (named: number, total: number, questions: number) =>
-        `${named}/${total} observed answers named you · ${questions} buying ${questions === 1 ? "question" : "questions"}`,
+        `${named}/${total} usable answers named you · ${questions} buying ${questions === 1 ? "question" : "questions"}`,
+      summaryWithAttempts: (
+        named: number,
+        usable: number,
+        attempts: number,
+        questions: number,
+      ) =>
+        `${named}/${usable} usable answers named you · ${usable}/${attempts} attempts usable · ${questions} buying ${questions === 1 ? "question" : "questions"}`,
+      usableAttempts: (usable: number, total: number) =>
+        `${usable}/${total} attempts usable`,
+      noUsableSummary: (attempts: number, questions: number) =>
+        `0/${attempts} assistant attempts returned a usable answer · ${questions} buying ${questions === 1 ? "question" : "questions"}`,
       checking: "Checking what shoppers are being shown",
       competitors: "Competitors named when you were not",
+      assistantEvidence: "View assistant evidence",
       openQuestion: "Open a question to see what each assistant answered",
       askedIn: (language: string) => `Asked in ${language}`,
     },
     summary: {
+      evidenceHeading: "Evidence behind the priorities",
+      evidenceIntro:
+        "The summary above is the decision layer. Open these sections only when you want the underlying store, catalog, page, or content evidence.",
       productCatalog: "Product catalog",
       noCatalogBrandSite: "No product catalog found. Audited as a brand site.",
       homepage: "Your homepage",
@@ -1780,6 +1827,11 @@ const enDictionary = {
       pdpFailed:
         "The Store and Catalog observations are still valid. The representative PDP inspection could not complete on this run.",
       sampleShows: "What the sample product pages show",
+      pdpRepeatedPatterns: "Repeated across sampled product pages",
+      pdpRepeatedHint:
+        "These are the patterns worth fixing before chasing one-off page details.",
+      sampledPagesDisclosure: (count: number) =>
+        `View the ${count} sampled product ${count === 1 ? "page" : "pages"}`,
       needAttention: (count: number) => `${count} need attention`,
       checked: (count: number) => `of ${count} checked`,
       couldNotCheck: (count: number) => ` · ${count} we could not check`,
@@ -1790,45 +1842,45 @@ const enDictionary = {
       reportUnavailable: "Report unavailable",
     },
     deeper: {
-      eyebrow: "Optional: get more proof first",
-      title: "Unlock the deeper scan before you decide.",
+      eyebrow: "Next · full audit",
+      title: "Confirm your email before we start the full audit.",
       intro:
-        "Want more evidence before starting Beseam? Confirm one email and we run the slower checks: page-level recommendations plus real buying questions asked to ChatGPT and Google AI Mode.",
+        "We found the first opportunities above. One click in your inbox starts the deeper page audit and AI review, including what ChatGPT and Google AI Mode tell shoppers.",
       assurances: [
         "Free",
         "No account",
         "One email, no marketing list",
       ] as readonly [string, string, string],
-      aiPages: "AI reads your pages and says what to change",
+      aiPages: "Page-by-page AI review",
       aiPagesDetail:
         "Open any product page report and AI goes through the page next to the findings above, then writes back concrete improvements and the page copy it based them on.",
-      shopperAnswers: "What shoppers are told today",
+      shopperAnswers: "ChatGPT + Google AI Mode",
       shopperAnswersDetail: (count: number) =>
         `Questions written from the ${count} ${count === 1 ? "product" : "products"} we just read, put to ChatGPT and Google AI Mode, with the answers recorded.`,
-      alternatives: "Who gets named when you do not",
+      alternatives: "Competitors shown instead",
       alternativesDetail:
         "The competing brands and products that appear in place of yours.",
     },
     email: {
       sentTo: (email: string) => `Sent to ${email}`,
       completeTitle: "Your link is in your inbox.",
-      continueTitle: "One click in your inbox and we keep going.",
+      continueTitle: "Confirm it to start the full audit.",
       completeBody:
         "Nothing on this page goes away. The link opens this same audit whenever you want it back.",
       continueBody:
-        "Nothing on this page goes away in the meantime. Open the link and we ask the assistants about your products, then show you the whole audit.",
+        "Click the link in your inbox and we start the page-level audit, AI review, and shopper-question checks. This page stays here while they run.",
       differentEmail: "Send it to a different email",
       label: "Work email",
-      runningLabel: "Unlock the full scan",
+      runningLabel: "Start the full audit",
       completeLabel: "Keep this audit",
       completeIntro: (domain: string) =>
         `The audit for ${domain} is complete. Leave an address and we send you the link, so it is yours to open and keep.`,
       runningIntro: (domain: string) =>
-        `The public read of ${domain} is already on this page. Confirm your email to unlock page-level recommendations, ask ChatGPT and Google AI Mode about your products, and keep the full audit.`,
+        `We found the first opportunities on ${domain}. Confirm your email to start the deeper page audit, AI review, and ChatGPT + Google AI Mode checks.`,
       placeholder: "you@company.com",
       sending: "Sending…",
       send: "Send it",
-      runningCta: "Unlock deeper scan",
+      runningCta: "Send confirmation link",
       completeCta: "Email me the audit",
       assurances: [
         "No account",
@@ -1836,14 +1888,14 @@ const enDictionary = {
         "One email, no marketing list",
       ] as readonly [string, string, string],
       sent: "Email sent",
-      clickContinue: "One click in your inbox and we continue.",
+      clickContinue: "One click in your inbox starts the full audit.",
       openSent: (email: string) =>
         `Open the link we sent to ${email}. Nothing on this page goes away in the meantime. You can keep reading, or come back to it later.`,
       sendAgain: "Send it again",
       differentAddress: "Use a different address",
-      confirmTitle: "Confirm your email to open both",
+      confirmTitle: "Confirm your email to start the full audit",
       confirmBody:
-        "We send one link. Click it and both open up: no account, no card, no marketing list.",
+        "We send one link. Click it to start: no account, no card, no marketing list.",
       addEmail: "Add your email",
       privacyPrefix: "See our",
       privacy: "privacy policy",
@@ -1868,7 +1920,12 @@ const enDictionary = {
       retrying: "Retrying…",
       tryAgain: "Try again",
       pollExhausted:
-        "We did not finish reading your product pages this time. The completed observations below are still useful; read the findings as possibilities, not verdicts.",
+        "This audit is taking longer than expected. We will keep the evidence already found and stop showing an endless spinner if the worker has stopped.",
+      auditDidNotFinish: "This audit did not finish.",
+      auditDidNotFinishBody:
+        "The results already shown are still available. Retry only the unfinished checks — you do not need to confirm your email again.",
+      retryAudit: "Retry unfinished checks",
+      retryAuditRunning: "Retrying audit…",
       running: "Running…",
       runAgain: "Run it again",
       rejectedTitle: (domain: string) => `We could not read ${domain}.`,

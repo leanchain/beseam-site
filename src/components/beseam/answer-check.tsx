@@ -50,7 +50,7 @@ import { APP_REGISTER_URL, APP_REPORT_URL } from "@/lib/app-urls";
 export type { AnswerCheckResult };
 
 const POLL_MS = 6000;
-const MAX_POLLS = 60; // ~6 minutes, then stop asking
+const MAX_POLLS = 110; // ~6 minutes, then stop asking
 
 const LIVE_STATUSES = new Set(["running", "queued", "validating"]);
 const PENDING_PAGE_AUDIT_STATUSES = new Set(["queued", "running"]);
@@ -163,7 +163,29 @@ const FINDING_RANK: Record<string, number> = {
 };
 
 function sortedFindings(result: AnswerCheckResult) {
-  return [...result.findings].sort(
+  const nested = [
+    ...(result.homepage_audit && "findings" in result.homepage_audit
+      ? result.homepage_audit.findings ?? []
+      : []),
+    ...(result.entity_page_audits ?? []).flatMap((audit) =>
+      "findings" in audit ? audit.findings ?? [] : [],
+    ),
+    ...(result.category_page_audits ?? []).flatMap((audit) =>
+      "findings" in audit ? audit.findings ?? [] : [],
+    ),
+    ...(result.content_page_audits ?? []).flatMap((audit) =>
+      "findings" in audit ? audit.findings ?? [] : [],
+    ),
+    ...(result.page_audits ?? []).flatMap((audit) => audit.findings ?? []),
+  ];
+  const seen = new Set<string>();
+  const findings = [...result.findings, ...nested].filter((finding) => {
+    const key = `${finding.code}|${finding.url ?? ""}|${finding.product ?? ""}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+  return findings.sort(
     (a, b) =>
       (FINDING_RANK[a.severity ?? "medium"] ?? 2) -
       (FINDING_RANK[b.severity ?? "medium"] ?? 2),
@@ -568,7 +590,6 @@ const OPTIMISTIC_STEPS: Step[] = [
 // emailed link is clicked. So the rail breaks there and the ask sits in the
 // seam: what already ran is above it, what the address starts is below it,
 // pending.
-const LIGHT_STEP_KEYS = new Set(["storefront", "catalog"]);
 
 function localizedStepLabel(step: Step, copy: Dictionary["answerCheck"]) {
   return (
@@ -680,76 +701,91 @@ function StepRow({ step }: { step: Step }) {
 function ScanProgress({
   steps,
   domain,
-  interlude,
+  deepAudit = false,
 }: {
   steps: Step[];
   domain: string | null;
-  /** Rendered between the finished light steps and the slow ones. */
-  interlude?: ReactNode;
+  deepAudit?: boolean;
 }) {
   const copy = useDictionary().answerCheck;
   const visible = steps.filter((step) => step.state !== "skipped");
   if (!visible.length) return null;
 
-  const lightSteps = visible.filter((step) => LIGHT_STEP_KEYS.has(step.key));
-  const heavySteps = visible.filter((step) => !LIGHT_STEP_KEYS.has(step.key));
-
-  // Position inside the very list rendered below — no second progress model.
-  // The active step when there is one; otherwise the next step not yet done, so
-  // a list caught between states still reads as somewhere rather than nowhere.
   const activeIndex = visible.findIndex((step) => step.state === "active");
   const doneCount = visible.filter((step) => step.state === "done").length;
   const position = Math.min(
     activeIndex >= 0 ? activeIndex + 1 : doneCount + 1,
     visible.length,
   );
+  const active =
+    visible[activeIndex >= 0 ? activeIndex : Math.min(doneCount, visible.length - 1)];
+  const percent = Math.max(
+    4,
+    Math.round((Math.min(doneCount, visible.length) / visible.length) * 100),
+  );
 
   return (
     <section
       aria-live="polite"
-      className="mx-auto w-full border border-black/18 bg-white px-5 py-5 text-left sm:px-6"
+      className="mx-auto w-full border border-black/18 bg-white px-5 py-4 text-left sm:px-6"
     >
-      {/* The mode, held in place for the whole run. Without it the step labels
-          are the only clue to what kind of assessment this is, and they read
-          equally well as the start of a keyword report. */}
-      <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.1em] text-black/44">
-        {copy.steps.technical(position, visible.length)}
-      </p>
-      <h3 className="mt-1.5 text-[15px] font-semibold tracking-[-0.01em] text-ink-deep">
-        {domain
-          ? copy.steps.readingDomain(domain)
-          : copy.steps.readingStorefront}
-      </h3>
-      <p className="mt-1 text-[13px] leading-relaxed text-black/56">
-        {copy.steps.resultsAsTheyArrive}
-      </p>
-      <p className="mt-1.5 text-[12.5px] leading-relaxed text-black/50">
-        {copy.steps.questionsLater}
-      </p>
-      <ol className="mt-4 space-y-3">
-        {(interlude ? lightSteps : visible).map((step) => (
-          <StepRow key={step.key} step={step} />
-        ))}
-      </ol>
-      {interlude ? (
-        <>
-          {/* The address buys the slow half, so it stands between the two
-              halves rather than under all of them. */}
-          <div className="mt-5 border-t border-black/12 pt-5">{interlude}</div>
-          {heavySteps.length ? (
-            <ol start={lightSteps.length + 1} className="mt-5 space-y-3">
-              {heavySteps.map((step) => (
-                <StepRow key={step.key} step={step} />
-              ))}
-            </ol>
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <p className="font-mono text-[10.5px] font-semibold uppercase tracking-[0.1em] text-black/44">
+            {deepAudit
+              ? copy.steps.fullAuditRunning
+              : copy.steps.technical(position, visible.length)}
+          </p>
+          <h3 className="mt-1.5 text-[15px] font-semibold tracking-[-0.01em] text-ink-deep">
+            {active
+              ? localizedStepLabel(active, copy)
+              : domain
+                ? copy.steps.readingDomain(domain)
+                : copy.steps.readingStorefront}
+          </h3>
+          {active ? (
+            <p className="mt-1 text-[12.5px] leading-relaxed text-black/54">
+              {localizedStepDetail(active, copy) || copy.steps.resultsAsTheyArrive}
+            </p>
           ) : null}
-        </>
-      ) : null}
+        </div>
+        <p className="shrink-0 text-[11.5px] font-medium text-black/48">
+          {deepAudit ? copy.steps.fullAuditEstimate : copy.steps.quickEstimate}
+        </p>
+      </div>
+
+      <div
+        className="mt-3 h-1.5 overflow-hidden rounded-full bg-black/8"
+        role="progressbar"
+        aria-valuenow={doneCount}
+        aria-valuemin={0}
+        aria-valuemax={visible.length}
+        aria-label={copy.steps.progress(doneCount, visible.length)}
+      >
+        <div
+          className="h-full rounded-full bg-signal-ink transition-[width] duration-500"
+          style={{ width: `${percent}%` }}
+        />
+      </div>
+
+      <details className="group/progress mt-3 border-t border-black/10 pt-2.5">
+        <summary className="flex min-h-9 cursor-pointer list-none items-center gap-2 text-[12px] font-semibold text-black/52 hover:text-ink-deep [&::-webkit-details-marker]:hidden">
+          {copy.steps.progressDetails}
+          <ChevronDown
+            className="h-3.5 w-3.5 transition-transform group-open/progress:rotate-180"
+            aria-hidden="true"
+          />
+        </summary>
+        <ol className="mt-2 space-y-3 pb-1">
+          {visible.map((step) => (
+            <StepRow key={step.key} step={step} />
+          ))}
+        </ol>
+      </details>
     </section>
   );
 }
 
-// ── The real numbers, the moment they exist ─────────────────────────────────
 function FoundStrip({ result }: { result: AnswerCheckResult }) {
   const copy = useDictionary().answerCheck;
   const catalog = result.catalog_inventory;
@@ -757,17 +793,31 @@ function FoundStrip({ result }: { result: AnswerCheckResult }) {
     catalog?.products_checked && catalog.products_checked > 0
       ? `${catalog.products_checked}${catalog.products_capped ? "+" : ""}`
       : String(result.products_seen);
-  const findingCount = groupFindings(sortedFindings(result)).length;
+  const findingCount = reportFindingGroups(result, copy).length;
+  const priorityCount = Math.min(FIRST_SHOWN, findingCount);
+  const supportingCount = Math.max(0, findingCount - priorityCount);
   const scored = result.answers.filter((answer) => answer.mentioned !== null);
   const named = scored.filter((answer) => answer.mentioned === true).length;
 
   const facts: Array<{ value: string; label: string; accent?: boolean }> = [
     { value: productCount, label: copy.result.productsFound },
-    {
-      value: String(findingCount),
-      label: copy.result.opportunitiesFound(findingCount),
-      accent: findingCount > 0,
-    },
+    ...(findingCount
+      ? [
+          {
+            value: String(priorityCount),
+            label: copy.result.prioritiesFound(priorityCount),
+            accent: true,
+          },
+          ...(supportingCount
+            ? [
+                {
+                  value: String(supportingCount),
+                  label: copy.result.supportingFindings(supportingCount),
+                },
+              ]
+            : []),
+        ]
+      : []),
     ...(scored.length
       ? [
           {
@@ -778,11 +828,15 @@ function FoundStrip({ result }: { result: AnswerCheckResult }) {
         ]
       : []),
   ];
+  const gridClass =
+    facts.length >= 4
+      ? "sm:grid-cols-2 lg:grid-cols-4"
+      : facts.length === 3
+        ? "sm:grid-cols-3"
+        : "sm:grid-cols-2";
 
   return (
-    <dl
-      className={`grid border-b border-black/14 bg-white ${facts.length === 3 ? "sm:grid-cols-3" : "sm:grid-cols-2"}`}
-    >
+    <dl className={`grid border-b border-black/14 bg-white ${gridClass}`}>
       {facts.map((fact, index) => (
         <div
           key={fact.label}
@@ -807,46 +861,121 @@ function FoundStrip({ result }: { result: AnswerCheckResult }) {
     </dl>
   );
 }
-
 // ── The heart of the result ─────────────────────────────────────────────────
 /**
  * Findings that say the same thing to the merchant, collapsed into one row.
- *
- * Several technical checks legitimately map to one consequence — two
- * `security.*` checks both mean “the store may be missing protections shoppers
- * expect”, and the same template usually fails on every sampled page. Printing
- * that sentence twice reads as a bug to the person we are trying to convince,
- * so the group is merged here and every underlying check stays listed under
- * “What we saw”. Nothing is dropped; the technical rows keep their own detail,
- * evidence and code.
+ * Several technical checks can map to one merchant consequence, and the same
+ * template often fails on every sampled page. The technical evidence remains
+ * available inside the row; the priority list itself stays concise.
  */
 type FindingGroupRow = { lead: Finding; members: Finding[] };
 
 function groupFindings(findings: Finding[]): FindingGroupRow[] {
   const groups = new Map<string, FindingGroupRow>();
   for (const finding of findings) {
-    // Already sorted by severity, so the first arrival is the most severe and
-    // is the one whose priority label the row carries.
     const key = findingHeadline(finding).trim().toLowerCase();
     const existing = groups.get(key);
     if (existing) existing.members.push(finding);
     else groups.set(key, { lead: finding, members: [finding] });
   }
-  return Array.from(groups.values());
+
+  // Severity stays primary. Within one severity band, repeated evidence across
+  // sampled pages outranks an isolated check, then shopper-facing AI evidence
+  // outranks a one-off implementation detail.
+  const sourceWeight = (group: FindingGroupRow) => {
+    if (group.lead.source === "assistant_observation") return 2;
+    if (group.lead.source === "homepage_audit") return 1;
+    return 0;
+  };
+  const affectedPages = (group: FindingGroupRow) =>
+    new Set(
+      group.members
+        .flatMap((member) =>
+          member.affected_urls ?? (member.url ? [member.url] : []),
+        )
+        .filter(Boolean),
+    ).size;
+
+  return Array.from(groups.values()).sort((left, right) => {
+    const severity =
+      (FINDING_RANK[left.lead.severity ?? "medium"] ?? 2) -
+      (FINDING_RANK[right.lead.severity ?? "medium"] ?? 2);
+    if (severity) return severity;
+    const recurrence = affectedPages(right) - affectedPages(left);
+    if (recurrence) return recurrence;
+    return sourceWeight(right) - sourceWeight(left);
+  });
 }
 
+function aiVisibilityFinding(
+  result: AnswerCheckResult,
+  copy: Dictionary["answerCheck"],
+): Finding | null {
+  const attempts = result.answers.filter((answer) => Boolean(answer.channel_label));
+  const usable = attempts.filter((answer) => answer.mentioned !== null);
+  if (!usable.length) return null;
+
+  const named = usable.filter((answer) => answer.mentioned === true).length;
+  if (named === usable.length) return null;
+
+  const missed = usable.length - named;
+  const rivals = tallyRivals(usable).slice(0, 3);
+  const evidence = [
+    copy.findings.aiVisibilityAttempts(usable.length, attempts.length),
+  ];
+  if (rivals.length) {
+    evidence.push(
+      copy.findings.aiVisibilityRivals(
+        rivals.map((rival) => rival.label).join(", "),
+      ),
+    );
+  }
+
+  return {
+    code: "ai_visibility.brand_presence",
+    title: copy.findings.aiVisibilityTitle,
+    detail: copy.findings.aiVisibilityAttempts(usable.length, attempts.length),
+    product: null,
+    severity:
+      named === 0 ? "high" : missed / usable.length >= 0.5 ? "medium" : "low",
+    source: "assistant_observation",
+    headline:
+      named === 0
+        ? copy.findings.aiVisibilityAllMissed(usable.length)
+        : copy.findings.aiVisibilitySomeMissed(missed, usable.length),
+    why: copy.findings.aiVisibilityWhy,
+    next_step: copy.findings.aiVisibilityNext,
+    area: "Getting found",
+    evidence,
+  };
+}
+
+function reportFindingGroups(
+  result: AnswerCheckResult,
+  copy: Dictionary["answerCheck"],
+): FindingGroupRow[] {
+  const aiFinding = aiVisibilityFinding(result, copy);
+  return groupFindings([
+    ...sortedFindings(result),
+    ...(aiFinding ? [aiFinding] : []),
+  ]);
+}
 function FindingRow({
   group,
   index,
   reportIdByUrl,
   exampleContext,
   fixHref,
+  sampledPagesTotal,
+  featured,
 }: {
   group: FindingGroupRow;
   index: number;
   reportIdByUrl: Map<string, number>;
   exampleContext: Parameters<typeof fixExampleFor>[1];
   fixHref: string;
+  sampledPagesTotal: number;
+  featured: boolean;
 }) {
   const copy = useDictionary().answerCheck;
   const finding = group.lead;
@@ -857,11 +986,28 @@ function FindingRow({
     ...exampleContext,
     product: finding.product ?? exampleContext.product,
   });
+  const affectedPageCount = new Set(
+    group.members
+      .filter((member) => member.source === "page_audit")
+      .flatMap((member) =>
+        member.affected_urls ?? (member.url ? [member.url] : []),
+      )
+      .filter(Boolean),
+  ).size;
+  const repeatedAcrossSample =
+    affectedPageCount >= 2 &&
+    sampledPagesTotal > 0 &&
+    affectedPageCount <= sampledPagesTotal;
+  const evidenceMembers = repeatedAcrossSample
+    ? group.members.slice(0, 2)
+    : group.members;
 
   return (
     <li className="border-b border-black/12 last:border-b-0">
       <details className="group/finding bg-white">
-        <summary className="grid cursor-pointer list-none gap-3 px-5 py-4 transition-colors hover:bg-[#fffaf7] sm:grid-cols-[2.5rem_minmax(0,1fr)_auto] sm:items-center sm:px-6 [&::-webkit-details-marker]:hidden">
+        <summary
+          className={`grid cursor-pointer list-none gap-3 px-5 transition-colors hover:bg-[#fffaf7] sm:grid-cols-[2.5rem_minmax(0,1fr)_auto] sm:items-center sm:px-6 [&::-webkit-details-marker]:hidden ${featured ? "bg-[#fffdfb] py-5" : "py-4"}`}
+        >
           <span className="font-mono text-[11px] font-semibold tabular-nums text-black/36">
             {String(index + 1).padStart(2, "0")}
           </span>
@@ -881,10 +1027,26 @@ function FindingRow({
               >
                 {priority.label}
               </span>
+              {repeatedAcrossSample ? (
+                <>
+                  <span aria-hidden="true" className="text-black/20">·</span>
+                  <span className="text-signal-ink">
+                    {copy.summary.templatePatternCoverage(
+                      affectedPageCount,
+                      sampledPagesTotal,
+                    )}
+                  </span>
+                </>
+              ) : null}
             </div>
             <p className="mt-1 text-balance text-[16px] font-semibold leading-[1.4] tracking-[-0.012em] text-ink-deep sm:text-[17px]">
               {findingHeadline(finding)}
             </p>
+            {featured && why ? (
+              <p className="mt-1.5 max-w-[72ch] text-[12.5px] leading-[1.55] text-black/54">
+                {why}
+              </p>
+            ) : null}
           </div>
 
           <span className="inline-flex min-h-9 items-center gap-2 justify-self-start text-[12px] font-semibold text-black/52 group-hover/finding:text-signal-ink sm:justify-self-end">
@@ -904,13 +1066,13 @@ function FindingRow({
         <div className="border-t border-black/10 bg-[#fffaf7] px-5 py-5 sm:px-6 sm:pl-[5.5rem]">
           <div className="grid gap-5 lg:grid-cols-[minmax(0,1.25fr)_minmax(16rem,0.75fr)]">
             <div>
-              {why ? (
+              {why && !featured ? (
                 <p className="max-w-[68ch] text-[14px] leading-[1.65] text-black/64">
                   {why}
                 </p>
               ) : null}
               {nextStep ? (
-                <p className="mt-4 max-w-[68ch] border-l border-signal-ink/35 pl-3.5 text-[14px] leading-[1.6] text-ink-deep">
+                <p className={`${why && !featured ? "mt-4" : ""} max-w-[68ch] border-l border-signal-ink/35 pl-3.5 text-[14px] leading-[1.6] text-ink-deep`}>
                   <span className="font-semibold">
                     {copy.findings.improveNext}{" "}
                   </span>
@@ -931,9 +1093,6 @@ function FindingRow({
                 </div>
               ) : null}
 
-              {/* Reading a finding and having nowhere to go with it is where
-                  the scan stops being useful. Every finding ends on the same
-                  offer: Beseam does this one against your real catalog. */}
               <TrackedLink
                 href={`${fixHref}&fix=${encodeURIComponent(finding.code)}`}
                 eventName="finding_fix_clicked"
@@ -958,7 +1117,7 @@ function FindingRow({
                   : ""}
               </p>
               <div className="mt-3 space-y-4 text-[12px] leading-relaxed text-black/58">
-                {group.members.map((member, position) => {
+                {evidenceMembers.map((member, position) => {
                   const reportId = member.url
                     ? reportIdByUrl.get(member.url)
                     : undefined;
@@ -972,21 +1131,16 @@ function FindingRow({
                       ) : null}
                       {member.evidence?.length ? (
                         <ul className="mt-2 space-y-1">
-                          {member.evidence
-                            .slice(0, 3)
-                            .map((line, evidenceIndex) => (
-                              <li
-                                key={`${line}-${evidenceIndex}`}
-                                className="break-words font-mono text-[11px] text-black/50"
-                              >
-                                {line}
-                              </li>
-                            ))}
+                          {member.evidence.slice(0, 3).map((line, evidenceIndex) => (
+                            <li
+                              key={`${line}-${evidenceIndex}`}
+                              className="break-words font-mono text-[11px] text-black/50"
+                            >
+                              {line}
+                            </li>
+                          ))}
                         </ul>
                       ) : null}
-                      {/* The products the count was made of. "31 products have
-                          an unidentified variant" pointed at products.json and
-                          left the merchant to find out which 31. */}
                       {member.examples?.length ? (
                         <div className="mt-2.5 border-l border-signal-ink/30 pl-3">
                           <p className="text-[11px] font-semibold uppercase tracking-[0.07em] text-black/42">
@@ -1016,9 +1170,6 @@ function FindingRow({
                       <p className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-black/42">
                         {member.product ? <span>{member.product}</span> : null}
                         <span className="font-mono">{member.code}</span>
-                        {/* Where we saw it. A finding that names a product and
-                            gives nothing to click sends the merchant hunting for
-                            the origin of a claim we already know the source of. */}
                         {member.url ? (
                           <a
                             href={member.url}
@@ -1053,6 +1204,13 @@ function FindingRow({
                     </div>
                   );
                 })}
+                {repeatedAcrossSample && group.members.length > evidenceMembers.length ? (
+                  <p className="font-semibold text-black/48">
+                    {copy.findings.moreSampledPages(
+                      group.members.length - evidenceMembers.length,
+                    )}
+                  </p>
+                ) : null}
               </div>
             </div>
           </div>
@@ -1061,10 +1219,6 @@ function FindingRow({
     </li>
   );
 }
-
-// "Why would I publish a /SKILL.md file?" is a fair question and the report never
-// answered it. Each file gets a plain sentence naming who reads it. All four are
-// young conventions; saying so is more useful than implying a gap.
 function discoveryFileNotes(
   copy: Dictionary["answerCheck"],
 ): Record<string, string> {
@@ -1080,13 +1234,9 @@ const FIRST_SHOWN = 3;
 
 function WorthLookingAt({ result }: { result: AnswerCheckResult }) {
   const copy = useDictionary().answerCheck;
-  // Every finding, in order, with nothing held back behind a "show the rest".
   const [expanded, setExpanded] = useState(false);
-  const findings = groupFindings(sortedFindings(result));
+  const findings = reportFindingGroups(result, copy);
   const audits = result.page_audits ?? [];
-  // The store's own details, so a worked example reads as theirs rather than as
-  // documentation they have to translate. Currency is not in this payload, so the
-  // snippet marks it for the merchant to set rather than guessing a wrong one.
   const exampleContext = {
     brand: result.brand ?? result.domain,
     product: (result.page_audits ?? [])[0]?.title ?? null,
@@ -1105,10 +1255,8 @@ function WorthLookingAt({ result }: { result: AnswerCheckResult }) {
   const shown = expanded ? findings : findings.slice(0, FIRST_SHOWN);
   const hidden = findings.length - shown.length;
 
-  // With nothing found and nothing still running, this section would only
-  // restate the headline directly above it in slightly different words. The
-  // headline and the scope note already carry that message.
   if (!findings.length && !pagesInFlight) return null;
+
   return (
     <section className="border-b border-black/14 bg-white">
       <div className="border-b border-black/12 px-5 py-5 sm:px-6">
@@ -1132,15 +1280,17 @@ function WorthLookingAt({ result }: { result: AnswerCheckResult }) {
                 reportIdByUrl={reportIdByUrl}
                 exampleContext={exampleContext}
                 fixHref={`${APP_REGISTER_URL}?scan_domain=${encodeURIComponent(result.domain)}`}
+                sampledPagesTotal={audits.length}
+                featured={index < FIRST_SHOWN}
               />
             ))}
           </ol>
           {hidden > 0 ? (
-            <div className="border-t border-black/12 px-5 py-4 sm:px-6">
+            <div className="border-t border-black/12 bg-[#fffaf7] px-5 py-4 sm:px-6">
               <button
                 type="button"
                 onClick={() => setExpanded(true)}
-                className="inline-flex min-h-11 items-center gap-2 text-[13.5px] font-semibold text-ink-deep underline decoration-black/28 underline-offset-6 transition-colors hover:text-signal-ink hover:decoration-signal-ink"
+                className="inline-flex min-h-11 items-center gap-2 text-[13px] font-semibold text-ink-deep underline decoration-black/28 underline-offset-5 transition-colors hover:text-signal-ink hover:decoration-signal-ink"
               >
                 {copy.findings.showOther(hidden)}
                 <ChevronDown className="h-4 w-4" aria-hidden="true" />
@@ -1149,8 +1299,6 @@ function WorthLookingAt({ result }: { result: AnswerCheckResult }) {
           ) : null}
         </>
       ) : (
-        // Only reachable while pages are still being read — the empty, settled
-        // case returns null above.
         <div className="flex items-center gap-3 px-5 py-5 sm:px-6">
           <Loader2
             className="h-4 w-4 animate-spin text-signal-ink"
@@ -1164,7 +1312,6 @@ function WorthLookingAt({ result }: { result: AnswerCheckResult }) {
     </section>
   );
 }
-
 // The standalone “What this free scan did not cover” panel and the closing
 // point-in-time footnote were removed at the owner's request. The scan's limits
 // are still stated where they are actually read: the pre-scan promise (public
@@ -1218,16 +1365,22 @@ function ScanBoundary({ result }: { result: AnswerCheckResult }) {
   ];
 
   return (
-    <section className="border-b border-black/14 bg-white">
-      <div className="border-b border-black/12 px-5 py-5 sm:px-6">
-        <h3 className="text-[19px] font-semibold tracking-[-0.02em] text-ink-deep">
-          {copy.boundary.heading}
-        </h3>
-        <p className="mt-1.5 max-w-[70ch] text-[13.5px] leading-relaxed text-black/60">
-          {copy.boundary.intro}
-        </p>
-      </div>
-      <div className="grid md:grid-cols-3">
+    <details className="group/boundary border-b border-black/14 bg-white">
+      <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 hover:bg-[#fffaf7] sm:px-6 [&::-webkit-details-marker]:hidden">
+        <div>
+          <h3 className="text-[15px] font-semibold text-ink-deep">
+            {copy.boundary.heading}
+          </h3>
+          <p className="mt-1 max-w-[70ch] text-[12.5px] leading-relaxed text-black/56">
+            {copy.boundary.intro}
+          </p>
+        </div>
+        <ChevronDown
+          className="h-4 w-4 shrink-0 transition-transform group-open/boundary:rotate-180"
+          aria-hidden="true"
+        />
+      </summary>
+      <div className="grid border-t border-black/12 md:grid-cols-3">
         {columns.map((column) => (
           <div
             key={column.label}
@@ -1265,7 +1418,7 @@ function ScanBoundary({ result }: { result: AnswerCheckResult }) {
           </div>
         ))}
       </div>
-    </section>
+    </details>
   );
 }
 
@@ -1279,7 +1432,7 @@ function ContinuePaths({
   continueHref: string;
 }) {
   const copy = useDictionary().answerCheck;
-  const opportunityCount = groupFindings(sortedFindings(result)).length;
+  const opportunityCount = reportFindingGroups(result, copy).length;
 
   return (
     <section
@@ -1346,16 +1499,19 @@ function ClosingContinue({
   return (
     <section
       data-print-hide
-      className="flex flex-col gap-4 border-t border-black/14 bg-[#fffaf7] px-5 py-6 sm:flex-row sm:items-center sm:justify-between sm:px-6"
+      className="grid gap-6 border-t border-black/14 bg-ink-deep px-5 py-7 text-white sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:px-6 sm:py-8"
     >
       <div>
-        <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-black/42">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-white/46">
           {copy.continue.closingEyebrow}
         </p>
-        <p className="mt-1 text-[16px] font-semibold tracking-[-0.01em] text-ink-deep">
+        <p className="mt-1.5 max-w-[34ch] text-[21px] font-semibold leading-[1.25] tracking-[-0.02em] text-white">
           {copy.continue.closingTitle}
         </p>
-        <p className="mt-1 text-[11.5px] text-black/48">
+        <p className="mt-2 max-w-[66ch] text-[13px] leading-[1.6] text-white/68">
+          {copy.continue.closingBody}
+        </p>
+        <p className="mt-2 text-[11.5px] text-white/46">
           {copy.continue.carryStore(domain)}
         </p>
       </div>
@@ -1365,18 +1521,17 @@ function ClosingContinue({
         eventCategory="conversion"
         placement="answer_check_result_bottom"
         preserveUtm
-        className="group inline-flex min-h-11 items-center justify-center gap-2 bg-ink-deep px-5 text-[13px] font-semibold text-white transition-colors hover:bg-signal-ink"
+        className="group inline-flex min-h-12 items-center justify-center gap-2 bg-white px-6 text-[13.5px] font-semibold text-ink-deep transition-colors hover:bg-signal"
       >
         {copy.continue.start}
         <ArrowRight
           aria-hidden="true"
-          className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5"
+          className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
         />
       </TrackedLink>
     </section>
   );
 }
-
 const RIVAL_LIMIT = 6;
 
 // "Amazon / EverJoy Daily" and "BLOCH Dance US (official)" are the same rival
@@ -1480,36 +1635,35 @@ const CHANNEL_BRAND_KEYS: Record<string, string> = {
 
 function AiVisibilityWorkspace({ result }: { result: AnswerCheckResult }) {
   const copy = useDictionary().answerCheck;
-  const scored = result.answers.filter((answer) => answer.mentioned !== null);
-  if (!scored.length) return null;
+  const observed = result.answers.filter((answer) => Boolean(answer.channel_label));
+  const scored = observed.filter((answer) => answer.mentioned !== null);
+  if (!observed.length) return null;
 
   const named = scored.filter((answer) => answer.mentioned === true).length;
   const channels = Array.from(
     new Set(
-      scored
+      observed
         .map((answer) => answer.channel_label)
         .filter((label): label is string => Boolean(label)),
     ),
   );
   const engines = channels.map((channel) => {
-    const observations = scored.filter(
+    const attempts = observed.filter(
       (answer) => answer.channel_label === channel,
     );
-    const wins = observations.filter(
-      (answer) => answer.mentioned === true,
-    ).length;
+    const usable = attempts.filter((answer) => answer.mentioned !== null);
+    const wins = usable.filter((answer) => answer.mentioned === true).length;
     return {
       channel,
       wins,
-      total: observations.length,
-      pct: observations.length
-        ? Math.round((wins / observations.length) * 100)
-        : 0,
+      usable: usable.length,
+      total: attempts.length,
+      pct: usable.length ? Math.round((wins / usable.length) * 100) : 0,
     };
   });
   const rivals = tallyRivals(scored);
   const topRival = rivals[0] ?? null;
-  const pct = Math.round((named / scored.length) * 100);
+  const pct = scored.length ? Math.round((named / scored.length) * 100) : 0;
 
   return (
     <section className="bg-white">
@@ -1531,15 +1685,22 @@ function AiVisibilityWorkspace({ result }: { result: AnswerCheckResult }) {
             </span>
           </div>
           <p className="mt-3 max-w-[42ch] text-[13.5px] leading-relaxed text-black/62">
-            {named === scored.length
-              ? copy.result.brandEverywhere
-              : named === 0
-                ? copy.result.brandNowhere
-                : copy.result.brandMissing(
-                    scored.length - named,
-                    scored.length,
-                  )}
+            {scored.length === 0
+              ? copy.visibility.noUsableAnswer
+              : named === scored.length
+                ? copy.result.brandEverywhere
+                : named === 0
+                  ? copy.result.brandNowhere
+                  : copy.result.brandMissing(
+                      scored.length - named,
+                      scored.length,
+                    )}
           </p>
+          {observed.length > scored.length ? (
+            <p className="mt-1.5 text-[11.5px] font-medium text-black/44">
+              {copy.visibility.usableAttempts(scored.length, observed.length)}
+            </p>
+          ) : null}
           {topRival && named < scored.length ? (
             <p className="mt-4 border-t border-black/10 pt-3 text-[12.5px] leading-relaxed text-black/58">
               <span className="font-semibold text-ink-deep">
@@ -1587,11 +1748,16 @@ function AiVisibilityWorkspace({ result }: { result: AnswerCheckResult }) {
                 </div>
                 <div className="text-right">
                   <p className="font-mono text-[13px] font-semibold text-ink-deep">
-                    {engine.wins}/{engine.total}
+                    {engine.wins}/{engine.usable || engine.total}
                   </p>
                   <p className="mt-0.5 text-[11.5px] text-black/44">
-                    {copy.result.namedYou}
+                    {engine.usable ? copy.result.namedYou : copy.result.noAnswer}
                   </p>
+                  {engine.total > engine.usable && engine.usable > 0 ? (
+                    <p className="mt-0.5 text-[10.5px] text-black/38">
+                      {engine.total - engine.usable} {copy.result.noAnswer}
+                    </p>
+                  ) : null}
                 </div>
               </div>
             ))}
@@ -1963,6 +2129,35 @@ function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
     result,
     "content_page_audit",
   );
+  const pdpRepeatedPatterns = (() => {
+    const grouped = new Map<
+      string,
+      { finding: Finding; urls: Set<string> }
+    >();
+    for (const audit of audits) {
+      for (const finding of audit.findings ?? []) {
+        const key = `${findingHeadline(finding).trim().toLowerCase()}|${finding.template_key ?? ""}`;
+        const existing = grouped.get(key);
+        if (existing) existing.urls.add(audit.url);
+        else grouped.set(key, { finding, urls: new Set([audit.url]) });
+      }
+    }
+    return Array.from(grouped.values())
+      .filter((item) => item.urls.size >= 2)
+      .map(({ finding, urls }) => ({
+        ...finding,
+        affected_pages: urls.size,
+        affected_urls: Array.from(urls),
+      }))
+      .sort((left, right) => {
+        const severity =
+          (FINDING_RANK[left.severity ?? "medium"] ?? 2) -
+          (FINDING_RANK[right.severity ?? "medium"] ?? 2);
+        if (severity) return severity;
+        return (right.affected_pages ?? 0) - (left.affected_pages ?? 0);
+      })
+      .slice(0, 5);
+  })();
   const pageAuditStatus = deepAuditState.status;
   const pageAuditsInFlight = deepAuditState.inFlight;
   const pageAuditsGated = deepAuditState.gated;
@@ -2131,13 +2326,20 @@ function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
   const catalogCheckedLabel = catalog
     ? `${catalog.products_checked}${catalog.products_capped ? "+" : ""} ${copy.summary.checkedProducts}`
     : copy.summary.productsSampled(result.products_seen);
-
   // Store, Catalog and Product pages each already collapse on their own. An
   // outer disclosure around them was a fold inside a fold — two clicks and a
   // paragraph of preamble between the merchant and a number they can read. The
   // three rows now sit directly on the card and speak for themselves.
   return (
     <section className="border-b border-black/14 bg-white">
+      <div className="border-b border-black/12 bg-[#fffaf7] px-5 py-5 sm:px-6">
+        <h3 className="text-[16px] font-semibold tracking-[-0.012em] text-ink-deep">
+          {copy.summary.evidenceHeading}
+        </h3>
+        <p className="mt-1.5 max-w-[76ch] text-[12.5px] leading-relaxed text-black/56">
+          {copy.summary.evidenceIntro}
+        </p>
+      </div>
       <Fold
         title={copy.summary.store}
         summary={
@@ -2575,14 +2777,14 @@ function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
       </Fold>
 
       <Fold
-        defaultOpen
+        defaultOpen={deepAuditState.homepageState === "reading"}
         title={copy.summary.homepage}
         summary={
-          pageAuditsGated
+          deepAuditState.homepageState === "gated"
             ? copy.summary.homepageGated
-            : pageAuditsInFlight && !homepageAudit
+            : deepAuditState.homepageState === "reading"
               ? copy.summary.homepageReading
-              : homepageAudit?.ok === false
+              : deepAuditState.homepageState === "failed"
                 ? copy.summary.homepageFailed
                 : homepageDetailed?.score != null
                   ? copy.summary.homepageSummary(
@@ -2590,23 +2792,21 @@ function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
                       homepageDetailed.checks_failed,
                       homepageDetailed.checks_evaluated,
                     )
-                  : homepageOk
-                    ? copy.summary.homepageCompleted
-                    : copy.summary.homepageReading
+                  : copy.summary.homepageCompleted
         }
       >
-        {pageAuditsGated ? (
+        {deepAuditState.homepageState === "gated" ? (
           <p className="bg-white px-5 py-4 text-[12.5px] leading-relaxed text-black/54 sm:px-6">
             {copy.summary.homepageGated}
           </p>
-        ) : pageAuditsInFlight && !homepageAudit ? (
+        ) : deepAuditState.homepageState === "reading" ? (
           <div className="flex items-start gap-3 bg-white px-5 py-5 sm:px-6">
             <Loader2 className="mt-0.5 h-4 w-4 animate-spin text-signal-ink" />
             <p className="text-[12.5px] font-semibold text-ink-deep">
               {copy.summary.homepageReading}
             </p>
           </div>
-        ) : homepageAudit?.ok === false ? (
+        ) : deepAuditState.homepageState === "failed" ? (
           <p className="bg-white px-5 py-4 text-[12.5px] text-black/54 sm:px-6">
             {copy.summary.homepageFailed}
           </p>
@@ -2711,13 +2911,11 @@ function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
           patterns={categoryTemplatePatterns}
         />
       ) : null}
-
-      {/* Store and Catalog stay shut: their summary lines already carry the
-          numbers. Product pages opens by default -- it is the only one whose
-          value is the per-check detail, not the one-line count. */}
+      {/* Evidence stays compact once the audit is complete. While a stage is
+          actively running, opening that one fold still makes progress visible. */}
       {deepAuditState.showProductPages ? (
         <Fold
-          defaultOpen
+          defaultOpen={pageAuditsInFlight}
           title={copy.summary.productPages}
           summary={
             pageAuditsInFlight
@@ -2847,71 +3045,111 @@ function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
                   ))}
                 </div>
               </div>
-              <ul className="divide-y divide-black/10 bg-white">
-                {audits.map((audit, index) => (
-                  <li
-                    key={audit.url}
-                    className="grid gap-3 px-5 py-3.5 sm:grid-cols-[28px_minmax(0,1fr)_auto_auto] sm:items-center sm:px-6"
-                  >
-                    <span className="font-mono text-[11px] text-black/38">
-                      {String(index + 1).padStart(2, "0")}
-                    </span>
-                    <div className="min-w-0">
-                      <p className="truncate text-[12.5px] font-semibold text-ink-deep">
-                        {audit.title ?? audit.url}
-                      </p>
-                      <div className="mt-0.5 flex min-w-0 items-center gap-2">
-                        <p className="min-w-0 truncate text-[11px] text-black/44">
-                          {audit.url}
+              {pdpRepeatedPatterns.length ? (
+                <div className="border-b border-black/12 bg-white px-5 py-4 sm:px-6">
+                  <p className="text-[11px] font-semibold text-ink-deep">
+                    {copy.summary.pdpRepeatedPatterns}
+                  </p>
+                  <p className="mt-1 text-[11px] leading-relaxed text-black/48">
+                    {copy.summary.pdpRepeatedHint}
+                  </p>
+                  <ul className="mt-3 divide-y divide-black/10 border-y border-black/10">
+                    {pdpRepeatedPatterns.map((finding) => (
+                      <li
+                        key={`${finding.code}-${finding.template_key ?? "all"}`}
+                        className="flex items-start justify-between gap-4 py-3"
+                      >
+                        <div className="min-w-0">
+                          <p className="text-[12.5px] font-semibold leading-snug text-ink-deep">
+                            {findingHeadline(finding)}
+                          </p>
+                          {findingWhy(finding) ? (
+                            <p className="mt-1 max-w-[70ch] text-[11.5px] leading-relaxed text-black/52">
+                              {findingWhy(finding)}
+                            </p>
+                          ) : null}
+                        </div>
+                        <span className="shrink-0 font-mono text-[11px] font-semibold text-signal-ink">
+                          {copy.summary.templatePatternCoverage(
+                            finding.affected_pages ?? 0,
+                            audits.length,
+                          )}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : null}
+              <details className="group/pages bg-white">
+                <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-3 px-5 py-3 text-[12.5px] font-semibold text-ink-deep hover:bg-[#fffaf7] sm:px-6 [&::-webkit-details-marker]:hidden">
+                  {copy.summary.sampledPagesDisclosure(audits.length)}
+                  <ChevronDown
+                    className="h-4 w-4 shrink-0 text-black/40 transition-transform group-open/pages:rotate-180"
+                    aria-hidden="true"
+                  />
+                </summary>
+                <ul className="divide-y divide-black/10 border-t border-black/10 bg-white">
+                  {audits.map((audit, index) => (
+                    <li
+                      key={audit.url}
+                      className="grid gap-3 px-5 py-3.5 sm:grid-cols-[28px_minmax(0,1fr)_auto_auto] sm:items-center sm:px-6"
+                    >
+                      <span className="font-mono text-[11px] text-black/38">
+                        {String(index + 1).padStart(2, "0")}
+                      </span>
+                      <div className="min-w-0">
+                        <p className="truncate text-[12.5px] font-semibold text-ink-deep">
+                          {audit.title ?? audit.url}
                         </p>
-                        {audit.template_key ? (
-                          <span className="shrink-0 rounded-full border border-black/10 bg-[#fffaf7] px-1.5 py-0.5 text-[9.5px] font-semibold text-black/46">
-                            {pdpLayoutLabelByKey.get(audit.template_key) ??
-                              audit.template_key}
+                        <div className="mt-0.5 flex min-w-0 items-center gap-2">
+                          <p className="min-w-0 truncate text-[11px] text-black/44">
+                            {audit.url}
+                          </p>
+                          {audit.template_key ? (
+                            <span className="shrink-0 rounded-full border border-black/10 bg-[#fffaf7] px-1.5 py-0.5 text-[9.5px] font-semibold text-black/46">
+                              {pdpLayoutLabelByKey.get(audit.template_key) ?? audit.template_key}
+                            </span>
+                          ) : null}
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3 text-[11px] sm:justify-end">
+                        {audit.score != null ? (
+                          <span className="font-semibold text-ink-deep">
+                            {copy.summary.health(Math.round(audit.score))}
                           </span>
                         ) : null}
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-3 text-[11px] sm:justify-end">
-                      {audit.score != null ? (
-                        <span className="font-semibold text-ink-deep">
-                          {copy.summary.health(Math.round(audit.score))}
+                        <span
+                          className={
+                            audit.checks_failed > 0
+                              ? "font-semibold text-signal-ink"
+                              : "text-black/48"
+                          }
+                        >
+                          {copy.summary.needAttentionOf(
+                            audit.checks_failed,
+                            audit.checks_evaluated,
+                          )}
                         </span>
-                      ) : null}
-                      <span
-                        className={
-                          audit.checks_failed > 0
-                            ? "font-semibold text-signal-ink"
-                            : "text-black/48"
-                        }
-                      >
-                        {copy.summary.needAttentionOf(
-                          audit.checks_failed,
-                          audit.checks_evaluated,
-                        )}
-                      </span>
-                    </div>
-                    {audit.report_id ? (
-                      <a
-                        href={`${APP_REPORT_URL}/${audit.report_id}`}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="inline-flex items-center gap-1.5 justify-self-start text-[11.5px] font-semibold text-ink-deep underline decoration-black/18 underline-offset-4 hover:text-signal-ink hover:decoration-signal-ink sm:justify-self-end"
-                      >
-                        {copy.summary.openReport}{" "}
-                        <ArrowRight
-                          className="h-3.5 w-3.5"
-                          aria-hidden="true"
-                        />
-                      </a>
-                    ) : (
-                      <span className="justify-self-start text-[11px] text-black/34 sm:justify-self-end">
-                        {copy.summary.reportUnavailable}
-                      </span>
-                    )}
-                  </li>
-                ))}
-              </ul>
+                      </div>
+                      {audit.report_id ? (
+                        <a
+                          href={`${APP_REPORT_URL}/${audit.report_id}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex items-center gap-1.5 justify-self-start text-[11.5px] font-semibold text-ink-deep underline decoration-black/18 underline-offset-4 hover:text-signal-ink hover:decoration-signal-ink sm:justify-self-end"
+                        >
+                          {copy.summary.openReport}{" "}
+                          <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+                        </a>
+                      ) : (
+                        <span className="justify-self-start text-[11px] text-black/34 sm:justify-self-end">
+                          {copy.summary.reportUnavailable}
+                        </span>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </details>
             </>
           )}
         </Fold>
@@ -2983,77 +3221,47 @@ function ScanDisclosure({
  * explanation, which reads as a paywall for something the visitor cannot value
  * — and this stage is free, so a paywall was the wrong story entirely.
  */
-function DeeperAnalysisPanel({
-  result,
-  gate,
-}: {
-  result: AnswerCheckResult;
-  gate: React.ReactNode;
-}) {
+function DeeperAnalysisPanel({ gate }: { gate: React.ReactNode }) {
   const copy = useDictionary().answerCheck;
-  // Two distinct things open up, and both are gated by the same one click:
-  // the answer probe (`execute_probe`) and the per-page AI interpretation
-  // (`/pdp/public/pdp-audit/{id}/complete-ai`, which is handed the failed
-  // checks above plus the real page copy and returns concrete suggestions).
-  // Only advertising the first one undersold what confirming actually buys.
   const adds = [
-    [copy.deeper.aiPages, copy.deeper.aiPagesDetail],
-    [
-      copy.deeper.shopperAnswers,
-      copy.deeper.shopperAnswersDetail(result.products_seen),
-    ],
-    [copy.deeper.alternatives, copy.deeper.alternativesDetail],
+    copy.deeper.aiPages,
+    copy.deeper.shopperAnswers,
+    copy.deeper.alternatives,
   ] as const;
 
   return (
-    <section className="border-b border-black/14 bg-[#fffaf7]">
-      <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(0,0.85fr)]">
-        <div className="border-b border-black/12 px-5 py-6 sm:px-6 lg:border-b-0 lg:border-r">
-          <p className="font-mono text-[10.5px] font-semibold uppercase tracking-[0.1em] text-black/40">
+    <section className="border-b border-black/14 bg-[#fffaf7] px-5 py-7 sm:px-6 sm:py-8">
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(20rem,0.72fr)] lg:items-center lg:gap-10">
+        <div>
+          <p className="font-mono text-[10.5px] font-semibold uppercase tracking-[0.1em] text-signal-ink">
             {copy.deeper.eyebrow}
           </p>
-          {/* Merchant-facing only. What this costs Beseam to run is our
-              problem, not something to put in front of someone deciding
-              whether to trust us. */}
-          <h3 className="mt-2 text-[18px] font-semibold tracking-[-0.02em] text-ink-deep">
+          <h3 className="mt-2 max-w-[34ch] text-[20px] font-semibold leading-[1.28] tracking-[-0.02em] text-ink-deep sm:text-[22px]">
             {copy.deeper.title}
           </h3>
-          <p className="mt-1.5 max-w-[52ch] text-[13.5px] leading-relaxed text-black/62">
+          <p className="mt-2 max-w-[60ch] text-[13.5px] leading-relaxed text-black/62">
             {copy.deeper.intro}
           </p>
-          <dl className="mt-5 border-t border-black/12">
-            {adds.map(([term, detail]) => (
-              <div key={term} className="border-b border-black/12 py-3">
-                <dt className="flex items-start gap-2 text-[13.5px] font-semibold text-ink-deep">
-                  <MailCheck
-                    aria-hidden="true"
-                    className="mt-0.5 h-3.5 w-3.5 shrink-0 text-black/38"
-                  />
-                  {term}
-                </dt>
-                <dd className="mt-1 pl-[1.375rem] text-[12.5px] leading-relaxed text-black/58">
-                  {detail}
-                </dd>
-              </div>
+          <ul className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-[12.5px] font-medium text-black/64">
+            {adds.map((item) => (
+              <li key={item} className="flex items-center gap-2">
+                <Check
+                  aria-hidden="true"
+                  className="h-3.5 w-3.5 shrink-0 text-[#1f7a4d]"
+                />
+                {item}
+              </li>
             ))}
-          </dl>
+          </ul>
         </div>
-        {/* The one ask on the card gets its own ground and a little more air
-            than the explanation beside it. */}
-        <div className="bg-white px-5 py-6 sm:px-6">{gate}</div>
+        <div className="border-t border-black/12 pt-6 lg:border-l lg:border-t-0 lg:pl-8 lg:pt-0">
+          {gate}
+        </div>
       </div>
     </section>
   );
 }
 
-/**
- * One question, expandable into what each assistant did with it.
- *
- * `probe.py` keeps the reduction, not the prose: `_summarize()` records whether
- * you were named, who was named instead, and the product cards the surface put
- * up — `fetched.raw_response` is parsed and dropped. So this shows exactly what
- * was observed and never implies we kept an answer we did not.
- */
 /**
  * Beseam's own read of one question, derived only from what was recorded.
  * `probe.py` keeps no answer prose, so this states the counts and the names —
@@ -3275,7 +3483,8 @@ function QuestionRow({
 function VisibilityDisclosure({ result }: { result: AnswerCheckResult }) {
   const copy = useDictionary().answerCheck;
   const locale = useLocale();
-  const scored = result.answers.filter((answer) => answer.mentioned !== null);
+  const attempts = result.answers.filter((answer) => Boolean(answer.channel_label));
+  const scored = attempts.filter((answer) => answer.mentioned !== null);
   const named = scored.filter((answer) => answer.mentioned === true).length;
   const rivals = tallyRivals(result.answers).slice(0, RIVAL_LIMIT);
   const rows = result.questions
@@ -3291,96 +3500,117 @@ function VisibilityDisclosure({ result }: { result: AnswerCheckResult }) {
       title={copy.visibility.title}
       summary={
         scored.length > 0
-          ? copy.visibility.summary(named, scored.length, rows.length)
-          : copy.visibility.checking
+          ? attempts.length > scored.length
+            ? copy.visibility.summaryWithAttempts(
+                named,
+                scored.length,
+                attempts.length,
+                rows.length,
+              )
+            : copy.visibility.summary(named, scored.length, rows.length)
+          : attempts.length > 0
+            ? copy.visibility.noUsableSummary(attempts.length, rows.length)
+            : copy.visibility.checking
       }
     >
       <AiVisibilityWorkspace result={result} />
 
       {rows.length > 0 ? (
-        <div className="border-t border-black/18 bg-white">
-          {rivals.length > 0 ? (
-            <div className="px-4 py-4 sm:px-5">
-              <p className="text-[12px] font-semibold text-black/62">
-                {copy.visibility.competitors}
-              </p>
-              <ul className="mt-3 grid gap-2 sm:grid-cols-2 sm:gap-x-10">
-                {rivals.map((rival) => (
-                  <li key={rival.label} className="flex items-center gap-3">
-                    <span
-                      className="w-[8.5rem] shrink-0 truncate text-[12.5px] text-black/70"
-                      title={rival.label}
-                    >
-                      {rival.label}
-                    </span>
-                    <span className="h-1 flex-1 bg-black/8">
+        <details className="group/ai-evidence border-t border-black/18 bg-white">
+          <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 text-[12.5px] font-semibold text-ink-deep hover:bg-[#fffaf7] sm:px-5 [&::-webkit-details-marker]:hidden">
+            {copy.visibility.assistantEvidence}
+            <ChevronDown
+              className="h-4 w-4 shrink-0 text-black/40 transition-transform group-open/ai-evidence:rotate-180"
+              aria-hidden="true"
+            />
+          </summary>
+          <div className="border-t border-black/12">
+            {rivals.length > 0 ? (
+              <div className="px-4 py-4 sm:px-5">
+                <p className="text-[12px] font-semibold text-black/62">
+                  {copy.visibility.competitors}
+                </p>
+                <ul className="mt-3 grid gap-2 sm:grid-cols-2 sm:gap-x-10">
+                  {rivals.map((rival) => (
+                    <li key={rival.label} className="flex items-center gap-3">
                       <span
-                        className="block h-full bg-[#d95028]"
-                        style={{
-                          width: `${(rival.count / rivals[0].count) * 100}%`,
-                        }}
-                      />
-                    </span>
-                    <span className="w-8 shrink-0 text-right font-mono text-[12px] text-black/62">
-                      {rival.count}×
-                    </span>
-                  </li>
+                        className="w-[8.5rem] shrink-0 truncate text-[12.5px] text-black/70"
+                        title={rival.label}
+                      >
+                        {rival.label}
+                      </span>
+                      <span className="h-1 flex-1 bg-black/8">
+                        <span
+                          className="block h-full bg-[#d95028]"
+                          style={{
+                            width: `${(rival.count / rivals[0].count) * 100}%`,
+                          }}
+                        />
+                      </span>
+                      <span className="w-8 shrink-0 text-right font-mono text-[12px] text-black/62">
+                        {rival.count}×
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
+
+            <div className="border-t border-black/12">
+              <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 px-4 pb-1 pt-4 sm:px-5">
+                <p className="text-[12px] font-semibold text-black/62">
+                  {copy.visibility.openQuestion}
+                </p>
+                {questionLanguageBadge(result, locale) ? (
+                  <span className="shrink-0 rounded-full border border-black/16 px-2 py-0.5 text-[11.5px] font-medium text-black/58">
+                    {copy.visibility.askedIn(
+                      questionLanguageBadge(result, locale)!,
+                    )}
+                  </span>
+                ) : null}
+              </div>
+              <ul>
+                {rows.map((row) => (
+                  <QuestionRow
+                    key={row.question}
+                    question={row.question}
+                    answers={row.answers}
+                  />
                 ))}
               </ul>
             </div>
-          ) : null}
-
-          <div className="border-t border-black/12">
-            <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 px-4 pb-1 pt-4 sm:px-5">
-              <p className="text-[12px] font-semibold text-black/62">
-                {copy.visibility.openQuestion}
-              </p>
-              {questionLanguageBadge(result, locale) ? (
-                <span className="shrink-0 rounded-full border border-black/16 px-2 py-0.5 text-[11.5px] font-medium text-black/58">
-                  {copy.visibility.askedIn(
-                    questionLanguageBadge(result, locale)!,
-                  )}
-                </span>
-              ) : null}
-            </div>
-            <ul>
-              {rows.map((row) => (
-                <QuestionRow
-                  key={row.question}
-                  question={row.question}
-                  answers={row.answers}
-                />
-              ))}
-            </ul>
           </div>
-        </div>
+        </details>
       ) : null}
     </ScanDisclosure>
   );
 }
-// `AiAuditDisclosure` lived here: a second, technical rendering of the same
 // findings the card now leads with in plain words. Two lists of one set of
 // findings is the duplication this redesign exists to remove — the technical
 // reading moved under each finding's "What we saw", and the per-page numbers
 // live in Full evidence.
 
 /**
- * The one sentence a merchant would repeat to their team. It replaces the
- * separate "Owner takeaway" card that used to float above the result and state
- * the run status a second time.
+ * The one sentence a merchant would repeat to their team. On a completed scan
+ * the report leads with the decision layer (the top priorities), while the AI
+ * sampling result remains visible immediately below as evidence.
  */
 function ScanHeadline({ result }: { result: AnswerCheckResult }) {
   const copy = useDictionary().answerCheck;
   const brand = result.brand || result.domain;
   const scored = result.answers.filter((answer) => answer.mentioned !== null);
   const missed = scored.filter((answer) => answer.mentioned === false).length;
-  const findings = result.findings.length;
+  const findings = reportFindingGroups(result, copy).length;
   const running = isScanInFlight(result);
 
   let headline: string;
   let support: string | null = null;
 
-  if (scored.length) {
+  if (findings > 0 && !running) {
+    const priorityCount = Math.min(FIRST_SHOWN, findings);
+    headline = copy.result.headlinePriorities(brand, priorityCount);
+    support = copy.result.prioritySupport(Math.max(0, findings - priorityCount));
+  } else if (scored.length) {
     headline =
       missed === 0
         ? copy.result.headlineAll(brand, scored.length)
@@ -3400,8 +3630,6 @@ function ScanHeadline({ result }: { result: AnswerCheckResult }) {
   }
 
   return (
-    // The one statement of the whole page sits on the warm ground, so the
-    // result opens as a sentence rather than as the top of a table.
     <section className="border-b border-black/14 bg-[#fffaf7] px-5 py-7 sm:px-6 sm:py-8">
       <p className="max-w-[30ch] text-balance font-display text-[clamp(1.65rem,3.4vw,2.4rem)] font-normal leading-[1.1] tracking-[-0.024em] text-ink-deep">
         {headline}
@@ -3648,7 +3876,9 @@ export function ResultCard({
                 ? copy.result.statusRunning
                 : result.status === "awaiting_verification"
                   ? copy.result.statusFreeReady
-                  : copy.result.statusComplete}
+                  : result.status === "failed"
+                    ? copy.result.statusFailed
+                    : copy.result.statusComplete}
           </span>
           {/* Nothing to share or print when the scan could not read the store. */}
           <button
@@ -3693,29 +3923,24 @@ export function ResultCard({
           <FoundStrip result={result} />
           <WorthLookingAt result={result} />
 
-          {continueHref ? (
-            <ContinuePaths result={result} continueHref={continueHref} />
-          ) : null}
-
           {verificationGate && result.status === "awaiting_verification" ? (
-            <DeeperAnalysisPanel result={result} gate={verificationGate} />
+            <DeeperAnalysisPanel gate={verificationGate} />
           ) : null}
 
           {scored.length > 0 || result.questions.length > 0 ? (
             <VisibilityDisclosure result={result} />
           ) : null}
 
-          {verificationGate && result.status !== "awaiting_verification" ? (
+          <InitialScanSummary result={result} />
+
+          {/* Method and limits are useful proof, but secondary to the findings. */}
+          {result.status === "ready" ? <ScanBoundary result={result} /> : null}
+
+          {verificationGate && result.status === "ready" ? (
             <SaveAuditPanel domain={result.domain} gate={verificationGate} />
           ) : null}
 
-          <InitialScanSummary result={result} />
-
-          {/* Prints with the report: the scope of a finding list is part of the
-              finding list, not a sales aside. */}
-          <ScanBoundary result={result} />
-
-          {continueHref ? (
+          {continueHref && result.status === "ready" ? (
             <ClosingContinue
               domain={result.domain}
               continueHref={continueHref}
@@ -3823,6 +4048,7 @@ export default function AnswerCheck({
   const [verifiedArrival, setVerifiedArrival] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [verificationSubmitting, setVerificationSubmitting] = useState(false);
+  const [retrySubmitting, setRetrySubmitting] = useState(false);
   const pollCount = useRef(0);
   const [pollExhausted, setPollExhausted] = useState(false);
 
@@ -4061,6 +4287,37 @@ export default function AnswerCheck({
     }
   };
 
+  const onRetryAudit = useCallback(async () => {
+    if (!result || !result.retryable) return;
+    setRetrySubmitting(true);
+    setError("");
+    try {
+      const response = await fetch("/api/answer-check", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          domain: result.domain,
+          retry: true,
+          source: placement,
+          website,
+          locale,
+        }),
+      });
+      const payload = await response.json();
+      if (!response.ok) {
+        setError(apiError(payload, response.status, copy.errors.scanDomain));
+        return;
+      }
+      setResult(payload as AnswerCheckResult);
+      pollCount.current = 0;
+      setPollExhausted(false);
+    } catch {
+      setError(copy.errors.serviceUnavailable);
+    } finally {
+      setRetrySubmitting(false);
+    }
+  }, [copy.errors.scanDomain, copy.errors.serviceUnavailable, locale, placement, result, website]);
+
   const inputClass =
     "h-12 w-full border border-black/22 bg-white px-4 text-left text-[15px] text-ink-deep placeholder:text-black/40 focus:border-signal-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal-ink";
 
@@ -4069,7 +4326,7 @@ export default function AnswerCheck({
   // read as a single surface instead of three cards of different widths
   // floating over each other. A cold page keeps the narrow, focused field.
   const inResultMode = Boolean(submitting || result);
-  const columnClass = inResultMode ? "max-w-[72rem]" : "max-w-3xl";
+  const columnClass = inResultMode ? "max-w-[80rem]" : "max-w-3xl";
 
   // One button, one job on every surface: start the scan. The hero routes to
   // the page that owns the result and the page posts it, but the promise the
@@ -4330,36 +4587,48 @@ export default function AnswerCheck({
           <ScanProgress
             steps={result && !submitting ? result.steps : OPTIMISTIC_STEPS}
             domain={result?.domain ?? (domain.trim() || null)}
+            deepAudit={Boolean(
+              result && (result.status === "queued" || result.status === "running"),
+            )}
           />
         </div>
       ) : null}
 
       {result ? (
         <div
-          className={`mx-auto max-w-[72rem] ${showEmailAsk && !showProgress ? "-mt-px" : "mt-4"}`}
+          className={`mx-auto max-w-[80rem] ${showEmailAsk && !showProgress ? "-mt-px" : "mt-4"}`}
         >
-          {/* The poll budget ran out with work still outstanding. Name what did
-              finish, so the evidence already on the card is not thrown into
-              doubt by one stalled stage. */}
-          {pollExhausted ? (
+          {result.retryable ? (
             <div
               role="status"
-              className="mb-4 flex flex-wrap items-center justify-between gap-3 border border-black/18 bg-[#fffaf7] px-5 py-4"
+              className="mb-4 flex flex-wrap items-center justify-between gap-4 border border-signal-ink/30 bg-[#fffaf7] px-5 py-4 sm:px-6"
             >
-              <p className="max-w-[62ch] text-[13px] leading-relaxed text-ink-deep">
-                {copy.errors.pollExhausted}
-              </p>
-              {/* Drives the scan directly. It used to submit the domain form by
-                  id, which is not on the page any more once a result is. */}
+              <div>
+                <p className="text-[14px] font-semibold text-ink-deep">
+                  {copy.errors.auditDidNotFinish}
+                </p>
+                <p className="mt-1 max-w-[64ch] text-[12.5px] leading-relaxed text-black/58">
+                  {copy.errors.auditDidNotFinishBody}
+                </p>
+              </div>
               <button
                 type="button"
-                disabled={submitting}
-                onClick={() => void runScan(result.domain, "")}
-                className="inline-flex min-h-11 shrink-0 items-center gap-2 border border-black/36 bg-white px-4 text-[13px] font-semibold text-ink-deep transition-colors hover:border-signal-ink hover:text-signal-ink disabled:cursor-wait disabled:opacity-70"
+                disabled={retrySubmitting}
+                onClick={() => void onRetryAudit()}
+                className="inline-flex min-h-11 shrink-0 items-center gap-2 bg-ink-deep px-4 text-[13px] font-semibold text-white transition-colors hover:bg-signal-ink disabled:cursor-wait disabled:opacity-70"
               >
-                <RefreshCw className="h-3.5 w-3.5" aria-hidden="true" />
-                {submitting ? copy.errors.running : copy.errors.runAgain}
+                <RefreshCw className={`h-3.5 w-3.5 ${retrySubmitting ? "animate-spin" : ""}`} aria-hidden="true" />
+                {retrySubmitting
+                  ? copy.errors.retryAuditRunning
+                  : copy.errors.retryAudit}
               </button>
+            </div>
+          ) : pollExhausted ? (
+            <div
+              role="status"
+              className="mb-4 border border-black/18 bg-[#fffaf7] px-5 py-4 text-[13px] leading-relaxed text-ink-deep sm:px-6"
+            >
+              {copy.errors.pollExhausted}
             </div>
           ) : null}
           <ResultCard

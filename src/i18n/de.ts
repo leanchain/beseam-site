@@ -1271,6 +1271,11 @@ export const de: Dictionary = {
         "Nützliche Befunde erscheinen, sobald sie bereit sind. Sie müssen nicht auf alles warten.",
       questionsLater:
         "Dieser erste Scan ist die Momentaufnahme. In Beseam laufen die Prüfungen danach weiter.",
+      quickEstimate: "Erste Ergebnisse erscheinen normalerweise in weniger als einer Minute.",
+      fullAuditRunning: "Vollständige Analyse läuft",
+      fullAuditEstimate: "Nach der Bestätigung normalerweise 2–5 Minuten.",
+      progressDetails: "Scan-Fortschritt anzeigen",
+      currentStep: "Jetzt",
       progress: (done: number, total: number) => `${done} von ${total}`,
       productsFound: (count: number) =>
         `${count} ${count === 1 ? "Produkt" : "Produkte"} gefunden`,
@@ -1291,13 +1296,18 @@ export const de: Dictionary = {
     },
     result: {
       productsFound: "Produkte gefunden",
-      answersNamed: "KI-Antworten nannten Sie",
+      answersNamed: "verwertbare KI-Antworten nannten Sie",
       answersPending: "KI-Antworten stehen aus",
       opportunitiesFound: (count: number) =>
         count === 1 ? "Chance gefunden" : "Chancen gefunden",
+      prioritiesFound: (count: number) =>
+        count === 1 ? "Priorität" : "Prioritäten",
+      supportingFindings: (count: number) =>
+        count === 1 ? "stützender Befund" : "stützende Befunde",
       statusRejected: "Dieser Shop konnte nicht gelesen werden",
       statusRunning: "Läuft noch",
       statusFreeReady: "Kostenloser Scan bereit",
+      statusFailed: "Analyse unvollständig",
       statusComplete: "Scan abgeschlossen",
       shareAria: "Diesen Scan teilen",
       linkCopied: "Link kopiert",
@@ -1331,19 +1341,25 @@ export const de: Dictionary = {
       details: "Details",
       close: "Schliessen",
       headlineAll: (brand: string, total: number) =>
-        `${brand} wurde in allen ${total} geprüften KI-Antworten genannt.`,
+        `${brand} wurde in allen ${total} verwertbaren geprüften KI-Antworten genannt.`,
       headlineNone: (brand: string, total: number) =>
-        `${brand} wurde in keiner der ${total} geprüften KI-Antworten genannt.`,
+        `${brand} wurde in keiner der ${total} verwertbaren geprüften KI-Antworten genannt.`,
       headlineMissed: (brand: string, missed: number, total: number) =>
-        `${brand} fehlte in ${missed} von ${total} geprüften KI-Antworten.`,
+        `${brand} fehlte in ${missed} von ${total} verwertbaren geprüften KI-Antworten.`,
       headlineFindings: (brand: string, count: number) =>
         `Wir haben den öffentlichen Shop von ${brand} gelesen und ${count} ${count === 1 ? "Chance" : "Chancen"} gefunden, die sich anzusehen lohnen.`,
+      headlinePriorities: (brand: string, count: number) =>
+        `${count} ${count === 1 ? "Punkt fällt" : "Punkte fallen"} bei ${brand} besonders auf.`,
+      prioritySupport: (count: number) =>
+        count > 0
+          ? `Beginnen Sie mit diesen Prioritäten. ${count} ${count === 1 ? "weiterer Befund bleibt" : "weitere Befunde bleiben"} darunter als stützende Belege.`
+          : "Beginnen Sie mit diesen Prioritäten; die Belege darunter zeigen, warum sie wichtig sind.",
       headlineReading: (brand: string) =>
         `Der Shop von ${brand} wird gerade gelesen.`,
       headlineClear: (brand: string) =>
         `Auf den lesbaren Seiten von ${brand} ist nichts Offensichtliches aufgefallen.`,
       sampledSupport:
-        "Das sind Momentaufnahmen, keine Rangliste. Sie zeigen, was Kundinnen und Kunden bei unseren Fragen angezeigt bekamen.",
+        "Das sind Momentaufnahmen, keine Rangliste. Verwertbare Antworten und Versuche ohne Antwort werden unten getrennt gezeigt.",
       moreMayFollow:
         "Weitere Befunde können folgen, während Ihre Produktseiten fertig gelesen werden.",
       findingsSupport:
@@ -1375,19 +1391,33 @@ export const de: Dictionary = {
       startFixing: "In Beseam beheben",
       evidence: "Belege",
       checks: (count: number) => `${count} Prüfungen`,
+      moreSampledPages: (count: number) =>
+        `+ ${count} weitere ${count === 1 ? "Stichprobenseite" : "Stichprobenseiten"}`,
       productsSeenOn: "Bei diesen Produkten gesehen",
       seePage: "Seite ansehen →",
       rawCatalog: "Gelesene Roh-Katalogdatei →",
       fullPageReport: "Vollständigen Seitenbericht öffnen →",
-      heading: "Das zuerst beheben",
+      heading: "Hier anfangen",
       intro:
-        "Die klarsten Chancen aus diesem öffentlichen Scan, danach geordnet, was sich zuerst anzusehen lohnt. Öffnen Sie einen Punkt für Empfehlung und Belege.",
+        "Das sind die stärksten Prioritäten aus dem Scan. Öffnen Sie einen Punkt, wenn Sie die Empfehlung und die Belege dahinter sehen möchten.",
       stillReading: "Wird noch gelesen.",
       moreMayAppear:
         " Weitere Befunde können erscheinen, während Ihre Produktseiten fertig werden.",
       showOther: (count: number) =>
-        `${count} ${count === 1 ? "weiteren Befund" : "weitere Befunde"} anzeigen`,
+        `${count} stützende ${count === 1 ? "Befund" : "Befunde"} anzeigen`,
       readingPages: "Ihre Produktseiten werden noch gelesen.",
+      aiVisibilityTitle: "Sichtbarkeit bei KI-Shopping",
+      aiVisibilityAllMissed: (count: number) =>
+        `Ihre Marke fehlte in allen ${count} verwertbaren KI-Shopping-${count === 1 ? "Antwort" : "Antworten"}.`,
+      aiVisibilitySomeMissed: (missed: number, total: number) =>
+        `Ihre Marke fehlte in ${missed} von ${total} verwertbaren KI-Shopping-Antworten.`,
+      aiVisibilityWhy:
+        "Wenn ein Assistent eine Kauffrage beantwortet, ohne Sie zu nennen, kann die Kundschaft schon vor dem Besuch Ihres Shops zu Alternativen gelenkt werden.",
+      aiVisibilityNext:
+        "Öffnen Sie unten die Fragen, um zu sehen, was gefragt wurde, welche Assistenten eine verwertbare Antwort lieferten, wen sie stattdessen nannten und welche Produktbelege Sie zuerst stärken sollten.",
+      aiVisibilityAttempts: (usable: number, total: number) =>
+        `${usable} von ${total} Assistenten-Versuchen lieferten eine verwertbare Antwort.`,
+      aiVisibilityRivals: (names: string) => `Genannte Alternativen: ${names}.`,
       discoveryFiles: {
         llms: "Eine kurze Zusammenfassung Ihres Shops für KI-Assistenten, die danach suchen. Optional.",
         agents:
@@ -1450,8 +1480,10 @@ export const de: Dictionary = {
       start: "Kostenlos mit diesem Shop fortfahren",
       carryStore: (domain: string) =>
         `${domain} wird in die Einrichtung übernommen. Sie starten nicht von vorn.`,
-      closingEyebrow: "Genug gesehen?",
-      closingTitle: "Lassen Sie Beseam diesen Shop weiter beobachten.",
+      closingEyebrow: "Nächster Schritt",
+      closingTitle: "Lassen Sie Beseam diese Prioritäten weiter beobachten.",
+      closingBody:
+        "Beseam prüft den Shop weiter, bereitet die stärksten Änderungen zur Freigabe vor und zeigt, was sich nach jeder Änderung bewegt hat.",
       reviewWithFinding: "Möchten Sie das lieber gemeinsam mit uns durchgehen?",
       reviewWithoutFinding:
         "Möchten Sie das lieber gemeinsam mit uns durchgehen?",
@@ -1490,14 +1522,29 @@ export const de: Dictionary = {
         `separat an jeden von ${count} Assistenten gestellt`,
       title: "Wie Sie erscheinen, wenn Kundinnen und Kunden fragen",
       summary: (named: number, total: number, questions: number) =>
-        `${named}/${total} beobachtete Antworten nannten Sie · ${questions} ${questions === 1 ? "Kauffrage" : "Kauffragen"}`,
+        `${named}/${total} verwertbare Antworten nannten Sie · ${questions} ${questions === 1 ? "Kauffrage" : "Kauffragen"}`,
+      summaryWithAttempts: (
+        named: number,
+        usable: number,
+        attempts: number,
+        questions: number,
+      ) =>
+        `${named}/${usable} verwertbare Antworten nannten Sie · ${usable}/${attempts} Versuche verwertbar · ${questions} ${questions === 1 ? "Kauffrage" : "Kauffragen"}`,
+      usableAttempts: (usable: number, total: number) =>
+        `${usable}/${total} Versuche verwertbar`,
+      noUsableSummary: (attempts: number, questions: number) =>
+        `0/${attempts} Assistenten-Versuche lieferten eine verwertbare Antwort · ${questions} ${questions === 1 ? "Kauffrage" : "Kauffragen"}`,
       checking: "Es wird geprüft, was der Kundschaft gezeigt wird",
       competitors: "Konkurrenten, die genannt wurden, wenn Sie es nicht wurden",
+      assistantEvidence: "Assistenten-Belege ansehen",
       openQuestion:
         "Öffnen Sie eine Frage, um die Antwort jedes Assistenten zu sehen",
       askedIn: (language: string) => `Gefragt auf ${language}`,
     },
     summary: {
+      evidenceHeading: "Belege hinter den Prioritäten",
+      evidenceIntro:
+        "Die Zusammenfassung oben ist die Entscheidungsebene. Öffnen Sie diese Bereiche nur, wenn Sie die zugrunde liegenden Shop-, Katalog-, Seiten- oder Inhaltsbelege sehen möchten.",
       productCatalog: "Produktkatalog",
       noCatalogBrandSite:
         "Kein Produktkatalog gefunden. Als Markenwebsite geprüft.",
@@ -1706,7 +1753,12 @@ export const de: Dictionary = {
         "Shop- und Katalogbelege sind oben bereits verfügbar. Ergebnisse auf Seitenebene erscheinen hier automatisch.",
       pdpFailed:
         "Die Shop- und Katalogbeobachtungen bleiben gültig. Die repräsentative Produktseitenprüfung konnte bei diesem Durchlauf nicht abgeschlossen werden.",
-      sampleShows: "Was die Beispiel-Produktseiten zeigen",
+            sampleShows: "Was die Stichprobe der Produktseiten zeigt",
+      pdpRepeatedPatterns: "Wiederholt auf den geprüften Produktseiten",
+      pdpRepeatedHint:
+        "Diese Muster sollten Sie beheben, bevor Sie einzelnen Seitendetails nachgehen.",
+      sampledPagesDisclosure: (count: number) =>
+        `${count} geprüfte ${count === 1 ? "Produktseite" : "Produktseiten"} anzeigen`,
       needAttention: (count: number) => `${count} brauchen Aufmerksamkeit`,
       checked: (count: number) => `von ${count} geprüft`,
       couldNotCheck: (count: number) => ` · ${count} konnten wir nicht prüfen`,
@@ -1717,45 +1769,45 @@ export const de: Dictionary = {
       reportUnavailable: "Bericht nicht verfügbar",
     },
     deeper: {
-      eyebrow: "Optional: zuerst mehr Belege",
-      title: "Schalten Sie den tieferen Scan frei, bevor Sie entscheiden.",
+      eyebrow: "Als Nächstes · vollständige Analyse",
+      title: "Bestätigen Sie Ihre E-Mail, bevor wir die vollständige Analyse starten.",
       intro:
-        "Möchten Sie vor dem Start mit Beseam mehr Belege sehen? Bestätigen Sie eine E-Mail; dann laufen die langsameren Prüfungen: Empfehlungen auf Seitenebene plus echte Kauffragen an ChatGPT und Google AI Mode.",
+        "Die ersten Chancen sehen Sie oben. Ein Klick in Ihrem Posteingang startet die tiefere Seitenprüfung und KI-Analyse – einschliesslich dessen, was ChatGPT und Google AI Mode Kundinnen und Kunden zeigen.",
       assurances: [
         "Kostenlos",
         "Kein Konto",
         "Eine E-Mail, keine Marketingliste",
       ],
-      aiPages: "KI liest Ihre Seiten und sagt, was zu ändern ist",
+      aiPages: "KI-Analyse Seite für Seite",
       aiPagesDetail:
         "Öffnen Sie einen Produktseitenbericht: KI geht die Seite neben den Befunden oben durch und schreibt konkrete Verbesserungen samt zugrunde liegendem Seitentext zurück.",
-      shopperAnswers: "Was Kundinnen und Kunden heute gesagt wird",
+      shopperAnswers: "ChatGPT + Google AI Mode",
       shopperAnswersDetail: (count: number) =>
         `Fragen aus den ${count} eben gelesenen ${count === 1 ? "Produkt" : "Produkten"} werden an ChatGPT und Google AI Mode gestellt; die Antworten werden aufgezeichnet.`,
-      alternatives: "Wer genannt wird, wenn Sie es nicht werden",
+      alternatives: "Stattdessen gezeigte Konkurrenten",
       alternativesDetail:
         "Die konkurrierenden Marken und Produkte, die an Ihrer Stelle erscheinen.",
     },
     email: {
       sentTo: (email: string) => `Gesendet an ${email}`,
       completeTitle: "Ihr Link ist im Posteingang.",
-      continueTitle: "Ein Klick im Posteingang, dann geht es weiter.",
+      continueTitle: "Bestätigen Sie ihn, um die vollständige Analyse zu starten.",
       completeBody:
         "Nichts auf dieser Seite verschwindet. Der Link öffnet dieselbe Analyse jederzeit wieder.",
       continueBody:
-        "Nichts auf dieser Seite verschwindet. Öffnen Sie den Link: Dann fragen wir die Assistenten zu Ihren Produkten und zeigen Ihnen die vollständige Analyse.",
+        "Klicken Sie auf den Link im Posteingang. Dann starten wir Seitenprüfung, KI-Analyse und die Fragen an Shopping-Assistenten. Diese Seite bleibt währenddessen erhalten.",
       differentEmail: "An eine andere E-Mail senden",
       label: "Geschäftliche E-Mail",
-      runningLabel: "Vollständigen Scan freischalten",
+      runningLabel: "Vollständige Analyse starten",
       completeLabel: "Diese Analyse behalten",
       completeIntro: (domain: string) =>
         `Die Analyse für ${domain} ist fertig. Hinterlassen Sie eine Adresse; wir senden Ihnen den Link, damit Sie sie jederzeit öffnen können.`,
       runningIntro: (domain: string) =>
-        `Der öffentliche Scan von ${domain} steht bereits auf dieser Seite. Bestätigen Sie Ihre E-Mail, um Empfehlungen auf Seitenebene freizuschalten, ChatGPT und Google AI Mode zu Ihren Produkten zu befragen und die vollständige Analyse zu behalten.`,
+        `Wir haben die ersten Chancen auf ${domain} gefunden. Bestätigen Sie Ihre E-Mail, um die tiefere Seitenprüfung, KI-Analyse sowie die Checks mit ChatGPT und Google AI Mode zu starten.`,
       placeholder: "sie@firma.ch",
       sending: "Wird gesendet…",
       send: "Senden",
-      runningCta: "Tieferen Scan freischalten",
+      runningCta: "Bestätigungslink senden",
       completeCta: "Analyse per E-Mail senden",
       assurances: [
         "Kein Konto",
@@ -1763,14 +1815,14 @@ export const de: Dictionary = {
         "Eine E-Mail, keine Marketingliste",
       ],
       sent: "E-Mail gesendet",
-      clickContinue: "Ein Klick im Posteingang, dann fahren wir fort.",
+      clickContinue: "Ein Klick im Posteingang startet die vollständige Analyse.",
       openSent: (email: string) =>
         `Öffnen Sie den Link, den wir an ${email} gesendet haben. Nichts auf dieser Seite verschwindet. Sie können weiterlesen oder später zurückkehren.`,
       sendAgain: "Erneut senden",
       differentAddress: "Andere Adresse verwenden",
-      confirmTitle: "Bestätigen Sie Ihre E-Mail, um beides zu öffnen",
+      confirmTitle: "Bestätigen Sie Ihre E-Mail, um die vollständige Analyse zu starten",
       confirmBody:
-        "Wir senden einen Link. Ein Klick öffnet beides: ohne Konto, ohne Karte und ohne Marketingliste.",
+        "Wir senden einen Link. Ein Klick startet die Analyse: ohne Konto, ohne Karte und ohne Marketingliste.",
       addEmail: "E-Mail hinzufügen",
       privacyPrefix: "Siehe unsere",
       privacy: "Datenschutzerklärung",
@@ -1796,7 +1848,12 @@ export const de: Dictionary = {
       retrying: "Wird erneut versucht…",
       tryAgain: "Erneut versuchen",
       pollExhausted:
-        "Ihre Produktseiten konnten diesmal nicht vollständig gelesen werden. Die abgeschlossenen Beobachtungen unten sind weiterhin nützlich; lesen Sie die Befunde als Möglichkeiten, nicht als endgültige Urteile.",
+        "Diese Analyse dauert länger als erwartet. Bereits gefundene Belege bleiben erhalten; wenn der Worker gestoppt hat, zeigen wir keinen endlosen Ladezustand.",
+      auditDidNotFinish: "Diese Analyse wurde nicht abgeschlossen.",
+      auditDidNotFinishBody:
+        "Die bereits gezeigten Ergebnisse bleiben erhalten. Wiederholen Sie nur die offenen Prüfungen — Sie müssen Ihre E-Mail nicht erneut bestätigen.",
+      retryAudit: "Offene Prüfungen erneut ausführen",
+      retryAuditRunning: "Analyse wird erneut ausgeführt…",
       running: "Läuft…",
       runAgain: "Erneut ausführen",
       rejectedTitle: (domain: string) =>

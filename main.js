@@ -448,6 +448,7 @@ async function proxyAnswerCheck(request, url, env) {
       source: clean(payload?.source, 64) || "homepage_hero",
       // Honeypot passes straight through: the backend decides what to do.
       website: clean(payload?.website, 200) || null,
+      ...(payload?.retry === true ? { retry: true } : {}),
       ...(LOCALES.includes(locale) ? { locale } : {}),
     }),
   });
