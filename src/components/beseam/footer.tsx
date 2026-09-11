@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 import Logo from "@/components/beseam/logo";
 import type { Dictionary } from "@/i18n";
@@ -57,6 +58,36 @@ const FOOTER_GROUPS = [
 
 export default function BeseamFooter() {
   const t = useDictionary();
+  const pathname = usePathname();
+  const compactReportFooter = pathname === "/scan" || pathname === "/de/scan";
+
+  if (compactReportFooter) {
+    return (
+      <footer className="border-t border-white/12 bg-ink-deep text-white">
+        <div className="mx-auto flex max-w-[92rem] flex-col gap-5 px-5 py-7 sm:flex-row sm:items-center sm:justify-between sm:px-8 lg:px-10">
+          <Link href="/" aria-label={t.footer.homeAriaLabel} className="inline-flex">
+            <Logo
+              variant="secondary-inverted"
+              className="text-white"
+              style={{ fontSize: "38px" }}
+            />
+          </Link>
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-3 text-[12px] text-white/56">
+            <p>{t.footer.copyright(new Date().getFullYear())}</p>
+            <Link href="/privacy-policy" className="transition-colors hover:text-white">
+              {t.footer.privacy}
+            </Link>
+            <Link href="/terms-of-service" className="transition-colors hover:text-white">
+              {t.footer.terms}
+            </Link>
+            <Link href="/contact" className="transition-colors hover:text-white">
+              {t.footer.groups.company.links.contact}
+            </Link>
+          </div>
+        </div>
+      </footer>
+    );
+  }
 
   return (
     <footer className="relative overflow-hidden bg-ink-deep text-white">

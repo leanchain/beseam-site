@@ -1295,7 +1295,8 @@ export const de: Dictionary = {
       askingChannels: (channels: string) => `${channels} werden befragt`,
     },
     result: {
-      productsFound: "Produkte gefunden",
+      productsFound: "Produkte geprüft",
+      productPagesSampled: "Produktseiten stichprobenartig geprüft",
       answersNamed: "verwertbare KI-Antworten nannten Sie",
       answersPending: "KI-Antworten stehen aus",
       opportunitiesFound: (count: number) =>
@@ -1310,16 +1311,17 @@ export const de: Dictionary = {
       statusFailed: "Analyse unvollständig",
       statusComplete: "Scan abgeschlossen",
       shareAria: "Diesen Scan teilen",
+      moreActions: "Weitere Berichtsaktionen",
       linkCopied: "Link kopiert",
       shared: "Geteilt",
       copyFailed: "Kopieren fehlgeschlagen",
       share: "Teilen",
       print: "Drucken",
-      brandAppearance: "Markenpräsenz",
+      brandAppearance: "KI-Sichtbarkeit",
       strong: "Stark",
       mixed: "Gemischt",
       weak: "Schwach",
-      barelyVisible: "Kaum sichtbar",
+      barelyVisible: "In dieser Stichprobe nicht gesehen",
       brandEverywhere: "Ihre Marke erschien in jeder beobachteten Antwort.",
       brandNowhere: "Ihre Marke erschien in keiner beobachteten Antwort.",
       brandMissing: (missed: number, total: number) =>
@@ -1349,11 +1351,11 @@ export const de: Dictionary = {
       headlineFindings: (brand: string, count: number) =>
         `Wir haben den öffentlichen Shop von ${brand} gelesen und ${count} ${count === 1 ? "Chance" : "Chancen"} gefunden, die sich anzusehen lohnen.`,
       headlinePriorities: (brand: string, count: number) =>
-        `${count} ${count === 1 ? "Punkt fällt" : "Punkte fallen"} bei ${brand} besonders auf.`,
+        `${count} ${count === 1 ? "Punkt lohnt sich" : "Punkte lohnen sich"} bei ${brand} zuerst zu beheben.`,
       prioritySupport: (count: number) =>
         count > 0
-          ? `Beginnen Sie mit diesen Prioritäten. ${count} ${count === 1 ? "weiterer Befund bleibt" : "weitere Befunde bleiben"} darunter als stützende Belege.`
-          : "Beginnen Sie mit diesen Prioritäten; die Belege darunter zeigen, warum sie wichtig sind.",
+          ? `Wir würden hier anfangen. ${count} ${count === 1 ? "weiterer Befund bleibt" : "weitere Befunde bleiben"} unten als stützender Nachweis.`
+          : "Wir würden hier anfangen. Der Nachweis unten zeigt, warum jeder Punkt wichtig ist.",
       headlineReading: (brand: string) =>
         `Der Shop von ${brand} wird gerade gelesen.`,
       headlineClear: (brand: string) =>
@@ -1385,10 +1387,10 @@ export const de: Dictionary = {
         machineReadability: "Maschinenlesbarkeit",
         productEvidence: "Produktbelege",
       },
-      recommendation: "Empfehlung ansehen",
+      recommendation: "Nachweis & nächsten Schritt ansehen",
       close: "Schliessen",
-      improveNext: "Als Nächstes verbessern:",
-      startFixing: "In Beseam beheben",
+      improveNext: "Als Nächstes:",
+      startFixing: "In Beseam weiterbearbeiten",
       evidence: "Nachweis",
       proofObserved: "Beobachtet",
       proofInput: "Verwendete Eingabe",
@@ -1433,9 +1435,9 @@ export const de: Dictionary = {
       seePage: "Seite ansehen →",
       rawCatalog: "Gelesene Roh-Katalogdatei →",
       fullPageReport: "Vollständigen Seitenbericht öffnen →",
-      heading: "Hier anfangen",
+      heading: "Diese zuerst beheben",
       intro:
-        "Das sind die stärksten Prioritäten aus dem Scan. Öffnen Sie einen Punkt, wenn Sie die Empfehlung und die Belege dahinter sehen möchten.",
+        "Mit diesen Prioritäten würden wir beginnen. Öffnen Sie einen Punkt für den Nachweis und den nächsten Schritt.",
       stillReading: "Wird noch gelesen.",
       moreMayAppear:
         " Weitere Befunde können erscheinen, während Ihre Produktseiten fertig werden.",
@@ -1513,8 +1515,8 @@ export const de: Dictionary = {
       prepared: "Von Beseam vorbereitet",
       approval: "Braucht Ihre Freigabe",
       afterConnection: "Nach Verbindung geprüft",
-      start: "Kostenlos mit diesem Shop fortfahren",
-      mobileStart: "Kostenlos fortfahren",
+      start: "Diesen Shop weiter beobachten",
+      mobileStart: "Diese Punkte beobachten",
       carryStore: (domain: string) =>
         `${domain} wird in die Einrichtung übernommen. Sie starten nicht von vorn.`,
       closingEyebrow: "Nächster Schritt",
@@ -1523,7 +1525,7 @@ export const de: Dictionary = {
           ? "Lassen Sie Beseam diese Priorität weiter beobachten."
           : `Lassen Sie Beseam diese ${count} Prioritäten weiter beobachten.`,
       closingBody:
-        "Beseam prüft den Shop weiter, bereitet die stärksten Änderungen zur Freigabe vor und zeigt, was sich nach jeder Änderung bewegt hat.",
+        "Beseam prüft den Shop weiter, bereitet Änderungen zur Freigabe vor und zeigt, was sich nach jeder Änderung verbessert hat.",
       reviewWithFinding: "Möchten Sie das lieber gemeinsam mit uns durchgehen?",
       reviewWithoutFinding:
         "Möchten Sie das lieber gemeinsam mit uns durchgehen?",
@@ -1560,18 +1562,20 @@ export const de: Dictionary = {
       askedOne: "separat an 1 Assistenten gestellt",
       askedMany: (count: number) =>
         `separat an jeden von ${count} Assistenten gestellt`,
-      title: "Wie Sie erscheinen, wenn Kundinnen und Kunden fragen",
+      title: "Wie KI-Shopping-Assistenten Sie sehen",
       summary: (named: number, total: number, questions: number) =>
-        `${named}/${total} verwertbare Antworten nannten Sie · ${questions} ${questions === 1 ? "Kauffrage" : "Kauffragen"}`,
+        `${named === 0 ? `Keine der ${total}` : named === total ? `Alle ${total}` : `${named} von ${total}`} verwertbaren KI-Shopping-${total === 1 ? "Antworten nannte" : "Antworten nannten"} Sie · ${questions} ${questions === 1 ? "Kauffrage" : "Kauffragen"}`,
       summaryWithAttempts: (
         named: number,
         usable: number,
         attempts: number,
         questions: number,
       ) =>
-        `${named}/${usable} verwertbare Antworten nannten Sie · ${usable}/${attempts} Versuche verwertbar · ${questions} ${questions === 1 ? "Kauffrage" : "Kauffragen"}`,
+        `${named === 0 ? `Keine der ${usable}` : named === usable ? `Alle ${usable}` : `${named} von ${usable}`} verwertbaren KI-Shopping-${usable === 1 ? "Antworten nannte" : "Antworten nannten"} Sie · ${attempts} Versuche über ${questions} ${questions === 1 ? "Kauffrage" : "Kauffragen"}`,
       usableAttempts: (usable: number, total: number) =>
-        `${usable}/${total} Versuche verwertbar`,
+        `${usable} von ${total} Versuchen lieferten eine verwertbare Antwort`,
+      noUsableAttempts: (total: number) =>
+        `${total} ${total === 1 ? "Versuch" : "Versuche"} · keine verwertbare Antwort`,
       noUsableSummary: (attempts: number, questions: number) =>
         `0/${attempts} Assistenten-Versuche lieferten eine verwertbare Antwort · ${questions} ${questions === 1 ? "Kauffrage" : "Kauffragen"}`,
       checking: "Es wird geprüft, was der Kundschaft gezeigt wird",
@@ -1582,9 +1586,9 @@ export const de: Dictionary = {
       askedIn: (language: string) => `Gefragt auf ${language}`,
     },
     summary: {
-      evidenceHeading: "Belege hinter den Prioritäten",
+      evidenceHeading: "Stützende Nachweise",
       evidenceIntro:
-        "Die Zusammenfassung oben ist die Entscheidungsebene. Öffnen Sie diese Bereiche nur, wenn Sie die zugrunde liegenden Shop-, Katalog-, Seiten- oder Inhaltsbelege sehen möchten.",
+        "Die Prioritäten stehen bereits oben. Öffnen Sie diese Bereiche nur, wenn Sie nachvollziehen möchten, wie wir zu ihnen gekommen sind.",
       productCatalog: "Produktkatalog",
       noCatalogBrandSite:
         "Kein Produktkatalog gefunden. Als Markenwebsite geprüft.",
@@ -1595,8 +1599,8 @@ export const de: Dictionary = {
       homepageFailed:
         "Wir konnten Ihre Startseite bei diesem Durchlauf nicht lesen.",
       homepageCompleted: "Startseitenprüfung abgeschlossen",
-      homepageSummary: (score: number, failed: number, total: number) =>
-        `Zustand ${score} · ${failed} von ${total} Prüfungen brauchen Aufmerksamkeit`,
+      homepageSummary: (_score: number, failed: number, _total: number) =>
+        `Startseite geprüft · ${failed ? "Punkte zum Prüfen gefunden" : "keine offensichtlichen Probleme gefunden"}`,
       trustPages: "Vertrauensseiten",
       aboutPage: "Über-uns-Seite",
       contactPage: "Kontaktseite",
@@ -1623,10 +1627,10 @@ export const de: Dictionary = {
       sampledPageGroupSummary: (
         pages: number,
         failed: number,
-        evaluated: number,
+        _evaluated: number,
         unreadable: number,
       ) =>
-        `${pages} ${pages === 1 ? "Seite" : "Seiten"} geprüft · ${failed} von ${evaluated} Prüfungen brauchen Aufmerksamkeit${unreadable ? ` · ${unreadable} nicht lesbar` : ""}`,
+        `${pages} ${pages === 1 ? "Seite" : "Seiten"} geprüft · ${failed ? "Probleme gefunden" : "keine offensichtlichen Probleme gefunden"}${unreadable ? ` · ${unreadable} nicht lesbar` : ""}`,
       templatePatterns: "Auf mehreren geprüften Seiten wiederholt",
       templatePatternCoverage: (affected: number, total: number) =>
         `${affected}/${total} geprüfte Seiten`,
@@ -1688,12 +1692,12 @@ export const de: Dictionary = {
       localePathCount: (count: number) => `${count} Sprachpfade`,
       storeSummary: (
         products: string,
-        collections: string,
-        location: string,
+        _collections: string,
+        _location: string,
         sitemap: string,
         crawler: string,
       ) =>
-        `${products} Produkte · ${collections} · ${location} · Sitemap ${sitemap} · Crawler-Zugriff ${crawler}`,
+        `${products} Produkte gefunden · Sitemap ${sitemap} · Such-Crawler-Zugriff ${crawler}`,
       internalReachSummary: (
         links: number,
         products: number,
@@ -1703,10 +1707,10 @@ export const de: Dictionary = {
       pageAuditSummary: (
         pages: number,
         failed: number,
-        evaluated: number,
-        unchecked: number,
+        _evaluated: number,
+        _unchecked: number,
       ) =>
-        `${pages} ${pages === 1 ? "Produktseite" : "Produktseiten"} gelesen · ${failed} von ${evaluated} Prüfungen brauchen Aufmerksamkeit · ${unchecked} konnten wir nicht prüfen`,
+        `${pages} ${pages === 1 ? "Produktseite" : "Produktseiten"} geprüft · ${failed ? "Probleme gefunden" : "keine offensichtlichen Probleme gefunden"}`,
       localizedCopies: (count: number) => `${count}+ lokalisierte URL-Kopien`,
       robots: "robots.txt",
       sitemap: "Sitemap",
@@ -1736,9 +1740,9 @@ export const de: Dictionary = {
         checked: string,
         gaps: number,
         unavailable: number,
-        consistency: number,
+        _consistency: number,
       ) =>
-        `${checked} · ${gaps} brauchen Aufmerksamkeit · ${unavailable} nicht verfügbar${consistency ? ` · ${consistency} Konsistenzlücken in der Stichprobe` : ""}`,
+        `${checked} · ${gaps} haben mindestens eine Kataloglücke · ${unavailable} derzeit nicht verfügbar`,
       catalogGaps: (count: number) =>
         `${count} ${count === 1 ? "Kataloglücke" : "Kataloglücken"}`,
       productTypes: (count: number) => `${count} Produkttypen`,

@@ -1385,7 +1385,8 @@ const enDictionary = {
       askingChannels: (channels: string) => `Asking ${channels}`,
     },
     result: {
-      productsFound: "products found",
+      productsFound: "products checked",
+      productPagesSampled: "product pages sampled",
       answersNamed: "usable AI answers named you",
       answersPending: "assistant answers pending",
       opportunitiesFound: (count: number): string =>
@@ -1400,16 +1401,17 @@ const enDictionary = {
       statusFailed: "Audit incomplete",
       statusComplete: "Scan complete",
       shareAria: "Share this scan",
+      moreActions: "More report actions",
       linkCopied: "Link copied",
       shared: "Shared",
       copyFailed: "Copy failed",
       share: "Share",
       print: "Print",
-      brandAppearance: "Brand appearance",
+      brandAppearance: "AI visibility",
       strong: "Strong",
       mixed: "Mixed",
       weak: "Weak",
-      barelyVisible: "Barely visible",
+      barelyVisible: "Not seen in this sample",
       brandEverywhere: "Your brand appeared in every observed answer.",
       brandNowhere: "Your brand did not appear in any observed answer.",
       brandMissing: (missed: number, total: number) =>
@@ -1439,11 +1441,11 @@ const enDictionary = {
       headlineFindings: (brand: string, count: number) =>
         `We read ${brand}’s public storefront and found ${count} ${count === 1 ? "opportunity" : "opportunities"} worth looking at.`,
       headlinePriorities: (brand: string, count: number) =>
-        `${count} ${count === 1 ? "thing stands" : "things stand"} out on ${brand}.`,
+        `${count} ${count === 1 ? "thing is" : "things are"} worth fixing first on ${brand}.`,
       prioritySupport: (count: number) =>
         count > 0
-          ? `Start with these priorities. ${count} more ${count === 1 ? "finding stays" : "findings stay"} underneath as supporting evidence.`
-          : "Start with these priorities; the evidence underneath shows why they matter.",
+          ? `We would start here. ${count} more ${count === 1 ? "finding stays" : "findings stay"} below as supporting proof.`
+          : "We would start here. The proof below shows why each one matters.",
       headlineReading: (brand: string) => `Reading ${brand}’s storefront now.`,
       headlineClear: (brand: string) =>
         `Nothing obvious stood out on the ${brand} pages we could read.`,
@@ -1472,10 +1474,10 @@ const enDictionary = {
         machineReadability: "Machine readability",
         productEvidence: "Product evidence",
       },
-      recommendation: "See recommendation",
+      recommendation: "See proof & next step",
       close: "Close",
-      improveNext: "Improve next:",
-      startFixing: "Start fixing this in Beseam",
+      improveNext: "Do next:",
+      startFixing: "Work on this in Beseam",
       evidence: "Proof",
       proofObserved: "Observed",
       proofInput: "Input used",
@@ -1520,9 +1522,9 @@ const enDictionary = {
       seePage: "See the page →",
       rawCatalog: "The raw catalog file we read →",
       fullPageReport: "Full page report →",
-      heading: "Start here",
+      heading: "Fix these first",
       intro:
-        "These are the strongest priorities from the scan. Open one when you want the recommendation and the evidence behind it.",
+        "These are the priorities we would start with. Open one for the proof and the next step.",
       stillReading: "Still reading.",
       moreMayAppear: " More may appear as your product pages finish.",
       showOther: (count: number) =>
@@ -1598,15 +1600,15 @@ const enDictionary = {
       prepared: "Prepared by Beseam",
       approval: "Needs your approval",
       afterConnection: "Checked after connection",
-      start: "Continue free with this store",
-      mobileStart: "Continue free",
+      start: "Keep monitoring this store",
+      mobileStart: "Keep these under watch",
       carryStore: (domain: string) =>
         `${domain} is carried into setup. You will not start over.`,
       closingEyebrow: "Next step",
       closingTitle: (count: number) =>
         `Keep ${count === 1 ? "this priority" : `these ${count} priorities`} under watch in Beseam.`,
       closingBody:
-        "Beseam keeps checking the store, prepares the strongest changes for approval, and shows you what moved after each change.",
+        "Beseam keeps checking the store, prepares changes for your approval, and shows you what improved after each change.",
       reviewWithFinding: "Prefer to walk through this with us?",
       reviewWithoutFinding: "Prefer to walk through this with us?",
       startingWith: (headline: string) => `Starting with “${headline}”`,
@@ -1640,18 +1642,20 @@ const enDictionary = {
       askedOne: "asked to 1 assistant",
       askedMany: (count: number) =>
         `asked to each of ${count} assistants separately`,
-      title: "How you appear when shoppers ask",
+      title: "How AI shopping assistants see you",
       summary: (named: number, total: number, questions: number) =>
-        `${named}/${total} usable answers named you · ${questions} buying ${questions === 1 ? "question" : "questions"}`,
+        `${named === 0 ? `None of the ${total}` : named === total ? `All ${total}` : `${named} of ${total}`} usable AI shopping ${total === 1 ? "answer" : "answers"} named you · ${questions} buying ${questions === 1 ? "question" : "questions"}`,
       summaryWithAttempts: (
         named: number,
         usable: number,
         attempts: number,
         questions: number,
       ) =>
-        `${named}/${usable} usable answers named you · ${usable}/${attempts} attempts usable · ${questions} buying ${questions === 1 ? "question" : "questions"}`,
+        `${named === 0 ? `None of the ${usable}` : named === usable ? `All ${usable}` : `${named} of ${usable}`} usable AI shopping ${usable === 1 ? "answer" : "answers"} named you · ${attempts} attempts across ${questions} buying ${questions === 1 ? "question" : "questions"}`,
       usableAttempts: (usable: number, total: number) =>
-        `${usable}/${total} attempts usable`,
+        `${usable} of ${total} attempts produced a usable answer`,
+      noUsableAttempts: (total: number) =>
+        `${total} ${total === 1 ? "attempt" : "attempts"} · no usable answer`,
       noUsableSummary: (attempts: number, questions: number) =>
         `0/${attempts} assistant attempts returned a usable answer · ${questions} buying ${questions === 1 ? "question" : "questions"}`,
       checking: "Checking what shoppers are being shown",
@@ -1661,9 +1665,9 @@ const enDictionary = {
       askedIn: (language: string) => `Asked in ${language}`,
     },
     summary: {
-      evidenceHeading: "Evidence behind the priorities",
+      evidenceHeading: "Supporting evidence",
       evidenceIntro:
-        "The summary above is the decision layer. Open these sections only when you want the underlying store, catalog, page, or content evidence.",
+        "You already have the priorities above. Open these sections only when you want to verify how we reached them.",
       productCatalog: "Product catalog",
       noCatalogBrandSite: "No product catalog found. Audited as a brand site.",
       homepage: "Your homepage",
@@ -1671,8 +1675,8 @@ const enDictionary = {
       homepageReading: "Reading your homepage and trust pages now",
       homepageFailed: "We could not read your homepage on this run.",
       homepageCompleted: "Homepage audit completed",
-      homepageSummary: (score: number, failed: number, total: number) =>
-        `Health ${score} · ${failed} of ${total} checks need attention`,
+      homepageSummary: (_score: number, failed: number, _total: number) =>
+        `Homepage checked · ${failed ? "issues worth reviewing" : "no obvious issues found"}`,
       trustPages: "Trust pages",
       aboutPage: "About page",
       contactPage: "Contact page",
@@ -1697,10 +1701,10 @@ const enDictionary = {
       sampledPageGroupSummary: (
         pages: number,
         failed: number,
-        evaluated: number,
+        _evaluated: number,
         unreadable: number,
       ) =>
-        `${pages} ${pages === 1 ? "page" : "pages"} sampled · ${failed} of ${evaluated} checks need attention${unreadable ? ` · ${unreadable} unreadable` : ""}`,
+        `${pages} ${pages === 1 ? "page" : "pages"} sampled · ${failed ? "issues found" : "no obvious issues found"}${unreadable ? ` · ${unreadable} could not be read` : ""}`,
       templatePatterns: "Repeated across sampled pages",
       templatePatternCoverage: (affected: number, total: number) =>
         `${affected}/${total} sampled pages`,
@@ -1761,12 +1765,12 @@ const enDictionary = {
       localePathCount: (count: number) => `${count} locale paths`,
       storeSummary: (
         products: string,
-        collections: string,
-        location: string,
+        _collections: string,
+        _location: string,
         sitemap: string,
         crawler: string,
       ) =>
-        `${products} products · ${collections} · ${location} · sitemap ${sitemap} · crawler access ${crawler}`,
+        `${products} products found · sitemap ${sitemap} · search crawler access ${crawler}`,
       internalReachSummary: (
         links: number,
         products: number,
@@ -1776,10 +1780,10 @@ const enDictionary = {
       pageAuditSummary: (
         pages: number,
         failed: number,
-        evaluated: number,
-        unchecked: number,
+        _evaluated: number,
+        _unchecked: number,
       ) =>
-        `${pages} product ${pages === 1 ? "page" : "pages"} read · ${failed} of ${evaluated} checks need attention · ${unchecked} we could not check`,
+        `${pages} product ${pages === 1 ? "page" : "pages"} sampled · ${failed ? "issues found" : "no obvious issues found"}`,
       localizedCopies: (count: number) => `${count}+ localized URL copies`,
       robots: "robots.txt",
       sitemap: "Sitemap",
@@ -1808,9 +1812,9 @@ const enDictionary = {
         checked: string,
         gaps: number,
         unavailable: number,
-        consistency: number,
+        _consistency: number,
       ) =>
-        `${checked} · ${gaps} need attention · ${unavailable} unavailable${consistency ? ` · ${consistency} sampled consistency gaps` : ""}`,
+        `${checked} · ${gaps} have at least one catalog gap · ${unavailable} currently unavailable`,
       catalogGaps: (count: number) =>
         `${count} catalog ${count === 1 ? "gap" : "gaps"}`,
       productTypes: (count: number) => `${count} product types`,

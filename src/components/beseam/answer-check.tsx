@@ -20,6 +20,7 @@ import {
   ChevronDown,
   Loader2,
   MailCheck,
+  MoreHorizontal,
   Printer,
   RefreshCw,
   Share2,
@@ -793,9 +794,11 @@ function FoundStrip({ result }: { result: AnswerCheckResult }) {
     catalog?.products_checked && catalog.products_checked > 0
       ? `${catalog.products_checked}${catalog.products_capped ? "+" : ""}`
       : String(result.products_seen);
-  const findingCount = reportFindingGroups(result, copy).length;
+  const groups = reportFindingGroups(result, copy);
+  const findingCount = groups.length;
   const priorityCount = Math.min(FIRST_SHOWN, findingCount);
   const supportingCount = Math.max(0, findingCount - priorityCount);
+  const sampledPages = result.page_audits ?? [];
   const scored = result.answers.filter((answer) => answer.mentioned !== null);
   const named = scored.filter((answer) => answer.mentioned === true).length;
 
@@ -808,14 +811,21 @@ function FoundStrip({ result }: { result: AnswerCheckResult }) {
             label: copy.result.prioritiesFound(priorityCount),
             accent: true,
           },
-          ...(supportingCount
+          ...(sampledPages.length
             ? [
                 {
-                  value: String(supportingCount),
-                  label: copy.result.supportingFindings(supportingCount),
+                  value: String(sampledPages.length),
+                  label: copy.result.productPagesSampled,
                 },
               ]
-            : []),
+            : supportingCount
+              ? [
+                  {
+                    value: String(supportingCount),
+                    label: copy.result.supportingFindings(supportingCount),
+                  },
+                ]
+              : []),
         ]
       : []),
     ...(scored.length
@@ -953,10 +963,32 @@ function reportFindingGroups(
   copy: Dictionary["answerCheck"],
 ): FindingGroupRow[] {
   const aiFinding = aiVisibilityFinding(result, copy);
-  return groupFindings([
+  const groups = groupFindings([
     ...sortedFindings(result),
     ...(aiFinding ? [aiFinding] : []),
   ]);
+
+  // The first three are a merchant decision layer, not a severity dump. Keep
+  // serious findings ranked first, but avoid filling all three slots with the
+  // same problem family when the scan found meaningful issues elsewhere.
+  const featured: FindingGroupRow[] = [];
+  const deferred: FindingGroupRow[] = [];
+  const seenAreas = new Set<string>();
+  for (const group of groups) {
+    const area =
+      group.lead.area?.trim().toLowerCase() ||
+      group.lead.code.split(".", 1)[0].split("-", 1)[0].toLowerCase();
+    if (featured.length < FIRST_SHOWN && !seenAreas.has(area)) {
+      featured.push(group);
+      seenAreas.add(area);
+    } else {
+      deferred.push(group);
+    }
+  }
+  while (featured.length < FIRST_SHOWN && deferred.length) {
+    featured.push(deferred.shift()!);
+  }
+  return [...featured, ...deferred];
 }
 function FindingRow({
   group,
@@ -1065,8 +1097,8 @@ function FindingRow({
         </summary>
 
         <div className="border-t border-black/10 bg-[#fffaf7] px-5 py-5 sm:px-6 sm:pl-[5.5rem]">
-          <div className="grid gap-5 lg:grid-cols-[minmax(0,1.25fr)_minmax(16rem,0.75fr)]">
-            <div>
+          <div className="grid gap-6 lg:grid-cols-12 lg:gap-8">
+            <div className="lg:col-span-5">
               {why && !featured ? (
                 <p className="max-w-[68ch] text-[14px] leading-[1.65] text-black/64">
                   {why}
@@ -1110,7 +1142,7 @@ function FindingRow({
               </TrackedLink>
             </div>
 
-            <div className="border-t border-black/10 pt-4 lg:border-l lg:border-t-0 lg:pl-5 lg:pt-0">
+            <div className="border-t border-black/10 pt-5 lg:col-span-7 lg:border-l lg:border-t-0 lg:pl-7 lg:pt-0">
               <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-black/42">
                 {copy.findings.evidence}
                 {group.members.length > 1
@@ -1171,13 +1203,23 @@ function FindingRow({
                             </div>
                           ) : null}
                           {member.proof.source ? (
-                            <div className="grid gap-1 px-3 py-2.5 sm:grid-cols-[7rem_minmax(0,1fr)] sm:gap-3">
+                            <div className={`grid gap-1 px-3 py-2.5 sm:grid-cols-[8rem_minmax(0,1fr)] sm:gap-3 ${member.detail ? "border-b border-black/10" : ""}`}>
                               <span className="text-[10.5px] font-semibold uppercase tracking-[0.07em] text-black/40">
                                 {copy.findings.proofSource}
                               </span>
                               <span className="text-[11.5px] text-black/60">
                                 {copy.findings.proofSourceLabel(member.proof.source)}
                               </span>
+                            </div>
+                          ) : null}
+                          {member.detail ? (
+                            <div className="grid gap-1 bg-[#fffaf7] px-3 py-3 sm:grid-cols-[8rem_minmax(0,1fr)] sm:gap-3">
+                              <span className="text-[10.5px] font-semibold uppercase tracking-[0.07em] text-black/40">
+                                {copy.findings.proofRecommendation}
+                              </span>
+                              <p className="text-[11.5px] leading-relaxed text-black/62">
+                                {member.detail}
+                              </p>
                             </div>
                           ) : null}
                         </div>
@@ -1194,7 +1236,7 @@ function FindingRow({
                         </ul>
                       ) : null}
 
-                      {member.detail ? (
+                      {!member.proof && member.detail ? (
                         <div className="mt-2.5">
                           <p className="text-[10.5px] font-semibold uppercase tracking-[0.07em] text-black/40">
                             {copy.findings.proofRecommendation}
@@ -1849,10 +1891,12 @@ function AiVisibilityWorkspace({ result }: { result: AnswerCheckResult }) {
                 </div>
                 <div className="text-right">
                   <p className="font-mono text-[13px] font-semibold text-ink-deep">
-                    {engine.wins}/{engine.usable || engine.total}
+                    {engine.usable ? `${engine.wins}/${engine.usable}` : "—"}
                   </p>
                   <p className="mt-0.5 text-[11.5px] text-black/44">
-                    {engine.usable ? copy.result.namedYou : copy.result.noAnswer}
+                    {engine.usable
+                      ? copy.result.namedYou
+                      : copy.visibility.noUsableAttempts(engine.total)}
                   </p>
                   {engine.total > engine.usable && engine.usable > 0 ? (
                     <p className="mt-0.5 text-[10.5px] text-black/38">
@@ -2195,18 +2239,8 @@ function SampledAuditFold({
   );
 }
 
-function InitialScanSummary({
-  result,
-  continueHref,
-}: {
-  result: AnswerCheckResult;
-  continueHref?: string;
-}) {
+function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
   const copy = useDictionary().answerCheck;
-  const priorityCount = Math.min(
-    FIRST_SHOWN,
-    reportFindingGroups(result, copy).length,
-  );
   const locale = useLocale();
   const discoveryNotes = discoveryFileNotes(copy);
   const findings = sortedFindings(result);
@@ -2446,27 +2480,6 @@ function InitialScanSummary({
           {copy.summary.evidenceIntro}
         </p>
       </div>
-      {continueHref && result.status === "ready" && priorityCount > 0 ? (
-        <div
-          data-print-hide
-          className="sticky bottom-3 z-30 mx-3 mt-3 flex items-center justify-between gap-3 border border-black/16 bg-ink-deep px-3 py-2.5 text-white shadow-[0_12px_30px_rgba(17,17,17,0.18)] md:hidden"
-        >
-          <span className="text-[11.5px] font-semibold">
-            {priorityCount} {copy.result.prioritiesFound(priorityCount)}
-          </span>
-          <TrackedLink
-            href={continueHref}
-            eventName="scan_continue_clicked"
-            eventCategory="conversion"
-            placement="answer_check_mobile_sticky"
-            preserveUtm
-            className="inline-flex min-h-9 shrink-0 items-center gap-1.5 bg-white px-3 text-[12px] font-semibold text-ink-deep"
-          >
-            {copy.continue.mobileStart}
-            <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
-          </TrackedLink>
-        </div>
-      ) : null}
       <Fold
         title={copy.summary.store}
         summary={
@@ -3991,7 +4004,7 @@ export function ResultCard({
             type="button"
             hidden={Boolean(result.reject_reason) || result.status !== "ready"}
             onClick={() => void onShare()}
-            className="inline-flex min-h-11 items-center gap-2 border border-black/18 bg-white px-3 text-[12px] font-semibold text-ink-deep transition-colors hover:border-black/32 hover:bg-[#fffaf7] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal-ink/35"
+            className="hidden min-h-11 items-center gap-2 border border-black/18 bg-white px-3 text-[12px] font-semibold text-ink-deep transition-colors hover:border-black/32 hover:bg-[#fffaf7] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal-ink/35 sm:inline-flex"
             aria-label={copy.result.shareAria}
           >
             {shareStatus === "copied" || shareStatus === "shared" ? (
@@ -4013,11 +4026,39 @@ export function ResultCard({
             type="button"
             hidden={Boolean(result.reject_reason) || result.status !== "ready"}
             onClick={onPrint}
-            className="inline-flex min-h-11 items-center gap-2 border border-black/18 bg-white px-3 text-[12px] font-semibold text-ink-deep transition-colors hover:border-black/32 hover:bg-[#fffaf7] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal-ink/35"
+            className="hidden min-h-11 items-center gap-2 border border-black/18 bg-white px-3 text-[12px] font-semibold text-ink-deep transition-colors hover:border-black/32 hover:bg-[#fffaf7] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal-ink/35 sm:inline-flex"
           >
             <Printer className="h-3.5 w-3.5" aria-hidden="true" />
             {copy.result.print}
           </button>
+          {!result.reject_reason && result.status === "ready" ? (
+            <details className="group/actions relative sm:hidden">
+              <summary
+                className="inline-flex min-h-11 min-w-11 cursor-pointer list-none items-center justify-center border border-black/18 bg-white text-ink-deep hover:bg-[#fffaf7] [&::-webkit-details-marker]:hidden"
+                aria-label={copy.result.moreActions}
+              >
+                <MoreHorizontal className="h-4 w-4" aria-hidden="true" />
+              </summary>
+              <div className="absolute right-0 top-[calc(100%+0.35rem)] z-40 min-w-[10rem] border border-black/16 bg-white p-1 shadow-[0_12px_28px_rgba(17,17,17,0.14)]">
+                <button
+                  type="button"
+                  onClick={() => void onShare()}
+                  className="flex min-h-10 w-full items-center gap-2 px-3 text-left text-[12px] font-semibold text-ink-deep hover:bg-[#fffaf7]"
+                >
+                  <Share2 className="h-3.5 w-3.5" aria-hidden="true" />
+                  {copy.result.share}
+                </button>
+                <button
+                  type="button"
+                  onClick={onPrint}
+                  className="flex min-h-10 w-full items-center gap-2 px-3 text-left text-[12px] font-semibold text-ink-deep hover:bg-[#fffaf7]"
+                >
+                  <Printer className="h-3.5 w-3.5" aria-hidden="true" />
+                  {copy.result.print}
+                </button>
+              </div>
+            </details>
+          ) : null}
         </div>
       </div>
 
@@ -4037,7 +4078,7 @@ export function ResultCard({
             <VisibilityDisclosure result={result} />
           ) : null}
 
-          <InitialScanSummary result={result} continueHref={continueHref} />
+          <InitialScanSummary result={result} />
 
           {/* Method and limits are useful proof, but secondary to the findings. */}
           {result.status === "ready" ? <ScanBoundary result={result} /> : null}
