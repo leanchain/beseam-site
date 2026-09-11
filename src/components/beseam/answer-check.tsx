@@ -1127,11 +1127,62 @@ function FindingRow({
                       <p className="font-semibold text-ink-deep">
                         {member.title}
                       </p>
-                      {member.detail ? (
-                        <p className="mt-1">{member.detail}</p>
-                      ) : null}
-                      {member.evidence?.length ? (
-                        <ul className="mt-2 space-y-1">
+
+                      {member.proof ? (
+                        <div className="mt-2.5 border border-black/12 bg-white">
+                          {member.proof.observed ? (
+                            <div className="grid gap-1 border-b border-black/10 px-3 py-2.5 sm:grid-cols-[7rem_minmax(0,1fr)] sm:gap-3">
+                              <span className="text-[10.5px] font-semibold uppercase tracking-[0.07em] text-black/40">
+                                {copy.findings.proofObserved}
+                              </span>
+                              <code className="break-words font-mono text-[11.5px] text-ink-deep">
+                                {member.proof.observed}
+                              </code>
+                            </div>
+                          ) : null}
+
+                          {member.proof.inputs?.length ? (
+                            <div className="grid gap-1 border-b border-black/10 px-3 py-2.5 sm:grid-cols-[7rem_minmax(0,1fr)] sm:gap-3">
+                              <span className="text-[10.5px] font-semibold uppercase tracking-[0.07em] text-black/40">
+                                {copy.findings.proofInput}
+                              </span>
+                              <div className="min-w-0 space-y-2.5">
+                                {member.proof.inputs.map((input) => (
+                                  <div key={`${member.code}-${input.label}`}>
+                                    <p className="text-[10.5px] font-semibold text-black/48">
+                                      {copy.findings.proofInputLabel(input.label)}
+                                    </p>
+                                    <code className="mt-0.5 block break-words font-mono text-[11.5px] text-ink-deep">
+                                      {input.value}
+                                    </code>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          ) : null}
+                          {member.proof.expected ? (
+                            <div className="grid gap-1 border-b border-black/10 px-3 py-2.5 sm:grid-cols-[7rem_minmax(0,1fr)] sm:gap-3">
+                              <span className="text-[10.5px] font-semibold uppercase tracking-[0.07em] text-black/40">
+                                {copy.findings.proofExpected}
+                              </span>
+                              <code className="break-words font-mono text-[11.5px] text-black/64">
+                                {member.proof.expected}
+                              </code>
+                            </div>
+                          ) : null}
+                          {member.proof.source ? (
+                            <div className="grid gap-1 px-3 py-2.5 sm:grid-cols-[7rem_minmax(0,1fr)] sm:gap-3">
+                              <span className="text-[10.5px] font-semibold uppercase tracking-[0.07em] text-black/40">
+                                {copy.findings.proofSource}
+                              </span>
+                              <span className="text-[11.5px] text-black/60">
+                                {copy.findings.proofSourceLabel(member.proof.source)}
+                              </span>
+                            </div>
+                          ) : null}
+                        </div>
+                      ) : member.evidence?.length ? (
+                        <ul className="mt-2 space-y-1 border-l border-black/12 pl-3">
                           {member.evidence.slice(0, 3).map((line, evidenceIndex) => (
                             <li
                               key={`${line}-${evidenceIndex}`}
@@ -1141,6 +1192,17 @@ function FindingRow({
                             </li>
                           ))}
                         </ul>
+                      ) : null}
+
+                      {member.detail ? (
+                        <div className="mt-2.5">
+                          <p className="text-[10.5px] font-semibold uppercase tracking-[0.07em] text-black/40">
+                            {copy.findings.proofRecommendation}
+                          </p>
+                          <p className="mt-1 text-[11.5px] leading-relaxed text-black/58">
+                            {member.detail}
+                          </p>
+                        </div>
                       ) : null}
                       {member.examples?.length ? (
                         <div className="mt-2.5 border-l border-signal-ink/30 pl-3">
@@ -1205,12 +1267,48 @@ function FindingRow({
                     </div>
                   );
                 })}
-                {repeatedAcrossSample && group.members.length > evidenceMembers.length ? (
-                  <p className="font-semibold text-black/48">
-                    {copy.findings.moreSampledPages(
-                      group.members.length - evidenceMembers.length,
-                    )}
-                  </p>
+                {group.members.length > evidenceMembers.length ? (
+                  <details className="group/more-proof border-t border-black/10 pt-3">
+                    <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-[11.5px] font-semibold text-ink-deep hover:text-signal-ink [&::-webkit-details-marker]:hidden">
+                      {copy.findings.moreProofChecks(
+                        group.members.length - evidenceMembers.length,
+                      )}
+                      <ChevronDown
+                        className="h-3.5 w-3.5 shrink-0 text-black/38 transition-transform group-open/more-proof:rotate-180"
+                        aria-hidden="true"
+                      />
+                    </summary>
+                    <ul className="mt-2 max-h-[24rem] divide-y divide-black/10 overflow-y-auto border-y border-black/10">
+                      {group.members.slice(evidenceMembers.length).map((member, position) => (
+                        <li
+                          key={`${member.code}-${member.url ?? member.product ?? position}`}
+                          className="py-2.5"
+                        >
+                          <p className="text-[11.5px] font-semibold text-ink-deep">
+                            {member.title}
+                          </p>
+                          {member.proof?.observed ? (
+                            <code className="mt-1 block break-words font-mono text-[10.5px] text-black/56">
+                              {member.proof.observed}
+                            </code>
+                          ) : null}
+                          <p className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[10px] text-black/38">
+                            <span>{member.code}</span>
+                            {member.url ? (
+                              <a
+                                href={member.url}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="font-sans font-semibold text-black/52 underline decoration-black/18 underline-offset-3 hover:text-signal-ink"
+                              >
+                                {copy.findings.seePage}
+                              </a>
+                            ) : null}
+                          </p>
+                        </li>
+                      ))}
+                    </ul>
+                  </details>
                 ) : null}
               </div>
             </div>

@@ -9,6 +9,17 @@ export type Step = {
   progress?: { done: number; total: number } | null;
 };
 
+export type FindingProof = {
+  /** Sanitized value the check actually observed. */
+  observed?: string | null;
+  /** Sanitized comparison target used by the check. */
+  expected?: string | null;
+  /** Specific sanitized inputs that produced the verdict. */
+  inputs?: Array<{ label: string; value: string }>;
+  /** Analyzer-declared artifact the measurement came from. */
+  source?: string | null;
+};
+
 export type Finding = {
   code: string;
   /** Technical check name. Secondary on the result: shown under "what we saw". */
@@ -29,6 +40,8 @@ export type Finding = {
    */
   examples?: { title: string; url: string; note?: string }[];
   evidence?: string[];
+  /** Sanitized observed input behind deterministic page-audit verdicts. */
+  proof?: FindingProof | null;
   fix_complexity?: string;
   source?:
     | "catalog"
