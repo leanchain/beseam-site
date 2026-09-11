@@ -1491,6 +1491,7 @@ export const de: Dictionary = {
       nextItems: [
         "Kundenfragen, die Sie lesen und bearbeiten, bevor eine davon läuft.",
         "Diese Fragen nach Zeitplan statt nur einmal stellen.",
+        "Echte Lighthouse-Browsertests für Seitengeschwindigkeit und Core Web Vitals, direkt im Chromium-Worker von Beseam ausgeführt.",
         "Die Antworten mit Datum als Beleg aufbewahren.",
         "Behebungen danach ordnen, was sich zuerst lohnt.",
         "Dieselben Fragen nach einer Änderung erneut stellen, damit Sie sehen, was sich bewegt hat.",

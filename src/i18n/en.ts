@@ -1576,10 +1576,11 @@ const enDictionary = {
       nextItems: [
         "Shopper questions you read and edit before any of them run.",
         "Those questions asked on a schedule instead of once.",
+        "Real Lighthouse browser tests for page speed and Core Web Vitals, run directly in Beseam's Chromium worker.",
         "The answers kept as evidence, with the date they were given.",
         "Fixes ordered by what is worth doing first.",
         "The same questions asked again after a change, so you can see what moved.",
-      ] as readonly [string, string, string, string, string],
+      ] as readonly [string, string, string, string, string, string],
     },
     continue: {
       opportunities: (count: number): string =>
