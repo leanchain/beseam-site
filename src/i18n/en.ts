@@ -1563,10 +1563,12 @@ const enDictionary = {
       approval: "Needs your approval",
       afterConnection: "Checked after connection",
       start: "Continue free with this store",
+      mobileStart: "Continue free",
       carryStore: (domain: string) =>
         `${domain} is carried into setup. You will not start over.`,
       closingEyebrow: "Next step",
-      closingTitle: "Keep these priorities under watch in Beseam.",
+      closingTitle: (count: number) =>
+        `Keep ${count === 1 ? "this priority" : `these ${count} priorities`} under watch in Beseam.`,
       closingBody:
         "Beseam keeps checking the store, prepares the strongest changes for approval, and shows you what moved after each change.",
       reviewWithFinding: "Prefer to walk through this with us?",

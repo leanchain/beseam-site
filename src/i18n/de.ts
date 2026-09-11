@@ -1478,10 +1478,14 @@ export const de: Dictionary = {
       approval: "Braucht Ihre Freigabe",
       afterConnection: "Nach Verbindung geprüft",
       start: "Kostenlos mit diesem Shop fortfahren",
+      mobileStart: "Kostenlos fortfahren",
       carryStore: (domain: string) =>
         `${domain} wird in die Einrichtung übernommen. Sie starten nicht von vorn.`,
       closingEyebrow: "Nächster Schritt",
-      closingTitle: "Lassen Sie Beseam diese Prioritäten weiter beobachten.",
+      closingTitle: (count: number) =>
+        count === 1
+          ? "Lassen Sie Beseam diese Priorität weiter beobachten."
+          : `Lassen Sie Beseam diese ${count} Prioritäten weiter beobachten.`,
       closingBody:
         "Beseam prüft den Shop weiter, bereitet die stärksten Änderungen zur Freigabe vor und zeigt, was sich nach jeder Änderung bewegt hat.",
       reviewWithFinding: "Möchten Sie das lieber gemeinsam mit uns durchgehen?",

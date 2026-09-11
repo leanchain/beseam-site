@@ -830,21 +830,19 @@ function FoundStrip({ result }: { result: AnswerCheckResult }) {
   ];
   const gridClass =
     facts.length >= 4
-      ? "sm:grid-cols-2 lg:grid-cols-4"
+      ? "grid-cols-2 lg:grid-cols-4"
       : facts.length === 3
-        ? "sm:grid-cols-3"
-        : "sm:grid-cols-2";
+        ? "grid-cols-2 sm:grid-cols-3"
+        : facts.length === 2
+          ? "grid-cols-2"
+          : "grid-cols-1";
 
   return (
-    <dl className={`grid border-b border-black/14 bg-white ${gridClass}`}>
-      {facts.map((fact, index) => (
+    <dl className={`grid gap-px border-b border-black/14 bg-black/12 ${gridClass}`}>
+      {facts.map((fact) => (
         <div
           key={fact.label}
-          className={`flex items-baseline gap-2.5 px-5 py-4 sm:px-6 ${
-            index > 0
-              ? "border-t border-black/12 sm:border-l sm:border-t-0"
-              : ""
-          }`}
+          className="flex min-w-0 items-baseline gap-2.5 bg-white px-5 py-4 sm:px-6"
         >
           <dd
             className={`text-[26px] font-semibold leading-none tracking-[-0.03em] tabular-nums ${
@@ -1006,9 +1004,15 @@ function FindingRow({
     <li className="border-b border-black/12 last:border-b-0">
       <details className="group/finding bg-white">
         <summary
-          className={`grid cursor-pointer list-none gap-3 px-5 transition-colors hover:bg-[#fffaf7] sm:grid-cols-[2.5rem_minmax(0,1fr)_auto] sm:items-center sm:px-6 [&::-webkit-details-marker]:hidden ${featured ? "bg-[#fffdfb] py-5" : "py-4"}`}
+          className={`grid cursor-pointer list-none grid-cols-[2.25rem_minmax(0,1fr)] gap-x-3 gap-y-2 px-5 transition-colors hover:bg-[#fdf1e9] sm:grid-cols-[2.75rem_minmax(0,1fr)_auto] sm:items-center sm:px-6 [&::-webkit-details-marker]:hidden ${featured ? "bg-[#fffaf7] py-6" : "py-4"}`}
         >
-          <span className="font-mono text-[11px] font-semibold tabular-nums text-black/36">
+          <span
+            className={
+              featured
+                ? "font-display text-[23px] leading-none tabular-nums text-signal-ink/72"
+                : "font-mono text-[11px] font-semibold tabular-nums text-black/36"
+            }
+          >
             {String(index + 1).padStart(2, "0")}
           </span>
 
@@ -1028,15 +1032,12 @@ function FindingRow({
                 {priority.label}
               </span>
               {repeatedAcrossSample ? (
-                <>
-                  <span aria-hidden="true" className="text-black/20">·</span>
-                  <span className="text-signal-ink">
-                    {copy.summary.templatePatternCoverage(
-                      affectedPageCount,
-                      sampledPagesTotal,
-                    )}
-                  </span>
-                </>
+                <span className="rounded-full border border-signal-ink/18 bg-[#fff0e9] px-2 py-0.5 text-[10px] tracking-[0.05em] text-signal-ink">
+                  {copy.summary.templatePatternCoverage(
+                    affectedPageCount,
+                    sampledPagesTotal,
+                  )}
+                </span>
               ) : null}
             </div>
             <p className="mt-1 text-balance text-[16px] font-semibold leading-[1.4] tracking-[-0.012em] text-ink-deep sm:text-[17px]">
@@ -1049,7 +1050,7 @@ function FindingRow({
             ) : null}
           </div>
 
-          <span className="inline-flex min-h-9 items-center gap-2 justify-self-start text-[12px] font-semibold text-black/52 group-hover/finding:text-signal-ink sm:justify-self-end">
+          <span className="col-start-2 inline-flex min-h-9 items-center gap-2 justify-self-start text-[12px] font-semibold text-black/52 group-hover/finding:text-signal-ink sm:col-start-auto sm:justify-self-end">
             <span className="group-open/finding:hidden">
               {copy.findings.recommendation}
             </span>
@@ -1286,14 +1287,14 @@ function WorthLookingAt({ result }: { result: AnswerCheckResult }) {
             ))}
           </ol>
           {hidden > 0 ? (
-            <div className="border-t border-black/12 bg-[#fffaf7] px-5 py-4 sm:px-6">
+            <div className="border-t border-black/10 bg-white px-5 py-3 sm:px-6">
               <button
                 type="button"
                 onClick={() => setExpanded(true)}
-                className="inline-flex min-h-11 items-center gap-2 text-[13px] font-semibold text-ink-deep underline decoration-black/28 underline-offset-5 transition-colors hover:text-signal-ink hover:decoration-signal-ink"
+                className="inline-flex min-h-9 items-center gap-1.5 text-[12px] font-medium text-black/52 transition-colors hover:text-signal-ink"
               >
                 {copy.findings.showOther(hidden)}
-                <ChevronDown className="h-4 w-4" aria-hidden="true" />
+                <ChevronDown className="h-3.5 w-3.5" aria-hidden="true" />
               </button>
             </div>
           ) : null}
@@ -1491,9 +1492,11 @@ function ContinuePaths({
 function ClosingContinue({
   domain,
   continueHref,
+  priorityCount,
 }: {
   domain: string;
   continueHref: string;
+  priorityCount: number;
 }) {
   const copy = useDictionary().answerCheck;
   return (
@@ -1506,7 +1509,7 @@ function ClosingContinue({
           {copy.continue.closingEyebrow}
         </p>
         <p className="mt-1.5 max-w-[34ch] text-[21px] font-semibold leading-[1.25] tracking-[-0.02em] text-white">
-          {copy.continue.closingTitle}
+          {copy.continue.closingTitle(priorityCount)}
         </p>
         <p className="mt-2 max-w-[66ch] text-[13px] leading-[1.6] text-white/68">
           {copy.continue.closingBody}
@@ -1910,7 +1913,6 @@ function Fold({
   defaultOpen?: boolean;
   children: React.ReactNode;
 }) {
-  const copy = useDictionary().answerCheck;
   return (
     <details
       open={defaultOpen}
@@ -1923,11 +1925,7 @@ function Fold({
             {summary}
           </p>
         </div>
-        <span className="flex min-h-11 shrink-0 items-center gap-2 text-[12px] font-semibold text-ink-deep">
-          <span className="group-open/fold:hidden">{copy.result.details}</span>
-          <span className="hidden group-open/fold:inline">
-            {copy.result.close}
-          </span>
+        <span className="flex min-h-11 shrink-0 items-center text-black/42 group-hover/fold:text-ink-deep">
           <ChevronDown
             className="h-4 w-4 transition-transform group-open/fold:rotate-180"
             aria-hidden="true"
@@ -2099,8 +2097,18 @@ function SampledAuditFold({
   );
 }
 
-function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
+function InitialScanSummary({
+  result,
+  continueHref,
+}: {
+  result: AnswerCheckResult;
+  continueHref?: string;
+}) {
   const copy = useDictionary().answerCheck;
+  const priorityCount = Math.min(
+    FIRST_SHOWN,
+    reportFindingGroups(result, copy).length,
+  );
   const locale = useLocale();
   const discoveryNotes = discoveryFileNotes(copy);
   const findings = sortedFindings(result);
@@ -2331,7 +2339,7 @@ function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
   // paragraph of preamble between the merchant and a number they can read. The
   // three rows now sit directly on the card and speak for themselves.
   return (
-    <section className="border-b border-black/14 bg-white">
+    <section className="border-b border-black/14 bg-[#fffaf7]">
       <div className="border-b border-black/12 bg-[#fffaf7] px-5 py-5 sm:px-6">
         <h3 className="text-[16px] font-semibold tracking-[-0.012em] text-ink-deep">
           {copy.summary.evidenceHeading}
@@ -2340,6 +2348,27 @@ function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
           {copy.summary.evidenceIntro}
         </p>
       </div>
+      {continueHref && result.status === "ready" && priorityCount > 0 ? (
+        <div
+          data-print-hide
+          className="sticky bottom-3 z-30 mx-3 mt-3 flex items-center justify-between gap-3 border border-black/16 bg-ink-deep px-3 py-2.5 text-white shadow-[0_12px_30px_rgba(17,17,17,0.18)] md:hidden"
+        >
+          <span className="text-[11.5px] font-semibold">
+            {priorityCount} {copy.result.prioritiesFound(priorityCount)}
+          </span>
+          <TrackedLink
+            href={continueHref}
+            eventName="scan_continue_clicked"
+            eventCategory="conversion"
+            placement="answer_check_mobile_sticky"
+            preserveUtm
+            className="inline-flex min-h-9 shrink-0 items-center gap-1.5 bg-white px-3 text-[12px] font-semibold text-ink-deep"
+          >
+            {copy.continue.mobileStart}
+            <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+          </TrackedLink>
+        </div>
+      ) : null}
       <Fold
         title={copy.summary.store}
         summary={
@@ -3724,27 +3753,6 @@ function RejectedNotice({
   );
 }
 
-function SaveAuditPanel({ domain, gate }: { domain: string; gate: ReactNode }) {
-  const copy = useDictionary().answerCheck;
-  return (
-    <section className="border-b border-black/14 bg-[#fffaf7] px-5 py-6 sm:px-6">
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(17rem,0.42fr)] lg:items-center">
-        <div>
-          <h3 className="text-[18px] font-semibold tracking-[-0.015em] text-ink-deep">
-            {copy.email.completeLabel}
-          </h3>
-          <p className="mt-1.5 max-w-[58ch] text-[13px] leading-[1.6] text-black/58">
-            {copy.email.completeIntro(domain)}
-          </p>
-        </div>
-        <div className="border-t border-black/10 pt-5 lg:border-l lg:border-t-0 lg:pl-6 lg:pt-0">
-          {gate}
-        </div>
-      </div>
-    </section>
-  );
-}
-
 export function ResultCard({
   result,
   identity,
@@ -3835,7 +3843,7 @@ export function ResultCard({
       .join(" · ");
 
   return (
-    <div className="overflow-hidden border border-black/18 bg-white text-left">
+    <div className="border border-black/18 bg-white text-left">
       <div className="flex flex-wrap items-start justify-between gap-4 border-b border-black/14 bg-white px-5 py-5 sm:px-6">
         <div className="min-w-0">
           <div className="flex items-center gap-3">
@@ -3931,19 +3939,19 @@ export function ResultCard({
             <VisibilityDisclosure result={result} />
           ) : null}
 
-          <InitialScanSummary result={result} />
+          <InitialScanSummary result={result} continueHref={continueHref} />
 
           {/* Method and limits are useful proof, but secondary to the findings. */}
           {result.status === "ready" ? <ScanBoundary result={result} /> : null}
-
-          {verificationGate && result.status === "ready" ? (
-            <SaveAuditPanel domain={result.domain} gate={verificationGate} />
-          ) : null}
 
           {continueHref && result.status === "ready" ? (
             <ClosingContinue
               domain={result.domain}
               continueHref={continueHref}
+              priorityCount={Math.min(
+                FIRST_SHOWN,
+                reportFindingGroups(result, copy).length,
+              )}
             />
           ) : null}
         </>
