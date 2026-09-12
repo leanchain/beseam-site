@@ -1476,6 +1476,7 @@ const enDictionary = {
       },
       recommendation: "See proof & next step",
       close: "Close",
+      whyItMatters: "Why it matters",
       improveNext: "Do next:",
       startFixing: "Work on this in Beseam",
       evidence: "Proof",
@@ -1536,7 +1537,7 @@ const enDictionary = {
       aiVisibilitySomeMissed: (missed: number, total: number) =>
         `Your brand was missing from ${missed} of ${total} usable AI shopping answers.`,
       aiVisibilityWhy:
-        "When an assistant answers a buying question without naming you, the shopper can be steered toward alternatives before they ever reach your store.",
+        "When an AI shopping assistant answers a buying question without naming your store, shoppers are guided toward competitors before they ever reach your storefront. Missing identifiers or mismatched prices frequently cause AI engines to discard listings in favor of verified rivals.",
       aiVisibilityNext:
         "Open the questions below to see what was asked, which assistants returned a usable answer, who they named instead, and which product evidence is worth strengthening first.",
       aiVisibilityAttempts: (usable: number, total: number) =>
@@ -1598,6 +1599,12 @@ const enDictionary = {
         "Turn findings into prepared changes",
         "Approve first, then measure again",
       ] as readonly [string, string, string],
+      safetyAssurances: [
+        "1-click Shopify connect (no theme code touched)",
+        "Every customer-facing change requires your approval",
+        "All changes stay 100% reversible",
+        "The same shopper questions rerun to prove what moved",
+      ] as readonly [string, string, string, string],
       prepared: "Prepared by Beseam",
       approval: "Needs your approval",
       afterConnection: "Checked after connection",
@@ -1654,9 +1661,9 @@ const enDictionary = {
       ) =>
         `${named === 0 ? `None of the ${usable}` : named === usable ? `All ${usable}` : `${named} of ${usable}`} usable AI shopping ${usable === 1 ? "answer" : "answers"} named you · ${attempts} attempts across ${questions} buying ${questions === 1 ? "question" : "questions"}`,
       usableAttempts: (usable: number, total: number) =>
-        `${usable} of ${total} attempts produced a usable answer`,
+        `${usable} of ${total} attempts recommended specific stores (remaining were informational)`,
       noUsableAttempts: (total: number) =>
-        `${total} ${total === 1 ? "attempt" : "attempts"} · no usable answer`,
+        `${total} ${total === 1 ? "attempt" : "attempts"} · informational only (no stores named)`,
       noUsableSummary: (attempts: number, questions: number) =>
         `0/${attempts} assistant attempts returned a usable answer · ${questions} buying ${questions === 1 ? "question" : "questions"}`,
       checking: "Checking what shoppers are being shown",
@@ -1785,8 +1792,8 @@ const enDictionary = {
         unchecked: number,
       ) =>
         failed
-          ? `${pages} product ${pages === 1 ? "page" : "pages"} sampled · ${failed} ${failed === 1 ? "check needs" : "checks need"} attention · ${Math.max(0, evaluated - failed)}/${evaluated} passed${unchecked ? ` · ${unchecked} not measured` : ""}`
-          : `${pages} product ${pages === 1 ? "page" : "pages"} sampled · ${evaluated}/${evaluated} checks passed${unchecked ? ` · ${unchecked} not measured` : ""}`,
+          ? `${pages} product ${pages === 1 ? "page" : "pages"} sampled · ${failed} verified ${failed === 1 ? "issue" : "issues"} · ${evaluated} merchant checks measured${unchecked ? ` · ${unchecked} not measured` : ""}`
+          : `${pages} product ${pages === 1 ? "page" : "pages"} sampled · no verified PDP defects · ${evaluated} merchant checks measured${unchecked ? ` · ${unchecked} not measured` : ""}`,
       localizedCopies: (count: number) => `${count}+ localized URL copies`,
       robots: "robots.txt",
       sitemap: "Sitemap",
@@ -1872,12 +1879,25 @@ const enDictionary = {
       pdpFailed:
         "The Store and Catalog observations are still valid. The representative PDP inspection could not complete on this run.",
       sampleShows: "What the sample product pages show",
+      deepAuditCoverage: "How much Beseam actually checked",
+      deepAuditCoverageSummary: (pages: number, measured: number, notMeasured: number) =>
+        `${measured} deep diagnostic checks measured across ${pages} sampled ${pages === 1 ? "PDP" : "PDPs"}${notMeasured ? ` · ${notMeasured} additional checks could not be measured` : ""}`,
+      deepAuditCoverageNote:
+        "The cards below surface the merchant-readable conclusions. Every individual SEO, AI-shopping, GEO, CRO, trust, security, category and technical check remains available in the page reports.",
+      areaClear: "No verified defects in this sample",
+      areaIssues: (count: number) => `${count} verified ${count === 1 ? "issue" : "issues"}`,
+      areaCoverage: (measured: number, notMeasured: number) =>
+        `${measured} merchant checks measured${notMeasured ? ` · ${notMeasured} not measured` : ""}`,
       semanticSignalsHeading: "SEO & structured-data signals",
       semanticSignalsNote:
         "These are semantic checks, not syntax checks. Product and Offer can be supplied as JSON-LD, Microdata or RDFa; Beseam does not mark a page down merely for not using JSON-LD specifically.",
       opportunity: "Opportunity",
       signalIssues: (issues: number, total: number) =>
-        `${issues}/${total} need attention`,
+        `${issues} of ${total} sampled ${total === 1 ? "PDP needs" : "PDPs need"} attention`,
+      signalVerified: (passed: number, total: number) =>
+        passed === total
+          ? `Verified on all ${total} sampled ${total === 1 ? "PDP" : "PDPs"}`
+          : `Verified on ${passed} of ${total} sampled PDPs`,
       signalNotMeasured: (count: number) => `${count} not measured`,
       signalLabels: {
         "seo.l2.product_schema_present": "Product structured data",
@@ -1907,8 +1927,8 @@ const enDictionary = {
       notMeasuredCount: (count: number) => ` · ${count} not measured`,
       pageCheckResult: (failed: number, evaluated: number, unevaluated: number) =>
         failed
-          ? `${failed} of ${evaluated} need attention${unevaluated ? ` · ${unevaluated} not measured` : ""}`
-          : `${evaluated}/${evaluated} checks passed${unevaluated ? ` · ${unevaluated} not measured` : ""}`,
+          ? `${failed} verified ${failed === 1 ? "issue" : "issues"} · ${evaluated} merchant checks measured${unevaluated ? ` · ${unevaluated} not measured` : ""}`
+          : `No verified defects · ${evaluated} merchant checks measured${unevaluated ? ` · ${unevaluated} not measured` : ""}`,
       health: (score: number) => `Health ${score}`,
       needAttentionOf: (failed: number, total: number) =>
         `${failed} of ${total} need attention`,

@@ -1389,6 +1389,7 @@ export const de: Dictionary = {
       },
       recommendation: "Nachweis & nächsten Schritt ansehen",
       close: "Schliessen",
+      whyItMatters: "Warum das wichtig ist",
       improveNext: "Als Nächstes:",
       startFixing: "In Beseam weiterbearbeiten",
       evidence: "Nachweis",
@@ -1450,7 +1451,7 @@ export const de: Dictionary = {
       aiVisibilitySomeMissed: (missed: number, total: number) =>
         `Ihre Marke fehlte in ${missed} von ${total} verwertbaren KI-Shopping-Antworten.`,
       aiVisibilityWhy:
-        "Wenn ein Assistent eine Kauffrage beantwortet, ohne Sie zu nennen, kann die Kundschaft schon vor dem Besuch Ihres Shops zu Alternativen gelenkt werden.",
+        "Wenn ein KI-Shopping-Assistent eine kaufbereite Frage beantwortet, ohne Ihren Shop zu nennen, wird die Kundschaft direkt zu Mitbewerbern geleitet. Weichen Katalogdaten, Barcodes oder Preise ab, sortieren KI-Modelle Produkte aus, um keine ungesicherten Angaben zu empfehlen.",
       aiVisibilityNext:
         "Öffnen Sie unten die Fragen, um zu sehen, was gefragt wurde, welche Assistenten eine verwertbare Antwort lieferten, wen sie stattdessen nannten und welche Produktbelege Sie zuerst stärken sollten.",
       aiVisibilityAttempts: (usable: number, total: number) =>
@@ -1513,6 +1514,12 @@ export const de: Dictionary = {
         "Befunde in vorbereitete Änderungen verwandeln",
         "Zuerst freigeben, danach erneut messen",
       ],
+      safetyAssurances: [
+        "1-Klick Shopify-Verbindung (kein Theme-Code verändert)",
+        "Jede Änderung erfordert Ihre ausdrückliche Freigabe",
+        "Alle Änderungen bleiben zu 100 % rückgängig machbar",
+        "Dieselben Einkaufsfragen werden erneut geprüft, um die Wirkung zu belegen",
+      ] as readonly [string, string, string, string],
       prepared: "Von Beseam vorbereitet",
       approval: "Braucht Ihre Freigabe",
       afterConnection: "Nach Verbindung geprüft",
@@ -1574,9 +1581,9 @@ export const de: Dictionary = {
       ) =>
         `${named === 0 ? `Keine der ${usable}` : named === usable ? `Alle ${usable}` : `${named} von ${usable}`} verwertbaren KI-Shopping-${usable === 1 ? "Antworten nannte" : "Antworten nannten"} Sie · ${attempts} Versuche über ${questions} ${questions === 1 ? "Kauffrage" : "Kauffragen"}`,
       usableAttempts: (usable: number, total: number) =>
-        `${usable} von ${total} Versuchen lieferten eine verwertbare Antwort`,
+        `${usable} von ${total} Versuchen empfahlen konkrete Shops (restliche gaben allgemeinen Rat)`,
       noUsableAttempts: (total: number) =>
-        `${total} ${total === 1 ? "Versuch" : "Versuche"} · keine verwertbare Antwort`,
+        `${total} ${total === 1 ? "Versuch" : "Versuche"} · rein informativ (keine Shops genannt)`,
       noUsableSummary: (attempts: number, questions: number) =>
         `0/${attempts} Assistenten-Versuche lieferten eine verwertbare Antwort · ${questions} ${questions === 1 ? "Kauffrage" : "Kauffragen"}`,
       checking: "Es wird geprüft, was der Kundschaft gezeigt wird",
@@ -1712,8 +1719,8 @@ export const de: Dictionary = {
         unchecked: number,
       ) =>
         failed
-          ? `${pages} ${pages === 1 ? "Produktseite" : "Produktseiten"} geprüft · ${failed} ${failed === 1 ? "Prüfung braucht" : "Prüfungen brauchen"} Aufmerksamkeit · ${Math.max(0, evaluated - failed)}/${evaluated} bestanden${unchecked ? ` · ${unchecked} nicht gemessen` : ""}`
-          : `${pages} ${pages === 1 ? "Produktseite" : "Produktseiten"} geprüft · ${evaluated}/${evaluated} Prüfungen bestanden${unchecked ? ` · ${unchecked} nicht gemessen` : ""}`,
+          ? `${pages} ${pages === 1 ? "Produktseite" : "Produktseiten"} geprüft · ${failed} verifizierte ${failed === 1 ? "Abweichung" : "Abweichungen"} · ${evaluated} Händlerprüfungen gemessen${unchecked ? ` · ${unchecked} nicht gemessen` : ""}`
+          : `${pages} ${pages === 1 ? "Produktseite" : "Produktseiten"} geprüft · keine verifizierten PDP-Fehler · ${evaluated} Händlerprüfungen gemessen${unchecked ? ` · ${unchecked} nicht gemessen` : ""}`,
       localizedCopies: (count: number) => `${count}+ lokalisierte URL-Kopien`,
       robots: "robots.txt",
       sitemap: "Sitemap",
@@ -1800,13 +1807,26 @@ export const de: Dictionary = {
         "Shop- und Katalogbelege sind oben bereits verfügbar. Ergebnisse auf Seitenebene erscheinen hier automatisch.",
       pdpFailed:
         "Die Shop- und Katalogbeobachtungen bleiben gültig. Die repräsentative Produktseitenprüfung konnte bei diesem Durchlauf nicht abgeschlossen werden.",
-            sampleShows: "Was die Stichprobe der Produktseiten zeigt",
+      sampleShows: "Was die Stichprobe der Produktseiten zeigt",
+      deepAuditCoverage: "Wie viel Beseam tatsächlich geprüft hat",
+      deepAuditCoverageSummary: (pages: number, measured: number, notMeasured: number) =>
+        `${measured} tiefe Diagnoseprüfungen über ${pages} geprüfte ${pages === 1 ? "PDP" : "PDPs"} gemessen${notMeasured ? ` · ${notMeasured} weitere Prüfungen konnten nicht gemessen werden` : ""}`,
+      deepAuditCoverageNote:
+        "Die Karten unten zeigen die verständlichen Schlussfolgerungen. Jede einzelne SEO-, AI-Shopping-, GEO-, CRO-, Vertrauens-, Sicherheits-, Kategorie- und technische Prüfung bleibt in den Seitenberichten verfügbar.",
+      areaClear: "Keine verifizierten Fehler in dieser Stichprobe",
+      areaIssues: (count: number) => `${count} verifizierte ${count === 1 ? "Abweichung" : "Abweichungen"}`,
+      areaCoverage: (measured: number, notMeasured: number) =>
+        `${measured} Händlerprüfungen gemessen${notMeasured ? ` · ${notMeasured} nicht gemessen` : ""}`,
       semanticSignalsHeading: "SEO- & strukturierte Datensignale",
       semanticSignalsNote:
         "Das sind semantische Prüfungen, keine Syntaxprüfungen. Product und Offer können als JSON-LD, Microdata oder RDFa vorliegen; Beseam wertet eine Seite nicht allein deshalb ab, weil sie nicht speziell JSON-LD verwendet.",
       opportunity: "Chance",
       signalIssues: (issues: number, total: number) =>
-        `${issues}/${total} brauchen Aufmerksamkeit`,
+        `${issues} von ${total} geprüften ${total === 1 ? "PDP braucht" : "PDPs brauchen"} Aufmerksamkeit`,
+      signalVerified: (passed: number, total: number) =>
+        passed === total
+          ? `Auf allen ${total} geprüften ${total === 1 ? "PDP" : "PDPs"} verifiziert`
+          : `Auf ${passed} von ${total} geprüften PDPs verifiziert`,
       signalNotMeasured: (count: number) => `${count} nicht gemessen`,
       signalLabels: {
         "seo.l2.product_schema_present": "Product-Strukturdaten",
@@ -1836,8 +1856,8 @@ export const de: Dictionary = {
       notMeasuredCount: (count: number) => ` · ${count} nicht gemessen`,
       pageCheckResult: (failed: number, evaluated: number, unevaluated: number) =>
         failed
-          ? `${failed} von ${evaluated} brauchen Aufmerksamkeit${unevaluated ? ` · ${unevaluated} nicht gemessen` : ""}`
-          : `${evaluated}/${evaluated} Prüfungen bestanden${unevaluated ? ` · ${unevaluated} nicht gemessen` : ""}`,
+          ? `${failed} verifizierte ${failed === 1 ? "Abweichung" : "Abweichungen"} · ${evaluated} Händlerprüfungen gemessen${unevaluated ? ` · ${unevaluated} nicht gemessen` : ""}`
+          : `Keine verifizierten Fehler · ${evaluated} Händlerprüfungen gemessen${unevaluated ? ` · ${unevaluated} nicht gemessen` : ""}`,
       health: (score: number) => `Zustand ${score}`,
       needAttentionOf: (failed: number, total: number) =>
         `${failed} von ${total} brauchen Aufmerksamkeit`,

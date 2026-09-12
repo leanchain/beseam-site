@@ -1099,13 +1099,18 @@ function FindingRow({
         <div className="border-t border-black/10 bg-[#fffaf7] px-5 py-5 sm:px-6 sm:pl-[5.5rem]">
           <div className="grid gap-6 lg:grid-cols-12 lg:gap-8">
             <div className="lg:col-span-5">
-              {why && !featured ? (
-                <p className="max-w-[68ch] text-[14px] leading-[1.65] text-black/64">
-                  {why}
-                </p>
+              {why ? (
+                <div className="mb-4">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-black/44">
+                    {copy.findings.whyItMatters}
+                  </p>
+                  <p className="mt-1 max-w-[68ch] text-[13.5px] leading-[1.65] text-black/70">
+                    {why}
+                  </p>
+                </div>
               ) : null}
               {nextStep ? (
-                <p className={`${why && !featured ? "mt-4" : ""} max-w-[68ch] border-l border-signal-ink/35 pl-3.5 text-[14px] leading-[1.6] text-ink-deep`}>
+                <p className="max-w-[68ch] border-l border-signal-ink/35 pl-3.5 text-[14px] leading-[1.6] text-ink-deep">
                   <span className="font-semibold">
                     {copy.findings.improveNext}{" "}
                   </span>
@@ -1639,39 +1644,58 @@ function ClosingContinue({
   priorityCount: number;
 }) {
   const copy = useDictionary().answerCheck;
+  const assurances =
+    copy.continue.safetyAssurances ?? copy.continue.benefits;
+
   return (
     <section
       data-print-hide
-      className="grid gap-6 border-t border-black/14 bg-ink-deep px-5 py-7 text-white sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:px-6 sm:py-8"
+      className="border-t border-black/14 bg-ink-deep px-5 py-7 text-white sm:px-6 sm:py-8"
     >
-      <div>
-        <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-white/46">
-          {copy.continue.closingEyebrow}
-        </p>
-        <p className="mt-1.5 max-w-[34ch] text-[21px] font-semibold leading-[1.25] tracking-[-0.02em] text-white">
-          {copy.continue.closingTitle(priorityCount)}
-        </p>
-        <p className="mt-2 max-w-[66ch] text-[13px] leading-[1.6] text-white/68">
-          {copy.continue.closingBody}
-        </p>
-        <p className="mt-2 text-[11.5px] text-white/46">
-          {copy.continue.carryStore(domain)}
-        </p>
+      <div className="grid gap-6 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
+        <div>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-white/46">
+            {copy.continue.closingEyebrow}
+          </p>
+          <p className="mt-1.5 max-w-[34ch] text-[21px] font-semibold leading-[1.25] tracking-[-0.02em] text-white">
+            {copy.continue.closingTitle(priorityCount)}
+          </p>
+          <p className="mt-2 max-w-[66ch] text-[13px] leading-[1.6] text-white/68">
+            {copy.continue.closingBody}
+          </p>
+          <p className="mt-2 text-[11.5px] text-white/46">
+            {copy.continue.carryStore(domain)}
+          </p>
+        </div>
+        <TrackedLink
+          href={continueHref}
+          eventName="scan_continue_clicked"
+          eventCategory="conversion"
+          placement="answer_check_result_bottom"
+          preserveUtm
+          className="group inline-flex min-h-12 items-center justify-center gap-2 bg-white px-6 text-[13.5px] font-semibold text-ink-deep transition-colors hover:bg-signal"
+        >
+          {copy.continue.start}
+          <ArrowRight
+            aria-hidden="true"
+            className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
+          />
+        </TrackedLink>
       </div>
-      <TrackedLink
-        href={continueHref}
-        eventName="scan_continue_clicked"
-        eventCategory="conversion"
-        placement="answer_check_result_bottom"
-        preserveUtm
-        className="group inline-flex min-h-12 items-center justify-center gap-2 bg-white px-6 text-[13.5px] font-semibold text-ink-deep transition-colors hover:bg-signal"
-      >
-        {copy.continue.start}
-        <ArrowRight
-          aria-hidden="true"
-          className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
-        />
-      </TrackedLink>
+
+      {assurances?.length ? (
+        <ul className="mt-6 grid gap-2.5 border-t border-white/12 pt-5 text-[12px] text-white/76 sm:grid-cols-2 lg:grid-cols-4">
+          {assurances.map((item) => (
+            <li key={item} className="flex items-start gap-2">
+              <Check
+                aria-hidden="true"
+                className="mt-0.5 h-3.5 w-3.5 shrink-0 text-signal"
+              />
+              <span className="leading-snug">{item}</span>
+            </li>
+          ))}
+        </ul>
+      ) : null}
     </section>
   );
 }
@@ -2088,6 +2112,8 @@ type SampledAuditRow = {
   report_id?: number | null;
   checks_evaluated?: number;
   checks_failed?: number;
+  diagnostic_checks_evaluated?: number;
+  diagnostic_checks_unevaluated?: number;
   findings?: Finding[];
 };
 
@@ -2317,6 +2343,16 @@ function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
     (sum, audit) => sum + audit.checks_unevaluated,
     0,
   );
+  const diagnosticChecksEvaluated = audits.reduce(
+    (sum, audit) =>
+      sum + (audit.diagnostic_checks_evaluated ?? audit.checks_evaluated),
+    0,
+  );
+  const diagnosticChecksUnevaluated = audits.reduce(
+    (sum, audit) =>
+      sum + (audit.diagnostic_checks_unevaluated ?? audit.checks_unevaluated),
+    0,
+  );
   const semanticSignalOrder = [
     "seo.l2.product_schema_present",
     "seo.l2.offer_present",
@@ -2342,6 +2378,7 @@ function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
         issues: number;
         notMeasured: number;
         kind: string;
+        domain: string;
       }
     >();
     for (const audit of audits) {
@@ -2353,6 +2390,7 @@ function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
           issues: 0,
           notMeasured: 0,
           kind: signal.kind,
+          domain: signal.domain,
         };
         if (signal.status === "pass") row.passed += 1;
         else if (signal.status === "issue") row.issues += 1;
@@ -3221,7 +3259,7 @@ function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
                   </p>
                   <div className="mt-3 grid gap-px border border-black/10 bg-black/10 sm:grid-cols-2 lg:grid-cols-3">
                     {semanticSignals.map((signal) => {
-                      const total = signal.passed + signal.issues;
+                      const total = signal.passed + signal.issues + signal.notMeasured;
                       const labels = copy.summary.signalLabels as Record<string, string>;
                       const label = labels[signal.checkId] ?? signal.fallbackLabel;
                       return (
@@ -3241,7 +3279,7 @@ function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
                           >
                             {signal.issues
                               ? copy.summary.signalIssues(signal.issues, total)
-                              : copy.summary.passedOf(signal.passed, total)}
+                              : copy.summary.signalVerified(signal.passed, total)}
                           </p>
                           {signal.notMeasured ? (
                             <p className="mt-0.5 text-[10px] text-black/40">
@@ -3256,36 +3294,36 @@ function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
               ) : null}
               <div className="border-b border-black/12 bg-[#fffaf7] px-5 py-4 sm:px-6">
                 <p className="text-[11px] font-semibold text-ink-deep">
-                  {copy.summary.sampleShows}
+                  {copy.summary.deepAuditCoverage}
+                </p>
+                <p className="mt-1 text-[13px] font-semibold leading-relaxed text-ink-deep">
+                  {copy.summary.deepAuditCoverageSummary(
+                    audits.length,
+                    diagnosticChecksEvaluated,
+                    diagnosticChecksUnevaluated,
+                  )}
+                </p>
+                <p className="mt-1.5 max-w-[84ch] text-[10.5px] leading-relaxed text-black/46">
+                  {copy.summary.deepAuditCoverageNote}
                 </p>
                 <div className="mt-3 grid gap-px border border-black/10 bg-black/10 sm:grid-cols-2 lg:grid-cols-3">
-                  {staticAreas.map((area) => {
-                    const passed = Math.max(0, area.evaluated - area.failed);
-                    return (
-                      <div key={area.label} className="bg-white px-3 py-3">
-                        <p className="text-[11px] font-semibold leading-snug text-ink-deep">
-                          {area.label}
-                        </p>
-                        <div className="mt-2 flex items-baseline justify-between gap-2">
-                          <span
-                            className={`text-[16px] font-semibold ${area.failed ? "text-signal-ink" : "text-[#1a6b43]"}`}
-                          >
-                            {area.failed
-                              ? copy.summary.needAttention(area.failed)
-                              : copy.summary.passedOf(passed, area.evaluated)}
-                          </span>
-                          <span className="text-right text-[11px] text-black/42">
-                            {area.failed
-                              ? copy.summary.passedOf(passed, area.evaluated)
-                              : copy.summary.verifiedInSample}
-                            {area.unevaluated
-                              ? copy.summary.notMeasuredCount(area.unevaluated)
-                              : ""}
-                          </span>
-                        </div>
-                      </div>
-                    );
-                  })}
+                  {staticAreas.map((area) => (
+                    <div key={area.label} className="bg-white px-3 py-3">
+                      <p className="text-[11px] font-semibold leading-snug text-ink-deep">
+                        {area.label}
+                      </p>
+                      <p
+                        className={`mt-2 text-[13px] font-semibold ${area.failed ? "text-signal-ink" : "text-[#1a6b43]"}`}
+                      >
+                        {area.failed
+                          ? copy.summary.areaIssues(area.failed)
+                          : copy.summary.areaClear}
+                      </p>
+                      <p className="mt-1 text-[10.5px] leading-relaxed text-black/42">
+                        {copy.summary.areaCoverage(area.evaluated, area.unevaluated)}
+                      </p>
+                    </div>
+                  ))}
                 </div>
               </div>
               {pdpRepeatedPatterns.length ? (

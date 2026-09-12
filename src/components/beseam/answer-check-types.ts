@@ -98,6 +98,9 @@ export type PageAudit = {
   checks_evaluated: number;
   checks_failed: number;
   checks_unevaluated: number;
+  /** Full page-scoped analyzer inventory retained behind the public grade. */
+  diagnostic_checks_evaluated?: number;
+  diagnostic_checks_unevaluated?: number;
   findings: Finding[];
   signals?: PageAuditSignal[];
   page_type?: "HOMEPAGE" | "CATEGORY" | "PDP" | "CONTENT" | string;
