@@ -1781,10 +1781,12 @@ const enDictionary = {
       pageAuditSummary: (
         pages: number,
         failed: number,
-        _evaluated: number,
-        _unchecked: number,
+        evaluated: number,
+        unchecked: number,
       ) =>
-        `${pages} product ${pages === 1 ? "page" : "pages"} sampled · ${failed ? "issues found" : "no obvious issues found"}`,
+        failed
+          ? `${pages} product ${pages === 1 ? "page" : "pages"} sampled · ${failed} ${failed === 1 ? "check needs" : "checks need"} attention · ${Math.max(0, evaluated - failed)}/${evaluated} passed${unchecked ? ` · ${unchecked} not measured` : ""}`
+          : `${pages} product ${pages === 1 ? "page" : "pages"} sampled · ${evaluated}/${evaluated} checks passed${unchecked ? ` · ${unchecked} not measured` : ""}`,
       localizedCopies: (count: number) => `${count}+ localized URL copies`,
       robots: "robots.txt",
       sitemap: "Sitemap",
@@ -1878,6 +1880,13 @@ const enDictionary = {
       needAttention: (count: number) => `${count} need attention`,
       checked: (count: number) => `of ${count} checked`,
       couldNotCheck: (count: number) => ` · ${count} we could not check`,
+      passedOf: (passed: number, total: number) => `${passed}/${total} passed`,
+      verifiedInSample: "Verified in this sample",
+      notMeasuredCount: (count: number) => ` · ${count} not measured`,
+      pageCheckResult: (failed: number, evaluated: number, unevaluated: number) =>
+        failed
+          ? `${failed} of ${evaluated} need attention${unevaluated ? ` · ${unevaluated} not measured` : ""}`
+          : `${evaluated}/${evaluated} checks passed${unevaluated ? ` · ${unevaluated} not measured` : ""}`,
       health: (score: number) => `Health ${score}`,
       needAttentionOf: (failed: number, total: number) =>
         `${failed} of ${total} need attention`,

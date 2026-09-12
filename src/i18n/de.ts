@@ -1708,10 +1708,12 @@ export const de: Dictionary = {
       pageAuditSummary: (
         pages: number,
         failed: number,
-        _evaluated: number,
-        _unchecked: number,
+        evaluated: number,
+        unchecked: number,
       ) =>
-        `${pages} ${pages === 1 ? "Produktseite" : "Produktseiten"} geprüft · ${failed ? "Probleme gefunden" : "keine offensichtlichen Probleme gefunden"}`,
+        failed
+          ? `${pages} ${pages === 1 ? "Produktseite" : "Produktseiten"} geprüft · ${failed} ${failed === 1 ? "Prüfung braucht" : "Prüfungen brauchen"} Aufmerksamkeit · ${Math.max(0, evaluated - failed)}/${evaluated} bestanden${unchecked ? ` · ${unchecked} nicht gemessen` : ""}`
+          : `${pages} ${pages === 1 ? "Produktseite" : "Produktseiten"} geprüft · ${evaluated}/${evaluated} Prüfungen bestanden${unchecked ? ` · ${unchecked} nicht gemessen` : ""}`,
       localizedCopies: (count: number) => `${count}+ lokalisierte URL-Kopien`,
       robots: "robots.txt",
       sitemap: "Sitemap",
@@ -1807,6 +1809,13 @@ export const de: Dictionary = {
       needAttention: (count: number) => `${count} brauchen Aufmerksamkeit`,
       checked: (count: number) => `von ${count} geprüft`,
       couldNotCheck: (count: number) => ` · ${count} konnten wir nicht prüfen`,
+      passedOf: (passed: number, total: number) => `${passed}/${total} bestanden`,
+      verifiedInSample: "In dieser Stichprobe verifiziert",
+      notMeasuredCount: (count: number) => ` · ${count} nicht gemessen`,
+      pageCheckResult: (failed: number, evaluated: number, unevaluated: number) =>
+        failed
+          ? `${failed} von ${evaluated} brauchen Aufmerksamkeit${unevaluated ? ` · ${unevaluated} nicht gemessen` : ""}`
+          : `${evaluated}/${evaluated} Prüfungen bestanden${unevaluated ? ` · ${unevaluated} nicht gemessen` : ""}`,
       health: (score: number) => `Zustand ${score}`,
       needAttentionOf: (failed: number, total: number) =>
         `${failed} von ${total} brauchen Aufmerksamkeit`,

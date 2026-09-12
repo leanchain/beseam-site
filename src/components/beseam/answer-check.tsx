@@ -2313,6 +2313,10 @@ function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
     (sum, audit) => sum + audit.checks_failed,
     0,
   );
+  const unevaluatedChecks = audits.reduce(
+    (sum, audit) => sum + audit.checks_unevaluated,
+    0,
+  );
 
   const market = localizedMarketName(
     result.brand_evidence?.market ?? null,
@@ -2446,22 +2450,26 @@ function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
     { label: copy.summary.trustConfidence, domains: ["eeat", "compliance"] },
     { label: copy.summary.marketsLocalization, domains: ["i18n"] },
     { label: copy.summary.technicalSecurity, domains: ["security"] },
-  ].map((area) => {
-    const counts = audits.reduce(
-      (acc, audit) => {
-        for (const domain of area.domains) {
-          const row = audit.domain_counts?.[domain];
-          if (!row) continue;
-          acc.evaluated += Number(row.evaluated ?? 0);
-          acc.failed += Number(row.failed ?? 0);
-          acc.unevaluated += Number(row.unevaluated ?? 0);
-        }
-        return acc;
-      },
-      { evaluated: 0, failed: 0, unevaluated: 0 },
-    );
-    return { ...area, ...counts };
-  });
+  ]
+    .map((area) => {
+      const counts = audits.reduce(
+        (acc, audit) => {
+          for (const domain of area.domains) {
+            const row = audit.domain_counts?.[domain];
+            if (!row) continue;
+            acc.evaluated += Number(row.evaluated ?? 0);
+            acc.failed += Number(row.failed ?? 0);
+            acc.unevaluated += Number(row.unevaluated ?? 0);
+          }
+          return acc;
+        },
+        { evaluated: 0, failed: 0, unevaluated: 0 },
+      );
+      return { ...area, ...counts };
+    })
+    // An unmeasured capability is not a clean capability. Hide empty domains
+    // instead of presenting a reassuring "0 need attention" for work we did not do.
+    .filter((area) => area.evaluated + area.unevaluated > 0);
 
   const catalogCheckedLabel = catalog
     ? `${catalog.products_checked}${catalog.products_capped ? "+" : ""} ${copy.summary.checkedProducts}`
@@ -2958,9 +2966,10 @@ function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
                   {homepageDetailed.title ?? homepageDetailed.url}
                 </p>
                 <p className="mt-1 text-[11px] text-black/46">
-                  {copy.summary.needAttentionOf(
+                  {copy.summary.pageCheckResult(
                     homepageDetailed.checks_failed,
                     homepageDetailed.checks_evaluated,
+                    homepageDetailed.checks_unevaluated,
                   )}
                 </p>
               </div>
@@ -3070,10 +3079,7 @@ function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
                         audits.length,
                         failedChecks,
                         evaluatedChecks,
-                        staticAreas.reduce(
-                          (sum, area) => sum + area.unevaluated,
-                          0,
-                        ),
+                        unevaluatedChecks,
                       )
           }
         >
@@ -3163,26 +3169,33 @@ function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
                   {copy.summary.sampleShows}
                 </p>
                 <div className="mt-3 grid gap-px border border-black/10 bg-black/10 sm:grid-cols-2 lg:grid-cols-3">
-                  {staticAreas.map((area) => (
-                    <div key={area.label} className="bg-white px-3 py-3">
-                      <p className="text-[11px] font-semibold leading-snug text-ink-deep">
-                        {area.label}
-                      </p>
-                      <div className="mt-2 flex items-baseline justify-between gap-2">
-                        <span
-                          className={`text-[16px] font-semibold ${area.failed ? "text-signal-ink" : "text-ink-deep"}`}
-                        >
-                          {copy.summary.needAttention(area.failed)}
-                        </span>
-                        <span className="text-[11px] text-black/42">
-                          {copy.summary.checked(area.evaluated)}
-                          {area.unevaluated
-                            ? copy.summary.couldNotCheck(area.unevaluated)
-                            : ""}
-                        </span>
+                  {staticAreas.map((area) => {
+                    const passed = Math.max(0, area.evaluated - area.failed);
+                    return (
+                      <div key={area.label} className="bg-white px-3 py-3">
+                        <p className="text-[11px] font-semibold leading-snug text-ink-deep">
+                          {area.label}
+                        </p>
+                        <div className="mt-2 flex items-baseline justify-between gap-2">
+                          <span
+                            className={`text-[16px] font-semibold ${area.failed ? "text-signal-ink" : "text-[#1a6b43]"}`}
+                          >
+                            {area.failed
+                              ? copy.summary.needAttention(area.failed)
+                              : copy.summary.passedOf(passed, area.evaluated)}
+                          </span>
+                          <span className="text-right text-[11px] text-black/42">
+                            {area.failed
+                              ? copy.summary.passedOf(passed, area.evaluated)
+                              : copy.summary.verifiedInSample}
+                            {area.unevaluated
+                              ? copy.summary.notMeasuredCount(area.unevaluated)
+                              : ""}
+                          </span>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
               {pdpRepeatedPatterns.length ? (
@@ -3262,12 +3275,13 @@ function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
                           className={
                             audit.checks_failed > 0
                               ? "font-semibold text-signal-ink"
-                              : "text-black/48"
+                              : "font-semibold text-[#1a6b43]"
                           }
                         >
-                          {copy.summary.needAttentionOf(
+                          {copy.summary.pageCheckResult(
                             audit.checks_failed,
                             audit.checks_evaluated,
+                            audit.checks_unevaluated,
                           )}
                         </span>
                       </div>
