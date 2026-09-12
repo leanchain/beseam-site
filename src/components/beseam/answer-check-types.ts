@@ -71,6 +71,15 @@ export type Finding = {
   area?: string;
 };
 
+export type PageAuditSignal = {
+  check_id: string;
+  label: string;
+  domain: string;
+  status: "pass" | "issue" | "not_measured";
+  kind: "defect" | "advisory" | string;
+  score_bearing: boolean;
+};
+
 export type PageAudit = {
   url: string;
   title: string | null;
@@ -90,6 +99,7 @@ export type PageAudit = {
   checks_failed: number;
   checks_unevaluated: number;
   findings: Finding[];
+  signals?: PageAuditSignal[];
   page_type?: "HOMEPAGE" | "CATEGORY" | "PDP" | "CONTENT" | string;
   role?:
     "about" | "contact" | "collection" | "article" | "blog" | "page" | null;

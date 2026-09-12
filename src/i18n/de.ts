@@ -1801,6 +1801,28 @@ export const de: Dictionary = {
       pdpFailed:
         "Die Shop- und Katalogbeobachtungen bleiben gültig. Die repräsentative Produktseitenprüfung konnte bei diesem Durchlauf nicht abgeschlossen werden.",
             sampleShows: "Was die Stichprobe der Produktseiten zeigt",
+      semanticSignalsHeading: "SEO- & strukturierte Datensignale",
+      semanticSignalsNote:
+        "Das sind semantische Prüfungen, keine Syntaxprüfungen. Product und Offer können als JSON-LD, Microdata oder RDFa vorliegen; Beseam wertet eine Seite nicht allein deshalb ab, weil sie nicht speziell JSON-LD verwendet.",
+      opportunity: "Chance",
+      signalIssues: (issues: number, total: number) =>
+        `${issues}/${total} brauchen Aufmerksamkeit`,
+      signalNotMeasured: (count: number) => `${count} nicht gemessen`,
+      signalLabels: {
+        "seo.l2.product_schema_present": "Product-Strukturdaten",
+        "seo.l2.offer_present": "Offer-Strukturdaten",
+        "seo.l3.schema_visible_parity": "Strukturdaten ↔ sichtbare Seite",
+        "seo.l1.canonical_present": "Canonical-URL",
+        "seo.l1.title_present": "Seitentitel",
+        "shopping.l2.price_present": "Preis",
+        "shopping.l2.availability_present": "Verfügbarkeit",
+        "shopping.l2.brand_present": "Marke",
+        "shopping.l2.identifier_present": "Produktidentifikator",
+        "shopping.l2.image_present": "Produktbild",
+        "shopping.l2.description_present": "Produktbeschreibung",
+        "shopping.l2.description_sufficient": "Beschreibungstiefe",
+        "aeo.l3.variant_picker_present": "Varianten-Auswahl",
+      },
       pdpRepeatedPatterns: "Wiederholt auf den geprüften Produktseiten",
       pdpRepeatedHint:
         "Diese Muster sollten Sie beheben, bevor Sie einzelnen Seitendetails nachgehen.",

@@ -1872,6 +1872,28 @@ const enDictionary = {
       pdpFailed:
         "The Store and Catalog observations are still valid. The representative PDP inspection could not complete on this run.",
       sampleShows: "What the sample product pages show",
+      semanticSignalsHeading: "SEO & structured-data signals",
+      semanticSignalsNote:
+        "These are semantic checks, not syntax checks. Product and Offer can be supplied as JSON-LD, Microdata or RDFa; Beseam does not mark a page down merely for not using JSON-LD specifically.",
+      opportunity: "Opportunity",
+      signalIssues: (issues: number, total: number) =>
+        `${issues}/${total} need attention`,
+      signalNotMeasured: (count: number) => `${count} not measured`,
+      signalLabels: {
+        "seo.l2.product_schema_present": "Product structured data",
+        "seo.l2.offer_present": "Offer structured data",
+        "seo.l3.schema_visible_parity": "Structured data ↔ visible page",
+        "seo.l1.canonical_present": "Canonical URL",
+        "seo.l1.title_present": "Page title",
+        "shopping.l2.price_present": "Price",
+        "shopping.l2.availability_present": "Availability",
+        "shopping.l2.brand_present": "Brand",
+        "shopping.l2.identifier_present": "Product identifier",
+        "shopping.l2.image_present": "Product image",
+        "shopping.l2.description_present": "Product description",
+        "shopping.l2.description_sufficient": "Description depth",
+        "aeo.l3.variant_picker_present": "Variant selector",
+      },
       pdpRepeatedPatterns: "Repeated across sampled product pages",
       pdpRepeatedHint:
         "These are the patterns worth fixing before chasing one-off page details.",

@@ -2317,6 +2317,53 @@ function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
     (sum, audit) => sum + audit.checks_unevaluated,
     0,
   );
+  const semanticSignalOrder = [
+    "seo.l2.product_schema_present",
+    "seo.l2.offer_present",
+    "seo.l3.schema_visible_parity",
+    "seo.l1.canonical_present",
+    "seo.l1.title_present",
+    "shopping.l2.price_present",
+    "shopping.l2.availability_present",
+    "shopping.l2.brand_present",
+    "shopping.l2.identifier_present",
+    "shopping.l2.image_present",
+    "shopping.l2.description_present",
+    "shopping.l2.description_sufficient",
+    "aeo.l3.variant_picker_present",
+  ];
+  const semanticSignals = (() => {
+    const rows = new Map<
+      string,
+      {
+        checkId: string;
+        fallbackLabel: string;
+        passed: number;
+        issues: number;
+        notMeasured: number;
+        kind: string;
+      }
+    >();
+    for (const audit of audits) {
+      for (const signal of audit.signals ?? []) {
+        const row = rows.get(signal.check_id) ?? {
+          checkId: signal.check_id,
+          fallbackLabel: signal.label,
+          passed: 0,
+          issues: 0,
+          notMeasured: 0,
+          kind: signal.kind,
+        };
+        if (signal.status === "pass") row.passed += 1;
+        else if (signal.status === "issue") row.issues += 1;
+        else row.notMeasured += 1;
+        rows.set(signal.check_id, row);
+      }
+    }
+    return semanticSignalOrder
+      .map((checkId) => rows.get(checkId))
+      .filter((row): row is NonNullable<typeof row> => Boolean(row));
+  })();
 
   const market = localizedMarketName(
     result.brand_evidence?.market ?? null,
@@ -3162,6 +3209,49 @@ function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
                       pdpLayoutCoverage.candidatePages,
                     )}
                   </p>
+                </div>
+              ) : null}
+              {semanticSignals.length ? (
+                <div className="border-b border-black/12 bg-white px-5 py-4 sm:px-6">
+                  <p className="text-[11px] font-semibold text-ink-deep">
+                    {copy.summary.semanticSignalsHeading}
+                  </p>
+                  <p className="mt-1 max-w-[82ch] text-[10.5px] leading-relaxed text-black/46">
+                    {copy.summary.semanticSignalsNote}
+                  </p>
+                  <div className="mt-3 grid gap-px border border-black/10 bg-black/10 sm:grid-cols-2 lg:grid-cols-3">
+                    {semanticSignals.map((signal) => {
+                      const total = signal.passed + signal.issues;
+                      const labels = copy.summary.signalLabels as Record<string, string>;
+                      const label = labels[signal.checkId] ?? signal.fallbackLabel;
+                      return (
+                        <div key={signal.checkId} className="bg-[#fffaf7] px-3 py-3">
+                          <div className="flex items-start justify-between gap-3">
+                            <p className="text-[11px] font-semibold leading-snug text-ink-deep">
+                              {label}
+                            </p>
+                            {signal.kind === "advisory" && signal.issues ? (
+                              <span className="shrink-0 text-[9px] font-semibold uppercase tracking-wide text-black/40">
+                                {copy.summary.opportunity}
+                              </span>
+                            ) : null}
+                          </div>
+                          <p
+                            className={`mt-2 text-[14px] font-semibold ${signal.issues ? "text-signal-ink" : "text-[#1a6b43]"}`}
+                          >
+                            {signal.issues
+                              ? copy.summary.signalIssues(signal.issues, total)
+                              : copy.summary.passedOf(signal.passed, total)}
+                          </p>
+                          {signal.notMeasured ? (
+                            <p className="mt-0.5 text-[10px] text-black/40">
+                              {copy.summary.signalNotMeasured(signal.notMeasured)}
+                            </p>
+                          ) : null}
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
               ) : null}
               <div className="border-b border-black/12 bg-[#fffaf7] px-5 py-4 sm:px-6">
