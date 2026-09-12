@@ -1171,6 +1171,7 @@ function FindingRow({
                 preserveUtm
                 className="group/fix mt-5 inline-flex min-h-10 items-center gap-2 rounded-[3px] border border-ink-deep px-4 text-[12.5px] font-semibold text-ink-deep transition-colors hover:bg-ink-deep hover:text-white"
               >
+                {copy.findings.startFixing}
                 <ArrowRight
                   aria-hidden="true"
                   className="h-3.5 w-3.5 transition-transform group-hover/fix:translate-x-0.5"
