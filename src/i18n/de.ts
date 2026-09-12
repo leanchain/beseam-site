@@ -1271,7 +1271,8 @@ export const de: Dictionary = {
         "Nützliche Befunde erscheinen, sobald sie bereit sind. Sie müssen nicht auf alles warten.",
       questionsLater:
         "Dieser erste Scan ist die Momentaufnahme. In Beseam laufen die Prüfungen danach weiter.",
-      quickEstimate: "Erste Ergebnisse erscheinen normalerweise in weniger als einer Minute.",
+      quickEstimate:
+        "Erste Ergebnisse erscheinen normalerweise in weniger als einer Minute.",
       fullAuditRunning: "Vollständige Analyse läuft",
       fullAuditEstimate: "Nach der Bestätigung normalerweise 2–5 Minuten.",
       progressDetails: "Scan-Fortschritt anzeigen",
@@ -1297,7 +1298,7 @@ export const de: Dictionary = {
     result: {
       productsFound: "Produkte geprüft",
       productPagesSampled: "Produktseiten stichprobenartig geprüft",
-      answersNamed: "verwertbare KI-Antworten nannten Sie",
+      answersNamed: "KI-Antworten nannten Sie",
       answersPending: "KI-Antworten stehen aus",
       opportunitiesFound: (count: number) =>
         count === 1 ? "Chance gefunden" : "Chancen gefunden",
@@ -1342,6 +1343,12 @@ export const de: Dictionary = {
       openProduct: "Produkt öffnen →",
       details: "Details",
       close: "Schliessen",
+      valueSummary:
+        "Beseam prüft, wie Ihre Produkte im Shop und im KI-Shopping gefunden, verstanden und ausgewählt werden.",
+      pageQuality: "Ø PDP-Qualität",
+      deepResults: "Diagnoseprüfungen",
+      credibilityLine: (products: string, pages: number, qualified: number) =>
+        `${products} Produkte · ${pages} ${pages === 1 ? "PDP" : "PDPs"} · ${qualified} Qualitätsprüfungen bewertet`,
       headlineAll: (brand: string, total: number) =>
         `${brand} wurde in allen ${total} verwertbaren geprüften KI-Antworten genannt.`,
       headlineNone: (brand: string, total: number) =>
@@ -1594,9 +1601,9 @@ export const de: Dictionary = {
       askedIn: (language: string) => `Gefragt auf ${language}`,
     },
     summary: {
-      evidenceHeading: "Stützende Nachweise",
+      evidenceHeading: "Belege & Abdeckung",
       evidenceIntro:
-        "Die Prioritäten stehen bereits oben. Öffnen Sie diese Bereiche nur, wenn Sie nachvollziehen möchten, wie wir zu ihnen gekommen sind.",
+        "Sehen Sie, was Beseam tatsächlich gemessen hat, was geprüft werden sollte und wo die vollständigen Belege je Seite liegen.",
       productCatalog: "Produktkatalog",
       noCatalogBrandSite:
         "Kein Produktkatalog gefunden. Als Markenwebsite geprüft.",
@@ -1607,8 +1614,8 @@ export const de: Dictionary = {
       homepageFailed:
         "Wir konnten Ihre Startseite bei diesem Durchlauf nicht lesen.",
       homepageCompleted: "Startseitenprüfung abgeschlossen",
-      homepageSummary: (_score: number, failed: number, _total: number) =>
-        `Startseite geprüft · ${failed ? "Punkte zum Prüfen gefunden" : "keine offensichtlichen Probleme gefunden"}`,
+      homepageSummary: (_score: number, failed: number, total: number) =>
+        `Startseite geprüft · ${failed ? `${failed} ${failed === 1 ? "Beobachtung" : "Beobachtungen"} zu prüfen` : "keine Auffälligkeit markiert"} · ${total} Prüfergebnisse gemessen`,
       trustPages: "Vertrauensseiten",
       aboutPage: "Über-uns-Seite",
       contactPage: "Kontaktseite",
@@ -1635,13 +1642,15 @@ export const de: Dictionary = {
       sampledPageGroupSummary: (
         pages: number,
         failed: number,
-        _evaluated: number,
+        evaluated: number,
         unreadable: number,
       ) =>
-        `${pages} ${pages === 1 ? "Seite" : "Seiten"} geprüft · ${failed ? "Probleme gefunden" : "keine offensichtlichen Probleme gefunden"}${unreadable ? ` · ${unreadable} nicht lesbar` : ""}`,
+        `${pages} ${pages === 1 ? "Seite" : "Seiten"} geprüft · ${failed ? `${failed} ${failed === 1 ? "Beobachtung" : "Beobachtungen"} zu prüfen` : "keine Auffälligkeit markiert"} · ${evaluated} Prüfergebnisse gemessen${unreadable ? ` · ${unreadable} nicht lesbar` : ""}`,
       templatePatterns: "Auf mehreren geprüften Seiten wiederholt",
       templatePatternCoverage: (affected: number, total: number) =>
-        `${affected}/${total} geprüfte Seiten`,
+        affected === total
+          ? `Auf allen ${total} geprüften Seiten gesehen`
+          : `Auf ${affected} von ${total} geprüften Seiten gesehen`,
       templatePatternHint:
         "Da dies auf mehreren Seiten desselben Typs auftritt, kann die gemeinsame Vorlage statt nur einer einzelnen Seite die Ursache sein.",
       pdpLayoutCoverage: "PDP-Layout-Abdeckung",
@@ -1718,9 +1727,23 @@ export const de: Dictionary = {
         evaluated: number,
         unchecked: number,
       ) =>
-        failed
-          ? `${pages} ${pages === 1 ? "Produktseite" : "Produktseiten"} geprüft · ${failed} verifizierte ${failed === 1 ? "Abweichung" : "Abweichungen"} · ${evaluated} Händlerprüfungen gemessen${unchecked ? ` · ${unchecked} nicht gemessen` : ""}`
-          : `${pages} ${pages === 1 ? "Produktseite" : "Produktseiten"} geprüft · keine verifizierten PDP-Fehler · ${evaluated} Händlerprüfungen gemessen${unchecked ? ` · ${unchecked} nicht gemessen` : ""}`,
+        `${pages} repräsentative ${pages === 1 ? "Produktseite" : "Produktseiten"} · ${evaluated} qualifizierte Prüfungen${failed ? ` · ${failed} zu prüfen` : " · keine qualifizierte Prüfung auffällig"}${unchecked ? ` · ${unchecked} nicht gemessen` : ""}`,
+      pdpQualitySummary: (
+        pages: number,
+        score: number,
+        qualified: number,
+        diagnostics: number,
+      ) =>
+        `${pages} repräsentative ${pages === 1 ? "PDP" : "PDPs"} · durchschnittliche Qualität ${score}/100 · ${qualified} qualifizierte Ergebnisse · ${diagnostics} tiefe Ergebnisse`,
+      pdpQualityHeading: "Produktseiten-Qualität",
+      pdpQualityAverage: "Durchschnittliche Seitenqualität",
+      pdpQualifiedChecks: "Qualifizierte Bewertungsergebnisse",
+      pdpChecksNeedReview: (count: number) => `${count} zu prüfen`,
+      pdpChecksPassed: (count: number) => `${count} bestanden`,
+      pdpDeepDiagnostics: "Tiefe Prüfergebnisse",
+      pdpDiagnosticsMeasured: (count: number) => `${count} gemessen`,
+      pdpDiagnosticsUnavailable: (count: number) => `${count} nicht gemessen`,
+      pdpDiagnosticsComplete: "Alle verfügbaren Diagnosen gemessen",
       localizedCopies: (count: number) => `${count}+ lokalisierte URL-Kopien`,
       robots: "robots.txt",
       sitemap: "Sitemap",
@@ -1808,15 +1831,20 @@ export const de: Dictionary = {
       pdpFailed:
         "Die Shop- und Katalogbeobachtungen bleiben gültig. Die repräsentative Produktseitenprüfung konnte bei diesem Durchlauf nicht abgeschlossen werden.",
       sampleShows: "Was die Stichprobe der Produktseiten zeigt",
-      deepAuditCoverage: "Wie viel Beseam tatsächlich geprüft hat",
-      deepAuditCoverageSummary: (pages: number, measured: number, notMeasured: number) =>
-        `${measured} tiefe Diagnoseprüfungen über ${pages} geprüfte ${pages === 1 ? "PDP" : "PDPs"} gemessen${notMeasured ? ` · ${notMeasured} weitere Prüfungen konnten nicht gemessen werden` : ""}`,
+      deepAuditCoverage: "Prüftiefe nach Bereich",
+      deepAuditCoverageSummary: (
+        pages: number,
+        measured: number,
+        notMeasured: number,
+      ) =>
+        `${measured} Diagnoseergebnisse über ${pages} geprüfte ${pages === 1 ? "PDP" : "PDPs"} gemessen${notMeasured ? ` · ${notMeasured} weitere Ergebnisse nicht gemessen` : ""}`,
       deepAuditCoverageNote:
-        "Die Karten unten zeigen die verständlichen Schlussfolgerungen. Jede einzelne SEO-, AI-Shopping-, GEO-, CRO-, Vertrauens-, Sicherheits-, Kategorie- und technische Prüfung bleibt in den Seitenberichten verfügbar.",
-      areaClear: "Keine verifizierten Fehler in dieser Stichprobe",
-      areaIssues: (count: number) => `${count} verifizierte ${count === 1 ? "Abweichung" : "Abweichungen"}`,
+        "Die Bereichskarten fassen die registrierten SEO-, AI-Shopping-, GEO-, CRO-, Shopping-, Vertrauens- und Sicherheitsdomänen zusammen. Kategorie-Playbooks, Katalog↔PDP-Parität, KI-Probes und weitere Spezialprüfungen sind in der tiefen Gesamtsumme enthalten; Lighthouse und visuelle Belege stehen in jedem Seitenbericht.",
+      areaClear: "Keine Auffälligkeit markiert",
+      areaIssues: (count: number) =>
+        `${count} ${count === 1 ? "Beobachtung" : "Beobachtungen"} zu prüfen`,
       areaCoverage: (measured: number, notMeasured: number) =>
-        `${measured} Händlerprüfungen gemessen${notMeasured ? ` · ${notMeasured} nicht gemessen` : ""}`,
+        `${measured} Prüfergebnisse gemessen${notMeasured ? ` · ${notMeasured} nicht gemessen` : ""}`,
       semanticSignalsHeading: "SEO- & strukturierte Datensignale",
       semanticSignalsNote:
         "Das sind semantische Prüfungen, keine Syntaxprüfungen. Product und Offer können als JSON-LD, Microdata oder RDFa vorliegen; Beseam wertet eine Seite nicht allein deshalb ab, weil sie nicht speziell JSON-LD verwendet.",
@@ -1847,18 +1875,26 @@ export const de: Dictionary = {
       pdpRepeatedHint:
         "Diese Muster sollten Sie beheben, bevor Sie einzelnen Seitendetails nachgehen.",
       sampledPagesDisclosure: (count: number) =>
-        `${count} geprüfte ${count === 1 ? "Produktseite" : "Produktseiten"} anzeigen`,
+        `${count} geprüfte ${count === 1 ? "Produktseite" : "Produktseiten"}`,
+      sampledPagesHeading: "Geprüfte Produktseiten",
+      sampledPagesNote:
+        "Öffnen Sie eine Seite für Lighthouse, Abschnittsanalyse, KI-Prüfungen, technische Analyse und vollständige Belege.",
       needAttention: (count: number) => `${count} brauchen Aufmerksamkeit`,
       checked: (count: number) => `von ${count} geprüft`,
       couldNotCheck: (count: number) => ` · ${count} konnten wir nicht prüfen`,
-      passedOf: (passed: number, total: number) => `${passed}/${total} bestanden`,
+      passedOf: (passed: number, total: number) =>
+        `${passed}/${total} bestanden`,
       verifiedInSample: "In dieser Stichprobe verifiziert",
       notMeasuredCount: (count: number) => ` · ${count} nicht gemessen`,
-      pageCheckResult: (failed: number, evaluated: number, unevaluated: number) =>
+      pageCheckResult: (
+        failed: number,
+        evaluated: number,
+        unevaluated: number,
+      ) =>
         failed
-          ? `${failed} verifizierte ${failed === 1 ? "Abweichung" : "Abweichungen"} · ${evaluated} Händlerprüfungen gemessen${unevaluated ? ` · ${unevaluated} nicht gemessen` : ""}`
-          : `Keine verifizierten Fehler · ${evaluated} Händlerprüfungen gemessen${unevaluated ? ` · ${unevaluated} nicht gemessen` : ""}`,
-      health: (score: number) => `Zustand ${score}`,
+          ? `${failed} ${failed === 1 ? "Bewertungsergebnis" : "Bewertungsergebnisse"} zu prüfen · ${evaluated} qualifizierte Ergebnisse${unevaluated ? ` · ${unevaluated} nicht gemessen` : ""}`
+          : `${evaluated} qualifizierte Ergebnisse bestanden${unevaluated ? ` · ${unevaluated} nicht gemessen` : ""}`,
+      health: (score: number) => `Qualität ${score}/100`,
       needAttentionOf: (failed: number, total: number) =>
         `${failed} von ${total} brauchen Aufmerksamkeit`,
       openReport: "Seitenbericht öffnen",
@@ -1866,7 +1902,8 @@ export const de: Dictionary = {
     },
     deeper: {
       eyebrow: "Als Nächstes · vollständige Analyse",
-      title: "Bestätigen Sie Ihre E-Mail, bevor wir die vollständige Analyse starten.",
+      title:
+        "Bestätigen Sie Ihre E-Mail, bevor wir die vollständige Analyse starten.",
       intro:
         "Die ersten Chancen sehen Sie oben. Ein Klick in Ihrem Posteingang startet die tiefere Seitenprüfung und KI-Analyse – einschliesslich dessen, was ChatGPT und Google AI Mode Kundinnen und Kunden zeigen.",
       assurances: [
@@ -1887,7 +1924,8 @@ export const de: Dictionary = {
     email: {
       sentTo: (email: string) => `Gesendet an ${email}`,
       completeTitle: "Ihr Link ist im Posteingang.",
-      continueTitle: "Bestätigen Sie ihn, um die vollständige Analyse zu starten.",
+      continueTitle:
+        "Bestätigen Sie ihn, um die vollständige Analyse zu starten.",
       completeBody:
         "Nichts auf dieser Seite verschwindet. Der Link öffnet dieselbe Analyse jederzeit wieder.",
       continueBody:
@@ -1911,12 +1949,14 @@ export const de: Dictionary = {
         "Eine E-Mail, keine Marketingliste",
       ],
       sent: "E-Mail gesendet",
-      clickContinue: "Ein Klick im Posteingang startet die vollständige Analyse.",
+      clickContinue:
+        "Ein Klick im Posteingang startet die vollständige Analyse.",
       openSent: (email: string) =>
         `Öffnen Sie den Link, den wir an ${email} gesendet haben. Nichts auf dieser Seite verschwindet. Sie können weiterlesen oder später zurückkehren.`,
       sendAgain: "Erneut senden",
       differentAddress: "Andere Adresse verwenden",
-      confirmTitle: "Bestätigen Sie Ihre E-Mail, um die vollständige Analyse zu starten",
+      confirmTitle:
+        "Bestätigen Sie Ihre E-Mail, um die vollständige Analyse zu starten",
       confirmBody:
         "Wir senden einen Link. Ein Klick startet die Analyse: ohne Konto, ohne Karte und ohne Marketingliste.",
       addEmail: "E-Mail hinzufügen",

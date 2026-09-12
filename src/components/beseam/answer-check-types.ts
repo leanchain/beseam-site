@@ -87,6 +87,13 @@ export type PageAudit = {
   error: string | null;
   score: number | null;
   grade: string | null;
+  /** Strict hard-defect verification score; PDP score/grade use the broader qualified quality set. */
+  verified_score?: number | null;
+  verified_grade?: string | null;
+  quality_checks_evaluated?: number;
+  quality_checks_passed?: number;
+  quality_checks_failed?: number;
+  quality_checks_unevaluated?: number;
   report_id?: number | null;
   coverage: number;
   degraded: boolean;

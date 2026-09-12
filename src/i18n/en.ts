@@ -1387,7 +1387,7 @@ const enDictionary = {
     result: {
       productsFound: "products checked",
       productPagesSampled: "product pages sampled",
-      answersNamed: "usable AI answers named you",
+      answersNamed: "AI answers named you",
       answersPending: "assistant answers pending",
       opportunitiesFound: (count: number): string =>
         count === 1 ? "opportunity found" : "opportunities found",
@@ -1432,6 +1432,12 @@ const enDictionary = {
       openProduct: "Open product →",
       details: "Details",
       close: "Close",
+      valueSummary:
+        "Beseam checked how your products are found, understood and chosen across your storefront and AI shopping.",
+      pageQuality: "average PDP quality",
+      deepResults: "diagnostic checks",
+      credibilityLine: (products: string, pages: number, qualified: number) =>
+        `${products} products · ${pages} ${pages === 1 ? "PDP" : "PDPs"} · ${qualified} quality checks scored`,
       headlineAll: (brand: string, total: number) =>
         `${brand} was named in all ${total} usable AI answers we sampled.`,
       headlineNone: (brand: string, total: number) =>
@@ -1673,9 +1679,9 @@ const enDictionary = {
       askedIn: (language: string) => `Asked in ${language}`,
     },
     summary: {
-      evidenceHeading: "Supporting evidence",
+      evidenceHeading: "Evidence & coverage",
       evidenceIntro:
-        "You already have the priorities above. Open these sections only when you want to verify how we reached them.",
+        "See what Beseam actually measured, what needs review, and where to open the full page-level evidence.",
       productCatalog: "Product catalog",
       noCatalogBrandSite: "No product catalog found. Audited as a brand site.",
       homepage: "Your homepage",
@@ -1683,8 +1689,8 @@ const enDictionary = {
       homepageReading: "Reading your homepage and trust pages now",
       homepageFailed: "We could not read your homepage on this run.",
       homepageCompleted: "Homepage audit completed",
-      homepageSummary: (_score: number, failed: number, _total: number) =>
-        `Homepage checked · ${failed ? "issues worth reviewing" : "no obvious issues found"}`,
+      homepageSummary: (_score: number, failed: number, total: number) =>
+        `Homepage checked · ${failed ? `${failed} ${failed === 1 ? "observation" : "observations"} to review` : "no observations flagged"} · ${total} check results measured`,
       trustPages: "Trust pages",
       aboutPage: "About page",
       contactPage: "Contact page",
@@ -1709,13 +1715,15 @@ const enDictionary = {
       sampledPageGroupSummary: (
         pages: number,
         failed: number,
-        _evaluated: number,
+        evaluated: number,
         unreadable: number,
       ) =>
-        `${pages} ${pages === 1 ? "page" : "pages"} sampled · ${failed ? "issues found" : "no obvious issues found"}${unreadable ? ` · ${unreadable} could not be read` : ""}`,
+        `${pages} ${pages === 1 ? "page" : "pages"} sampled · ${failed ? `${failed} ${failed === 1 ? "observation" : "observations"} to review` : "no observations flagged"} · ${evaluated} check results measured${unreadable ? ` · ${unreadable} could not be read` : ""}`,
       templatePatterns: "Repeated across sampled pages",
       templatePatternCoverage: (affected: number, total: number) =>
-        `${affected}/${total} sampled pages`,
+        affected === total
+          ? `Seen on all ${total} sampled pages`
+          : `Seen on ${affected} of ${total} sampled pages`,
       templatePatternHint:
         "Because this repeats on multiple pages of the same type, it may come from their shared template rather than one isolated page.",
       pdpLayoutCoverage: "PDP layout coverage",
@@ -1791,9 +1799,23 @@ const enDictionary = {
         evaluated: number,
         unchecked: number,
       ) =>
-        failed
-          ? `${pages} product ${pages === 1 ? "page" : "pages"} sampled · ${failed} verified ${failed === 1 ? "issue" : "issues"} · ${evaluated} merchant checks measured${unchecked ? ` · ${unchecked} not measured` : ""}`
-          : `${pages} product ${pages === 1 ? "page" : "pages"} sampled · no verified PDP defects · ${evaluated} merchant checks measured${unchecked ? ` · ${unchecked} not measured` : ""}`,
+        `${pages} representative product ${pages === 1 ? "page" : "pages"} · ${evaluated} qualified checks${failed ? ` · ${failed} need review` : " · no qualified checks need review"}${unchecked ? ` · ${unchecked} not measured` : ""}`,
+      pdpQualitySummary: (
+        pages: number,
+        score: number,
+        qualified: number,
+        diagnostics: number,
+      ) =>
+        `${pages} representative ${pages === 1 ? "PDP" : "PDPs"} · average quality ${score}/100 · ${qualified} qualified results · ${diagnostics} deep results`,
+      pdpQualityHeading: "Product-page quality",
+      pdpQualityAverage: "Average page quality",
+      pdpQualifiedChecks: "Qualified grade results",
+      pdpChecksNeedReview: (count: number) => `${count} need review`,
+      pdpChecksPassed: (count: number) => `${count} passed`,
+      pdpDeepDiagnostics: "Deep check results",
+      pdpDiagnosticsMeasured: (count: number) => `${count} measured`,
+      pdpDiagnosticsUnavailable: (count: number) => `${count} not measured`,
+      pdpDiagnosticsComplete: "All available diagnostics measured",
       localizedCopies: (count: number) => `${count}+ localized URL copies`,
       robots: "robots.txt",
       sitemap: "Sitemap",
@@ -1879,15 +1901,20 @@ const enDictionary = {
       pdpFailed:
         "The Store and Catalog observations are still valid. The representative PDP inspection could not complete on this run.",
       sampleShows: "What the sample product pages show",
-      deepAuditCoverage: "How much Beseam actually checked",
-      deepAuditCoverageSummary: (pages: number, measured: number, notMeasured: number) =>
-        `${measured} deep diagnostic checks measured across ${pages} sampled ${pages === 1 ? "PDP" : "PDPs"}${notMeasured ? ` · ${notMeasured} additional checks could not be measured` : ""}`,
+      deepAuditCoverage: "Audit depth by area",
+      deepAuditCoverageSummary: (
+        pages: number,
+        measured: number,
+        notMeasured: number,
+      ) =>
+        `${measured} diagnostic check results measured across ${pages} sampled ${pages === 1 ? "PDP" : "PDPs"}${notMeasured ? ` · ${notMeasured} additional results not measured` : ""}`,
       deepAuditCoverageNote:
-        "The cards below surface the merchant-readable conclusions. Every individual SEO, AI-shopping, GEO, CRO, trust, security, category and technical check remains available in the page reports.",
-      areaClear: "No verified defects in this sample",
-      areaIssues: (count: number) => `${count} verified ${count === 1 ? "issue" : "issues"}`,
+        "The area cards summarize the registered SEO, AI-shopping, GEO, CRO, shopping, trust and security domains. Category playbooks, catalog↔PDP parity, AI probes and other specialized checks are included in the deep total; Lighthouse and visual evidence live in each page report.",
+      areaClear: "No observations flagged",
+      areaIssues: (count: number) =>
+        `${count} ${count === 1 ? "observation" : "observations"} to review`,
       areaCoverage: (measured: number, notMeasured: number) =>
-        `${measured} merchant checks measured${notMeasured ? ` · ${notMeasured} not measured` : ""}`,
+        `${measured} check results measured${notMeasured ? ` · ${notMeasured} not measured` : ""}`,
       semanticSignalsHeading: "SEO & structured-data signals",
       semanticSignalsNote:
         "These are semantic checks, not syntax checks. Product and Offer can be supplied as JSON-LD, Microdata or RDFa; Beseam does not mark a page down merely for not using JSON-LD specifically.",
@@ -1918,18 +1945,25 @@ const enDictionary = {
       pdpRepeatedHint:
         "These are the patterns worth fixing before chasing one-off page details.",
       sampledPagesDisclosure: (count: number) =>
-        `View the ${count} sampled product ${count === 1 ? "page" : "pages"}`,
+        `${count} sampled product ${count === 1 ? "page" : "pages"}`,
+      sampledPagesHeading: "Sampled product pages",
+      sampledPagesNote:
+        "Open any page for its full Lighthouse, section analysis, AI checks, technical audit and evidence.",
       needAttention: (count: number) => `${count} need attention`,
       checked: (count: number) => `of ${count} checked`,
       couldNotCheck: (count: number) => ` · ${count} we could not check`,
       passedOf: (passed: number, total: number) => `${passed}/${total} passed`,
       verifiedInSample: "Verified in this sample",
       notMeasuredCount: (count: number) => ` · ${count} not measured`,
-      pageCheckResult: (failed: number, evaluated: number, unevaluated: number) =>
+      pageCheckResult: (
+        failed: number,
+        evaluated: number,
+        unevaluated: number,
+      ) =>
         failed
-          ? `${failed} verified ${failed === 1 ? "issue" : "issues"} · ${evaluated} merchant checks measured${unevaluated ? ` · ${unevaluated} not measured` : ""}`
-          : `No verified defects · ${evaluated} merchant checks measured${unevaluated ? ` · ${unevaluated} not measured` : ""}`,
-      health: (score: number) => `Health ${score}`,
+          ? `${failed} grade ${failed === 1 ? "result" : "results"} need review · ${evaluated} qualified results${unevaluated ? ` · ${unevaluated} not measured` : ""}`
+          : `${evaluated} qualified results passed${unevaluated ? ` · ${unevaluated} not measured` : ""}`,
+      health: (score: number) => `Quality ${score}/100`,
       needAttentionOf: (failed: number, total: number) =>
         `${failed} of ${total} need attention`,
       openReport: "Open the page report",
