@@ -164,6 +164,15 @@ const FINDING_RANK: Record<string, number> = {
   info: 4,
 };
 
+function findingHasRenderableEvidence(finding: Finding) {
+  return Boolean(
+    finding.proof?.observed ||
+    finding.proof?.inputs?.length ||
+    finding.evidence?.length ||
+    finding.examples?.length,
+  );
+}
+
 function sortedFindings(result: AnswerCheckResult) {
   const nested = [
     ...(result.homepage_audit && "findings" in result.homepage_audit
@@ -182,6 +191,7 @@ function sortedFindings(result: AnswerCheckResult) {
   ];
   const seen = new Set<string>();
   const findings = [...result.findings, ...nested].filter((finding) => {
+    if (!findingHasRenderableEvidence(finding)) return false;
     const key = `${finding.code}|${finding.url ?? ""}|${finding.product ?? ""}`;
     if (seen.has(key)) return false;
     seen.add(key);
@@ -207,8 +217,25 @@ function findingArea(code: string, copy: Dictionary["answerCheck"]) {
 // cached before that layer shipped will not carry them, so every accessor
 // degrades to the technical string rather than rendering an empty line.
 
+const GENERIC_FINDING_HEADLINES = new Set([
+  "Something on this page may be limiting how well it is found.",
+  "This page may be hard for AI assistants to read accurately.",
+  "This page may not answer shopper questions in a usable form.",
+  "Your product data may be incomplete for shopping surfaces.",
+  "Something on this page may be getting in the way of buying.",
+  "This page may not give shoppers enough reason to trust the store.",
+  "A claim on this page may need proof to stand behind it.",
+  "The store may be missing protections shoppers expect.",
+  "Something may be unclear for shoppers in other markets.",
+  "A technical detail on this page may be limiting how it is read.",
+  "This is worth a look on your store.",
+]);
+
 function findingHeadline(finding: Finding) {
-  return finding.headline?.trim() || finding.title;
+  const headline = finding.headline?.trim();
+  return headline && !GENERIC_FINDING_HEADLINES.has(headline)
+    ? headline
+    : finding.title;
 }
 
 function findingWhy(finding: Finding) {
@@ -219,6 +246,170 @@ function findingNextStep(finding: Finding) {
   return finding.next_step?.trim() || finding.detail?.trim() || null;
 }
 
+function findingEvidenceTeaser(finding: Finding): string | null {
+  const observed = finding.proof?.observed?.trim();
+  if (observed) return observed;
+  const firstInput = finding.proof?.inputs?.find((row) => row.value?.trim());
+  if (firstInput)
+    return `${firstInput.label.replaceAll("_", " ")}: ${firstInput.value}`;
+  const firstEvidence = finding.evidence?.find((row) => row?.trim());
+  if (firstEvidence) return firstEvidence.trim();
+  const firstExample = finding.examples?.find((row) => row.note?.trim());
+  return firstExample?.note?.trim() ?? null;
+}
+
+function FindingEvidenceTeaser({ finding }: { finding: Finding }) {
+  const copy = useDictionary().answerCheck;
+  const observed = findingEvidenceTeaser(finding);
+  const nextStep = findingNextStep(finding);
+  if (!observed && !nextStep) return null;
+
+  return (
+    <div className="mt-1.5 space-y-0.5 text-[10.5px] leading-[1.45] text-black/48">
+      {observed ? (
+        <p>
+          <span className="font-semibold text-black/58">
+            {copy.findings.proofObserved}:{" "}
+          </span>
+          <span className="font-mono">{observed}</span>
+        </p>
+      ) : null}
+      {nextStep ? (
+        <p>
+          <span className="font-semibold text-black/58">
+            {copy.findings.fixLabel}:{" "}
+          </span>
+          {nextStep}
+        </p>
+      ) : null}
+    </div>
+  );
+}
+
+function FindingMeasuredEvidence({ finding }: { finding: Finding }) {
+  const copy = useDictionary().answerCheck;
+  const proof = finding.proof;
+  const evidence = (finding.evidence ?? []).filter(Boolean).slice(0, 3);
+  const examples = (finding.examples ?? []).slice(0, 5);
+  // Observed/expected is the readable verdict for page checks. Catalog claims
+  // also keep their count inputs visible because the denominator is part of the
+  // proof. Only fall back to raw input blobs when no observed value exists.
+  const visibleInputs =
+    proof?.source === "catalog_record" || !proof?.observed
+      ? (proof?.inputs ?? []).slice(0, 5)
+      : [];
+  const nextStep = findingNextStep(finding);
+  const legacyCatalogObserved =
+    !proof?.observed && examples.length && finding.source === "catalog"
+      ? finding.detail?.trim()
+      : null;
+  const hasMeasuredData = Boolean(
+    proof?.observed ||
+    legacyCatalogObserved ||
+    proof?.expected ||
+    proof?.inputs?.length ||
+    evidence.length ||
+    examples.length,
+  );
+  if (!hasMeasuredData) return null;
+
+  return (
+    <div className="mt-2.5 rounded-[3px] border border-black/10 bg-[#fffaf7] px-3 py-3">
+      <p className="text-[10px] font-semibold uppercase tracking-[0.07em] text-black/42">
+        {copy.findings.measuredEvidence}
+      </p>
+      <dl className="mt-2 space-y-2 text-[10.5px] leading-[1.5]">
+        {proof?.observed || legacyCatalogObserved ? (
+          <div className="grid gap-0.5 sm:grid-cols-[5.5rem_minmax(0,1fr)] sm:gap-2">
+            <dt className="font-semibold text-black/42">
+              {copy.findings.proofObserved}
+            </dt>
+            <dd className="break-words font-mono text-ink-deep">
+              {proof?.observed ?? legacyCatalogObserved}
+            </dd>
+          </div>
+        ) : null}
+        {proof?.expected ? (
+          <div className="grid gap-0.5 sm:grid-cols-[5.5rem_minmax(0,1fr)] sm:gap-2">
+            <dt className="font-semibold text-black/42">
+              {copy.findings.proofExpected}
+            </dt>
+            <dd className="break-words font-mono text-ink-deep">
+              {proof.expected}
+            </dd>
+          </div>
+        ) : null}
+        {visibleInputs.map((input) => (
+          <div
+            key={`${finding.code}-${input.label}`}
+            className="grid gap-0.5 sm:grid-cols-[5.5rem_minmax(0,1fr)] sm:gap-2"
+          >
+            <dt className="font-semibold text-black/42">
+              {copy.findings.proofInputLabel(input.label)}
+            </dt>
+            <dd className="break-words font-mono text-ink-deep">
+              {input.value}
+            </dd>
+          </div>
+        ))}
+        {!proof?.observed && !visibleInputs.length && evidence.length
+          ? evidence.map((row, index) => (
+              <div
+                key={`${finding.code}-evidence-${index}`}
+                className="grid gap-0.5 sm:grid-cols-[5.5rem_minmax(0,1fr)] sm:gap-2"
+              >
+                <dt className="font-semibold text-black/42">
+                  {copy.findings.proofObserved}
+                </dt>
+                <dd className="break-words font-mono text-ink-deep">{row}</dd>
+              </div>
+            ))
+          : null}
+        {proof?.source ? (
+          <div className="grid gap-0.5 sm:grid-cols-[5.5rem_minmax(0,1fr)] sm:gap-2">
+            <dt className="font-semibold text-black/42">
+              {copy.findings.proofSource}
+            </dt>
+            <dd className="text-ink-deep">
+              {copy.findings.proofSourceLabel(proof.source)}
+            </dd>
+          </div>
+        ) : null}
+      </dl>
+      {examples.length ? (
+        <div className="mt-2 border-t border-black/8 pt-2">
+          <p className="text-[10px] font-semibold text-black/42">
+            {copy.findings.affectedExamples}
+          </p>
+          <ul className="mt-1 space-y-1">
+            {examples.map((example) => (
+              <li
+                key={`${finding.code}-${example.url}`}
+                className="text-[10.5px] leading-[1.45] text-black/58"
+              >
+                <a
+                  href={example.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="font-semibold text-ink-deep underline decoration-black/20 underline-offset-2 hover:text-signal-ink"
+                >
+                  {example.title}
+                </a>
+                {example.note ? ` · ${example.note}` : ""}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
+      {nextStep ? (
+        <p className="mt-2 border-t border-black/8 pt-2 text-[11px] leading-[1.55] text-ink-deep">
+          <span className="font-semibold">{copy.findings.fixLabel}: </span>
+          {nextStep}
+        </p>
+      ) : null}
+    </div>
+  );
+}
 function findingGroup(finding: Finding, copy: Dictionary["answerCheck"]) {
   const area = finding.area?.trim();
   if (area) {
@@ -1012,6 +1203,16 @@ function aiVisibilityFinding(
     next_step: copy.findings.aiVisibilityNext,
     area: "Getting found",
     evidence,
+    proof: {
+      observed: `${named} of ${usable.length} usable AI shopping answers recommended ${result.brand || result.domain}`,
+      expected: `The brand is recommended in usable AI shopping answers for relevant buying questions`,
+      inputs: [
+        { label: "usable_answers", value: String(usable.length) },
+        { label: "answers_recommending_brand", value: String(named) },
+        { label: "assistant_attempts", value: String(attempts.length) },
+      ],
+      source: "ai_channel_answer",
+    },
   };
 }
 
@@ -1137,6 +1338,16 @@ function FindingRow({
             {featured && why ? (
               <p className="mt-2 max-w-[72ch] text-[12.5px] leading-[1.6] text-black/56">
                 {why}
+              </p>
+            ) : null}
+            {featured && findingEvidenceTeaser(finding) ? (
+              <p className="mt-2 max-w-[72ch] text-[11px] leading-[1.5] text-black/58">
+                <span className="font-semibold text-ink-deep">
+                  {copy.findings.proofObserved}:{" "}
+                </span>
+                <span className="font-mono">
+                  {findingEvidenceTeaser(finding)}
+                </span>
               </p>
             ) : null}
             {featured ? (
@@ -2230,7 +2441,10 @@ function SampledAuditFold({
     0,
   );
   const unreadable = audits.filter((audit) => audit.ok === false).length;
-  const repeatedCodes = new Set(patterns.map((finding) => finding.code));
+  const supportedPatterns = patterns.filter(findingHasRenderableEvidence);
+  const repeatedCodes = new Set(
+    supportedPatterns.map((finding) => finding.code),
+  );
   const summary = gated
     ? gatedSummary
     : inFlight && audits.length === 0
@@ -2280,17 +2494,17 @@ function SampledAuditFold({
         </div>
       ) : audits.length ? (
         <>
-          {patterns.length ? (
+          {supportedPatterns.length ? (
             <div className="border-b border-black/10 bg-[#fffaf7] px-5 py-4 sm:px-6">
               <p className="text-[11px] font-semibold text-ink-deep">
                 {copy.summary.templatePatterns}
               </p>
               <ul className="mt-2 divide-y divide-black/10 border-y border-black/10 bg-white px-3">
-                {patterns.map((finding) => (
+                {supportedPatterns.map((finding) => (
                   <li key={finding.code} className="py-3">
                     <div className="flex flex-wrap items-start justify-between gap-2">
                       <p className="text-[11.5px] font-semibold text-ink-deep">
-                        {finding.headline ?? finding.title}
+                        {findingHeadline(finding)}
                       </p>
                       <span className="shrink-0 text-[10.5px] font-semibold uppercase tracking-[0.04em] text-signal-ink">
                         {copy.summary.templatePatternCoverage(
@@ -2299,10 +2513,13 @@ function SampledAuditFold({
                         )}
                       </span>
                     </div>
-                    <p className="mt-1 text-[11px] leading-relaxed text-black/50">
-                      {finding.why ?? finding.detail}
-                    </p>
-                    <p className="mt-1 text-[10.5px] leading-relaxed text-black/38">
+                    {findingWhy(finding) ? (
+                      <p className="mt-1 text-[11px] leading-relaxed text-black/50">
+                        {findingWhy(finding)}
+                      </p>
+                    ) : null}
+                    <FindingMeasuredEvidence finding={finding} />
+                    <p className="mt-2 text-[10.5px] leading-relaxed text-black/38">
                       {copy.summary.templatePatternHint}
                     </p>
                   </li>
@@ -2313,7 +2530,9 @@ function SampledAuditFold({
           <ul className="divide-y divide-black/10 bg-white">
             {audits.map((audit, index) => {
               const firstFinding = audit.findings?.find(
-                (finding) => !repeatedCodes.has(finding.code),
+                (finding) =>
+                  findingHasRenderableEvidence(finding) &&
+                  !repeatedCodes.has(finding.code),
               );
               return (
                 <li
@@ -2330,10 +2549,13 @@ function SampledAuditFold({
                     <p className="mt-0.5 truncate text-[11px] text-black/44">
                       {audit.ok === false
                         ? copy.summary.pageCouldNotRead
-                        : (firstFinding?.headline ??
-                          firstFinding?.title ??
-                          audit.url)}
+                        : firstFinding
+                          ? findingHeadline(firstFinding)
+                          : audit.url}
                     </p>
+                    {audit.ok !== false && firstFinding ? (
+                      <FindingEvidenceTeaser finding={firstFinding} />
+                    ) : null}
                   </div>
                   <div className="flex items-center gap-3 text-[11px] sm:justify-end">
                     {audit.score != null ? (
@@ -2417,6 +2639,7 @@ function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
         affected_pages: urls.size,
         affected_urls: Array.from(urls),
       }))
+      .filter(findingHasRenderableEvidence)
       .sort((left, right) => {
         const severity =
           (FINDING_RANK[left.severity ?? "medium"] ?? 2) -
@@ -3140,24 +3363,26 @@ function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
                 </p>
                 <ul className="mt-2 divide-y divide-black/10 border-y border-black/10 bg-white px-3">
                   {catalogFindings.map((finding, index) => (
-                    <li
-                      key={`${finding.code}-${index}`}
-                      className="flex items-start justify-between gap-4 py-3"
-                    >
-                      <div>
-                        <p className="text-[11.5px] font-semibold text-ink-deep">
-                          {finding.title}
-                        </p>
-                        <p className="mt-1 text-[11px] leading-relaxed text-black/50">
-                          {finding.detail}
-                        </p>
+                    <li key={`${finding.code}-${index}`} className="py-3">
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="min-w-0">
+                          <p className="text-[11.5px] font-semibold text-ink-deep">
+                            {findingHeadline(finding)}
+                          </p>
+                          {findingWhy(finding) ? (
+                            <p className="mt-1 text-[11px] leading-relaxed text-black/50">
+                              {findingWhy(finding)}
+                            </p>
+                          ) : null}
+                        </div>
+                        {finding.severity === "high" ||
+                        finding.severity === "blocker" ? (
+                          <span className="shrink-0 text-[11px] font-semibold uppercase text-signal-ink">
+                            {copy.summary.high}
+                          </span>
+                        ) : null}
                       </div>
-                      {finding.severity === "high" ||
-                      finding.severity === "blocker" ? (
-                        <span className="shrink-0 text-[11px] font-semibold uppercase text-signal-ink">
-                          {copy.summary.high}
-                        </span>
-                      ) : null}
+                      <FindingMeasuredEvidence finding={finding} />
                     </li>
                   ))}
                 </ul>
@@ -3257,19 +3482,25 @@ function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
             </div>
             {homepageDetailed.findings?.length ? (
               <ul className="divide-y divide-black/10 px-5 sm:px-6">
-                {homepageDetailed.findings.slice(0, 4).map((finding) => (
-                  <li
-                    key={`${finding.code}-${finding.url ?? "home"}`}
-                    className="py-3"
-                  >
-                    <p className="text-[11.5px] font-semibold text-ink-deep">
-                      {finding.headline ?? finding.title}
-                    </p>
-                    <p className="mt-1 text-[11px] leading-relaxed text-black/50">
-                      {finding.why ?? finding.detail}
-                    </p>
-                  </li>
-                ))}
+                {homepageDetailed.findings
+                  .filter(findingHasRenderableEvidence)
+                  .slice(0, 4)
+                  .map((finding) => (
+                    <li
+                      key={`${finding.code}-${finding.url ?? "home"}`}
+                      className="py-3"
+                    >
+                      <p className="text-[11.5px] font-semibold text-ink-deep">
+                        {findingHeadline(finding)}
+                      </p>
+                      {findingWhy(finding) ? (
+                        <p className="mt-1 text-[11px] leading-relaxed text-black/50">
+                          {findingWhy(finding)}
+                        </p>
+                      ) : null}
+                      <FindingMeasuredEvidence finding={finding} />
+                    </li>
+                  ))}
               </ul>
             ) : null}
             {entityAudits.length ? (
@@ -3280,6 +3511,9 @@ function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
                 <div className="mt-2 divide-y divide-black/10 border-y border-black/10 bg-white px-3">
                   {entityAudits.map((audit) => {
                     const detailed = "checks_evaluated" in audit ? audit : null;
+                    const firstFinding = detailed?.findings?.find(
+                      findingHasRenderableEvidence,
+                    );
                     const label =
                       audit.role === "about"
                         ? copy.summary.aboutPage
@@ -3296,10 +3530,15 @@ function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
                           <p className="mt-0.5 truncate text-[11px] text-black/46">
                             {audit.ok === false
                               ? copy.summary.pageCouldNotRead
-                              : (detailed?.findings?.[0]?.headline ??
-                                detailed?.findings?.[0]?.title ??
-                                audit.url)}
+                              : firstFinding
+                                ? findingHeadline(firstFinding)
+                                : audit.url}
                           </p>
+                          {audit.ok !== false && detailed?.findings?.[0] ? (
+                            <FindingEvidenceTeaser
+                              finding={detailed.findings[0]}
+                            />
+                          ) : null}
                         </div>
                         {detailed?.score != null ? (
                           <span className="shrink-0 text-[11px] font-semibold text-ink-deep">
@@ -3641,6 +3880,7 @@ function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
                               {findingWhy(finding)}
                             </p>
                           ) : null}
+                          <FindingMeasuredEvidence finding={finding} />
                         </div>
                         <span className="shrink-0 font-mono text-[11px] font-semibold text-signal-ink">
                           {copy.summary.templatePatternCoverage(
