@@ -1266,6 +1266,8 @@ function FindingRow({
   featured: boolean;
 }) {
   const copy = useDictionary().answerCheck;
+  const { trackEvent } = useAnalytics();
+  const evidenceViewed = useRef(false);
   const finding = group.lead;
   const priority = priorityOf(finding, copy);
   const impact = findingImpact(finding, copy);
@@ -1294,7 +1296,18 @@ function FindingRow({
 
   return (
     <li className="border-b border-black/10 last:border-b-0">
-      <details className="group/finding bg-white">
+      <details
+        className="group/finding bg-white"
+        onToggle={(event) => {
+          if (!event.currentTarget.open || evidenceViewed.current) return;
+          evidenceViewed.current = true;
+          trackEvent({
+            action: "scan_evidence_viewed",
+            category: "engagement",
+            label: finding.code,
+          });
+        }}
+      >
         <summary
           className={`grid cursor-pointer list-none grid-cols-[2.25rem_minmax(0,1fr)] gap-x-3 gap-y-2 border-l-[3px] px-5 transition-colors hover:bg-[#fdf1e9] sm:grid-cols-[2.75rem_minmax(0,1fr)_auto] sm:items-center sm:px-6 [&::-webkit-details-marker]:hidden ${featured ? "bg-[#fffaf7] py-6" : "py-4"} ${priority.urgent ? "border-l-signal-ink/55" : "border-l-transparent"}`}
         >
@@ -1406,7 +1419,7 @@ function FindingRow({
                 </div>
               ) : null}
               <TrackedLink
-                href={`${fixHref}&fix=${encodeURIComponent(finding.code)}`}
+                href={fixHref}
                 eventName="finding_fix_clicked"
                 eventCategory="conversion"
                 placement="answer_check_finding"
@@ -4915,6 +4928,7 @@ export default function AnswerCheck({
   const [verificationSubmitting, setVerificationSubmitting] = useState(false);
   const [retrySubmitting, setRetrySubmitting] = useState(false);
   const pollCount = useRef(0);
+  const scanCompletedTracked = useRef<string | null>(null);
   const [pollExhausted, setPollExhausted] = useState(false);
 
   const load = useCallback(
@@ -4987,7 +5001,15 @@ export default function AnswerCheck({
     arrivalHandled.current = true;
 
     const params = new URLSearchParams(window.location.search);
-    setVerifiedArrival(params.get("verified") === "1");
+    const isVerifiedArrival = params.get("verified") === "1";
+    setVerifiedArrival(isVerifiedArrival);
+    if (isVerifiedArrival) {
+      trackEvent({
+        action: "scan_email_verified",
+        category: "conversion",
+        label: placement,
+      });
+    }
     const scanError = params.get("scan_error");
     if (scanError === "missing_token") {
       setError(copy.errors.missingToken);
@@ -5019,6 +5041,25 @@ export default function AnswerCheck({
       void runScan(fromUrl, "");
     });
   }, [load, runScan, handOffTo, placement, trackEvent]);
+
+  useEffect(() => {
+    if (
+      !result ||
+      result.reject_reason ||
+      !hasUsableFreeStage(result) ||
+      scanCompletedTracked.current === result.domain
+    ) {
+      return;
+    }
+    scanCompletedTracked.current = result.domain;
+    trackEvent({
+      action: "scan_completed",
+      category: "conversion",
+      label: placement,
+      scan_status: result.status,
+    });
+  }, [placement, result, trackEvent]);
+
   // Poll while the paid probe or its page-audit sample is running, and while a
   // sent link is still unclicked: nothing runs behind the gate any more, and the
   // click usually happens in a mail app or on a phone, so this page has to notice
@@ -5058,20 +5099,15 @@ export default function AnswerCheck({
       return;
     }
 
-    // The domain alone starts the scan. The free stage needs no address, and
-    // asking for one before anything has run puts the gate in front of the
-    // evidence: the visitor pays before seeing what they are paying for. The
-    // email is asked while the scan is on screen, doing its work.
-    trackEvent({
-      action: "answer_check_started",
-      category: "conversion",
-      label: placement,
-    });
-
-    // Hand off to the page built for a result instead of growing a 2,000px card
-    // inside a viewport-height hero. The scan then owns a real URL: shareable,
-    // reloadable, and back returns to where the visitor came from.
+    // Hand-off surfaces record intent here; the destination records the actual
+    // scan start when it creates the job. Keeping those events distinct avoids
+    // counting one homepage submission as two scans.
     if (handOffTo) {
+      trackEvent({
+        action: "marketing_primary_cta_clicked",
+        category: "conversion",
+        label: placement,
+      });
       setSubmitting(true);
       const next = new URLSearchParams();
       next.set("domain", target);
@@ -5082,6 +5118,11 @@ export default function AnswerCheck({
       return;
     }
 
+    trackEvent({
+      action: "answer_check_started",
+      category: "conversion",
+      label: placement,
+    });
     await runScan(target, "");
   };
 

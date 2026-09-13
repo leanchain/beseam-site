@@ -28,11 +28,11 @@ const lora = Lora({
 
 export const metadata: Metadata = {
   title: {
-    default: "Beseam | See why AI picked someone else",
+    default: "Beseam | Find why your products are being overlooked",
     template: "%s | Beseam",
   },
   description:
-    "Beseam shows you where AI shopping assistants leave your products out, why, what to fix, and whether the fix worked. Free store scan; customer-facing changes only with your approval.",
+    "Beseam finds why important ecommerce products are being overlooked, helps fix the problems worth acting on first, and verifies what changed.",
   authors: [{ name: "Beseam" }],
   creator: "Beseam",
   publisher: "Beseam",
@@ -58,9 +58,9 @@ export const metadata: Metadata = {
     apple: [{ url: "/favicon/apple-touch-icon.png", sizes: "180x180" }],
   },
   openGraph: {
-    title: "Beseam | See why AI picked someone else",
+    title: "Beseam | Find why your products are being overlooked",
     description:
-      "Beseam shows you where AI shopping assistants leave your products out, why, what to fix, and whether the fix worked. Free store scan; customer-facing changes only with your approval.",
+      "Beseam finds why important ecommerce products are being overlooked, helps fix the problems worth acting on first, and verifies what changed.",
     url: "/",
     siteName: "Beseam",
     type: "website",
@@ -76,9 +76,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Beseam | See why AI picked someone else",
+    title: "Beseam | Find why your products are being overlooked",
     description:
-      "Beseam shows you where AI shopping assistants leave your products out, why, what to fix, and whether the fix worked. Free store scan; customer-facing changes only with your approval.",
+      "Beseam finds why important ecommerce products are being overlooked, helps fix the problems worth acting on first, and verifies what changed.",
     images: [HOME_SOCIAL_IMAGE],
   },
 };
@@ -95,7 +95,7 @@ export default function RootLayout({
         name: "Beseam",
         url: `${SITE_URL}/`,
         description:
-          "Beseam is a growth operator for ecommerce brands: it finds the strongest opportunities to improve growth, prepares and executes supported fixes under merchant rules, and measures what changed.",
+          "Beseam finds why important ecommerce products are being overlooked, helps merchants fix the highest-value problems, and verifies what changed afterward.",
         sameAs: ["https://www.linkedin.com/company/beseam/"],
         logo: {
           "@type": "ImageObject",

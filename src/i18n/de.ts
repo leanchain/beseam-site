@@ -52,7 +52,7 @@ export const de: Dictionary = {
       highlight: "finden, wählen, kaufen",
     },
     description:
-      "Beseam beobachtet fortlaufend die Kaufreise, findet, was sich zu verbessern lohnt, setzt genehmigte Änderungen um, wo dies unterstützt wird, und misst, was sich verändert hat.",
+      "Beseam findet, warum wichtige Produkte übersehen werden, hilft bei den wichtigsten Behebungen und verifiziert, was sich verändert hat.",
     groups: {
       product: {
         label: "Produkt",
@@ -95,18 +95,18 @@ export const de: Dictionary = {
   },
   meta: {
     home: {
-      title:
-        "Beseam | Sehen Sie, warum die KI sich für einen anderen entschieden hat",
+      title: "Beseam | Finden Sie heraus, warum Ihre Produkte übersehen werden",
       description:
-        "Beseam zeigt Ihnen, wo KI-Einkaufsassistenten Ihre Produkte auslassen, warum das passiert, was zu beheben ist und ob die Behebung funktioniert hat. Kostenloser Shop-Scan; kundenseitige Änderungen nur mit Ihrer Zustimmung.",
-      imageAlt: "Beseam findet, behebt und misst E-Commerce-Wachstumschancen",
+        "Beseam zeigt E-Commerce-Marken, wo wichtige Produkte in ChatGPT, Google AI Mode und im eigenen Shop übersehen werden, was zuerst zu beheben ist und was sich danach verändert hat.",
+      imageAlt:
+        "Beseam findet, behebt und verifiziert Probleme bei der Produktentdeckung",
       schemaSoftwareDescription:
-        "Beseam findet fortlaufend starke Wachstumschancen im E-Commerce, bereitet unterstützte Änderungen zur Freigabe durch die Marke vor, setzt freigegebene Änderungen um und misst, was sich danach verändert.",
+        "Beseam findet, warum wichtige E-Commerce-Produkte übersehen werden, bereitet freizugebende Behebungen vor und prüft die Belege nach Änderungen erneut.",
       schemaFeatures: [
-        "Erkennen, wo Kundschaft in der Produktsuche oder im Shop verloren gehen kann",
-        "Wachstumschancen nach Belegen und erwarteter Wirkung priorisieren",
-        "Vor kundenseitigen Änderungen die Freigabe der Marke einholen",
-        "Mit Vorher-Nachher-Belegen messen, was sich verändert hat",
+        "Finden, wo wichtige Produkte übersehen werden",
+        "Probleme anhand beobachteter Belege priorisieren",
+        "Behebungen zur Freigabe vorbereiten",
+        "Dieselben Belege nach einer Änderung erneut prüfen",
       ],
       schemaFaqName: "Fragen zu Beseam",
     },
@@ -117,17 +117,14 @@ export const de: Dictionary = {
     },
   },
 
-  // Der Akzent steht im Deutschen mitten im Satz, nicht am Ende: "einen
-  // anderen" ist die Stelle, an der es wehtut. "Einen" und nicht "jemand":
-  // gewählt wurde ein anderes Produkt, keine Person.
   hero: {
-    headlineBefore: "Sehen Sie, warum die KI ",
-    headlineAccent: "einen anderen",
-    headlineAfter: " gewählt hat.",
-    sub: "Beseam beobachtet fortlaufend die KI-Sichtbarkeit, Ihren Shop und Ihre Kundschaft, findet, was sich zu verbessern lohnt, setzt Ihre freigegebenen Änderungen um und zeigt Ihnen deren Wirkung.",
+    headlineBefore: "Finden Sie heraus, warum Ihre Produkte ",
+    headlineAccent: "übersehen werden",
+    headlineAfter: ".",
+    sub: "Beseam prüft, wie Ihre Produkte in ChatGPT und Google AI Mode erscheinen, findet die Probleme in Shop und Produktdaten, die zuerst zu beheben sind, hilft bei der Behebung und verifiziert, was sich verändert hat.",
     scanReturns: {
-      readable: "Können KI-Einkaufsagenten Ihren Shop lesen?",
-      standing: "Sehen, wo Sie stehen",
+      readable: "Wo Produkte übersehen werden",
+      standing: "Warum das passiert",
       fixFirst: "Was zuerst zu beheben ist",
     },
     scrollCue: "Scrollen",
@@ -1164,7 +1161,7 @@ export const de: Dictionary = {
     },
 
     actions: {
-      heading: "Beseam findet, was als Nächstes zu verbessern ist.",
+      heading: "Machen Sie aus dem wichtigsten Befund eine konkrete Behebung.",
     },
 
     system: {
@@ -1195,10 +1192,10 @@ export const de: Dictionary = {
     },
 
     promise: {
-      headingLine1: "Kostenlos starten.",
-      headingLine2: "Bezahlen, wenn die Wirkung messbar ist.",
-      body: "Beseam beobachtet, bereitet die Änderung vor, setzt sie nach Ihrer Freigabe um und zeigt Ihnen, was sich bewegt hat – ein Abo statt Tool plus Agentur. Testen Sie kostenlos und sehen Sie die Wirkung, bevor Sie etwas zahlen.",
-      cta: "Kostenlos starten",
+      headingLine1: "Mit einem kostenlosen Scan starten.",
+      headingLine2: "Mit demselben Shop weiterarbeiten.",
+      body: "Sehen Sie die ersten Belege, bevor Sie ein Konto erstellen. Wenn Beseam etwas findet, das sich zu beheben lohnt, verbinden Sie Shopify, lassen den Shop weiter prüfen, geben Änderungen frei und verifizieren danach, was sich verändert hat.",
+      cta: "Shop scannen",
     },
 
     stickyCta: {
@@ -1405,7 +1402,7 @@ export const de: Dictionary = {
       close: "Schliessen",
       whyItMatters: "Warum das wichtig ist",
       improveNext: "Als Nächstes:",
-      startFixing: "In Beseam weiterbearbeiten",
+      startFixing: "Mit diesem Shop in Beseam fortfahren",
       evidence: "Nachweis",
       measuredEvidence: "Gemessener Nachweis",
       affectedExamples: "Betroffene Beispiele",
@@ -1525,7 +1522,7 @@ export const de: Dictionary = {
         count === 0
           ? "Dieser Scan ist eine Momentaufnahme. Beseam beobachtet weiter, was sich verändert."
           : "Dieser Scan hat die Lücken gefunden. Beseam arbeitet daran weiter.",
-      body: "Nehmen Sie diesen Shop direkt mit in Beseam. Lassen Sie Discovery- und Shop-Prüfungen weiterlaufen, machen Sie aus den stärksten Befunden vorbereitete Änderungen, geben Sie kundenseitige Änderungen zuerst frei und prüfen Sie danach erneut, was sich bewegt hat.",
+      body: "Verbinden Sie Shopify, um mit diesem Shop in Beseam fortzufahren. Lassen Sie Discovery- und Shop-Prüfungen weiterlaufen, machen Sie aus den stärksten Befunden Behebungen zur Freigabe und prüfen Sie danach erneut, was sich verändert hat.",
       benefits: [
         "Denselben Shop weiter beobachten",
         "Befunde in vorbereitete Änderungen verwandeln",
@@ -1540,10 +1537,10 @@ export const de: Dictionary = {
       prepared: "Von Beseam vorbereitet",
       approval: "Braucht Ihre Freigabe",
       afterConnection: "Nach Verbindung geprüft",
-      start: "Diese Punkte in Beseam bearbeiten",
-      mobileStart: "Diese Punkte in Beseam bearbeiten",
+      start: "Shopify verbinden und weiterarbeiten",
+      mobileStart: "Shopify verbinden und weiterarbeiten",
       carryStore: (domain: string) =>
-        `${domain} wird in die Einrichtung übernommen. Sie starten nicht von vorn.`,
+        `${domain} wird in die Einrichtung übernommen, sodass Sie den Shop nicht erneut eingeben müssen.`,
       closingEyebrow: "Nächster Schritt",
       closingTitle: (count: number) =>
         count === 1

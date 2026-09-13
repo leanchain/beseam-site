@@ -72,7 +72,7 @@ const enDictionary = {
       highlight: "find, choose, and buy",
     },
     description:
-      "Beseam continuously watches the buying journey, finds what is worth improving, applies approved changes where supported, and measures what changed.",
+      "Beseam finds why important products are being overlooked, helps fix the problems worth acting on first, and verifies what changed.",
     groups: {
       product: {
         label: "Product",
@@ -115,18 +115,18 @@ const enDictionary = {
   },
   meta: {
     home: {
-      title: "Beseam | See why AI picked someone else",
+      title: "Beseam | Find why your products are being overlooked",
       description:
-        "Beseam shows you where AI shopping assistants leave your products out, why, what to fix, and whether the fix worked. Free store scan; customer-facing changes only with your approval.",
+        "Beseam shows ecommerce brands where important products are being overlooked in ChatGPT, Google AI Mode, and their storefront, what to fix first, and what changed afterward.",
       imageAlt:
-        "Beseam finding, fixing, and measuring ecommerce growth opportunities",
+        "Beseam finding, fixing, and verifying product discovery problems",
       schemaSoftwareDescription:
-        "Beseam continuously finds strong ecommerce growth opportunities, prepares supported fixes for brand-owner approval, applies approved changes, and measures what changes afterward.",
+        "Beseam finds why important ecommerce products are being overlooked, prepares merchant-approved fixes, and rechecks the evidence after changes.",
       schemaFeatures: [
-        "Find where shoppers may be missed across discovery and the store",
-        "Prioritize growth opportunities by evidence and projected impact",
-        "Ask the brand owner to approve before customer-facing changes are applied",
-        "Measure what changed with before-and-after evidence",
+        "Find where important products are being overlooked",
+        "Prioritize problems with observed evidence",
+        "Prepare merchant-approved fixes",
+        "Recheck the same evidence after a change",
       ] as Quad<string>,
       schemaFaqName: "Questions about Beseam",
     },
@@ -144,13 +144,13 @@ const enDictionary = {
    * emphasis -- German moves it to the middle of the sentence.
    */
   hero: {
-    headlineBefore: "See why AI picked ",
-    headlineAccent: "someone else",
+    headlineBefore: "Find out why your products are ",
+    headlineAccent: "being overlooked",
     headlineAfter: ".",
-    sub: "Beseam keeps watching AI discovery, your store, and your shoppers to find what is worth improving, makes the changes you approve, and shows you the impact of your changes.",
+    sub: "Beseam checks how your products appear in ChatGPT and Google AI Mode, finds the problems worth fixing first in your store and product data, helps you fix them, and verifies what changed.",
     scanReturns: {
-      readable: "Can AI shopping agents read your store?",
-      standing: "See where you stand",
+      readable: "Where products are being missed",
+      standing: "Why it is happening",
       fixFirst: "What to fix first",
     },
     scrollCue: "Scroll",
@@ -1233,7 +1233,7 @@ const enDictionary = {
 
     // #actions -- evidence-to-work.tsx
     actions: {
-      heading: "Beseam finds what to improve next.",
+      heading: "Turn the strongest finding into a fix.",
     },
 
     // #system -- the homepage's DecisionBridge mount. The component takes its
@@ -1269,10 +1269,10 @@ const enDictionary = {
     // #promise -- first-month-promise.tsx. Two block spans, not one balanced
     // line: the two sentences must not merge mid-thought.
     promise: {
-      headingLine1: "Start free.",
-      headingLine2: "Pay when it proves its value.",
-      body: "Beseam watches, prepares the change, applies it once you approve, and shows you what moved, one subscription instead of a tool plus an agency. Try for free to see the impact before you pay anything.",
-      cta: "Start free",
+      headingLine1: "Start with a free scan.",
+      headingLine2: "Keep working from the same store.",
+      body: "See the first evidence before creating an account. If Beseam finds something worth fixing, connect Shopify to keep the store under watch, prepare changes for approval, and verify what changed afterward.",
+      cta: "Scan my store",
     },
 
     // mobile-sticky-cta.tsx
@@ -1491,7 +1491,7 @@ const enDictionary = {
       close: "Close",
       whyItMatters: "Why it matters",
       improveNext: "Do next:",
-      startFixing: "Work on this in Beseam",
+      startFixing: "Continue with this store in Beseam",
       evidence: "Proof",
       measuredEvidence: "Measured evidence",
       affectedExamples: "Affected examples",
@@ -1609,7 +1609,7 @@ const enDictionary = {
         count === 0
           ? "This scan is a snapshot. Beseam keeps watching what changes."
           : "This scan found the gaps. Beseam keeps working on them.",
-      body: "Carry this store into Beseam. Keep discovery and store checks running, turn the strongest findings into prepared changes, approve before anything customer-facing changes, and recheck what moved.",
+      body: "Connect Shopify to continue with this store in Beseam. Keep discovery and store checks running, turn the strongest findings into fixes for approval, and recheck what changed afterward.",
       benefits: [
         "Keep the same store under watch",
         "Turn findings into prepared changes",
@@ -1624,10 +1624,10 @@ const enDictionary = {
       prepared: "Prepared by Beseam",
       approval: "Needs your approval",
       afterConnection: "Checked after connection",
-      start: "Work on these in Beseam",
-      mobileStart: "Work on these in Beseam",
+      start: "Connect Shopify and keep working",
+      mobileStart: "Connect Shopify and keep working",
       carryStore: (domain: string) =>
-        `${domain} is carried into setup. You will not start over.`,
+        `${domain} is carried into setup, so you do not have to enter the store again.`,
       closingEyebrow: "Next step",
       closingTitle: (count: number) =>
         `Turn ${count === 1 ? "this priority" : `these ${count} priorities`} into fixes Beseam can verify.`,

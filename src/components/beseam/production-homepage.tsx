@@ -2,9 +2,7 @@ import { Check } from "lucide-react";
 
 import LiveAnswerCheck from "@/components/beseam/answer-check";
 import CategoryBenchmarksSection from "@/components/beseam/category-benchmarks-section";
-import ConnectedEvidence from "@/components/beseam/connected-evidence";
 import CredibilityRail from "@/components/beseam/credibility-rail";
-import DecisionBridge from "@/components/beseam/decision-bridge";
 import EvidenceToWork from "@/components/beseam/evidence-to-work";
 import FirstMonthPromise from "@/components/beseam/first-month-promise";
 import HeroScrollCue from "@/components/beseam/hero-scroll-cue";
@@ -12,35 +10,20 @@ import HeroSurfaceShift from "@/components/beseam/hero-surface-shift";
 import HeroViewportFit from "@/components/beseam/hero-viewport-fit";
 import MeasureImpact from "@/components/beseam/measure-impact";
 import { Reveal } from "@/components/beseam/reveal";
-import WhatBeseamDoes from "@/components/beseam/what-beseam-does";
 import { getDictionary } from "@/i18n";
 import type { Locale } from "@/i18n/locale-rules.mjs";
 
 /**
- * Section order is the argument:
+ * Launch-home section order is deliberately narrower than the platform:
  *
- * claim → credibility → signature evidence trace → breadth → published
- * research → proposed work → one record the work reads from → truthful
- * measurement mechanism → ways to start
+ * promise + live scan → credibility → independent discovery proof → fix →
+ * verify → one next step
  *
- * The "one record" beat sits between the proposed work and the measurement,
- * not earlier: everything above it is the shopper's story, and dropping a
- * system-architecture claim into that stretch breaks the subject twice. Here
- * it does real work, joining the plan to the proof that follows it. It reuses
- * `DecisionBridge` -- the same connected-system beat /platform already runs --
- * rather than a second component making the same argument in tiles, which is
- * also what keeps the homepage clear of the product-suite grid the
- * landing-page ruling in AI_COMMERCE_CONTROL_PLANE_TRACKER.md forbids.
- *
- * The most ownable proof arrives before the capability catalogue, and the
- * published benchmarks sit after "How Beseam works" rather than ahead of it:
- * the report corroborates the claim, it does not open with it.
- *
- * Hero copy is ruled, not iterated: visibility-first (tracker §Canonical
- * landing-page audit, 2026-09-05), frozen until 2026-10-05 except for bugs or
- * wording quoted from a merchant. The freeze is on the wording, not on the
- * language: the strings live in `src/i18n/en.ts` under `hero`, and moving one
- * between locales is a translation, not an edit.
+ * The public scan is the primary product proof. The benchmark section adds an
+ * independent discovery signal, then the existing work and measurement beats
+ * show what happens after Beseam finds something. Broad shopper-journey and
+ * connected-system explanations remain available on /platform; they do not
+ * compete with the launch job on Home.
  *
  * Every section below is handed the locale explicitly. None of them reads the
  * path, because under `output: "export"` a server component has no request to
@@ -103,19 +86,9 @@ export default function ProductionHomepage({ locale }: { locale: Locale }) {
       </section>
 
       <CredibilityRail locale={locale} />
-      <WhatBeseamDoes locale={locale} />
-      <ConnectedEvidence locale={locale} />
-      <EvidenceToWork locale={locale} />
-      <DecisionBridge
-        id="system"
-        surfaceClassName="bg-ground-2"
-        eyebrow=""
-        heading={t.sections.system.heading}
-        body={t.sections.system.body}
-        compact={t.sections.system.compact}
-      />
-      <MeasureImpact locale={locale} />
       <CategoryBenchmarksSection locale={locale} compact />
+      <EvidenceToWork locale={locale} />
+      <MeasureImpact locale={locale} />
       <FirstMonthPromise locale={locale} />
     </div>
   );
