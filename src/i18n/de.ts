@@ -1298,7 +1298,8 @@ export const de: Dictionary = {
     result: {
       productsFound: "Produkte geprüft",
       productPagesSampled: "Produktseiten stichprobenartig geprüft",
-      answersNamed: "KI-Antworten nannten Sie",
+      answersNamed: "KI-Antworten empfahlen Sie",
+      answersMissed: "KI-Antworten übersahen Sie",
       answersPending: "KI-Antworten stehen aus",
       opportunitiesFound: (count: number) =>
         count === 1 ? "Chance gefunden" : "Chancen gefunden",
@@ -1382,6 +1383,12 @@ export const de: Dictionary = {
       priorityFirst: "Zuerst sinnvoll",
       priorityLook: "Einen Blick wert",
       priorityMinor: "Klein",
+      impactHigh: "Hohe Wirkung",
+      impactMedium: "Mittlere Wirkung",
+      impactLower: "Geringere Wirkung",
+      effortQuick: "Schnell umsetzbar",
+      effortMedium: "Mittlerer Aufwand",
+      effortHigher: "Höherer Aufwand",
       areas: {
         discovery: "Gefunden werden",
         listing: "Wie Ihre Produkte gelistet sind",
@@ -1530,17 +1537,17 @@ export const de: Dictionary = {
       prepared: "Von Beseam vorbereitet",
       approval: "Braucht Ihre Freigabe",
       afterConnection: "Nach Verbindung geprüft",
-      start: "Diesen Shop weiter beobachten",
-      mobileStart: "Diese Punkte beobachten",
+      start: "Diese Punkte in Beseam bearbeiten",
+      mobileStart: "Diese Punkte in Beseam bearbeiten",
       carryStore: (domain: string) =>
         `${domain} wird in die Einrichtung übernommen. Sie starten nicht von vorn.`,
       closingEyebrow: "Nächster Schritt",
       closingTitle: (count: number) =>
         count === 1
-          ? "Lassen Sie Beseam diese Priorität weiter beobachten."
-          : `Lassen Sie Beseam diese ${count} Prioritäten weiter beobachten.`,
+          ? "Machen Sie aus dieser Priorität eine Änderung, die Beseam verifizieren kann."
+          : `Machen Sie aus diesen ${count} Prioritäten Änderungen, die Beseam verifizieren kann.`,
       closingBody:
-        "Beseam prüft den Shop weiter, bereitet Änderungen zur Freigabe vor und zeigt, was sich nach jeder Änderung verbessert hat.",
+        "Beseam prüft den Shop weiter, bereitet Änderungen vor, wartet auf Ihre Freigabe und prüft danach dieselben Belege erneut.",
       reviewWithFinding: "Möchten Sie das lieber gemeinsam mit uns durchgehen?",
       reviewWithoutFinding:
         "Möchten Sie das lieber gemeinsam mit uns durchgehen?",
@@ -1577,16 +1584,16 @@ export const de: Dictionary = {
       askedOne: "separat an 1 Assistenten gestellt",
       askedMany: (count: number) =>
         `separat an jeden von ${count} Assistenten gestellt`,
-      title: "Wie KI-Shopping-Assistenten Sie sehen",
+      title: "KI-Shopping-Sichtbarkeit",
       summary: (named: number, total: number, questions: number) =>
-        `${named === 0 ? `Keine der ${total}` : named === total ? `Alle ${total}` : `${named} von ${total}`} verwertbaren KI-Shopping-${total === 1 ? "Antworten nannte" : "Antworten nannten"} Sie · ${questions} ${questions === 1 ? "Kauffrage" : "Kauffragen"}`,
+        `${named === 0 ? `Keine der ${total}` : named === total ? `Alle ${total}` : `${named} von ${total}`} verwertbaren KI-Shopping-${total === 1 ? "Antworten empfahl" : "Antworten empfahlen"} Sie · ${questions} ${questions === 1 ? "Kauffrage" : "Kauffragen"}`,
       summaryWithAttempts: (
         named: number,
         usable: number,
         attempts: number,
         questions: number,
       ) =>
-        `${named === 0 ? `Keine der ${usable}` : named === usable ? `Alle ${usable}` : `${named} von ${usable}`} verwertbaren KI-Shopping-${usable === 1 ? "Antworten nannte" : "Antworten nannten"} Sie · ${attempts} Versuche über ${questions} ${questions === 1 ? "Kauffrage" : "Kauffragen"}`,
+        `${named === 0 ? `Keine der ${usable}` : named === usable ? `Alle ${usable}` : `${named} von ${usable}`} verwertbaren KI-Shopping-${usable === 1 ? "Antworten empfahl" : "Antworten empfahlen"} Sie · ${attempts} Versuche über ${questions} ${questions === 1 ? "Kauffrage" : "Kauffragen"}`,
       usableAttempts: (usable: number, total: number) =>
         `${usable} von ${total} Versuchen empfahlen konkrete Shops (restliche gaben allgemeinen Rat)`,
       noUsableAttempts: (total: number) =>
@@ -1604,6 +1611,10 @@ export const de: Dictionary = {
       evidenceHeading: "Belege & Abdeckung",
       evidenceIntro:
         "Sehen Sie, was Beseam tatsächlich gemessen hat, was geprüft werden sollte und wo die vollständigen Belege je Seite liegen.",
+      statusHealthy: "Gesund",
+      statusReview: "Prüfen",
+      statusReading: "Wird gelesen",
+      statusLimited: "Begrenzt",
       productCatalog: "Produktkatalog",
       noCatalogBrandSite:
         "Kein Produktkatalog gefunden. Als Markenwebsite geprüft.",

@@ -1387,7 +1387,8 @@ const enDictionary = {
     result: {
       productsFound: "products checked",
       productPagesSampled: "product pages sampled",
-      answersNamed: "AI answers named you",
+      answersNamed: "AI answers recommended you",
+      answersMissed: "AI answers missed you",
       answersPending: "assistant answers pending",
       opportunitiesFound: (count: number): string =>
         count === 1 ? "opportunity found" : "opportunities found",
@@ -1468,6 +1469,12 @@ const enDictionary = {
       priorityFirst: "Worth doing first",
       priorityLook: "Worth a look",
       priorityMinor: "Minor",
+      impactHigh: "High impact",
+      impactMedium: "Medium impact",
+      impactLower: "Lower impact",
+      effortQuick: "Quick win",
+      effortMedium: "Medium effort",
+      effortHigher: "Higher effort",
       areas: {
         discovery: "Getting found",
         listing: "How your products are listed",
@@ -1614,15 +1621,15 @@ const enDictionary = {
       prepared: "Prepared by Beseam",
       approval: "Needs your approval",
       afterConnection: "Checked after connection",
-      start: "Keep monitoring this store",
-      mobileStart: "Keep these under watch",
+      start: "Work on these in Beseam",
+      mobileStart: "Work on these in Beseam",
       carryStore: (domain: string) =>
         `${domain} is carried into setup. You will not start over.`,
       closingEyebrow: "Next step",
       closingTitle: (count: number) =>
-        `Keep ${count === 1 ? "this priority" : `these ${count} priorities`} under watch in Beseam.`,
+        `Turn ${count === 1 ? "this priority" : `these ${count} priorities`} into fixes Beseam can verify.`,
       closingBody:
-        "Beseam keeps checking the store, prepares changes for your approval, and shows you what improved after each change.",
+        "Beseam keeps checking the store, prepares the changes, waits for your approval, and rechecks the same evidence after each change.",
       reviewWithFinding: "Prefer to walk through this with us?",
       reviewWithoutFinding: "Prefer to walk through this with us?",
       startingWith: (headline: string) => `Starting with “${headline}”`,
@@ -1656,16 +1663,16 @@ const enDictionary = {
       askedOne: "asked to 1 assistant",
       askedMany: (count: number) =>
         `asked to each of ${count} assistants separately`,
-      title: "How AI shopping assistants see you",
+      title: "AI shopping visibility",
       summary: (named: number, total: number, questions: number) =>
-        `${named === 0 ? `None of the ${total}` : named === total ? `All ${total}` : `${named} of ${total}`} usable AI shopping ${total === 1 ? "answer" : "answers"} named you · ${questions} buying ${questions === 1 ? "question" : "questions"}`,
+        `${named === 0 ? `None of the ${total}` : named === total ? `All ${total}` : `${named} of ${total}`} usable AI shopping ${total === 1 ? "answer" : "answers"} recommended you · ${questions} buying ${questions === 1 ? "question" : "questions"}`,
       summaryWithAttempts: (
         named: number,
         usable: number,
         attempts: number,
         questions: number,
       ) =>
-        `${named === 0 ? `None of the ${usable}` : named === usable ? `All ${usable}` : `${named} of ${usable}`} usable AI shopping ${usable === 1 ? "answer" : "answers"} named you · ${attempts} attempts across ${questions} buying ${questions === 1 ? "question" : "questions"}`,
+        `${named === 0 ? `None of the ${usable}` : named === usable ? `All ${usable}` : `${named} of ${usable}`} usable AI shopping ${usable === 1 ? "answer" : "answers"} recommended you · ${attempts} attempts across ${questions} buying ${questions === 1 ? "question" : "questions"}`,
       usableAttempts: (usable: number, total: number) =>
         `${usable} of ${total} attempts recommended specific stores (remaining were informational)`,
       noUsableAttempts: (total: number) =>
@@ -1682,6 +1689,10 @@ const enDictionary = {
       evidenceHeading: "Evidence & coverage",
       evidenceIntro:
         "See what Beseam actually measured, what needs review, and where to open the full page-level evidence.",
+      statusHealthy: "Healthy",
+      statusReview: "Needs review",
+      statusReading: "Reading",
+      statusLimited: "Limited",
       productCatalog: "Product catalog",
       noCatalogBrandSite: "No product catalog found. Audited as a brand site.",
       homepage: "Your homepage",

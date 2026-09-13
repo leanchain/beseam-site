@@ -248,6 +248,23 @@ function priorityOf(finding: Finding, copy: Dictionary["answerCheck"]) {
   return { label: copy.findings.priorityMinor, urgent: false };
 }
 
+function findingImpact(finding: Finding, copy: Dictionary["answerCheck"]) {
+  const severity = finding.severity ?? "medium";
+  if (severity === "blocker" || severity === "high") {
+    return copy.findings.impactHigh;
+  }
+  if (severity === "medium") return copy.findings.impactMedium;
+  return copy.findings.impactLower;
+}
+
+function findingEffort(finding: Finding, copy: Dictionary["answerCheck"]) {
+  const complexity = finding.fix_complexity?.trim().toLowerCase();
+  if (!complexity) return null;
+  if (complexity === "easy") return copy.findings.effortQuick;
+  if (complexity === "medium") return copy.findings.effortMedium;
+  return copy.findings.effortHigher;
+}
+
 // Locale paths arrive as raw prefixes (`de-ch`, `en-us`). Those are
 // implementation detail; the merchant reads a country and a language.
 const LANGUAGE_NAMES: Record<string, string> = {
@@ -846,8 +863,14 @@ function FoundStrip({ result }: { result: AnswerCheckResult }) {
     ...(scored.length
       ? [
           {
-            value: `${named}/${scored.length}`,
-            label: copy.result.answersNamed,
+            value:
+              named === 0
+                ? `${scored.length}/${scored.length}`
+                : `${named}/${scored.length}`,
+            label:
+              named === 0
+                ? copy.result.answersMissed
+                : copy.result.answersNamed,
             accent: named < scored.length,
           },
         ]
@@ -1044,6 +1067,8 @@ function FindingRow({
   const copy = useDictionary().answerCheck;
   const finding = group.lead;
   const priority = priorityOf(finding, copy);
+  const impact = findingImpact(finding, copy);
+  const effort = findingEffort(finding, copy);
   const why = findingWhy(finding);
   const nextStep = findingNextStep(finding);
   const example = fixExampleFor(finding.code, {
@@ -1112,6 +1137,12 @@ function FindingRow({
             {featured && why ? (
               <p className="mt-2 max-w-[72ch] text-[12.5px] leading-[1.6] text-black/56">
                 {why}
+              </p>
+            ) : null}
+            {featured ? (
+              <p className="mt-2 text-[10.5px] font-semibold uppercase tracking-[0.055em] text-black/40">
+                {impact}
+                {effort ? ` · ${effort}` : ""}
               </p>
             ) : null}
           </div>
@@ -2103,11 +2134,15 @@ function ProductTile({ product }: { product: ShownProduct }) {
 function Fold({
   title,
   summary,
+  status,
+  statusTone = "neutral",
   defaultOpen = false,
   children,
 }: {
   title: string;
   summary: string;
+  status?: string;
+  statusTone?: "good" | "warn" | "neutral";
   defaultOpen?: boolean;
   children: React.ReactNode;
 }) {
@@ -2118,9 +2153,24 @@ function Fold({
     >
       <summary className="flex min-h-[66px] cursor-pointer list-none items-center justify-between gap-5 px-5 py-3.5 transition-colors hover:bg-[#fdf1e9] sm:px-6 [&::-webkit-details-marker]:hidden">
         <div className="min-w-0">
-          <h3 className="text-[13.5px] font-semibold tracking-[-0.006em] text-ink-deep">
-            {title}
-          </h3>
+          <div className="flex flex-wrap items-center gap-2">
+            <h3 className="text-[13.5px] font-semibold tracking-[-0.006em] text-ink-deep">
+              {title}
+            </h3>
+            {status ? (
+              <span
+                className={`rounded-[3px] border px-1.5 py-0.5 text-[9.5px] font-semibold uppercase tracking-[0.045em] ${
+                  statusTone === "good"
+                    ? "border-[#1f7a4d]/20 bg-[#1f7a4d]/[0.06] text-[#1a6b43]"
+                    : statusTone === "warn"
+                      ? "border-signal-ink/20 bg-signal-ink/[0.06] text-signal-ink"
+                      : "border-black/12 bg-white text-black/44"
+                }`}
+              >
+                {status}
+              </span>
+            ) : null}
+          </div>
           <p className="mt-1 text-[12px] leading-[1.5] text-black/54">
             {summary}
           </p>
@@ -2195,7 +2245,28 @@ function SampledAuditFold({
         : unavailableSummary;
 
   return (
-    <Fold title={title} summary={summary}>
+    <Fold
+      title={title}
+      summary={summary}
+      status={
+        gated
+          ? copy.summary.statusLimited
+          : inFlight && audits.length === 0
+            ? copy.summary.statusReading
+            : audits.length
+              ? failedChecks || unreadable
+                ? copy.summary.statusReview
+                : copy.summary.statusHealthy
+              : copy.summary.statusLimited
+      }
+      statusTone={
+        gated || (inFlight && audits.length === 0) || !audits.length
+          ? "neutral"
+          : failedChecks || unreadable
+            ? "warn"
+            : "good"
+      }
+    >
       {gated ? (
         <p className="bg-white px-5 py-4 text-[12.5px] leading-relaxed text-black/54 sm:px-6">
           {copy.summary.sampledPageGroupGatedBody}
@@ -2611,6 +2682,21 @@ function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
   const catalogCheckedLabel = catalog
     ? `${catalog.products_checked}${catalog.products_capped ? "+" : ""} ${copy.summary.checkedProducts}`
     : copy.summary.productsSampled(result.products_seen);
+  const storeNeedsReview = Boolean(
+    inventory &&
+    (inventory.robots.status === "unavailable" ||
+      inventory.sitemap.status === "not_found" ||
+      inventory.search_crawlers.blocked > 0 ||
+      inventory.assistant_crawlers.blocked > 0 ||
+      Number(inventory.robots.blocked_urls ?? 0) > 0),
+  );
+  const catalogNeedsReview = Boolean(
+    catalog &&
+    (catalog.products_with_gaps > 0 ||
+      catalog.unavailable_products > 0 ||
+      consistencyFindings.length > 0 ||
+      catalogFindings.length > 0),
+  );
   // Store, Catalog and Product pages each already collapse on their own. An
   // outer disclosure around them was a fold inside a fold — two clicks and a
   // paragraph of preamble between the merchant and a number they can read. The
@@ -2627,6 +2713,16 @@ function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
       </div>
       <Fold
         title={copy.summary.store}
+        status={
+          inventory
+            ? storeNeedsReview
+              ? copy.summary.statusReview
+              : copy.summary.statusHealthy
+            : copy.summary.statusLimited
+        }
+        statusTone={
+          inventory ? (storeNeedsReview ? "warn" : "good") : "neutral"
+        }
         summary={
           inventory
             ? copy.summary.storeSummary(
@@ -2847,6 +2943,22 @@ function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
             ? copy.summary.productCatalog
             : copy.summary.catalog
         }
+        status={
+          result.site_kind === "brand_site"
+            ? copy.summary.statusLimited
+            : catalog
+              ? catalogNeedsReview
+                ? copy.summary.statusReview
+                : copy.summary.statusHealthy
+              : copy.summary.statusLimited
+        }
+        statusTone={
+          result.site_kind === "brand_site" || !catalog
+            ? "neutral"
+            : catalogNeedsReview
+              ? "warn"
+              : "good"
+        }
         summary={
           result.site_kind === "brand_site"
             ? copy.summary.noCatalogBrandSite
@@ -3064,6 +3176,27 @@ function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
       <Fold
         defaultOpen={deepAuditState.homepageState === "reading"}
         title={copy.summary.homepage}
+        status={
+          deepAuditState.homepageState === "reading"
+            ? copy.summary.statusReading
+            : deepAuditState.homepageState === "gated" ||
+                deepAuditState.homepageState === "failed" ||
+                !homepageDetailed
+              ? copy.summary.statusLimited
+              : homepageDetailed.checks_failed > 0
+                ? copy.summary.statusReview
+                : copy.summary.statusHealthy
+        }
+        statusTone={
+          deepAuditState.homepageState === "reading" ||
+          deepAuditState.homepageState === "gated" ||
+          deepAuditState.homepageState === "failed" ||
+          !homepageDetailed
+            ? "neutral"
+            : homepageDetailed.checks_failed > 0
+              ? "warn"
+              : "good"
+        }
         summary={
           deepAuditState.homepageState === "gated"
             ? copy.summary.homepageGated
@@ -3204,6 +3337,27 @@ function InitialScanSummary({ result }: { result: AnswerCheckResult }) {
         <Fold
           defaultOpen={pageAuditsInFlight}
           title={copy.summary.productPages}
+          status={
+            pageAuditsInFlight
+              ? copy.summary.statusReading
+              : pageAuditStatus === "failed" ||
+                  pageAuditsGated ||
+                  audits.length === 0
+                ? copy.summary.statusLimited
+                : qualityChecksFailed > 0
+                  ? copy.summary.statusReview
+                  : copy.summary.statusHealthy
+          }
+          statusTone={
+            pageAuditsInFlight ||
+            pageAuditStatus === "failed" ||
+            pageAuditsGated ||
+            audits.length === 0
+              ? "neutral"
+              : qualityChecksFailed > 0
+                ? "warn"
+                : "good"
+          }
           summary={
             pageAuditsInFlight
               ? copy.summary.pagesReading(result.products_seen)
