@@ -5,7 +5,7 @@
   "scripts": {
     "predev": "(fuser -k -n tcp ${LP_PORT:-7002} 2>/dev/null || true); (fuser -k -n tcp ${LP_NEXT_PORT:-7003} 2>/dev/null || true)",
     "dev": "concurrently -k -n next,worker -c cyan,magenta \"npm:dev:next\" \"npm:dev:worker\"",
-    "dev:next": "NEXT_DIST_DIR=.next-dev next dev --turbopack -p ${LP_NEXT_PORT:-7003}",
+    "dev:next": "NEXT_PUBLIC_APP_BASE_URL=${NEXT_PUBLIC_APP_BASE_URL:-${LOCAL_APP_BASE:-http://localhost:3123}} NEXT_DIST_DIR=.next-dev next dev --turbopack -p ${LP_NEXT_PORT:-7003}",
     "dev:worker": "wrangler dev --config wrangler.dev.jsonc --port ${LP_PORT:-7002} --var DEV_ORIGIN:http://localhost:${LP_NEXT_PORT:-7003} --var API_BASE_URL:${LOCAL_API_BASE:-http://localhost:8123/api} --var APP_BASE_URL:${LOCAL_APP_BASE:-http://localhost:3123}",
     "dev:next-only": "NEXT_DIST_DIR=.next-dev next dev --turbopack -p ${LP_PORT:-7002}",
     "build": "next build",

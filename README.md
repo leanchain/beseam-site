@@ -26,6 +26,7 @@ It points at a local API on `http://localhost:8123/api`. Override with:
 
 ```bash
 LOCAL_API_BASE=https://api.beseam.com/api npm run dev   # scan against production
+LOCAL_APP_BASE=http://localhost:5123 npm run dev         # Continue/sign-in links target this app
 LP_PORT=7012 LP_NEXT_PORT=7013 npm run dev              # different ports
 npm run dev:next-only                                   # Next alone, no /api/*
 ```
