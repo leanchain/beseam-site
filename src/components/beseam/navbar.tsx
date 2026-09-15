@@ -13,8 +13,9 @@ import TrackedLink from "@/components/beseam/tracked-link";
 import UntranslatedNotice from "@/components/beseam/untranslated-notice";
 import { useDictionary } from "@/i18n/use-locale";
 import { LOCALIZED_ROUTES, normalizePath } from "@/i18n/locale-rules.mjs";
-import { APP_LOGIN_URL, APP_REGISTER_URL } from "@/lib/app-urls";
+import { APP_LOGIN_URL } from "@/lib/app-urls";
 import { cn } from "@/lib/utils";
+import { shouldShowPrimaryCta } from "./navbar-state";
 // Fieldbook stays reachable from the footer; primary nav keeps only what a
 // buyer needs to understand and start: product, method, research.
 // Every homepage, not just the English one. Derived from LOCALIZED_ROUTES so
@@ -37,13 +38,16 @@ export default function BeseamNavbar() {
   const isScanPage =
     currentPath === "/scan" || currentPath === LOCALIZED_ROUTES["/scan"];
 
-  // The homepage hero carries its own scan form, so the navbar CTA would ask
-  // for the same action twice above the fold. Everywhere else it is the only
-  // primary action in view and stays put. On the scan itself, move the CTA to
-  // the next step instead of asking the visitor to start the scan again.
-  const showCta = !HOME_PATHS.has(currentPath) || pastHero;
-  const ctaHref = isScanPage ? APP_REGISTER_URL : "/scan";
-  const ctaLabel = isScanPage ? t.nav.register : t.nav.cta;
+  // The scan itself owns the activation handoff because only its finished result
+  // can carry scan_domain into registration. A generic navbar Register link on
+  // this page would silently lose the store the visitor just scanned.
+  const showCta = shouldShowPrimaryCta({
+    isHome: HOME_PATHS.has(currentPath),
+    isScanPage,
+    pastHero,
+  });
+  const ctaHref = "/scan";
+  const ctaLabel = t.nav.cta;
 
   useEffect(() => {
     const onScroll = () => {
@@ -192,18 +196,20 @@ export default function BeseamNavbar() {
               >
                 {t.nav.login}
               </TrackedLink>
-              <TrackedLink
-                href={ctaHref}
-                eventName="marketing_primary_cta_clicked"
-                eventCategory="conversion"
-                placement="mobile_nav"
-                preserveUtm
-                onClick={() => setMobileOpen(false)}
-                className="flex min-h-12 items-center justify-center gap-2 bg-signal-ink px-5 text-[14px] font-semibold text-white"
-              >
-                {ctaLabel}
-                <ArrowRight className="h-4 w-4" />
-              </TrackedLink>
+              {showCta ? (
+                <TrackedLink
+                  href={ctaHref}
+                  eventName="marketing_primary_cta_clicked"
+                  eventCategory="conversion"
+                  placement="mobile_nav"
+                  preserveUtm
+                  onClick={() => setMobileOpen(false)}
+                  className="flex min-h-12 items-center justify-center gap-2 bg-signal-ink px-5 text-[14px] font-semibold text-white"
+                >
+                  {ctaLabel}
+                  <ArrowRight className="h-4 w-4" />
+                </TrackedLink>
+              ) : null}
             </div>
           </div>
         </div>
