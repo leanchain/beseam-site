@@ -1,6 +1,6 @@
-# ecom-clean-lp — CTA / lead-capture / post-verification audit
+# beseam-site — CTA / lead-capture / post-verification audit
 
-Date: 2026-08-24 · Repo: `landings/ecom-clean-lp` (own git, branch `main`, **ahead 26** of `origin/main`)
+Date: 2026-08-24 · Repo: `landings/beseam-site` (own git, branch `main`, **ahead 26** of `origin/main`)
 
 Verified by: worker unit tests (7/7 pass), `tsc --noEmit` (clean), live curl probes against beseam.com + api.beseam.com, `wrangler secret list` / `deployments list`.
 

@@ -44,7 +44,7 @@ Static export → only Netlify/CF redirects work. Update existing `netlify.toml 
 One CTA vocabulary. No: "catches every failure", "in under 30 min", "first alert in 60s", "zero speed impact", "3×/2× more likely", "stops revenue loss", fabricated testimonials/logos/ratings, revenue-saved, SOC2. Lead vocabulary: store/visibility/purchase experience/issue/evidence/source/change/fix/verify/technical SEO/Shopify (not AEO/GEO/agentic/118-checks).
 
 ## Verify
-`cd landings/ecom-clean-lp && npm run build` (exit 0) · start `next dev` + screenshot every homepage section + review page at desktop+mobile, iterate on craft · confirm no scan CTA in primary journey · confirm single CTA vocabulary · `npm run build` on tracking-lp not needed (redirect only). No commit.
+`cd landings/beseam-site && npm run build` (exit 0) · start `next dev` + screenshot every homepage section + review page at desktop+mobile, iterate on craft · confirm no scan CTA in primary journey · confirm single CTA vocabulary · `npm run build` on tracking-lp not needed (redirect only). No commit.
 
 ## Deliberately NOT built
 Synthetic checkout tests (future), real customer-proof section (scaffold component so it can be added without redesign), pricing on homepage (no approved price), real hero screenshot capture (needs full app launch).

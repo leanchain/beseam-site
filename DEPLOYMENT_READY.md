@@ -47,7 +47,7 @@ Your repository is now **fully configured** and **ready for Vercel deployment**!
 
 **Before the deployment will succeed, you MUST add this environment variable:**
 
-1. Go to: https://vercel.com/Beseam/ecom-clean-lp/settings/environment-variables
+1. Go to: https://vercel.com/Beseam/beseam-site/settings/environment-variables
 2. Click **Add New**
 3. Add:
    - **Name:** `SHADCNBLOCKS_API_KEY`
@@ -69,7 +69,7 @@ Vercel will automatically detect the push and start a new deployment.
 
 ### Option 2: Redeploy from Vercel Dashboard
 
-1. Go to: https://vercel.com/Beseam/ecom-clean-lp
+1. Go to: https://vercel.com/Beseam/beseam-site
 2. Click **Deployments**
 3. Click **Redeploy** on the latest deployment
 

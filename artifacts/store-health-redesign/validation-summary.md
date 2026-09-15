@@ -5,7 +5,7 @@ with gzip enabled.
 
 ## Production builds
 
-- `landings/ecom-clean-lp: bun run build` — passed, 111 static pages.
+- `landings/beseam-site: bun run build` — passed, 111 static pages.
 - Canonical homepage: 2.39 kB route, 122 kB first-load JavaScript.
 - Store Health Review: 3.8 kB route, 106 kB first-load JavaScript.
 - `landings/beseam-tracking-lp: bun run build` — passed, 89 static pages.

@@ -1,4 +1,4 @@
-# Messaging learnings — audit against `ecom-clean-lp` (2026-08-18)
+# Messaging learnings — audit against `beseam-site` (2026-08-18)
 
 Five learnings supplied, checked against current site (`src/components/beseam/*`, `src/lib/marketing-pages.ts`, `src/app/{manifesto,about}/page.tsx`) and the two governing docs already in this repo: `REDESIGN_PLAN.md` and the canonical audit in `docs/internal/strategy/AI_COMMERCE_CONTROL_PLANE_TRACKER.md`. Three learnings are additive — build them. One is directional but needs recalibration to survive the site's existing evidence rule. One directly contradicts a deliberate, repeated site policy and I'd push back rather than implement literally.
 
