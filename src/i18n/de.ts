@@ -118,10 +118,10 @@ export const de: Dictionary = {
   },
 
   hero: {
-    headlineBefore: "Finden Sie heraus, warum Ihre Produkte ",
-    headlineAccent: "übersehen werden",
+    headlineBefore: "Helfen Sie mehr Menschen, ",
+    headlineAccent: "Ihre Produkte zu wählen",
     headlineAfter: ".",
-    sub: "Beseam prüft, wie Ihre Produkte in ChatGPT und Google AI Mode erscheinen, findet die Probleme in Shop und Produktdaten, die zuerst zu beheben sind, hilft bei der Behebung und verifiziert, was sich verändert hat.",
+    sub: "Beseam verbindet, wie Kundinnen und Kunden Ihre Produkte entdecken, verstehen, vergleichen und kaufen. Es findet, wo Sie sie verlieren, zeigt, was am wichtigsten ist, hilft bei den richtigen Änderungen und verifiziert, was sich danach verändert hat.",
     scanReturns: {
       readable: "Wo Produkte übersehen werden",
       standing: "Warum das passiert",

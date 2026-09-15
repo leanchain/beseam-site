@@ -144,10 +144,10 @@ const enDictionary = {
    * emphasis -- German moves it to the middle of the sentence.
    */
   hero: {
-    headlineBefore: "Find out why your products are ",
-    headlineAccent: "being overlooked",
+    headlineBefore: "Help more shoppers ",
+    headlineAccent: "choose your products",
     headlineAfter: ".",
-    sub: "Beseam checks how your products appear in ChatGPT and Google AI Mode, finds the problems worth fixing first in your store and product data, helps you fix them, and verifies what changed.",
+    sub: "Beseam connects how shoppers discover, understand, compare, and buy your products. It finds where you’re losing them, shows what matters most, helps you make the right changes, and verifies what changed afterwards.",
     scanReturns: {
       readable: "Where products are being missed",
       standing: "Why it is happening",

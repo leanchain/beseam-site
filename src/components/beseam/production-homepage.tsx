@@ -2,7 +2,9 @@ import { Check } from "lucide-react";
 
 import LiveAnswerCheck from "@/components/beseam/answer-check";
 import CategoryBenchmarksSection from "@/components/beseam/category-benchmarks-section";
+import ConnectedEvidence from "@/components/beseam/connected-evidence";
 import CredibilityRail from "@/components/beseam/credibility-rail";
+import DecisionBridge from "@/components/beseam/decision-bridge";
 import EvidenceToWork from "@/components/beseam/evidence-to-work";
 import FirstMonthPromise from "@/components/beseam/first-month-promise";
 import HeroScrollCue from "@/components/beseam/hero-scroll-cue";
@@ -10,20 +12,17 @@ import HeroSurfaceShift from "@/components/beseam/hero-surface-shift";
 import HeroViewportFit from "@/components/beseam/hero-viewport-fit";
 import MeasureImpact from "@/components/beseam/measure-impact";
 import { Reveal } from "@/components/beseam/reveal";
+import WhatBeseamDoes from "@/components/beseam/what-beseam-does";
 import { getDictionary } from "@/i18n";
 import type { Locale } from "@/i18n/locale-rules.mjs";
 
 /**
- * Launch-home section order is deliberately narrower than the platform:
+ * The homepage starts with the outcome and live scan, then earns the broader
+ * platform story progressively: discovery proof → what Beseam connects → one
+ * finding end to end → proposed work → the connected product picture → verify.
  *
- * promise + live scan → credibility → independent discovery proof → fix →
- * verify → one next step
- *
- * The public scan is the primary product proof. The benchmark section adds an
- * independent discovery signal, then the existing work and measurement beats
- * show what happens after Beseam finds something. Broad shopper-journey and
- * connected-system explanations remain available on /platform; they do not
- * compete with the launch job on Home.
+ * The scan is the first proof, not the whole product. The sections underneath
+ * explain why the same evidence can become a fix and later a verified result.
  *
  * Every section below is handed the locale explicitly. None of them reads the
  * path, because under `output: "export"` a server component has no request to
@@ -87,7 +86,17 @@ export default function ProductionHomepage({ locale }: { locale: Locale }) {
 
       <CredibilityRail locale={locale} />
       <CategoryBenchmarksSection locale={locale} compact />
+      <WhatBeseamDoes locale={locale} />
+      <ConnectedEvidence locale={locale} />
       <EvidenceToWork locale={locale} />
+      <DecisionBridge
+        id="system"
+        surfaceClassName="bg-ground-2"
+        eyebrow=""
+        heading={t.sections.system.heading}
+        body={t.sections.system.body}
+        compact={t.sections.system.compact}
+      />
       <MeasureImpact locale={locale} />
       <FirstMonthPromise locale={locale} />
     </div>
