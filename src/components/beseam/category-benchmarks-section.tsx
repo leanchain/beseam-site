@@ -91,16 +91,13 @@ export default function CategoryBenchmarksSection({
   return (
     <section
       id="benchmarks"
-      className="scroll-mt-24 border-t border-black/14 bg-[#faf1eb]"
+      className="scroll-mt-24 border-y border-black/14 bg-ground-report"
     >
       <div className="mx-auto max-w-[92rem] px-5 py-16 sm:px-8 sm:py-20 lg:px-10 lg:py-24">
         <Reveal>
           <div className="grid gap-10 lg:grid-cols-[minmax(0,0.72fr)_minmax(0,1.28fr)] lg:items-center lg:gap-16">
             <div>
-              <p className="font-mono text-[12px] font-semibold uppercase tracking-[0.14em] text-signal-ink">
-                {benchmarks.eyebrow}
-              </p>
-              <h2 className="mt-6 max-w-[18ch] text-balance font-display text-[clamp(2.2rem,3.6vw,3.6rem)] font-normal leading-[1.04] tracking-[-0.02em] text-ink-deep">
+              <h2 className="max-w-[18ch] text-balance font-display text-[clamp(2.2rem,3.6vw,3.6rem)] font-normal leading-[1.04] tracking-[-0.02em] text-ink-deep">
                 {benchmarks.heading}
               </h2>
               <p className="mt-6 max-w-[48ch] text-[16px] leading-[1.7] text-black/64">

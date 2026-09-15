@@ -25,7 +25,7 @@ export default function EvidenceToWork({ locale = "en" }: { locale?: Locale }) {
   return (
     <section
       id="actions"
-      className="scroll-mt-24 border-t border-black/10 bg-white"
+      className="scroll-mt-24 border-t border-black/10 bg-ground"
     >
       <div className="mx-auto max-w-[92rem] px-5 py-16 sm:px-8 sm:py-24 lg:px-10 lg:py-28">
         <Reveal>

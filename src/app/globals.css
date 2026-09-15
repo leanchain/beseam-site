@@ -192,6 +192,7 @@
    * every surface.
    */
   --ground: #fafafa; /* primary marketing ground */
+  --ground-report: #fdf9f6; /* light warm editorial report band */
   --ground-2: #f6f6f6; /* second act */
   --ground-3: #e9e9e9; /* third act / coverage strip */
   --panel-white: #ffffff; /* evidence panels, form fields */
@@ -362,6 +363,7 @@
   --font-mono: "Fira Code", "Courier New", monospace;
 
   --color-ground: var(--ground);
+  --color-ground-report: var(--ground-report);
   --color-ground-2: var(--ground-2);
   --color-ground-3: var(--ground-3);
   --color-panel-white: var(--panel-white);
