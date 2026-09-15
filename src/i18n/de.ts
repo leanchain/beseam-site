@@ -25,6 +25,7 @@ export const de: Dictionary = {
       report: "KI-Shopping-Bericht",
     },
     login: "Anmelden",
+    register: "Registrieren",
     cta: "Shop scannen",
   },
   switcher: {

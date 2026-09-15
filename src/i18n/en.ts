@@ -35,6 +35,7 @@ const enDictionary = {
       report: "AI Shopping Report",
     },
     login: "Log in",
+    register: "Register",
     cta: "Scan my store",
   },
   switcher: {
