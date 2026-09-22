@@ -277,7 +277,7 @@ export default async function ComparisonPage({
                 <a
                   href={practical.source.url}
                   target="_blank"
-                  rel="noreferrer"
+                  rel="nofollow noopener noreferrer"
                   className="mt-6 inline-flex items-center gap-2 text-[12px] font-semibold text-black/62 transition-colors hover:text-signal-ink"
                 >
                   {practical.source.label}
@@ -461,7 +461,7 @@ export default async function ComparisonPage({
                   <a
                     href={source.url}
                     target="_blank"
-                    rel="noreferrer"
+                    rel="nofollow noopener noreferrer"
                     className="group inline-flex items-start gap-3 text-[14px] font-semibold text-black/66 transition-colors hover:text-signal-ink"
                   >
                     {source.label}
