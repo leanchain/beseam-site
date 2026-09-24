@@ -111,6 +111,7 @@ const enDictionary = {
     privacy: "Privacy",
     terms: "Terms",
     bot: "BeseamBot",
+    askAi: "Ask AI about Beseam",
     madeWith: "Made with love in Switzerland",
     swissFlagAriaLabel: "Swiss flag",
   },
@@ -154,6 +155,7 @@ const enDictionary = {
       standing: "Why it is happening",
       fixFirst: "What to fix first",
     },
+    scanTrust: "No login · No store access required",
     scrollCue: "Scroll",
   },
 
@@ -1018,6 +1020,7 @@ const enDictionary = {
     // `BENCHMARK_RUN`; only the sentence around it is translated.
     finding: (share: number) =>
       `${share}% of brand appearances occurred on only one AI assistant.`,
+    runDate: (date: string) => `Research run ${date}`,
     link: "See the report & method",
   },
 
@@ -1274,6 +1277,8 @@ const enDictionary = {
       headingLine2: "Keep working from the same store.",
       body: "See the first evidence before creating an account. If Beseam finds something worth fixing, connect Shopify to keep the store under watch, prepare changes for approval, and verify what changed afterward.",
       cta: "Scan my store",
+      humanFallback: "Prefer to look at one product together?",
+      humanFallbackCta: "Talk to us",
     },
 
     // mobile-sticky-cta.tsx

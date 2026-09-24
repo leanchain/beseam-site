@@ -51,6 +51,18 @@ export default function FirstMonthPromise({
                 {promise.cta}
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
               </TrackedLink>
+              <p className="mt-5 text-[14px] leading-6 text-black/56">
+                {promise.humanFallback}{" "}
+                <TrackedLink
+                  href="/contact"
+                  eventName="marketing_human_fallback_clicked"
+                  eventCategory="conversion"
+                  placement="first_month_promise"
+                  className="font-semibold text-ink-deep underline decoration-black/20 underline-offset-4 hover:decoration-signal-ink"
+                >
+                  {promise.humanFallbackCta} →
+                </TrackedLink>
+              </p>
             </div>
           </div>
         </Reveal>

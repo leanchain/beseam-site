@@ -24,6 +24,18 @@ type FooterGroup = {
   };
 }[FooterGroupKey];
 
+const ASK_AI_PROMPT = encodeURIComponent(
+  "What is Beseam and what does it do for ecommerce brands?",
+);
+
+const ASK_AI_LINKS = [
+  { label: "ChatGPT", href: `https://chatgpt.com/?q=${ASK_AI_PROMPT}` },
+  { label: "Claude", href: `https://claude.ai/new?q=${ASK_AI_PROMPT}` },
+  { label: "Gemini", href: `https://www.google.com/search?udm=50&source=searchlabs&q=${ASK_AI_PROMPT}` },
+  { label: "Grok", href: `https://grok.com/?q=${ASK_AI_PROMPT}` },
+  { label: "Perplexity", href: `https://www.perplexity.ai/search?q=${ASK_AI_PROMPT}` },
+] as const;
+
 const FOOTER_GROUPS = [
   {
     key: "product",
@@ -168,6 +180,24 @@ export default function BeseamFooter() {
                 </nav>
               );
             })}
+            <div className="col-span-2 border-t border-white/12 pt-5 sm:col-span-4">
+              <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-white/44">
+                {t.footer.askAi}
+              </p>
+              <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2">
+                {ASK_AI_LINKS.map((link) => (
+                  <a
+                    key={link.label}
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[13px] text-white/62 transition-colors hover:text-white"
+                  >
+                    {link.label}
+                  </a>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
 

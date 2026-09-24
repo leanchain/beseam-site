@@ -91,6 +91,7 @@ export const de: Dictionary = {
     privacy: "Datenschutzerklärung",
     terms: "Nutzungsbedingungen",
     bot: "BeseamBot",
+    askAi: "KI zu Beseam fragen",
     madeWith: "Mit Liebe in der Schweiz gemacht",
     swissFlagAriaLabel: "Schweizer Flagge",
   },
@@ -128,6 +129,7 @@ export const de: Dictionary = {
       standing: "Warum das passiert",
       fixFirst: "Was zuerst zu beheben ist",
     },
+    scanTrust: "Kein Login · Kein Shop-Zugriff erforderlich",
     scrollCue: "Scrollen",
   },
 
@@ -961,6 +963,7 @@ export const de: Dictionary = {
     // und die Zahl darf nicht von ihrer Einheit getrennt umbrechen.
     finding: (share: number) =>
       `${share} % der Markennennungen entfielen auf nur einen KI-Assistenten.`,
+    runDate: (date: string) => `Benchmark-Lauf ${date}`,
     link: "Bericht & Methodik ansehen",
   },
 
@@ -1197,6 +1200,8 @@ export const de: Dictionary = {
       headingLine2: "Mit demselben Shop weiterarbeiten.",
       body: "Sehen Sie die ersten Belege, bevor Sie ein Konto erstellen. Wenn Beseam etwas findet, das sich zu beheben lohnt, verbinden Sie Shopify, lassen den Shop weiter prüfen, geben Änderungen frei und verifizieren danach, was sich verändert hat.",
       cta: "Shop scannen",
+      humanFallback: "Möchten Sie lieber gemeinsam ein Produkt ansehen?",
+      humanFallbackCta: "Sprechen Sie mit uns",
     },
 
     stickyCta: {

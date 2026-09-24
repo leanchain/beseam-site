@@ -30,6 +30,12 @@ export default function CredibilityRail({
   locale?: Locale;
 }) {
   const t = getDictionary(locale);
+  const runDate = new Intl.DateTimeFormat(locale === "de" ? "de-CH" : "en-CH", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    timeZone: "UTC",
+  }).format(new Date(`${BENCHMARK_RUN.askedOn}T00:00:00Z`));
 
   return (
     <section
@@ -44,6 +50,9 @@ export default function CredibilityRail({
         <p className="text-[13px] font-medium leading-[1.4] text-black/70">
           {t.rail.finding(SOLO_SHARE)}
         </p>
+        <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-black/42">
+          {t.rail.runDate(runDate)}
+        </span>
         <Link
           href="/benchmarks"
           className="group inline-flex items-center gap-1 text-[13px] font-semibold text-ink-deep underline decoration-black/25 underline-offset-4 hover:decoration-signal-ink"

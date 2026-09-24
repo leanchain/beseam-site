@@ -74,6 +74,9 @@ export default function ProductionHomepage({ locale }: { locale: Locale }) {
                           </li>
                         ))}
                       </ul>
+                      <p className="mt-2 font-mono text-[11px] uppercase tracking-[0.08em] text-black/44">
+                        {t.hero.scanTrust}
+                      </p>
                     </div>
                   }
                 />
