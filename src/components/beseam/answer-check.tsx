@@ -192,6 +192,15 @@ function sortedFindings(result: AnswerCheckResult) {
   const seen = new Set<string>();
   const findings = [...result.findings, ...nested].filter((finding) => {
     if (!findingHasRenderableEvidence(finding)) return false;
+    // Informational checks without a merchant-facing consequence are evidence,
+    // not problems. Keep them out of the prioritized issue list so a positive
+    // technical assertion cannot read like something the merchant must fix.
+    if (
+      finding.severity === "info" &&
+      !finding.why?.trim() &&
+      !finding.next_step?.trim()
+    )
+      return false;
     const key = `${finding.code}|${finding.url ?? ""}|${finding.product ?? ""}`;
     if (seen.has(key)) return false;
     seen.add(key);
@@ -4730,7 +4739,9 @@ export function ResultCard({
                   ? copy.result.statusFreeReady
                   : result.status === "failed"
                     ? copy.result.statusFailed
-                    : copy.result.statusComplete}
+                    : (result.page_audits?.length ?? 0) > 0
+                      ? copy.result.statusCompleteSampled(result.page_audits!.length)
+                      : copy.result.statusComplete}
           </span>
           <button
             type="button"

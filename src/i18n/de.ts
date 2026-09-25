@@ -1315,6 +1315,8 @@ export const de: Dictionary = {
       statusFreeReady: "Kostenloser Scan bereit",
       statusFailed: "Analyse unvollständig",
       statusComplete: "Scan abgeschlossen",
+      statusCompleteSampled: (pages: number) =>
+        `Stichproben-Scan abgeschlossen · ${pages} ${pages === 1 ? "Produktseite" : "Produktseiten"} geprüft`,
       shareAria: "Diesen Scan teilen",
       moreActions: "Weitere Berichtsaktionen",
       linkCopied: "Link kopiert",

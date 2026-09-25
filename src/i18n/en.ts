@@ -1407,6 +1407,8 @@ const enDictionary = {
       statusFreeReady: "Free scan ready",
       statusFailed: "Audit incomplete",
       statusComplete: "Scan complete",
+      statusCompleteSampled: (pages: number) =>
+        `Sample scan complete · ${pages} ${pages === 1 ? "product page" : "product pages"} checked`,
       shareAria: "Share this scan",
       moreActions: "More report actions",
       linkCopied: "Link copied",
