@@ -1,8 +1,36 @@
 "use client";
 
+import { useEffect } from "react";
+
 import Script from "next/script";
 
 import { useCookieConsent } from "@/contexts/CookieConsentContext";
+import {
+  loadUmami,
+  setUmamiConsent,
+  umamiConfig,
+  type UmamiConfig,
+} from "@/lib/umami";
+
+/**
+ * Umami settings, read once. Written out in full: Next inlines only literal
+ * `process.env.NEXT_PUBLIC_*` reads. All three unset = Umami off.
+ */
+const UMAMI = umamiConfig({
+  websiteId: process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID,
+  scriptUrl: process.env.NEXT_PUBLIC_UMAMI_SCRIPT_URL,
+  domains: process.env.NEXT_PUBLIC_UMAMI_DOMAINS,
+});
+
+/** Mounted only behind the consent gate; unmounting withdraws consent without a reload. */
+function UmamiLoader({ config }: { config: UmamiConfig }) {
+  useEffect(() => {
+    setUmamiConsent(true);
+    loadUmami(config);
+    return () => setUmamiConsent(false);
+  }, [config]);
+  return null;
+}
 
 /**
  * Every tag here sits behind the same gate: analytics consent accepted and the
@@ -10,6 +38,8 @@ import { useCookieConsent } from "@/contexts/CookieConsentContext";
  * `NEXT_PUBLIC_HOTJAR_ID` holds a numeric site id, so a missing id is an
  * absent script rather than a broken one. It records interactions, so it is
  * named in the privacy policy (section 6) beside Google's tags.
+ * Umami (self-hosted, page views only, `lib/umami.ts`) renders when its three
+ * NEXT_PUBLIC_UMAMI_* values are set.
  */
 function HotjarScript({ siteId }: { siteId: string }) {
   const bootstrap =
@@ -38,6 +68,8 @@ export function AnalyticsScripts() {
 
   if (!enabled || status !== "accepted") return null;
 
+  const umami = UMAMI ? <UmamiLoader config={UMAMI} /> : null;
+
   if (tagManagerId) {
     const bootstrap =
       "window.dataLayer=window.dataLayer||[];" +
@@ -56,6 +88,7 @@ export function AnalyticsScripts() {
           {bootstrap}
         </Script>
         {hotjarId ? <HotjarScript siteId={hotjarId} /> : null}
+        {umami}
       </>
     );
   }
@@ -77,6 +110,7 @@ export function AnalyticsScripts() {
         {configure}
       </Script>
       {hotjarId ? <HotjarScript siteId={hotjarId} /> : null}
+      {umami}
     </>
   );
 }

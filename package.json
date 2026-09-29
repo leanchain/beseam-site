@@ -15,7 +15,8 @@
     "start": "next start",
     "lint": "next lint",
     "test:i18n": "node --test src/i18n/locale-rules.test.mjs",
-    "test": "npm run test:worker && npm run test:i18n && npm run test:scan-state",
+    "test:analytics": "bun test src/lib/umami.test.mjs",
+    "test": "npm run test:worker && npm run test:i18n && npm run test:scan-state && npm run test:analytics",
     "check:export": "node scripts/check-export.mjs",
     "test:scan-state": "bun test src/components/beseam/answer-check-state.test.mjs src/components/beseam/navbar-state.test.mjs"
   },
