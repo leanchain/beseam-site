@@ -19,7 +19,11 @@ const CONFIG = {
   domains: "beseam.com,www.beseam.com",
 };
 
-/** A page view as the tracker builds it on the answer-check hand-off. */
+/**
+ * A page view as the tracker builds it on the answer-check hand-off. `id` and
+ * `cache` are here so the exact-match test below sees any field the allowlist
+ * would let through: a distinct id, and one the module has never heard of.
+ */
 function pageview(overrides = {}) {
   return {
     website: "site-1",
@@ -29,6 +33,8 @@ function pageview(overrides = {}) {
     title: "acme-outdoor.com — AI answer check",
     url: `${ORIGIN}/scan?domain=acme-outdoor.com&verified=1&utm_source=newsletter`,
     referrer: "",
+    id: "user-42",
+    cache: "abc",
     ...overrides,
   };
 }
