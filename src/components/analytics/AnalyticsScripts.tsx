@@ -6,9 +6,9 @@ import Script from "next/script";
 
 import { useCookieConsent } from "@/contexts/CookieConsentContext";
 import {
+  landingUmamiConfig,
   loadUmami,
   setUmamiConsent,
-  umamiConfig,
   type UmamiConfig,
 } from "@/lib/umami";
 
@@ -16,11 +16,14 @@ import {
  * Umami settings, read once. Written out in full: Next inlines only literal
  * `process.env.NEXT_PUBLIC_*` reads. All three unset = Umami off.
  */
-const UMAMI = umamiConfig({
-  websiteId: process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID,
-  scriptUrl: process.env.NEXT_PUBLIC_UMAMI_SCRIPT_URL,
-  domains: process.env.NEXT_PUBLIC_UMAMI_DOMAINS,
-});
+const UMAMI = landingUmamiConfig(
+  {
+    websiteId: process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID,
+    scriptUrl: process.env.NEXT_PUBLIC_UMAMI_SCRIPT_URL,
+    domains: process.env.NEXT_PUBLIC_UMAMI_DOMAINS,
+  },
+  process.env.NODE_ENV,
+);
 
 /** Mounted only behind the consent gate; unmounting withdraws consent without a reload. */
 function UmamiLoader({ config }: { config: UmamiConfig }) {
@@ -38,8 +41,10 @@ function UmamiLoader({ config }: { config: UmamiConfig }) {
  * `NEXT_PUBLIC_HOTJAR_ID` holds a numeric site id, so a missing id is an
  * absent script rather than a broken one. It records interactions, so it is
  * named in the privacy policy (section 6) beside Google's tags.
- * Umami (self-hosted, page views only, `lib/umami.ts`) renders when its three
- * NEXT_PUBLIC_UMAMI_* values are set.
+ * Umami (self-hosted, page views only, `lib/umami.ts`) uses Beseam's committed
+ * public production defaults so Git-triggered Cloudflare builds cannot silently
+ * turn it off. NEXT_PUBLIC_UMAMI_* still override those values; local/dev stays
+ * off unless explicitly configured.
  */
 function HotjarScript({ siteId }: { siteId: string }) {
   const bootstrap =

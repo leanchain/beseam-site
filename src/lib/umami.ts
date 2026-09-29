@@ -43,6 +43,12 @@ export type UmamiConfig = {
   scriptUrl: string;
   domains: string;
 };
+
+export const BESEAM_PRODUCTION_UMAMI_CONFIG: UmamiConfig = {
+  websiteId: "e05bd753-3d77-456f-aa40-1d5a5e336753",
+  scriptUrl: "https://a.beseam.com/script.js",
+  domains: "beseam.com,www.beseam.com",
+};
 type UmamiBeforeSend = (
   type: string,
   payload: UmamiPayload | null | undefined,
@@ -143,6 +149,18 @@ export function umamiConfig(input: {
     return null;
   }
   return { websiteId, scriptUrl: url.toString(), domains };
+}
+
+export function landingUmamiConfig(
+  input: { websiteId?: string; scriptUrl?: string; domains?: string },
+  environment: string | undefined,
+): UmamiConfig | null {
+  const defaults = environment === "production" ? BESEAM_PRODUCTION_UMAMI_CONFIG : undefined;
+  return umamiConfig({
+    websiteId: input.websiteId?.trim() || defaults?.websiteId,
+    scriptUrl: input.scriptUrl?.trim() || defaults?.scriptUrl,
+    domains: input.domains?.trim() || defaults?.domains,
+  });
 }
 
 export function setUmamiConsent(granted: boolean): void {

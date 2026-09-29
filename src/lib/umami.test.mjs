@@ -1,9 +1,11 @@
 import { afterEach, describe, expect, it, spyOn } from "bun:test";
 
 import {
+  BESEAM_PRODUCTION_UMAMI_CONFIG,
   UMAMI_BEFORE_SEND_GLOBAL,
   UMAMI_CONSENT_GLOBAL,
   UMAMI_SCRIPT_ID,
+  landingUmamiConfig,
   loadUmami,
   sanitizeUmamiPayload,
   sanitizedUmamiUrl,
@@ -196,7 +198,29 @@ describe("landing Umami tracker tag", () => {
 });
 
 describe("landing Umami config", () => {
-  it("is silently off when unset", () => {
+  it("is silently off when unset outside production", () => {
+    expect(landingUmamiConfig({}, "development")).toBeNull();
+    expect(landingUmamiConfig({}, "test")).toBeNull();
+  });
+
+  it("uses committed public defaults in production so Git builds cannot silently disable it", () => {
+    expect(landingUmamiConfig({}, "production")).toEqual(BESEAM_PRODUCTION_UMAMI_CONFIG);
+  });
+
+  it("lets build-time values override production defaults", () => {
+    expect(
+      landingUmamiConfig(
+        { websiteId: "override-site", domains: "preview.beseam.com" },
+        "production",
+      ),
+    ).toEqual({
+      ...BESEAM_PRODUCTION_UMAMI_CONFIG,
+      websiteId: "override-site",
+      domains: "preview.beseam.com",
+    });
+  });
+
+  it("is silently off when raw config is unset", () => {
     const errors = spyOn(console, "error").mockImplementation(() => {});
     expect(umamiConfig({})).toBeNull();
     expect(errors).not.toHaveBeenCalled();

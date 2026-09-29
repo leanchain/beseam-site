@@ -67,7 +67,7 @@ Before deployment:
 
 5. Enable Email Sending for the zone and verify `website@beseam.com` while review notifications are still desired.
 6. Confirm that `contact@beseam.com` is an allowed notification destination.
-7. Set the public analytics (including the three `NEXT_PUBLIC_UMAMI_*` values in `.env.example`) and Cal.com values in the deployment environment.
+7. Set any public analytics overrides and Cal.com values in the deployment environment. Beseam's three public Umami values have committed production defaults in `src/lib/umami.ts`; `NEXT_PUBLIC_UMAMI_*` are optional overrides, not deployment requirements.
 8. Run `bun run build`, then `npx wrangler deploy`.
 
 When all three Trevra capture values are configured, `/api/lead` writes its
