@@ -617,6 +617,88 @@ async function forwardJson(target, init) {
   }
 }
 
+
+function bytesToBase64(bytes) {
+  let binary = "";
+  for (const byte of bytes) binary += String.fromCharCode(byte);
+  return btoa(binary);
+}
+
+function bytesToBase64Url(bytes) {
+  return bytesToBase64(bytes)
+    .replaceAll("+", "-")
+    .replaceAll("/", "_")
+    .replace(/=+$/, "");
+}
+
+function base64ToBytes(value) {
+  const binary = atob(value);
+  return Uint8Array.from(binary, (char) => char.charCodeAt(0));
+}
+
+async function webBotKeyId(publicKeyX) {
+  // RFC 7638 JWK thumbprint: exact lexicographic member order, no whitespace.
+  const canonical = JSON.stringify({ crv: "Ed25519", kty: "OKP", x: publicKeyX });
+  const digest = await crypto.subtle.digest(
+    "SHA-256",
+    new TextEncoder().encode(canonical),
+  );
+  return bytesToBase64Url(new Uint8Array(digest));
+}
+
+async function signWebBotMessage(env, message) {
+  const key = await crypto.subtle.importKey(
+    "pkcs8",
+    base64ToBytes(env.WEB_BOT_AUTH_PRIVATE_KEY_PKCS8_B64),
+    { name: "Ed25519" },
+    false,
+    ["sign"],
+  );
+  const signature = await crypto.subtle.sign(
+    "Ed25519",
+    key,
+    new TextEncoder().encode(message),
+  );
+  return bytesToBase64(new Uint8Array(signature));
+}
+
+async function webBotAuthDirectory(request, env) {
+  const publicKeyX = clean(env.WEB_BOT_AUTH_PUBLIC_KEY_X, 100);
+  const privateKey = clean(env.WEB_BOT_AUTH_PRIVATE_KEY_PKCS8_B64, 500);
+  if (!publicKeyX || !privateKey) {
+    return new Response("Web Bot Auth identity is not configured.", {
+      status: 503,
+      headers: { "cache-control": "no-store", "content-type": "text/plain; charset=utf-8" },
+    });
+  }
+
+  const url = new URL(request.url);
+  const keyId = await webBotKeyId(publicKeyX);
+  const created = Math.floor(Date.now() / 1000);
+  const expires = created + 60;
+  const nonceBytes = crypto.getRandomValues(new Uint8Array(32));
+  const nonce = bytesToBase64(nonceBytes);
+  const signatureParams =
+    `("@authority";req);alg="ed25519";keyid="${keyId}";nonce="${nonce}";tag="http-message-signatures-directory";created=${created};expires=${expires}`;
+  const signatureBase =
+    `"@authority";req: ${url.host}\n` +
+    `"@signature-params": ${signatureParams}`;
+  const signature = await signWebBotMessage(env, signatureBase);
+  const body = JSON.stringify({
+    keys: [{ kty: "OKP", crv: "Ed25519", x: publicKeyX }],
+  });
+
+  return new Response(body, {
+    status: 200,
+    headers: {
+      "content-type": "application/http-message-signatures-directory+json",
+      "cache-control": "public, max-age=86400",
+      "signature-input": `sig1=${signatureParams}`,
+      signature: `sig1=:${signature}:`,
+    },
+  });
+}
+
 /**
  * First visit, no remembered choice, German signal -> the German page.
  *
@@ -650,6 +732,10 @@ function localeRedirect(request, url) {
 const worker = {
   async fetch(request, env) {
     const url = new URL(request.url);
+
+    if (url.pathname === "/.well-known/http-message-signatures-directory") {
+      return webBotAuthDirectory(request, env);
+    }
 
     if (url.pathname === "/api/answer-check") {
       return proxyAnswerCheck(request, url, env);

@@ -447,3 +447,36 @@ test("a rate-limited scan keeps its status and its Retry-After", async () => {
   assert.equal(response.status, 429);
   assert.equal(response.headers.get("retry-after"), "30");
 });
+
+test("serves a signed Web Bot Auth key directory", async () => {
+  const pair = await crypto.subtle.generateKey(
+    { name: "Ed25519" },
+    true,
+    ["sign", "verify"],
+  );
+  const pkcs8 = Buffer.from(
+    await crypto.subtle.exportKey("pkcs8", pair.privateKey),
+  ).toString("base64");
+  const publicKeyX = Buffer.from(
+    await crypto.subtle.exportKey("raw", pair.publicKey),
+  ).toString("base64url");
+
+  const response = await worker.fetch(
+    new Request("https://beseam.com/.well-known/http-message-signatures-directory"),
+    {
+      WEB_BOT_AUTH_PRIVATE_KEY_PKCS8_B64: pkcs8,
+      WEB_BOT_AUTH_PUBLIC_KEY_X: publicKeyX,
+    },
+  );
+
+  assert.equal(response.status, 200);
+  assert.equal(
+    response.headers.get("content-type"),
+    "application/http-message-signatures-directory+json",
+  );
+  assert.match(response.headers.get("signature-input") || "", /tag="http-message-signatures-directory"/);
+  assert.match(response.headers.get("signature") || "", /^sig1=:[A-Za-z0-9+/=]+:$/);
+  assert.deepEqual(await response.json(), {
+    keys: [{ kty: "OKP", crv: "Ed25519", x: publicKeyX }],
+  });
+});
