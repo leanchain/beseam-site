@@ -6,6 +6,8 @@ import {
   deriveSampledAuditGroups,
   deriveTemplatePatterns,
   isCatalogFinding,
+  needsFreshRead,
+  pollDelay,
 } from "./answer-check-state.ts";
 
 function result(overrides) {
@@ -295,5 +297,65 @@ describe("PDP layout coverage", () => {
 
   it("stays hidden before a verified layout read exists", () => {
     assert.equal(derivePdpLayoutCoverage(result()), null);
+  });
+});
+
+describe("arrival freshness", () => {
+  const now = Date.parse("2026-10-05T12:00:00Z");
+  const hoursAgo = (hours) => new Date(now - hours * 3_600_000).toISOString();
+
+  it("replays a storefront read from within the day", () => {
+    assert.equal(
+      needsFreshRead(
+        result({ status: "ready", observed_at: hoursAgo(23) }),
+        now,
+      ),
+      false,
+    );
+  });
+
+  it("re-reads a storefront read older than a day", () => {
+    assert.equal(
+      needsFreshRead(
+        result({ status: "ready", observed_at: hoursAgo(25) }),
+        now,
+      ),
+      true,
+    );
+  });
+
+  it("re-reads a row that predates the read stamp", () => {
+    assert.equal(needsFreshRead(result({ status: "ready" }), now), true);
+  });
+
+  it("re-reads a failed run nobody can retry, keeps a retryable one", () => {
+    const fresh = hoursAgo(1);
+    assert.equal(
+      needsFreshRead(
+        result({ status: "failed", retryable: false, observed_at: fresh }),
+        now,
+      ),
+      true,
+    );
+    assert.equal(
+      needsFreshRead(
+        result({ status: "failed", retryable: true, observed_at: fresh }),
+        now,
+      ),
+      false,
+    );
+  });
+});
+
+describe("poll delay", () => {
+  it("keeps the base cadence while reads succeed", () => {
+    assert.equal(pollDelay(0, 6000), 6000);
+  });
+
+  it("backs off on consecutive failures up to the cap", () => {
+    assert.equal(pollDelay(1, 6000), 12_000);
+    assert.equal(pollDelay(3, 6000), 48_000);
+    assert.equal(pollDelay(4, 6000), 60_000);
+    assert.equal(pollDelay(40, 6000), 60_000);
   });
 });

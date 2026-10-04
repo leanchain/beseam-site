@@ -42,12 +42,15 @@ import {
   deriveSampledAuditGroups,
   deriveTemplatePatterns,
   isCatalogFinding,
+  needsFreshRead,
+  pollDelay,
 } from "@/components/beseam/answer-check-state";
 import { ChannelIcon } from "@/components/beseam/channel-icon";
 import { fixExampleFor } from "@/components/beseam/fix-examples";
 import TrackedLink from "@/components/beseam/tracked-link";
 import useAnalytics from "@/hooks/useAnalytics";
 import { APP_REGISTER_URL, APP_REPORT_URL } from "@/lib/app-urls";
+import { getUtmValues } from "@/lib/marketing-analytics";
 
 export type { AnswerCheckResult };
 
@@ -240,11 +243,14 @@ const GENERIC_FINDING_HEADLINES = new Set([
   "This is worth a look on your store.",
 ]);
 
+// `generic_copy` is set by the backend; the English set covers payloads cached
+// before the flag existed.
 function findingHeadline(finding: Finding) {
   const headline = finding.headline?.trim();
-  return headline && !GENERIC_FINDING_HEADLINES.has(headline)
-    ? headline
-    : finding.title;
+  const generic =
+    finding.generic_copy ??
+    (headline ? GENERIC_FINDING_HEADLINES.has(headline) : true);
+  return headline && !generic ? headline : finding.title;
 }
 
 function findingWhy(finding: Finding) {
@@ -861,8 +867,8 @@ function localizedStepDetail(step: Step, copy: Dictionary["answerCheck"]) {
     if (detail.startsWith(asking))
       return copy.steps.askingChannels(detail.slice(asking.length));
   }
-  // Reject reasons and other backend facts are deliberately left verbatim;
-  // phase 2 localizes API-supplied copy.
+  // Anything else arrives already in the page's language: the API renders step
+  // details for the `locale` it was asked for.
   return detail;
 }
 
@@ -1213,8 +1219,12 @@ function aiVisibilityFinding(
     area: "Getting found",
     evidence,
     proof: {
-      observed: `${named} of ${usable.length} usable AI shopping answers recommended ${result.brand || result.domain}`,
-      expected: `The brand is recommended in usable AI shopping answers for relevant buying questions`,
+      observed: copy.findings.aiVisibilityObserved(
+        named,
+        usable.length,
+        result.brand || result.domain,
+      ),
+      expected: copy.findings.aiVisibilityExpected,
       inputs: [
         { label: "usable_answers", value: String(usable.length) },
         { label: "answers_recommending_brand", value: String(named) },
@@ -1275,6 +1285,7 @@ function FindingRow({
   featured: boolean;
 }) {
   const copy = useDictionary().answerCheck;
+  const locale = useLocale();
   const { trackEvent } = useAnalytics();
   const evidenceViewed = useRef(false);
   const finding = group.lead;
@@ -1286,6 +1297,7 @@ function FindingRow({
   const example = fixExampleFor(finding.code, {
     ...exampleContext,
     product: finding.product ?? exampleContext.product,
+    locale,
   });
   const affectedPageCount = new Set(
     group.members
@@ -4538,9 +4550,13 @@ function RejectedNotice({
   continueHref?: string;
 }) {
   const copy = useDictionary().answerCheck;
-  const reason = result.reject_reason ?? "";
-  const blocked = reason.toLowerCase().includes("blocked");
-  const noProducts = reason.toLowerCase().includes("product pages");
+  // `reject_kind` is language-independent; `reject_reason` may be translated.
+  const reason = (result.reject_reason ?? "").toLowerCase();
+  const kind = result.reject_kind;
+  const blocked = kind ? kind === "blocked" : reason.includes("blocked");
+  const noProducts = kind
+    ? kind === "no_products"
+    : reason.includes("product pages");
 
   const explanation = blocked
     ? copy.errors.blockedExplanation
@@ -4694,6 +4710,26 @@ export function ResultCard({
     ]
       .filter(Boolean)
       .join(" · ");
+  // A cached card is replayed to later visitors, so it says how old each half
+  // is: the storefront read and the assistants' answers age separately.
+  const formatDay = (iso: string | null | undefined) => {
+    const time = Date.parse(iso ?? "");
+    return Number.isFinite(time)
+      ? new Intl.DateTimeFormat(locale === "de" ? "de-DE" : "en-GB", {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+        }).format(time)
+      : null;
+  };
+  const readDay = formatDay(result.observed_at);
+  const answeredDay = formatDay(result.answered_at);
+  const freshnessLine = [
+    readDay ? copy.result.readOn(readDay) : null,
+    answeredDay ? copy.result.answeredOn(answeredDay) : null,
+  ]
+    .filter(Boolean)
+    .join(" · ");
 
   return (
     <div className="overflow-hidden rounded-[3px] border border-black/16 bg-white text-left shadow-[0_18px_55px_rgba(44,31,24,0.055)]">
@@ -4714,6 +4750,11 @@ export function ResultCard({
           <p className="mt-1.5 text-[12px] leading-relaxed text-[#5f5a55]">
             {identityLine}
           </p>
+          {freshnessLine ? (
+            <p className="mt-0.5 text-[12px] leading-relaxed text-[#5f5a55]">
+              {freshnessLine}
+            </p>
+          ) : null}
         </div>
         {/* One status statement for the whole card. The run detail lives in the
             progress list above; repeating it here — next to a section that also
@@ -4740,7 +4781,9 @@ export function ResultCard({
                   : result.status === "failed"
                     ? copy.result.statusFailed
                     : (result.page_audits?.length ?? 0) > 0
-                      ? copy.result.statusCompleteSampled(result.page_audits!.length)
+                      ? copy.result.statusCompleteSampled(
+                          result.page_audits!.length,
+                        )
                       : copy.result.statusComplete}
           </span>
           <button
@@ -4924,6 +4967,12 @@ export default function AnswerCheck({
         copy.errors.serviceUnavailable,
       "We could not scan that domain.": copy.errors.scanDomain,
       "We could not send the verification email.": copy.errors.sendEmail,
+      "Confirm your email before retrying the full audit.":
+        copy.errors.retryNeedsEmail,
+      "This audit has already used its automatic retries.":
+        copy.errors.retryLimit,
+      "No scan exists for this domain yet.": copy.errors.noScanYet,
+      "Scans are paused right now. Try again later.": copy.errors.scansPaused,
     };
     return (known[value] ?? value) || fallback;
   };
@@ -4939,16 +4988,24 @@ export default function AnswerCheck({
   const [verificationSubmitting, setVerificationSubmitting] = useState(false);
   const [retrySubmitting, setRetrySubmitting] = useState(false);
   const pollCount = useRef(0);
+  const pollFailures = useRef(0);
+  // Bumped after every poll attempt, success or not. Polling used to re-arm
+  // only when the result changed, so one failed read ended it for good.
+  const [pollTick, setPollTick] = useState(0);
   const scanCompletedTracked = useRef<string | null>(null);
   const [pollExhausted, setPollExhausted] = useState(false);
 
   const load = useCallback(
     async (target: string) => {
-      const response = await fetch(
-        `/api/answer-check?domain=${encodeURIComponent(target)}&locale=${encodeURIComponent(locale)}`,
-      );
-      if (!response.ok) return null;
-      return (await response.json()) as AnswerCheckResult;
+      try {
+        const response = await fetch(
+          `/api/answer-check?domain=${encodeURIComponent(target)}&locale=${encodeURIComponent(locale)}`,
+        );
+        if (!response.ok) return null;
+        return (await response.json()) as AnswerCheckResult;
+      } catch {
+        return null;
+      }
     },
     [locale],
   );
@@ -4956,8 +5013,11 @@ export default function AnswerCheck({
   // The one place a scan is actually started. Both the form and an arriving
   // ?domain= go through it, so a link to a domain nobody has scanned yet
   // behaves exactly like typing that domain into the field.
+  //
+  // `fallback` is a cached card the arrival is refreshing: if the fresh read
+  // cannot be had, the cached one (dated on the card) beats an error page.
   const runScan = useCallback(
-    async (target: string, address: string) => {
+    async (target: string, address: string, fallback?: AnswerCheckResult) => {
       setSubmitting(true);
       try {
         const response = await fetch("/api/answer-check", {
@@ -4974,11 +5034,16 @@ export default function AnswerCheck({
         const payload = await response.json();
 
         if (!response.ok) {
+          if (fallback) {
+            setResult(fallback);
+            return;
+          }
           setError(apiError(payload, response.status, copy.errors.scanDomain));
           return;
         }
 
         pollCount.current = 0;
+        pollFailures.current = 0;
         setPollExhausted(false);
         const scan = payload as AnswerCheckResult;
         setResult(scan);
@@ -4995,7 +5060,8 @@ export default function AnswerCheck({
           });
         }
       } catch {
-        setError(copy.errors.serviceUnavailable);
+        if (fallback) setResult(fallback);
+        else setError(copy.errors.serviceUnavailable);
       } finally {
         setSubmitting(false);
       }
@@ -5032,6 +5098,13 @@ export default function AnswerCheck({
 
     const fromUrl = params.get("domain");
     if (!fromUrl) return;
+    // A surface that cannot hold a result (the homepage hero) hands a
+    // `?domain=` arrival to the page that can, query intact. Older result
+    // emails and shared links point at `/?domain=`.
+    if (handOffTo) {
+      router.replace(`${handOffTo}${window.location.search}`);
+      return;
+    }
     setDomain(fromUrl);
     void load(fromUrl).then((payload) => {
       // A cached scan renders immediately — this is the path back from the
@@ -5039,19 +5112,29 @@ export default function AnswerCheck({
       // anything for this domain, so the arrival starts it on the domain alone:
       // the hero promised a scan, and a page that only re-asks for the domain
       // does not deliver one. The address is asked once the store is on screen.
-      if (payload && hasUsableFreeStage(payload)) {
-        setResult(payload);
+      //
+      // A usable card that is old, or a failed run nobody can retry, is read
+      // again rather than replayed as the store today. Work in flight and the
+      // verification click are left alone: both are watching a run, not
+      // asking for a new read.
+      const cached = payload && hasUsableFreeStage(payload) ? payload : null;
+      if (
+        cached &&
+        (isVerifiedArrival ||
+          isScanInFlight(cached) ||
+          !needsFreshRead(cached, Date.now()))
+      ) {
+        setResult(cached);
         return;
       }
-      if (handOffTo) return;
       trackEvent({
         action: "answer_check_started",
         category: "conversion",
         label: placement,
       });
-      void runScan(fromUrl, "");
+      void runScan(fromUrl, "", cached ?? undefined);
     });
-  }, [load, runScan, handOffTo, placement, trackEvent]);
+  }, [load, runScan, handOffTo, placement, router, trackEvent]);
 
   useEffect(() => {
     if (
@@ -5089,15 +5172,24 @@ export default function AnswerCheck({
       return;
     }
 
-    const timer = setTimeout(() => {
-      pollCount.current += 1;
-      void load(result.domain).then((payload) => {
-        if (payload) setResult(payload);
-      });
-    }, POLL_MS);
+    const timer = setTimeout(
+      () => {
+        pollCount.current += 1;
+        void load(result.domain).then((payload) => {
+          if (payload) {
+            pollFailures.current = 0;
+            setResult(payload);
+          } else {
+            pollFailures.current += 1;
+          }
+          setPollTick((tick) => tick + 1);
+        });
+      },
+      pollDelay(pollFailures.current, POLL_MS),
+    );
 
     return () => clearTimeout(timer);
-  }, [result, load, awaitingClick]);
+  }, [result, load, awaitingClick, pollTick]);
 
   const onSubmit = async (event: FormEvent) => {
     event.preventDefault();
@@ -5160,6 +5252,7 @@ export default function AnswerCheck({
             source: placement,
             website,
             locale,
+            utm: getUtmValues(),
           }),
         });
 

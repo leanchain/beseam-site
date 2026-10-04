@@ -5,13 +5,15 @@ import { useEffect, useState } from "react";
 import { ArrowRight } from "lucide-react";
 
 import TrackedLink from "@/components/beseam/tracked-link";
-import { useDictionary } from "@/i18n/use-locale";
+import { LOCALIZED_ROUTES } from "@/i18n/locale-rules.mjs";
+import { useDictionary, useLocale } from "@/i18n/use-locale";
 
 /** Roughly one screen of scroll: the bar appears once the hero copy is behind you. */
 const SHOW_AFTER_SCROLL_Y = 600;
 
 export default function MobileStickyCta() {
   const t = useDictionary();
+  const locale = useLocale();
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -64,7 +66,7 @@ export default function MobileStickyCta() {
       className="fixed bottom-4 left-4 right-4 z-40 md:hidden"
     >
       <TrackedLink
-        href="/scan"
+        href={locale === "de" ? LOCALIZED_ROUTES["/scan"] : "/scan"}
         eventName="marketing_primary_cta_clicked"
         eventCategory="conversion"
         placement="mobile_sticky"

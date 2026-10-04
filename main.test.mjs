@@ -301,6 +301,160 @@ test("/scan/verify returns a PDP verification to the originating report", async 
     "https://app.beseam.com/report/3909086518540540",
   );
 });
+test("/scan/verify returns a German-page requester to the German scan page", async () => {
+  const response = await withFetch(
+    async () =>
+      new Response(JSON.stringify({ domain: "shop.example" }), {
+        status: 200,
+        headers: { "content-type": "application/json" },
+      }),
+    () =>
+      worker.fetch(
+        new Request(
+          "https://beseam.com/scan/verify?token=test-token&locale=de",
+        ),
+        { ...TREVRA_ENV, API_BASE_URL: "https://api.beseam.test/api" },
+      ),
+  );
+
+  assert.equal(response.status, 302);
+  assert.equal(
+    response.headers.get("location"),
+    "https://beseam.com/de/scan?domain=shop.example&verified=1",
+  );
+});
+
+test("a used German link reports the error on the German scan page", async () => {
+  const response = await withFetch(
+    async () =>
+      new Response(JSON.stringify({ detail: "no" }), {
+        status: 404,
+        headers: { "content-type": "application/json" },
+      }),
+    () =>
+      worker.fetch(
+        new Request(
+          "https://beseam.com/scan/verify?token=test-token&locale=de",
+        ),
+        { ...TREVRA_ENV, API_BASE_URL: "https://api.beseam.test/api" },
+      ),
+  );
+
+  assert.equal(
+    response.headers.get("location"),
+    "https://beseam.com/de/scan?scan_error=link_used",
+  );
+});
+for (const [status, expected] of [
+  [404, "link_used"],
+  [503, "unavailable"],
+  [429, "unavailable"],
+]) {
+  test(`/scan/verify maps an API ${status} to scan_error=${expected}`, async () => {
+    const response = await withFetch(
+      async () =>
+        new Response(JSON.stringify({ detail: "no" }), {
+          status,
+          headers: { "content-type": "application/json" },
+        }),
+      () =>
+        worker.fetch(
+          new Request("https://beseam.com/scan/verify?token=test-token"),
+          { ...TREVRA_ENV, API_BASE_URL: "https://api.beseam.test/api" },
+        ),
+    );
+
+    assert.equal(response.status, 302);
+    assert.equal(
+      response.headers.get("location"),
+      `https://beseam.com/scan?scan_error=${expected}`,
+    );
+  });
+}
+
+function scanPost(body) {
+  return new Request("https://beseam.com/api/answer-check", {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+      origin: "https://beseam.com",
+    },
+    body: JSON.stringify(body),
+  });
+}
+
+async function scanWithLeadCapture(body, apiStatus = 200) {
+  const calls = [];
+  const pending = [];
+  const ctx = { waitUntil: (promise) => pending.push(promise) };
+  const response = await withFetch(
+    async (url, init) => {
+      calls.push({ url: String(url), init });
+      if (String(url).startsWith("https://trevra.example")) {
+        return new Response(JSON.stringify({ submissionId: "sub_1" }), {
+          status: 202,
+          headers: { "content-type": "application/json" },
+        });
+      }
+      return new Response(
+        JSON.stringify({
+          domain: "shop.example",
+          status: "awaiting_verification",
+        }),
+        { status: apiStatus, headers: { "content-type": "application/json" } },
+      );
+    },
+    async () => {
+      const result = await worker.fetch(
+        scanPost(body),
+        { ...TREVRA_ENV, API_BASE_URL: "https://api.beseam.test/api" },
+        ctx,
+      );
+      await Promise.all(pending);
+      return result;
+    },
+  );
+  const leads = calls.filter((call) =>
+    call.url.startsWith("https://trevra.example"),
+  );
+  return { response, leads };
+}
+
+test("a scan email request is captured as an ai_visibility_scan lead with its UTMs", async () => {
+  const { response, leads } = await scanWithLeadCapture({
+    domain: "shop.example",
+    email: "visitor@shop.example",
+    source: "scan_page",
+    utm: { utm_source: "newsletter", utm_medium: "email", other: "dropped" },
+  });
+
+  assert.equal(response.status, 200);
+  assert.equal(leads.length, 1);
+  assert.deepEqual(JSON.parse(leads[0].init.body), {
+    kind: "ai_visibility_scan",
+    person: { email: "visitor@shop.example" },
+    company: { domain: "shop.example" },
+    attribution: { utm_source: "newsletter", utm_medium: "email" },
+  });
+});
+
+test("no scan lead is captured for a domain-only scan, a honeypot hit, or a refused request", async () => {
+  for (const [body, status] of [
+    [{ domain: "shop.example" }, 200],
+    [
+      {
+        domain: "shop.example",
+        email: "visitor@shop.example",
+        website: "x.com",
+      },
+      200,
+    ],
+    [{ domain: "shop.example", email: "visitor@shop.example" }, 422],
+  ]) {
+    const { leads } = await scanWithLeadCapture(body, status);
+    assert.equal(leads.length, 0, JSON.stringify({ body, status }));
+  }
+});
 
 test("a domain-only scan reaches the API with a null email", async () => {
   const calls = [];
@@ -449,11 +603,10 @@ test("a rate-limited scan keeps its status and its Retry-After", async () => {
 });
 
 test("serves a signed Web Bot Auth key directory", async () => {
-  const pair = await crypto.subtle.generateKey(
-    { name: "Ed25519" },
-    true,
-    ["sign", "verify"],
-  );
+  const pair = await crypto.subtle.generateKey({ name: "Ed25519" }, true, [
+    "sign",
+    "verify",
+  ]);
   const pkcs8 = Buffer.from(
     await crypto.subtle.exportKey("pkcs8", pair.privateKey),
   ).toString("base64");
@@ -462,7 +615,9 @@ test("serves a signed Web Bot Auth key directory", async () => {
   ).toString("base64url");
 
   const response = await worker.fetch(
-    new Request("https://beseam.com/.well-known/http-message-signatures-directory"),
+    new Request(
+      "https://beseam.com/.well-known/http-message-signatures-directory",
+    ),
     {
       WEB_BOT_AUTH_PRIVATE_KEY_PKCS8_B64: pkcs8,
       WEB_BOT_AUTH_PUBLIC_KEY_X: publicKeyX,
@@ -474,8 +629,14 @@ test("serves a signed Web Bot Auth key directory", async () => {
     response.headers.get("content-type"),
     "application/http-message-signatures-directory+json",
   );
-  assert.match(response.headers.get("signature-input") || "", /tag="http-message-signatures-directory"/);
-  assert.match(response.headers.get("signature") || "", /^sig1=:[A-Za-z0-9+/=]+:$/);
+  assert.match(
+    response.headers.get("signature-input") || "",
+    /tag="http-message-signatures-directory"/,
+  );
+  assert.match(
+    response.headers.get("signature") || "",
+    /^sig1=:[A-Za-z0-9+/=]+:$/,
+  );
   assert.deepEqual(await response.json(), {
     keys: [{ kty: "OKP", crv: "Ed25519", x: publicKeyX }],
   });

@@ -1,5 +1,29 @@
 import type { AnswerCheckResult, Finding } from "./answer-check-types";
 
+// A cached storefront read is replayed to every later visitor for the domain.
+// Past a day it describes a store that may have changed, so an arrival reads it
+// again instead of presenting it as the store today.
+export const FREE_READ_MAX_AGE_MS = 24 * 60 * 60 * 1000;
+
+export function needsFreshRead(
+  result: Pick<AnswerCheckResult, "status" | "retryable" | "observed_at">,
+  now: number,
+): boolean {
+  // A failed run nobody can retry is a dead end on screen; a domain-only scan
+  // starts a new cycle the visitor can act on.
+  if (result.status === "failed" && !result.retryable) return true;
+  const observed = Date.parse(result.observed_at ?? "");
+  // Rows read before the API stamped the time have no age to trust.
+  return !Number.isFinite(observed) || now - observed > FREE_READ_MAX_AGE_MS;
+}
+
+// Poll interval after `failures` consecutive failed status reads: the base
+// cadence while the API answers, backing off while it does not, so an outage
+// neither ends the watch nor hammers the API.
+export function pollDelay(failures: number, base = 6000, cap = 60_000) {
+  return Math.min(base * 2 ** Math.max(0, failures), cap);
+}
+
 export type HomepageAuditCardState =
   "gated" | "reading" | "failed" | "complete";
 
@@ -17,7 +41,11 @@ export function deriveDeepAuditCardState(result: AnswerCheckResult) {
   else if (inFlight && !homepage) homepageState = "reading";
   else if (homepage?.ok === false) homepageState = "failed";
   else if (homepage?.ok === true) homepageState = "complete";
-  else if (status === "failed" || result.status === "ready" || result.status === "failed") {
+  else if (
+    status === "failed" ||
+    result.status === "ready" ||
+    result.status === "failed"
+  ) {
     homepageState = "failed";
   } else homepageState = "reading";
 

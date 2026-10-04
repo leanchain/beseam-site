@@ -69,6 +69,8 @@ export type Finding = {
   why?: string;
   next_step?: string;
   area?: string;
+  /** True when the headline is a namespace/last-resort fallback, not specific copy. */
+  generic_copy?: boolean;
 };
 
 export type PageAuditSignal = {
@@ -293,6 +295,8 @@ export type AnswerCheckResult = {
   brand: string | null;
   platform: string | null;
   reject_reason: string | null;
+  /** Language-independent class of `reject_reason`; absent on older payloads. */
+  reject_kind?: "blocked" | "no_products" | "unreachable" | null;
   steps: Step[];
   findings: Finding[];
   questions: string[];
@@ -337,4 +341,10 @@ export type AnswerCheckResult = {
   pdp_template_summary?: PdpTemplateSummary | null;
   site_inventory?: SiteInventory;
   catalog_inventory?: CatalogInventory;
+  /** ISO timestamp of the storefront read on this card. Absent on rows read
+   *  before the API stamped it. */
+  observed_at?: string | null;
+  /** ISO timestamp the assistants' answers were recorded; null until a paid
+   *  run completes. */
+  answered_at?: string | null;
 };

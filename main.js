@@ -1,4 +1,8 @@
-import { LOCALES, redirectTargetFor } from "./src/i18n/locale-rules.mjs";
+import {
+  LOCALES,
+  LOCALIZED_ROUTES,
+  redirectTargetFor,
+} from "./src/i18n/locale-rules.mjs";
 
 const ALLOWED_ORIGINS = new Set([
   "https://beseam.com",
@@ -98,19 +102,21 @@ async function readLead(request, url, forcedSource) {
       name: clean(body.name, 100),
       store: clean(body.store, 300),
       message: clean(body.message, 2000),
-      utm:
-        body.utm && typeof body.utm === "object"
-          ? Object.fromEntries(
-              Object.entries(body.utm)
-                .filter(
-                  ([key, value]) =>
-                    UTM_KEYS.has(key) && typeof value === "string",
-                )
-                .map(([key, value]) => [key, clean(value, 200)]),
-            )
-          : {},
+      utm: cleanUtm(body.utm),
     },
   };
+}
+
+function cleanUtm(raw) {
+  return raw && typeof raw === "object"
+    ? Object.fromEntries(
+        Object.entries(raw)
+          .filter(
+            ([key, value]) => UTM_KEYS.has(key) && typeof value === "string",
+          )
+          .map(([key, value]) => [key, clean(value, 200)]),
+      )
+    : {};
 }
 
 function trevraCaptureConfigured(env) {
@@ -399,7 +405,7 @@ const DEFAULT_API_BASE = "https://api.beseam.com/api";
 // local verification click lands on the local app instead of production.
 const DEFAULT_APP_BASE = "https://app.beseam.com";
 
-async function proxyAnswerCheck(request, url, env) {
+async function proxyAnswerCheck(request, url, env, ctx) {
   const apiBase = (env.API_BASE_URL || DEFAULT_API_BASE).replace(/\/$/, "");
 
   if (request.method === "GET") {
@@ -439,19 +445,44 @@ async function proxyAnswerCheck(request, url, env) {
     return json({ error: "Enter a valid work email." }, 422);
   }
 
-  return forwardJson(`${apiBase}/monitoring/public/answer-check`, {
-    method: "POST",
-    headers: { "content-type": "application/json" },
-    body: JSON.stringify({
-      domain,
-      email: email || null,
-      source: clean(payload?.source, 64) || "homepage_hero",
-      // Honeypot passes straight through: the backend decides what to do.
-      website: clean(payload?.website, 200) || null,
-      ...(payload?.retry === true ? { retry: true } : {}),
-      ...(LOCALES.includes(locale) ? { locale } : {}),
-    }),
-  });
+  const honeypot = clean(payload?.website, 200);
+  const upstream = await forwardJson(
+    `${apiBase}/monitoring/public/answer-check`,
+    {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        domain,
+        email: email || null,
+        source: clean(payload?.source, 64) || "homepage_hero",
+        // Honeypot passes straight through: the backend decides what to do.
+        website: honeypot || null,
+        ...(payload?.retry === true ? { retry: true } : {}),
+        ...(LOCALES.includes(locale) ? { locale } : {}),
+      }),
+    },
+  );
+
+  // A visitor who asked for the emailed link is the scan's lead. The scan API
+  // only keeps addresses to mail the result; the lead record is the GTM copy.
+  // Captured after the response so a CRM outage never fails a scan.
+  if (email && !honeypot && upstream.ok && ctx?.waitUntil) {
+    ctx.waitUntil(
+      submitScanLead(
+        {
+          source: "ai_visibility_scan",
+          email: email.toLowerCase(),
+          submissionId: "",
+          name: "",
+          store: domain,
+          message: "",
+          utm: cleanUtm(payload?.utm),
+        },
+        env,
+      ),
+    );
+  }
+  return upstream;
 }
 
 // Merchant CDNs serve product images with Cross-Origin-Resource-Policy, so the
@@ -559,7 +590,12 @@ async function verifyAnswerCheck(url, env) {
   const token = clean(url.searchParams.get("token"), 128);
   const reportId = clean(url.searchParams.get("report_id"), 32);
   const scan = new URL(url);
-  scan.pathname = "/scan";
+  // The API adds `locale=de` to links it mails to German-page visitors, so the
+  // click lands on the page in the language they asked in.
+  scan.pathname =
+    url.searchParams.get("locale") === "de"
+      ? LOCALIZED_ROUTES["/scan"]
+      : "/scan";
   scan.search = "";
 
   if (!token) {
@@ -572,8 +608,18 @@ async function verifyAnswerCheck(url, env) {
       `${apiBase}/monitoring/public/answer-check/verify?token=${encodeURIComponent(token)}`,
       { method: "POST" },
     );
+    if (!response.ok) {
+      // 404: the link is unknown, replaced or expired; only a new scan mints
+      // another. Anything else (scans paused, today's cap, a rate limit, an
+      // outage) is about us, not the link, and the same link works later.
+      scan.searchParams.set(
+        "scan_error",
+        response.status === 404 ? "link_used" : "unavailable",
+      );
+      return Response.redirect(scan.toString(), 302);
+    }
     const payload = await response.json();
-    if (!response.ok || !payload?.domain) {
+    if (!payload?.domain) {
       scan.searchParams.set("scan_error", "link_used");
       return Response.redirect(scan.toString(), 302);
     }
@@ -617,7 +663,6 @@ async function forwardJson(target, init) {
   }
 }
 
-
 function bytesToBase64(bytes) {
   let binary = "";
   for (const byte of bytes) binary += String.fromCharCode(byte);
@@ -638,7 +683,11 @@ function base64ToBytes(value) {
 
 async function webBotKeyId(publicKeyX) {
   // RFC 7638 JWK thumbprint: exact lexicographic member order, no whitespace.
-  const canonical = JSON.stringify({ crv: "Ed25519", kty: "OKP", x: publicKeyX });
+  const canonical = JSON.stringify({
+    crv: "Ed25519",
+    kty: "OKP",
+    x: publicKeyX,
+  });
   const digest = await crypto.subtle.digest(
     "SHA-256",
     new TextEncoder().encode(canonical),
@@ -668,7 +717,10 @@ async function webBotAuthDirectory(request, env) {
   if (!publicKeyX || !privateKey) {
     return new Response("Web Bot Auth identity is not configured.", {
       status: 503,
-      headers: { "cache-control": "no-store", "content-type": "text/plain; charset=utf-8" },
+      headers: {
+        "cache-control": "no-store",
+        "content-type": "text/plain; charset=utf-8",
+      },
     });
   }
 
@@ -678,8 +730,7 @@ async function webBotAuthDirectory(request, env) {
   const expires = created + 60;
   const nonceBytes = crypto.getRandomValues(new Uint8Array(32));
   const nonce = bytesToBase64(nonceBytes);
-  const signatureParams =
-    `("@authority";req);alg="ed25519";keyid="${keyId}";nonce="${nonce}";tag="http-message-signatures-directory";created=${created};expires=${expires}`;
+  const signatureParams = `("@authority";req);alg="ed25519";keyid="${keyId}";nonce="${nonce}";tag="http-message-signatures-directory";created=${created};expires=${expires}`;
   const signatureBase =
     `"@authority";req: ${url.host}\n` +
     `"@signature-params": ${signatureParams}`;
@@ -730,7 +781,7 @@ function localeRedirect(request, url) {
 }
 
 const worker = {
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
     const url = new URL(request.url);
 
     if (url.pathname === "/.well-known/http-message-signatures-directory") {
@@ -738,7 +789,7 @@ const worker = {
     }
 
     if (url.pathname === "/api/answer-check") {
-      return proxyAnswerCheck(request, url, env);
+      return proxyAnswerCheck(request, url, env, ctx);
     }
 
     if (

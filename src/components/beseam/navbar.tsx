@@ -11,7 +11,7 @@ import Logo from "@/components/beseam/logo";
 import LanguageSwitcher from "@/components/beseam/language-switcher";
 import TrackedLink from "@/components/beseam/tracked-link";
 import UntranslatedNotice from "@/components/beseam/untranslated-notice";
-import { useDictionary } from "@/i18n/use-locale";
+import { useDictionary, useLocale } from "@/i18n/use-locale";
 import { LOCALIZED_ROUTES, normalizePath } from "@/i18n/locale-rules.mjs";
 import { APP_LOGIN_URL } from "@/lib/app-urls";
 import { cn } from "@/lib/utils";
@@ -29,6 +29,7 @@ const NAV_LINKS = [
 
 export default function BeseamNavbar() {
   const t = useDictionary();
+  const locale = useLocale();
   const [scrolled, setScrolled] = useState(false);
   const [pastHero, setPastHero] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -46,7 +47,7 @@ export default function BeseamNavbar() {
     isScanPage,
     pastHero,
   });
-  const ctaHref = "/scan";
+  const ctaHref = locale === "de" ? LOCALIZED_ROUTES["/scan"] : "/scan";
   const ctaLabel = t.nav.cta;
 
   useEffect(() => {
