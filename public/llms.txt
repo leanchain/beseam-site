@@ -1,26 +1,49 @@
 # Beseam
 
-Beseam helps ecommerce stores find what to improve, apply approved changes, and measure what changed.
+> Beseam makes AI a revenue channel for webshops. It is the easiest way to get your products recommended by AI assistants like ChatGPT, Claude, Gemini, Google AI Mode, Perplexity and Copilot to millions of shoppers.
 
-## Public resources for AI shopping agents
+Beseam connects to a Shopify webshop in one click, tracks where the store's products appear in AI answers, and optimises product descriptions, content and technical performance so assistants recommend them. Improvements are ranked by expected revenue impact; the merchant approves them or lets Beseam apply trusted types of change automatically, and every change stays reversible.
 
-- https://beseam.com/AGENTS.md — canonical agent guide and data semantics
-- https://beseam.com/agents.md — lowercase compatibility alias
-- https://beseam.com/agents — machine-readable resources and usage notes
-- https://beseam.com/data — public AI shopping dataset overview
-- https://beseam.com/data/ai-shopping.json — AI shopping data in JSON
-- https://beseam.com/data/ai-shopping.csv — AI shopping data in CSV
-- https://beseam.com/benchmarks — AI Shopping Report and method
-- https://beseam.com/ai-visibility-monitoring — how Beseam observes AI shopping discovery
+## Product
+
+- https://beseam.com/product/ai-visibility-tracking — track when AI assistants recommend your products, who appears instead, and what it earns you
+- https://beseam.com/product/product-descriptions — product descriptions and product data that AI understands and recommends
+- https://beseam.com/product/content-creation — collection pages, comparisons, blogs and guides that put a webshop in AI answers
+- https://beseam.com/product/technical-performance — structured data, crawler access and page speed, so AI can read every page
+
+## Solutions
+
+- https://beseam.com/solutions/footwear — AI search optimisation for footwear webshops
+- https://beseam.com/solutions/fashion-apparel — for fashion and apparel webshops
+- https://beseam.com/solutions/beauty-cosmetics — for beauty and cosmetics webshops
+- https://beseam.com/solutions/consumer-electronics — for consumer electronics webshops
+- https://beseam.com/solutions/shopify — Beseam for Shopify stores
+
+## Guides for webshops
+
+- https://beseam.com/blog/get-products-recommended-by-chatgpt — how to get products recommended by ChatGPT and other AI assistants
+- https://beseam.com/blog/product-descriptions-for-ai-search — how to write product descriptions AI assistants recommend
+- https://beseam.com/blog/track-ai-traffic-ga4-shopify — how to track AI traffic and revenue in GA4 and Shopify
+
+## Research and comparisons
+
+- https://beseam.com/benchmarks — AI Shopping Report: the same shopper questions asked across AI assistants, with method
+- https://beseam.com/compare — Beseam compared with other AI visibility tools
+
+## Company
+
+- https://beseam.com/about — founder and advisors; Beseam is built in Zurich, Switzerland
+- https://beseam.com/contact — book an intro call or send a message
+
+## Languages
+
+Every page above also exists in German (https://beseam.com/de/...) and Dutch (https://beseam.com/nl/...).
+
+## Crawling and data
+
 - https://beseam.com/bot — BeseamBot crawler information
 - https://beseam.com/robots.txt — crawler policy
 - https://beseam.com/sitemap.xml — public site map
-
-## Data notes
-
-- Published AI shopping data contains observations of public brands only.
-- No private customer or merchant data is included.
-- AI answers are point-in-time observations and can change.
-- A brand appearance is not a ranking, endorsement, or guarantee.
+- Published AI shopping data contains observations of public brands only; no private customer or merchant data is included.
+- AI answers are point-in-time observations and can change. A brand appearance is not a ranking, endorsement, or guarantee.
 - Beseam does not claim to know an assistant's hidden ranking logic.
-- Beseam does not currently advertise a public MCP or A2A service. Use the files above rather than inferring an endpoint.

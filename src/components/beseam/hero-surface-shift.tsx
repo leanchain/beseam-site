@@ -42,7 +42,7 @@ const ACCENT = "#2e5da6";
 // Matches the app's --signal-ink token (brand orange, light-ground variant).
 // Reserved for the journey's *supporting* hubs/edges while a story plays --
 // evidence backing the claim, not the claim itself.
-const SECONDARY = "#b8441d";
+const SECONDARY = "#1d1c1a";
 const INK = "#111318";
 const PAPER = "#fafafa";
 const FOREGROUND_SPREAD = 1.3;
@@ -460,15 +460,15 @@ function localizedHubs(copy: HeroGraphCopy): readonly Hub[] {
       label: hubCopy.label,
       x: hub.x,
       y: hub.y,
-      satellites: hub.satellites.map((value, index): Satellite => [
-        satelliteLabels[index],
-        valueOverrides[`${hub.id}.${index}`] ?? value,
-      ]),
-      metrics: hub.metrics.map(([value, score], index): Metric => [
-        metricLabels[index],
-        value,
-        score,
-      ]),
+      satellites: hub.satellites.map(
+        (value, index): Satellite => [
+          satelliteLabels[index],
+          valueOverrides[`${hub.id}.${index}`] ?? value,
+        ],
+      ),
+      metrics: hub.metrics.map(
+        ([value, score], index): Metric => [metricLabels[index], value, score],
+      ),
     };
   });
 }
@@ -481,11 +481,13 @@ function localizedCapabilities(
       hub.id,
       indexedCopy<{ label: string; description: string }>(
         copy.hubs[hub.id].capabilities,
-      ).map((capability, index): Capability => [
-        capability.label,
-        CAPABILITY_VALUES[hub.id][index],
-        capability.description,
-      ]),
+      ).map(
+        (capability, index): Capability => [
+          capability.label,
+          CAPABILITY_VALUES[hub.id][index],
+          capability.description,
+        ],
+      ),
     ]),
   );
 }
@@ -789,6 +791,9 @@ export default function HeroSurfaceShift() {
   const activeTargetRef = useRef<string | null>(null);
   const [layoutName, setLayoutName] = useState<GraphLayoutName>("desktop");
   const [shortViewport, setShortViewport] = useState(false);
+  // How much the layout is squeezed vertically so the whole graph fits the
+  // hero box it is drawn in (1 = the layout's own proportions).
+  const [fitScale, setFitScale] = useState(1);
   const [activeHubId, setActiveHubId] = useState<string | null>(null);
   const [activeCapability, setActiveCapability] = useState<{
     hubId: string;
@@ -862,15 +867,33 @@ export default function HeroSurfaceShift() {
       frame = requestAnimationFrame(() => {
         const width = window.innerWidth;
         const height = window.innerHeight;
-        setLayoutName(resolveGraphLayout(width, height));
+        const name = resolveGraphLayout(width, height);
+        setLayoutName(name);
         setShortViewport(width >= 900 && height < 720);
+        // The hero is only as tall as its content, so fit the graph to the
+        // box it is actually drawn in rather than to the window: squeeze the
+        // layout vertically until its proportions match the box, and never
+        // stretch it taller than designed.
+        const box = rootRef.current?.getBoundingClientRect();
+        if (box && box.width > 0 && box.height > 0) {
+          const layout = GRAPH_LAYOUTS[name];
+          const scale =
+            (box.height / box.width) * (layout.width / layout.height);
+          setFitScale(Math.min(1, Math.max(0.6, scale)));
+        }
       });
     };
     updateLayout();
     window.addEventListener("resize", updateLayout, { passive: true });
+    const observer =
+      typeof ResizeObserver === "undefined"
+        ? null
+        : new ResizeObserver(updateLayout);
+    if (rootRef.current) observer?.observe(rootRef.current);
     return () => {
       cancelAnimationFrame(frame);
       window.removeEventListener("resize", updateLayout);
+      observer?.disconnect();
     };
   }, []);
 
@@ -908,7 +931,7 @@ export default function HeroSurfaceShift() {
           : layoutName === "tablet"
             ? 2.35
             : 2.6;
-  const verticalScale = shortViewport ? 0.82 : 1;
+  const verticalScale = fitScale;
   const graphHeight = Math.round(graphLayout.height * verticalScale);
   const heroExclusion = useMemo(
     () => heroExclusionRect(layoutName, graphLayout.width, graphHeight),

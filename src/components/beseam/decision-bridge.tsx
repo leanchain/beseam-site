@@ -135,7 +135,7 @@ export default function DecisionBridge({
             <div className="grid gap-8 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:items-end lg:gap-16">
               <div>
                 {eyebrow ? (
-                  <p className="font-mono text-[12px] font-semibold uppercase tracking-[0.14em] text-signal-ink">
+                  <p className="font-display text-[12px] font-semibold uppercase tracking-[0.08em] text-signal-ink">
                     {eyebrow}
                   </p>
                 ) : null}
@@ -156,7 +156,9 @@ export default function DecisionBridge({
               <ConnectedSystemMap
                 exploreHref={exploreHref}
                 exploreLabel={exploreLabel}
-                scrollProgress={stageHeight === null ? undefined : scrollProgress}
+                scrollProgress={
+                  stageHeight === null ? undefined : scrollProgress
+                }
               />
             </div>
           </Reveal>

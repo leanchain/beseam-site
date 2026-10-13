@@ -107,7 +107,7 @@ export default async function FieldbookDocumentPage({
         relatedProblems.length > 0 ||
         relatedResources.length > 0) && (
         <section className="mt-14 border-t border-black/18 pt-9">
-          <p className="font-mono text-[9px] font-semibold uppercase tracking-[0.12em] text-[var(--beseam-accent)]">
+          <p className="font-display text-[9px] font-semibold uppercase tracking-[0.08em] text-[var(--beseam-accent)]">
             Related pages
           </p>
           <h2 className="mt-4 font-serif text-[32px] tracking-[-0.035em] text-[var(--beseam-ink)]">
@@ -121,7 +121,7 @@ export default async function FieldbookDocumentPage({
                   href={related.href}
                   className="group bg-[var(--beseam-surface)] p-5 transition-colors hover:bg-[var(--beseam-panel)]"
                 >
-                  <p className="font-mono text-[8px] uppercase tracking-[0.09em] text-[var(--beseam-accent)]">
+                  <p className="font-display font-semibold text-[8px] uppercase tracking-[0.09em] text-[var(--beseam-accent)]">
                     {related.frontmatter.kind}
                   </p>
                   <h3 className="mt-3 text-[15px] font-semibold text-[var(--beseam-ink)]">
@@ -147,7 +147,7 @@ export default async function FieldbookDocumentPage({
                   className="group grid gap-3 border-b border-black/14 py-4 sm:grid-cols-[12rem_1fr_auto]"
                 >
                   <div>
-                    <p className="font-mono text-[8px] uppercase tracking-[0.08em] text-black/38">
+                    <p className="font-display font-semibold text-[8px] uppercase tracking-[0.08em] text-black/38">
                       {resource.kind}
                     </p>
                     <h3 className="mt-1.5 text-[13px] font-semibold text-[var(--beseam-ink)]">

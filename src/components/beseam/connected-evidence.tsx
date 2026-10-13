@@ -76,7 +76,7 @@ function mobileFindingsFor(t: Dictionary): readonly MobileFinding[] {
  */
 const QUERY_EDGE = "calc((100% - 1.5rem) / 4)";
 const BRANCH_EDGE = "calc((100% - 7rem) / 6)";
-const ACCENT = "#e8653a";
+const ACCENT = "#ffe14d";
 
 /**
  * The live path is drawn twice: a dimmed rail that holds the shape, and dashes
@@ -96,7 +96,7 @@ const ACCENT_RAIL = `color-mix(in srgb, ${ACCENT} 34%, transparent)`;
 
 function StepLabel({ children }: { children: ReactNode }) {
   return (
-    <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.1em] text-white/56">
+    <p className="font-display text-[11px] font-semibold uppercase tracking-[0.08em] text-white/56">
       {children}
     </p>
   );
@@ -231,7 +231,7 @@ function RuledOutBranch({
         className="flex w-full items-center gap-2.5 border border-dashed border-white/25 px-4 py-3 text-left transition-colors hover:border-white/45 focus-visible:border-white/60 focus-visible:outline-none"
       >
         <X aria-hidden="true" className="h-3.5 w-3.5 shrink-0 text-white/40" />
-        <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.1em] text-white/44">
+        <span className="font-display text-[11px] font-semibold uppercase tracking-[0.08em] text-white/44">
           {item.domain}
         </span>
         <span className="ml-auto text-[14px] leading-[1.4] text-white/60">
@@ -239,7 +239,7 @@ function RuledOutBranch({
         </span>
       </button>
       <div className="branch-detail absolute inset-x-0 top-full z-10 mt-2 border border-white/16 bg-ink-deep px-4 py-3.5">
-        <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.1em] text-white/44">
+        <p className="font-display text-[11px] font-semibold uppercase tracking-[0.08em] text-white/44">
           {ruledOutLabel}
         </p>
         <p className="mt-2 text-[13px] leading-[1.5] text-white/52 line-through decoration-white/28">
@@ -305,7 +305,7 @@ function MobileTrace({ t }: { t: Dictionary }) {
           </div>
           {issue ? (
             <div className="mt-3 border-l-2 border-signal bg-signal/[0.07] px-4 py-3.5">
-              <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.1em] text-signal">
+              <p className="font-display text-[11px] font-semibold uppercase tracking-[0.08em] text-signal">
                 {issue.domain}
               </p>
               <p className="mt-1.5 text-[16px] font-medium leading-[1.4] text-white">
@@ -366,7 +366,7 @@ export default function ConnectedEvidence({
         <SequenceReveal index={0}>
           <div className="mt-10 lg:border lg:border-white/16 lg:bg-white/[0.02]">
             <div className="flex flex-wrap items-center justify-between gap-3 border-y border-white/12 py-3 lg:border-t-0 lg:border-b lg:px-6">
-              <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.12em] text-signal">
+              <p className="font-display text-[11px] font-semibold uppercase tracking-[0.08em] text-signal">
                 {proof.traceLabel}
               </p>
               <p className="text-[12px] text-white/56">{proof.traceScope}</p>
@@ -425,13 +425,13 @@ export default function ConnectedEvidence({
                           style={{ "--seq-row": i + 3 } as CSSProperties}
                           className="relative flex flex-1 flex-col gap-3.5 border border-signal/70 bg-signal/[0.08] px-5 py-5"
                         >
-                          <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.1em] text-white/64">
+                          <p className="font-display text-[11px] font-semibold uppercase tracking-[0.08em] text-white/64">
                             {item.domain}
                           </p>
                           <p className="text-[17px] font-medium leading-[1.4] text-white">
                             {item.claim}
                           </p>
-                          <p className="self-start bg-signal px-2 py-1 font-mono text-[11px] font-semibold uppercase tracking-[0.1em] text-[#16110e]">
+                          <p className="self-start bg-signal px-2 py-1 font-display text-[11px] font-semibold uppercase tracking-[0.08em] text-[#16110e]">
                             {proof.strongestEvidence}
                           </p>
                           <p className="mt-auto pt-1 text-[13px] leading-[1.6] text-white/78">

@@ -17,7 +17,7 @@
  * brand, justified: it is the thread.
  */
 
-const SIGNAL = "#e8653a";
+const SIGNAL = "#ffe14d";
 
 const B_PATH =
   "M6 3h15.5L26 6.5v5.3l-2.8 2.6 4.6 2.6v8.3L23.2 29H6zM11 7.5h8.8l1.4 1.1v1.8l-1.4 1.1H11zm0 10.7h10.8l1.6 1.2v3.2l-1.6 1.2H11z";
@@ -83,7 +83,7 @@ export default function LogoConcepts() {
     <div className="mx-auto max-w-[64rem] px-5 py-12 sm:px-8 lg:px-10">
       <div className="grid gap-px border border-black/14 bg-black/14 lg:grid-cols-[1.4fr_1fr]">
         <article className="bg-white p-8">
-          <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.1em] text-signal-ink">
+          <p className="font-display text-[11px] font-semibold uppercase tracking-[0.08em] text-signal-ink">
             Hero · Seam-stitch B
           </p>
           <p className="mt-2 max-w-[52ch] text-[12.5px] leading-[1.55] text-black/58">
@@ -103,7 +103,7 @@ export default function LogoConcepts() {
           <div className="mt-6 flex items-center justify-between border-t border-black/10 pt-5">
             <span className="flex items-center gap-3">
               <SeamStitchB uid="h-s" className="h-4 w-4 text-[#16181d]" />
-              <span className="font-mono text-[9px] uppercase tracking-[0.08em] text-black/40">
+              <span className="font-display font-semibold text-[9px] uppercase tracking-[0.08em] text-black/40">
                 16px
               </span>
             </span>
@@ -114,13 +114,13 @@ export default function LogoConcepts() {
         </article>
 
         <article className="bg-white p-8">
-          <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.1em] text-black/50">
+          <p className="font-display text-[11px] font-semibold uppercase tracking-[0.08em] text-black/50">
             Alternate · Needle b
           </p>
           <p className="mt-2 text-[12.5px] leading-[1.55] text-black/58">
-            Lowercase b as needle and thread: the stem carries the eye, the
-            bowl is the loop. The one soft element in a sharp brand — it is
-            the thread.
+            Lowercase b as needle and thread: the stem carries the eye, the bowl
+            is the loop. The one soft element in a sharp brand — it is the
+            thread.
           </p>
 
           <div className="mt-6 flex flex-wrap items-end justify-between gap-6 border-t border-black/10 pt-6">
@@ -134,7 +134,7 @@ export default function LogoConcepts() {
           <div className="mt-6 flex items-center justify-between border-t border-black/10 pt-5">
             <span className="flex items-center gap-3">
               <NeedleB className="h-4 w-4" />
-              <span className="font-mono text-[9px] uppercase tracking-[0.08em] text-black/40">
+              <span className="font-display font-semibold text-[9px] uppercase tracking-[0.08em] text-black/40">
                 16px
               </span>
             </span>

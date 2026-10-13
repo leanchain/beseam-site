@@ -19,20 +19,53 @@ export const de: Dictionary = {
     mobileAriaLabel: "Mobile Navigation",
     openNavigation: "Navigation öffnen",
     closeNavigation: "Navigation schliessen",
-    links: {
-      platform: "Plattform",
-      howWeWork: "So arbeiten wir",
-      report: "KI-Shopping-Bericht",
+    // Primary menu. Groups open as dropdowns; `pricing` is a plain link.
+    menu: {
+      product: {
+        label: "Produkt",
+        items: {
+          tracking: "KI-Sichtbarkeit verfolgen",
+          descriptions: "Produktbeschreibungen",
+          content: "Content-Erstellung",
+          technical: "Technische Performance",
+        },
+      },
+      solutions: {
+        label: "Lösungen",
+        items: {
+          footwear: "Schuhe",
+          apparel: "Mode & Bekleidung",
+          beauty: "Beauty & Kosmetik",
+          electronics: "Unterhaltungselektronik",
+          shopify: "Beseam für Shopify",
+        },
+      },
+      resources: {
+        label: "Ressourcen",
+        items: {
+          blog: "Blog",
+          report: "KI-Shopping-Bericht",
+          compare: "Vergleiche",
+        },
+      },
+      company: {
+        label: "Unternehmen",
+        items: {
+          about: "Über uns",
+          contact: "Kontakt",
+        },
+      },
+      pricing: "Preise",
     },
     login: "Anmelden",
     register: "Registrieren",
-    cta: "Shop scannen",
+    cta: "Kostenlos starten",
   },
   switcher: {
     triggerAriaLabel: "Sprache wechseln",
     listboxAriaLabel: "Sprache",
-    short: { en: "EN", de: "DE" },
-    names: { en: "English", de: "Deutsch" },
+    short: { en: "EN", de: "DE", nl: "NL" },
+    names: { en: "English", de: "Deutsch", nl: "Nederlands" },
   },
   cookies: {
     ariaLabel: "Cookie-Auswahl",
@@ -48,88 +81,45 @@ export const de: Dictionary = {
   },
   footer: {
     homeAriaLabel: "Beseam Startseite",
-    tagline: {
-      before: "Produkte leichter",
-      highlight: "finden, wählen, kaufen",
-    },
-    description:
-      "Beseam findet, warum wichtige Produkte übersehen werden, hilft bei den wichtigsten Behebungen und verifiziert, was sich verändert hat.",
-    groups: {
-      product: {
-        label: "Produkt",
-        links: {
-          platform: "Plattform",
-          aiShoppingDiscovery: "KI-Shopping-Sichtbarkeit",
-          compare: "Vergleich",
-        },
-      },
-      aiShoppingAgents: {
-        label: "KI-Einkaufsagenten",
-        links: {
-          aiShoppingData: "KI-Shopping-Daten",
-          forShoppingAgents: "Für Einkaufsagenten",
-          report: "AI Shopping Report",
-        },
-      },
-      company: {
-        label: "Unternehmen",
-        links: {
-          howWeWork: "So arbeiten wir",
-          about: "Über uns",
-          manifesto: "Manifest",
-          contact: "Kontakt",
-        },
-      },
-      fieldbook: {
-        label: "Fieldbook",
-        links: {
-          fieldbook: "Fieldbook",
-        },
-      },
-    },
     copyright: (year: number) => `© ${year} Beseam. Alle Rechte vorbehalten.`,
     privacy: "Datenschutzerklärung",
     terms: "Nutzungsbedingungen",
     bot: "BeseamBot",
     askAi: "KI zu Beseam fragen",
-    madeWith: "Mit Liebe in der Schweiz gemacht",
+    madeWith: "Entwickelt in der Schweiz",
     swissFlagAriaLabel: "Schweizer Flagge",
   },
   meta: {
     home: {
-      title: "Beseam | Finden Sie heraus, warum Ihre Produkte übersehen werden",
+      title: "Beseam | Machen Sie KI zu einem Umsatzkanal",
       description:
-        "Beseam zeigt E-Commerce-Marken, wo wichtige Produkte in ChatGPT, Google AI Mode und im eigenen Shop übersehen werden, was zuerst zu beheben ist und was sich danach verändert hat.",
+        "Beseam ist der einfachste Weg, Ihre Produkte von KI an Millionen Shopper empfehlen zu lassen. Optimieren Sie Beschreibungen, Inhalte und Technik in Minuten.",
       imageAlt:
-        "Beseam findet, behebt und verifiziert Probleme bei der Produktentdeckung",
+        "Beseam: Machen Sie KI zu einem Umsatzkanal für Ihren Onlineshop",
       schemaSoftwareDescription:
-        "Beseam findet, warum wichtige E-Commerce-Produkte übersehen werden, bereitet freizugebende Behebungen vor und prüft die Belege nach Änderungen erneut.",
+        "Beseam sorgt dafür, dass KI-Assistenten wie ChatGPT, Claude und Gemini die Produkte von Onlineshops empfehlen. Es verfolgt die KI-Sichtbarkeit, optimiert Produktbeschreibungen, Inhalte und Technik und verknüpft die Ergebnisse mit KI-Traffic und Umsatz.",
       schemaFeatures: [
-        "Finden, wo wichtige Produkte übersehen werden",
-        "Probleme anhand beobachteter Belege priorisieren",
-        "Behebungen zur Freigabe vorbereiten",
-        "Dieselben Belege nach einer Änderung erneut prüfen",
+        "Verfolgen, wo Ihre Produkte in ChatGPT, Claude, Gemini und anderen KI-Assistenten erscheinen",
+        "Produktbeschreibungen und Produktdaten für die KI-Suche optimieren",
+        "Kategorieseiten, Vergleiche und Ratgeber erstellen, die KI-Assistenten zitieren",
+        "Technische Probleme beheben und KI-Sichtbarkeit mit Traffic und Umsatz verknüpfen",
       ],
       schemaFaqName: "Fragen zu Beseam",
     },
     scan: {
       title: "Kostenloser Shop-Scan | Beseam",
       description:
-        "Eine technische Auffindbarkeits-Analyse Ihres öffentlichen Shops: was Suchmaschinen und KI-Assistenten auf Ihren Produktseiten, in Ihren Katalogdaten und Ihren Website-Signalen sehen können – und was zuerst verbessert werden sollte. Keine Anmeldung, kein Shop-Zugriff nötig. Kein Keyword-Report.",
+        "Prüfen Sie kostenlos, ob ChatGPT und andere KI-Assistenten Ihre Produkte finden und empfehlen können, und was Sie zuerst verbessern sollten.",
     },
   },
 
   hero: {
-    headlineBefore: "Helfen Sie mehr Menschen, ",
-    headlineAccent: "Ihre Produkte zu wählen",
-    headlineAfter: ".",
-    sub: "Beseam verbindet, wie Kundinnen und Kunden Ihre Produkte entdecken, verstehen, vergleichen und kaufen. Es findet, wo Sie sie verlieren, zeigt, was am wichtigsten ist, hilft bei den richtigen Änderungen und verifiziert, was sich danach verändert hat.",
-    scanReturns: {
-      readable: "Wo Produkte übersehen werden",
-      standing: "Warum das passiert",
-      fixFirst: "Was zuerst zu beheben ist",
-    },
-    scanTrust: "Kein Login · Kein Shop-Zugriff erforderlich",
+    headlineBefore: "Machen Sie KI zu einem ",
+    headlineAccent: "Umsatzkanal",
+    headlineAfter: " für Ihren Onlineshop",
+    sub: "Beseam ist der einfachste Weg, Ihre Produkte von KI an Millionen von Shoppern empfehlen zu lassen. Optimieren Sie Produktbeschreibungen, Inhalte und technische Performance in wenigen Minuten.",
+    ctaStart: "Kostenlos starten",
+    ctaDemo: "Demo anfragen",
     scrollCue: "Scrollen",
   },
 
@@ -968,6 +958,157 @@ export const de: Dictionary = {
   },
 
   sections: {
+    fixes: {
+      heading:
+        "Optimieren Sie, was KI daran hindert, Ihre Produkte zu empfehlen",
+      items: {
+        descriptions: {
+          title: "Produktbeschreibungen",
+          body: "Optimieren Sie Beschreibungen und Produktdaten, damit KI-Assistenten verstehen, was jedes Produkt ist, für wen es gedacht ist und wann sie es empfehlen sollten.",
+        },
+        content: {
+          title: "Content-Erstellung",
+          body: "Erstellen und optimieren Sie die Kollektionsseiten, Vergleichsseiten, Blogs und Ratgeber, auf die KI-Assistenten zurückgreifen, wenn Kundinnen und Kunden fragen, was sie kaufen sollen.",
+        },
+        technical: {
+          title: "Technische Performance",
+          body: "Beheben Sie Probleme mit strukturierten Daten, Crawler-Zugriff und langsamen Seiten, damit KI-Assistenten jede Seite Ihres Shops lesen und ihr vertrauen können.",
+        },
+      },
+    },
+    quote: {
+      // DRAFT customer quote, written for a customer to approve or adapt. It
+      // only appears in local previews until \`approved\` is true and
+      // \`name\` and \`role\` hold the real customer's details.
+      text: "Ehrlich gesagt habe ich mit noch einem Tool gerechnet, um das ich mich ständig kümmern muss. Wir haben unseren Shopify-Shop mit einem Klick verbunden, und jetzt gebe ich bei meinem Morgenkaffee ein paar Vorschläge frei. Den Rest erledigt Beseam!",
+      name: "",
+      role: "",
+      approved: false,
+    },
+    platforms: {
+      eyebrow: "Werden Sie empfohlen in",
+    },
+    howItWorks: {
+      heading: "So funktioniert es",
+      stepLabel: (n: number) => `Schritt ${n}`,
+      steps: {
+        connect: {
+          title: "Verbinden Sie Ihren Shopify-Shop",
+          body: "Verbinden Sie Ihren Shop mit einem Klick. Beseam importiert Ihren Katalog, ohne Ihr Theme anzufassen.",
+          visual: {
+            label: "Shop-Verbindung",
+            action: "Shopify verbinden",
+            synced: {
+              products: "Produkte synchronisiert",
+              orders: "Bestelldaten synchronisiert",
+              pages: "Inhaltsseiten synchronisiert",
+            },
+            done: "Verbunden",
+          },
+        },
+        actions: {
+          title: "Erhalten Sie Massnahmen, priorisiert nach Umsatzwirkung",
+          body: "Beseam sagt Ihnen, was Sie zuerst verbessern sollten, sortiert nach dem Umsatz, den es bringen kann.",
+          visual: {
+            label: "Massnahmen für heute",
+            items: {
+              description: "Beschreibungen für 12 Bestseller überarbeiten",
+              data: "Fehlende Grössen und Materialien ergänzen",
+              speed: "4 langsame Produktseiten beschleunigen",
+            },
+            impact: { high: "Grosse Wirkung", medium: "Mittlere Wirkung" },
+          },
+        },
+        approve: {
+          title: "Massnahmen freigeben oder automatisieren",
+          body: "Prüfen Sie jede Änderung mit einem Klick, oder lassen Sie Beseam die Massnahmen, denen Sie vertrauen, automatisch umsetzen.",
+          visual: {
+            label: "Bereit für Sie",
+            items: {
+              description: "Beschreibungen für 12 Bestseller überarbeiten",
+              data: "Fehlende Grössen und Materialien ergänzen",
+            },
+            approve: "Freigeben",
+            approved: "Freigegeben",
+            automate: "Ähnliche Massnahmen automatisieren",
+          },
+        },
+        measure: {
+          title: "Verfolgen Sie die Wirkung laufend",
+          body: "Verfolgen Sie, wie Ihre KI-Sichtbarkeit, Ihr Traffic und Ihr Umsatz mit der Zeit wachsen.",
+          visual: { label: "Umsatz über KI", lift: "+23 % in 30 Tagen" },
+        },
+      },
+    },
+    categories: {
+      heading: "KI-Suchoptimierung für jede Produktart",
+      learnMore: "Mehr erfahren",
+      items: {
+        footwear: {
+          title: "Schuhe",
+          body: "Machen Sie Grössen, Passform und Materialien klar, damit KI-Assistenten Ihre Schuhe den Wünschen der Kundschaft zuordnen können.",
+        },
+        apparel: {
+          title: "Bekleidung & Mode",
+          body: "Machen Sie aus Farben, Schnitten und Styling-Details Produktdaten, die KI für den richtigen Anlass empfiehlt.",
+        },
+        beauty: {
+          title: "Beauty & Kosmetik",
+          body: "Heben Sie Inhaltsstoffe, Hauttypen und Vorteile hervor, damit Ihre Produkte erscheinen, wenn Kundinnen und Kunden fragen, was zu ihnen passt.",
+        },
+        electronics: {
+          title: "Unterhaltungselektronik",
+          body: "Halten Sie technische Daten, Kompatibilität und Preise korrekt, damit KI Ihre Produkte richtig mit der Konkurrenz vergleicht.",
+        },
+      },
+    },
+    features: {
+      webshops: {
+        title: "Speziell für Onlineshops entwickelt",
+        body: "Mit Hunderten oder Tausenden von Produkten ist es unrealistisch, jedes einzelne von Hand für die KI-Suche zu optimieren. Die meisten Tools für KI-Sichtbarkeit sind für Blogs und Markenseiten gebaut, nicht für Produktkataloge. Beseam liest Ihren gesamten Shop, Produkt für Produkt, und erledigt die Arbeit im Massstab Ihres Katalogs.",
+        visual: {
+          label: "Ihr Katalog",
+          stat: "1.240 Produkte synchronisiert",
+          status: "Verbunden",
+        },
+      },
+      presence: {
+        title: "KI-Sichtbarkeit und Umsatzwirkung im Detail verfolgen",
+        body: "Beseam überwacht die Antworten von ChatGPT, Claude, Gemini und anderen KI-Assistenten und erkennt, wann sie Ihre Marke und Ihre Produkte nennen. Diese Nennungen verknüpft Beseam mit dem KI-Traffic und dem Umsatz, den sie bringen, aufgeschlüsselt nach Thema, Prompt, Produkt und Landingpage.",
+        visual: {
+          label: "KI-Sichtbarkeit & Umsatz",
+          named: "Empfohlen",
+          missed: "Fehlt",
+          trend: "+3,2k € KI-Umsatz diesen Monat",
+        },
+      },
+      revenue: {
+        title: "Daten in Massnahmen verwandeln, priorisiert nach Umsatzwirkung",
+        body: "Beseam verbindet, was KI-Assistenten sagen, mit Ihren eigenen Verkaufsdaten und ordnet jede Verbesserung nach dem erwarteten Umsatz. So wissen Sie immer, was zuerst zu tun ist, und nichts geht in einer langen To-do-Liste unter.",
+        visual: {
+          label: "Priorisierte Massnahmen",
+          items: {
+            description: "12 Bestseller-Texte überarbeiten",
+            data: "Grössen & Materialien ergänzen",
+            speed: "4 Produktseiten beschleunigen",
+          },
+          sorted: "Nach Umsatz sortiert",
+        },
+      },
+      impact: {
+        title: "Mehr KI-Traffic mit wenigen Minuten pro Woche",
+        body: "Einen Onlineshop zu führen ist schon anspruchsvoll genug. Deshalb machen wir KI-Suchoptimierung so einfach wie möglich: Prüfen und genehmigen Sie die vorgeschlagenen Änderungen mit wenigen Klicks, oder lassen Sie Beseam die meisten davon automatisch umsetzen.",
+        visual: {
+          label: "Diese Woche",
+          rows: {
+            suggested: "Vorgeschlagene Massnahmen",
+            approved: "Von Ihnen freigegeben",
+            automated: "Automatisiert",
+          },
+          total: "4 Min. diese Woche",
+        },
+      },
+    },
     proof: {
       heading: "Sehen Sie, was der Entscheidung im Weg steht.",
       body: "Beseam sieht sich an, was die Kundschaft getan hat, prüft Produkt-, Such- und Bestandsdaten, schliesst schwächere Erklärungen aus und macht aus dem stärksten Befund eine konkrete Änderung.",
@@ -1196,12 +1337,7 @@ export const de: Dictionary = {
     },
 
     promise: {
-      headingLine1: "Mit einem kostenlosen Scan starten.",
-      headingLine2: "Mit demselben Shop weiterarbeiten.",
-      body: "Sehen Sie die ersten Belege, bevor Sie ein Konto erstellen. Wenn Beseam etwas findet, das sich zu beheben lohnt, verbinden Sie Shopify, lassen den Shop weiter prüfen, geben Änderungen frei und verifizieren danach, was sich verändert hat.",
-      cta: "Shop scannen",
-      humanFallback: "Möchten Sie lieber gemeinsam ein Produkt ansehen?",
-      humanFallbackCta: "Sprechen Sie mit uns",
+      heading: "Steigern Sie jetzt den KI-Umsatz Ihres Onlineshops",
     },
 
     stickyCta: {
@@ -1210,49 +1346,49 @@ export const de: Dictionary = {
   },
 
   faq: {
-    heading: "FAQ",
+    heading: "Häufig gestellte Fragen",
     items: {
-      scanVsBeseam: {
+      whatIs: {
+        question: "Was ist KI-Suchoptimierung?",
+        answer:
+          "KI-Suchoptimierung sorgt dafür, dass KI-Assistenten wie ChatGPT, Claude und Gemini Ihre Produkte leicht finden, verstehen und empfehlen können. Sie umfasst Ihre Produktbeschreibungen, Produktdaten und die technische Einrichtung, damit Assistenten Ihre Produkte den Fragen der Kundschaft zuordnen können.",
+      },
+      whyItMatters: {
+        question: "Warum ist KI-Suche für Onlineshops wichtig?",
+        answer:
+          "Immer mehr Menschen fragen KI-Assistenten, was sie kaufen sollen, statt sich durch Suchergebnisse zu klicken, und ein Assistent empfiehlt nur eine Handvoll Produkte. Sind Ihre Produkte nicht dabei, erreicht die Kundschaft Ihren Onlineshop nie. Beseam hilft, dass Ihre Produkte zu diesen Empfehlungen gehören.",
+      },
+      getRecommended: {
         question:
-          "Was ist der Unterschied zwischen dem kostenlosen Scan und Beseam?",
+          "Wie werden meine Produkte von ChatGPT und anderen KI-Assistenten empfohlen?",
         answer:
-          "Der kostenlose Scan ist eine einmalige Prüfung Ihres öffentlichen Shops. Beseam arbeitet danach weiter: Es verbindet die relevanten Signale, findet, was Aufmerksamkeit verdient, bereitet Änderungen vor, setzt unterstützte Änderungen nach Freigabe um und prüft anschliessend, was passiert ist.",
+          "Beseam prüft, wie ChatGPT, Claude, Gemini, Google AI Mode, Perplexity und Copilot die Fragen Ihrer Kundschaft beantworten, und findet heraus, warum Ihre Produkte fehlen. Anschliessend schlägt Beseam konkrete Verbesserungen für Produktbeschreibungen, Inhalte und technische Einrichtung vor, sortiert nach der erwarteten Umsatzwirkung.",
       },
-      watch: {
-        question: "Was beobachtet Beseam eigentlich?",
-        answer:
-          "Je nach Anbindung kann Beseam KI- und Suchsichtbarkeit, Katalog- und Shopdaten, Kundenverhalten, Passform, Experimente, Zuverlässigkeit, Kampagnen, Conversion, Bestellungen und Umsatz nutzen. Sie brauchen nicht jede Quelle; Beseam nutzt die Belege, die für das untersuchte Problem relevant sind.",
-      },
-      priority: {
-        question: "Wie entscheidet Beseam, was zuerst Aufmerksamkeit verdient?",
-        answer:
-          "Beseam bringt die Belege zu einem Problem an einen Ort, trennt beobachtete Fakten von möglichen Erklärungen und berücksichtigt unter anderem Belegstärke, betroffene Produkte oder Kaufreisen, Geschäftskontext, Aufwand und Risiko. Die Begründung für die Priorität bleibt mit der Arbeit verbunden.",
-      },
-      changes: {
-        question: "Was kann Beseam tatsächlich ändern?",
-        answer:
-          "Wo das angebundene System es unterstützt, kann Beseam Änderungen an Produktdaten, Inhalten, Merchandising, Shop-Suche, Empfehlungen und Personalisierung, Passform- und Grössenerlebnissen, Experimenten, kreativen Assets, Kampagnen und anderen bearbeitbaren Teilen der Kaufreise vorbereiten oder umsetzen. Kundenseitige Änderungen folgen Ihren Freigaberegeln.",
-      },
-      alongside: {
+      different: {
         question:
-          "Ersetzt Beseam meine Analyse-, Personalisierungs- oder Monitoring-Tools?",
+          "Was unterscheidet Beseam von anderen Tools für KI-Sichtbarkeit?",
         answer:
-          "Nicht unbedingt. Bestehende Tools können spezialisierte Belegquellen bleiben. Beseam verbindet relevante Signale rund um dasselbe Produkt, dieselbe Kundenfrage, Kaufreise oder dasselbe Geschäftsproblem, macht aus den stärksten Befunden konkrete Arbeit und hält das Ergebnis damit verbunden. Welche Integrationen verfügbar sind, hängt von Ihrem Setup ab.",
+          "Beseam ist speziell für Onlineshops mit Hunderten oder Tausenden von Produkten gebaut. Die meisten Tools für KI-Sichtbarkeit erfassen Markennennungen für Blogs und Unternehmensseiten; Beseam arbeitet Produkt für Produkt, verknüpft KI-Sichtbarkeit mit Traffic und Umsatz und macht daraus Massnahmen, die Sie freigeben oder automatisieren können.",
+      },
+      platforms: {
+        question: "Mit welchen Shop-Plattformen funktioniert Beseam?",
+        answer:
+          "Beseam funktioniert derzeit mit Shopify-Shops. Sie verbinden Ihren Shop mit einem Klick, und Beseam importiert Ihren Katalog, ohne Ihren Theme-Code anzufassen.",
+      },
+      time: {
+        question: "Wie viel Zeit kostet Beseam pro Woche?",
+        answer:
+          "Beseam ist darauf ausgelegt, nur wenige Minuten pro Woche zu brauchen. Sie prüfen und genehmigen die vorgeschlagenen Änderungen mit wenigen Klicks, oder lassen Beseam die Arten von Änderungen, denen Sie vertrauen, automatisch umsetzen.",
       },
       approval: {
-        question: "Was braucht eine Freigabe, bevor es live geht?",
+        question: "Ändert Beseam meinen Shop ohne meine Freigabe?",
         answer:
-          "Sie legen die Regeln fest. Beseam kann weiter prüfen, Belege sammeln und Arbeit vorbereiten, ohne auf Sie zu warten. Kundenseitige Änderungen, die eine Freigabe erfordern, gehen jedoch erst danach live. Änderungen, die Markenurteil brauchen, bleiben zur Prüfung liegen.",
+          "Nein. Jede Änderung, die Ihre Kundschaft sieht, wartet auf Ihre Freigabe, es sei denn, Sie automatisieren diese Art von Änderung. Alle Änderungen bleiben umkehrbar, sodass Sie alles rückgängig machen können, was Beseam umgesetzt hat.",
       },
-      measurement: {
-        question: "Wie erkennt Beseam, ob eine Änderung funktioniert hat?",
+      pricing: {
+        question: "Was kostet Beseam?",
         answer:
-          "Beseam prüft das Signal erneut, das das Problem sichtbar gemacht hat. Das kann dieselbe KI-Kauffrage, eine Shop- oder Zuverlässigkeitsprüfung, Kundenverhalten, ein Experiment, Kampagnenleistung, Conversion, Bestellungen oder Umsatz sein. Der Vorher-Nachher-Vergleich bleibt bei der Änderung, und beobachtete Bewegung bleibt getrennt von Kausalität, die die Daten nicht belegen können.",
-      },
-      connect: {
-        question: "Was muss ich verbinden, um zu starten?",
-        answer:
-          "Beginnen Sie mit Ihrer Domain. Für die laufende Arbeit verbinden Sie zuerst den Shop und ergänzen Analyse-, Verhaltens-, Such-, Kampagnen-, Kunden- oder Umsatzdaten nur dann, wenn sie helfen, ein Problem zu erklären, eine freigegebene Änderung umzusetzen oder das Ergebnis zu messen.",
+          "Sie können Beseam kostenlos starten und die ersten Ergebnisse für Ihren Onlineshop sehen, bevor Sie einen Plan wählen.",
       },
     },
   },

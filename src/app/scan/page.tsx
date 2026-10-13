@@ -11,7 +11,12 @@ export const metadata: Metadata = buildPublicMetadata({
   title: t.meta.scan.title,
   description: t.meta.scan.description,
   path: "/scan",
-  languages: { en: "/scan", de: "/de/scan", "x-default": "/scan" },
+  languages: {
+    en: "/scan",
+    de: "/de/scan",
+    nl: "/nl/scan",
+    "x-default": "/scan",
+  },
 });
 
 export default function ScanPage() {

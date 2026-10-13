@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import worker from "./main.js";
+import { readFileSync } from "node:fs";
+
+import worker, { MOVED_PAGES } from "./main.js";
 
 const TREVRA_ENV = {
   TREVRA_CAPTURE_API_BASE_URL: "https://trevra.example",
@@ -411,7 +413,7 @@ test("crawlers, overrides, non-navigations and other routes are served the asset
     }),
     navigation("/?lang=en", { country: "DE" }),
     navigation("/", { country: "DE", method: "POST" }),
-    navigation("/platform", { country: "DE" }),
+    navigation("/pricing", { country: "DE" }),
     navigation("/de", { country: "DE" }),
     navigation("/", { country: "US" }),
   ]) {
@@ -449,11 +451,10 @@ test("a rate-limited scan keeps its status and its Retry-After", async () => {
 });
 
 test("serves a signed Web Bot Auth key directory", async () => {
-  const pair = await crypto.subtle.generateKey(
-    { name: "Ed25519" },
-    true,
-    ["sign", "verify"],
-  );
+  const pair = await crypto.subtle.generateKey({ name: "Ed25519" }, true, [
+    "sign",
+    "verify",
+  ]);
   const pkcs8 = Buffer.from(
     await crypto.subtle.exportKey("pkcs8", pair.privateKey),
   ).toString("base64");
@@ -462,7 +463,9 @@ test("serves a signed Web Bot Auth key directory", async () => {
   ).toString("base64url");
 
   const response = await worker.fetch(
-    new Request("https://beseam.com/.well-known/http-message-signatures-directory"),
+    new Request(
+      "https://beseam.com/.well-known/http-message-signatures-directory",
+    ),
     {
       WEB_BOT_AUTH_PRIVATE_KEY_PKCS8_B64: pkcs8,
       WEB_BOT_AUTH_PUBLIC_KEY_X: publicKeyX,
@@ -474,9 +477,113 @@ test("serves a signed Web Bot Auth key directory", async () => {
     response.headers.get("content-type"),
     "application/http-message-signatures-directory+json",
   );
-  assert.match(response.headers.get("signature-input") || "", /tag="http-message-signatures-directory"/);
-  assert.match(response.headers.get("signature") || "", /^sig1=:[A-Za-z0-9+/=]+:$/);
+  assert.match(
+    response.headers.get("signature-input") || "",
+    /tag="http-message-signatures-directory"/,
+  );
+  assert.match(
+    response.headers.get("signature") || "",
+    /^sig1=:[A-Za-z0-9+/=]+:$/,
+  );
   assert.deepEqual(await response.json(), {
     keys: [{ kty: "OKP", crv: "Ed25519", x: publicKeyX }],
   });
+});
+
+test("the removed /how-we-work page redirects permanently to /about", async () => {
+  for (const path of ["/how-we-work", "/how-we-work/"]) {
+    const response = await worker.fetch(
+      new Request(`https://beseam.com${path}`),
+      {},
+    );
+    assert.equal(response.status, 301);
+    assert.equal(response.headers.get("location"), "https://beseam.com/about");
+  }
+});
+
+test("removed pages redirect permanently to their replacements", async () => {
+  const moves = {
+    "/manifesto": "/about",
+    "/platform": "/",
+    "/ai-visibility-monitoring": "/product/ai-visibility-tracking",
+    "/agents": "/AGENTS.md",
+    "/data": "/benchmarks",
+    "/data/ai-shopping.json": "/benchmarks",
+  };
+  for (const [from, to] of Object.entries(moves)) {
+    const response = await worker.fetch(
+      new Request(`https://beseam.com${from}`),
+      {},
+    );
+    assert.equal(response.status, 301);
+    assert.equal(response.headers.get("location"), `https://beseam.com${to}`);
+  }
+});
+
+test("contact form messages are emailed to contact@ and copied to guido@", async () => {
+  const sent = [];
+  const env = {
+    REVIEW_EMAIL: {
+      send: async (message) => {
+        sent.push(message);
+      },
+    },
+  };
+  const response = await worker.fetch(
+    leadRequest({
+      source: "contact",
+      name: "Test Person",
+      email: "test@example.com",
+      message: "Hello there",
+    }),
+    env,
+  );
+  assert.equal(response.status, 202);
+  assert.deepEqual(
+    sent.map((message) => message.to),
+    ["contact@beseam.com", "guido@beseam.com"],
+  );
+  assert.equal(sent[1].replyTo, "test@example.com");
+  assert.match(sent[1].text, /Hello there/);
+});
+
+test("a failed copy to guido@ does not fail the contact form", async () => {
+  const env = {
+    REVIEW_EMAIL: {
+      send: async (message) => {
+        if (message.to === "guido@beseam.com") throw new Error("not verified");
+      },
+    },
+  };
+  const response = await worker.fetch(
+    leadRequest({
+      source: "contact",
+      name: "Test Person",
+      email: "test@example.com",
+      message: "Hello there",
+    }),
+    env,
+  );
+  assert.equal(response.status, 202);
+});
+
+test("every redirected path runs through the Worker on Cloudflare", () => {
+  // Without a run_worker_first entry, Cloudflare answers a removed page with
+  // its 404 page and the redirect in MOVED_PAGES never runs.
+  const config = readFileSync(
+    new URL("./wrangler.jsonc", import.meta.url),
+    "utf8",
+  )
+    .split("\n")
+    .filter((line) => !line.trim().startsWith("//"))
+    .join("\n");
+  const match = /"run_worker_first":\s*(\[[^\]]*\])/.exec(config);
+  assert.ok(match, "run_worker_first not found in wrangler.jsonc");
+  const workerFirst = JSON.parse(match[1]);
+  for (const path of Object.keys(MOVED_PAGES)) {
+    assert.ok(
+      workerFirst.includes(path),
+      `${path} missing from run_worker_first`,
+    );
+  }
 });

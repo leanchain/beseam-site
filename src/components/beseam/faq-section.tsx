@@ -11,5 +11,9 @@ export default function FaqSection({ locale }: { locale: Locale }) {
   const t = getDictionary(locale);
   const items = Object.values(t.faq.items);
 
-  return <FaqGrid id="faq" heading={t.faq.heading} items={items} />;
+  // The heading already says "FAQ", so the small label above it would only
+  // repeat it.
+  return (
+    <FaqGrid id="faq" heading={t.faq.heading} items={items} eyebrow={null} />
+  );
 }

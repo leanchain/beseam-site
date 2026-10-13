@@ -3,97 +3,84 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
 import { BookReviewCta } from "@/components/beseam/book-review-cta";
+import Halftone from "@/components/beseam/halftone";
 import { Reveal } from "@/components/beseam/reveal";
 
+/** Where a lost visitor most likely wanted to go. */
 const DESTINATIONS = [
   [
-    "See how Beseam works",
-    "See how Beseam finds a problem, prepares a change, gets approval, and checks the result.",
-    "/#decision-story",
+    "Homepage",
+    "See how Beseam makes AI a revenue channel for your webshop.",
+    "/",
   ],
   [
-    "Run the free AI discovery scan",
-    "Ask real shopper questions, see which products get named, and see why the result may look that way.",
-    "/scan",
+    "AI visibility tracking",
+    "See when ChatGPT and other AI assistants recommend your products.",
+    "/product/ai-visibility-tracking",
   ],
+  ["Contact", "Book a 20-minute intro call, or send us a message.", "/contact"],
   [
-    "AI shopping discovery",
-    "See the shopping question, the AI answer, the competitors, and what you can change on the store.",
-    "/ai-visibility-monitoring",
-  ],
-  [
-    "The manifesto",
-    "Why Beseam keeps what happened, what changed, and the result together.",
-    "/manifesto",
+    "Blog",
+    "Practical guides on getting your products recommended by AI.",
+    "/blog",
   ],
 ] as const;
 
 export default function NotFound() {
   return (
-    <div className="flex min-h-[calc(100vh-4.5rem)] flex-col bg-ground text-[#151515]">
-      <section className="border-b border-black/18">
-        <div className="mx-auto max-w-[92rem] px-5 py-20 sm:px-8 sm:py-24 lg:px-10 lg:py-28">
-          <Reveal className="grid gap-12 lg:grid-cols-[minmax(0,0.72fr)_minmax(0,1.28fr)] lg:items-end lg:gap-20">
-            <div>
-              <p className="font-mono text-[12px] font-semibold uppercase tracking-[0.14em] text-signal-ink">
-                Error 404
-              </p>
-              <h1 className="mt-7 max-w-[18ch] font-serif text-[clamp(2.6rem,5.4vw,4.5rem)] font-normal leading-[1] tracking-[-0.02em] text-ink-deep">
-                This page is not here.
-              </h1>
-            </div>
-            <div className="max-w-2xl self-end">
-              <p className="text-[19px] leading-[1.65] text-black/68">
-                The address may have changed, or the page may never have
-                existed. Nothing is broken on your side.
-              </p>
-              <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center">
-                <BookReviewCta
-                  location="not_found"
-                  label="Book a 20-minute commerce review"
-                  className="w-full sm:w-auto"
-                />
-                <Link
-                  href="/"
-                  className="inline-flex min-h-11 items-center justify-center gap-2 text-[14px] font-semibold text-[#151515] underline decoration-black/25 underline-offset-7 hover:decoration-signal-ink sm:justify-start"
-                >
-                  Back to the homepage{" "}
-                  <ArrowRight className="h-4 w-4" aria-hidden="true" />
-                </Link>
-              </div>
+    <div className="bg-ground text-[#151515]">
+      <section className="relative isolate overflow-hidden bg-[#fff9e8]">
+        <Halftone corner="top-right" size={220} className="hidden xl:block" />
+        <div className="relative z-10 mx-auto max-w-[56rem] px-5 py-16 text-center sm:px-8 sm:py-20 lg:px-10 lg:py-24">
+          <Reveal>
+            <p className="mx-auto inline-flex rounded-button bg-signal px-2.5 py-1 text-[13px] font-semibold text-ink-deep">
+              Error 404
+            </p>
+            <h1 className="mx-auto mt-6 max-w-[18ch] text-balance font-display text-[clamp(2.6rem,5vw,4.25rem)] font-semibold leading-[1.02] tracking-[-0.035em] text-ink-deep">
+              This page is not here.
+            </h1>
+            <p className="mx-auto mt-6 max-w-[52ch] text-[17px] leading-[1.7] text-black/72 sm:text-[18px]">
+              The address may have changed, or the page may never have existed.
+              Nothing is broken on your side.
+            </p>
+            <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
+              <Link
+                href="/"
+                className="group inline-flex min-h-12 w-full items-center justify-center gap-3 rounded-button bg-signal-ink px-7 py-3 text-[15px] font-semibold text-white sm:w-auto"
+              >
+                Back to the homepage
+                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+              </Link>
+              <BookReviewCta
+                label="Request a demo"
+                location="not_found"
+                className="w-full border border-black/15 bg-white text-ink-deep transition-colors hover:border-black/40 sm:w-auto"
+              />
             </div>
           </Reveal>
         </div>
       </section>
 
-      <section className="flex-1 bg-ground-2">
-        <div className="mx-auto max-w-[92rem] px-5 py-16 sm:px-8 sm:py-20 lg:px-10">
-          <h2 className="max-w-[18ch] font-serif text-[28px] font-normal leading-[1.06] tracking-[-0.02em] text-ink-deep">
-            Try one of these
-          </h2>
-          <div className="mt-8 border-t border-black/22">
-            {DESTINATIONS.map(([title, detail, href], index) => (
-              <Link
-                key={href}
-                href={href}
-                className="group grid gap-3 border-b border-black/18 py-6 sm:grid-cols-[3rem_18rem_minmax(0,1fr)_auto] sm:items-baseline sm:gap-6"
-              >
-                <span className="font-mono text-[12px] text-black/62">
-                  0{index + 1}
-                </span>
-                <span className="text-[16px] font-semibold text-black/82">
-                  {title}
-                </span>
-                <span className="text-[14px] leading-relaxed text-black/62">
-                  {detail}
-                </span>
-                <ArrowRight
-                  aria-hidden="true"
-                  className="h-4 w-4 text-signal-ink transition-transform group-hover:translate-x-0.5"
-                />
-              </Link>
+      <section className="bg-ground">
+        <div className="mx-auto max-w-[76rem] px-5 py-12 sm:px-8 sm:py-14 lg:px-10 lg:py-16">
+          <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {DESTINATIONS.map(([title, body, href]) => (
+              <li key={href}>
+                <Link
+                  href={href}
+                  className="group flex h-full flex-col rounded-media border border-black/10 bg-white p-6 transition-colors hover:border-black/30"
+                >
+                  <h2 className="text-[18px] font-semibold tracking-[-0.01em] text-ink-deep">
+                    {title}
+                  </h2>
+                  <p className="mt-2 flex-1 text-[15px] leading-[1.6] text-black/64">
+                    {body}
+                  </p>
+                  <ArrowRight className="mt-4 h-4 w-4 text-ink-deep transition-transform group-hover:translate-x-0.5" />
+                </Link>
+              </li>
             ))}
-          </div>
+          </ul>
         </div>
       </section>
     </div>

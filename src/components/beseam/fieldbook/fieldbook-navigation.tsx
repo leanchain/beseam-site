@@ -39,7 +39,7 @@ export function FieldbookToolbar({
           <button
             type="button"
             onClick={() => setMobileOpen(true)}
-            className="inline-flex h-10 items-center gap-2 border border-black/18 px-3 text-[12px] font-semibold text-[var(--beseam-ink)] lg:hidden"
+            className="rounded-button inline-flex h-10 items-center gap-2 border border-black/18 px-3 text-[12px] font-semibold text-[var(--beseam-ink)] lg:hidden"
             aria-label="Browse Fieldbook navigation"
           >
             <Menu className="h-4 w-4" />
@@ -66,7 +66,7 @@ export function FieldbookToolbar({
               <button
                 type="button"
                 onClick={() => setMobileOpen(false)}
-                className="inline-flex h-10 w-10 items-center justify-center border border-black/16"
+                className="rounded-button inline-flex h-10 w-10 items-center justify-center border border-black/16"
                 aria-label="Close Fieldbook navigation"
               >
                 <X className="h-4 w-4" />
@@ -119,7 +119,7 @@ function FieldbookNavGroups({
     <div className="space-y-7">
       {groups.map((group) => (
         <section key={group.title}>
-          <h2 className="font-mono text-[9px] font-semibold uppercase tracking-[0.12em] text-black/38">
+          <h2 className="font-display text-[9px] font-semibold uppercase tracking-[0.08em] text-black/38">
             {group.title}
           </h2>
           <ul className="mt-2 space-y-0.5">
@@ -139,7 +139,7 @@ function FieldbookNavGroups({
                   >
                     <span>{item.title}</span>
                     {item.badge ? (
-                      <span className="font-mono text-[8px] uppercase tracking-[0.06em] text-black/34">
+                      <span className="font-display font-semibold text-[8px] uppercase tracking-[0.06em] text-black/34">
                         {item.badge}
                       </span>
                     ) : active ? (

@@ -1,14 +1,18 @@
 import { ArrowRight } from "lucide-react";
 
+import { BookReviewCta } from "@/components/beseam/book-review-cta";
+import Halftone from "@/components/beseam/halftone";
 import { Reveal } from "@/components/beseam/reveal";
 import TrackedLink from "@/components/beseam/tracked-link";
 import { getDictionary } from "@/i18n";
 import type { Locale } from "@/i18n/locale-rules.mjs";
+import { APP_REGISTER_URL } from "@/lib/app-urls";
 
 /**
- * The launch-home closer repeats the same first action as the hero instead of
- * opening a second acquisition path. Registration belongs after a useful scan:
- * the result page already carries the scanned domain into the app signup flow.
+ * The closing call to action: one title on the brand's dark pigment band (not
+ * the near-black of the impact section above it) and the same two
+ * actions as the hero, so a visitor who scrolled the whole page ends where
+ * they started.
  */
 export default function FirstMonthPromise({
   showManifestoLink = true,
@@ -19,51 +23,57 @@ export default function FirstMonthPromise({
 }) {
   void showManifestoLink;
   const t = getDictionary(locale);
-  const promise = t.sections.promise;
-  const scanHref = locale === "de" ? "/de/scan" : "/scan";
 
   return (
     <section
       id="promise"
-      className="scroll-mt-24 border-t border-black/10 bg-ground"
+      className="relative isolate scroll-mt-24 overflow-hidden bg-pigment"
     >
-      <div className="mx-auto max-w-[92rem] px-5 py-16 sm:px-8 sm:py-24 lg:px-10 lg:py-28">
+      <Halftone
+        corner="top-left"
+        size={220}
+        colors={["#ffe14d", "#ff8fb3"]}
+        opacity={0.7}
+        className="hidden lg:block"
+      />
+      {/* Below desktop width the stacked buttons reach the corners, so the
+          sets are smaller or left out there. */}
+      <Halftone
+        corner="bottom-right"
+        size={380}
+        colors={["#ffe14d", "#ff8fb3"]}
+        opacity={0.7}
+        className="hidden lg:block"
+      />
+      <Halftone
+        corner="bottom-right"
+        size={110}
+        colors={["#ffe14d", "#ff8fb3"]}
+        opacity={0.7}
+        className="lg:hidden"
+      />
+      <div className="relative mx-auto max-w-[76rem] px-5 py-16 text-center sm:px-8 sm:py-20 lg:px-10 lg:py-24">
         <Reveal>
-          <div className="grid gap-8 lg:grid-cols-[minmax(0,0.72fr)_minmax(0,1.28fr)] lg:items-end lg:gap-16">
-            <div>
-              <h2 className="max-w-[20ch] text-balance font-display text-[clamp(2.2rem,3.3vw,3.4rem)] font-normal leading-[1.04] tracking-[-0.02em] text-ink-deep">
-                <span className="block">{promise.headingLine1}</span>
-                <span className="block">{promise.headingLine2}</span>
-              </h2>
-            </div>
-            <div>
-              <p className="max-w-[52ch] text-[17px] leading-[1.72] text-black/64">
-                {promise.body}
-              </p>
-              <TrackedLink
-                href={scanHref}
-                eventName="marketing_primary_cta_clicked"
-                eventCategory="conversion"
-                placement="first_month_promise"
-                preserveUtm
-                className="group mt-8 inline-flex min-h-12 items-center justify-center gap-2 bg-signal-ink px-7 text-[15px] font-semibold text-white transition-colors hover:bg-pigment"
-              >
-                {promise.cta}
-                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-              </TrackedLink>
-              <p className="mt-5 text-[14px] leading-6 text-black/56">
-                {promise.humanFallback}{" "}
-                <TrackedLink
-                  href="/contact"
-                  eventName="marketing_human_fallback_clicked"
-                  eventCategory="conversion"
-                  placement="first_month_promise"
-                  className="font-semibold text-ink-deep underline decoration-black/20 underline-offset-4 hover:decoration-signal-ink"
-                >
-                  {promise.humanFallbackCta} →
-                </TrackedLink>
-              </p>
-            </div>
+          <h2 className="mx-auto max-w-[20ch] text-balance font-display text-[clamp(2.25rem,3.6vw,3.5rem)] font-semibold leading-[1.05] tracking-[-0.035em] text-white">
+            {t.sections.promise.heading}
+          </h2>
+          <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
+            <TrackedLink
+              href={APP_REGISTER_URL}
+              eventName="marketing_primary_cta_clicked"
+              eventCategory="conversion"
+              placement="first_month_promise"
+              preserveUtm
+              className="group inline-flex min-h-12 w-full items-center justify-center gap-3 rounded-button bg-signal px-7 py-3 text-[15px] font-semibold leading-tight text-ink-deep transition-colors hover:bg-white focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-pigment sm:w-auto"
+            >
+              {t.hero.ctaStart}
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+            </TrackedLink>
+            <BookReviewCta
+              label={t.hero.ctaDemo}
+              location="first_month_promise"
+              className="w-full bg-white text-ink-deep transition-colors hover:bg-white/88 focus-visible:ring-white focus-visible:ring-offset-pigment sm:w-auto"
+            />
           </div>
         </Reveal>
       </div>

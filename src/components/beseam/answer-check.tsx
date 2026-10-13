@@ -11,9 +11,6 @@ import {
 
 import { useRouter } from "next/navigation";
 
-import type { Dictionary, Locale } from "@/i18n";
-import { useDictionary, useLocale } from "@/i18n/use-locale";
-
 import {
   ArrowRight,
   Check,
@@ -27,6 +24,13 @@ import {
   X,
 } from "lucide-react";
 
+import {
+  deriveDeepAuditCardState,
+  derivePdpLayoutCoverage,
+  deriveSampledAuditGroups,
+  deriveTemplatePatterns,
+  isCatalogFinding,
+} from "@/components/beseam/answer-check-state";
 import type {
   Answer,
   AnswerCheckResult,
@@ -36,17 +40,12 @@ import type {
   Step,
 } from "@/components/beseam/answer-check-types";
 import { BookReviewCta } from "@/components/beseam/book-review-cta";
-import {
-  deriveDeepAuditCardState,
-  derivePdpLayoutCoverage,
-  deriveSampledAuditGroups,
-  deriveTemplatePatterns,
-  isCatalogFinding,
-} from "@/components/beseam/answer-check-state";
 import { ChannelIcon } from "@/components/beseam/channel-icon";
 import { fixExampleFor } from "@/components/beseam/fix-examples";
 import TrackedLink from "@/components/beseam/tracked-link";
 import useAnalytics from "@/hooks/useAnalytics";
+import type { Dictionary, Locale } from "@/i18n";
+import { useDictionary, useLocale } from "@/i18n/use-locale";
 import { APP_REGISTER_URL, APP_REPORT_URL } from "@/lib/app-urls";
 
 export type { AnswerCheckResult };
@@ -594,20 +593,89 @@ const COUNTRY_NAMES_DE: Record<string, string> = {
   kr: "Südkorea",
   cn: "China",
 };
+const LANGUAGE_NAMES_NL: Record<string, string> = {
+  ar: "Arabisch",
+  cs: "Tsjechisch",
+  da: "Deens",
+  de: "Duits",
+  el: "Grieks",
+  en: "Engels",
+  es: "Spaans",
+  fi: "Fins",
+  fr: "Frans",
+  he: "Hebreeuws",
+  hu: "Hongaars",
+  it: "Italiaans",
+  ja: "Japans",
+  ko: "Koreaans",
+  nb: "Noors",
+  nl: "Nederlands",
+  no: "Noors",
+  pl: "Pools",
+  pt: "Portugees",
+  ro: "Roemeens",
+  ru: "Russisch",
+  sv: "Zweeds",
+  tr: "Turks",
+  uk: "Oekraïens",
+  zh: "Chinees",
+};
+const COUNTRY_NAMES_NL: Record<string, string> = {
+  us: "Verenigde Staten",
+  gb: "Verenigd Koninkrijk",
+  ie: "Ierland",
+  ca: "Canada",
+  au: "Australië",
+  nz: "Nieuw-Zeeland",
+  de: "Duitsland",
+  at: "Oostenrijk",
+  ch: "Zwitserland",
+  fr: "Frankrijk",
+  be: "België",
+  it: "Italië",
+  nl: "Nederland",
+  es: "Spanje",
+  mx: "Mexico",
+  pt: "Portugal",
+  br: "Brazilië",
+  pl: "Polen",
+  se: "Zweden",
+  dk: "Denemarken",
+  no: "Noorwegen",
+  fi: "Finland",
+  cz: "Tsjechië",
+  ro: "Roemenië",
+  hu: "Hongarije",
+  gr: "Griekenland",
+  tr: "Turkije",
+  ru: "Rusland",
+  ua: "Oekraïne",
+  jp: "Japan",
+  kr: "Zuid-Korea",
+  cn: "China",
+};
+const LANGUAGE_NAMES_BY_LOCALE: Record<Locale, Record<string, string>> = {
+  en: LANGUAGE_NAMES,
+  de: LANGUAGE_NAMES_DE,
+  nl: LANGUAGE_NAMES_NL,
+};
+const COUNTRY_NAMES_BY_LOCALE: Record<Locale, Record<string, string>> = {
+  en: COUNTRY_NAMES,
+  de: COUNTRY_NAMES_DE,
+  nl: COUNTRY_NAMES_NL,
+};
 function localizedLanguageName(code: string, locale: Locale) {
-  const names = locale === "de" ? LANGUAGE_NAMES_DE : LANGUAGE_NAMES;
-  return names[code.toLowerCase()];
+  return LANGUAGE_NAMES_BY_LOCALE[locale][code.toLowerCase()];
 }
 function localizedCountryName(code: string, locale: Locale) {
-  const names = locale === "de" ? COUNTRY_NAMES_DE : COUNTRY_NAMES;
-  return names[code.toLowerCase()];
+  return COUNTRY_NAMES_BY_LOCALE[locale][code.toLowerCase()];
 }
 function localizedMarketName(name: string | null, locale: Locale) {
-  if (!name || locale !== "de") return name;
+  if (!name || locale === "en") return name;
   const code = Object.keys(COUNTRY_NAMES).find(
     (key) => COUNTRY_NAMES[key] === name,
   );
-  return code ? (COUNTRY_NAMES_DE[code] ?? name) : name;
+  return code ? (COUNTRY_NAMES_BY_LOCALE[locale][code] ?? name) : name;
 }
 
 function marketLabel(result: AnswerCheckResult, locale: Locale): string | null {
@@ -952,7 +1020,7 @@ function ScanProgress({
     >
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <p className="font-mono text-[10.5px] font-semibold uppercase tracking-[0.1em] text-black/44">
+          <p className="font-display text-[10.5px] font-semibold uppercase tracking-[0.08em] text-black/44">
             {deepAudit
               ? copy.steps.fullAuditRunning
               : copy.steps.technical(position, visible.length)}
@@ -1885,7 +1953,7 @@ function ContinuePaths({
     >
       <div className="grid gap-7 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,0.46fr)] lg:items-center">
         <div>
-          <p className="font-mono text-[10.5px] font-semibold uppercase tracking-[0.1em] text-white/46">
+          <p className="font-display text-[10.5px] font-semibold uppercase tracking-[0.08em] text-white/46">
             {copy.continue.opportunities(opportunityCount)} ·{" "}
             {copy.continue.nextLabel}
           </p>
@@ -2033,8 +2101,8 @@ function tallyRivals(answers: Answer[]) {
 }
 
 // Three signals only: green won, red lost, ink in between. Blue is reserved
-// for things you can click. The reds are the light-ground signal (#b8441d);
-// #e8653a only ever sits on the dark grounds.
+// for things you can click. The reds are the light-ground signal (#1d1c1a);
+// #ffe14d only ever sits on the dark grounds.
 // Platform names arrive lowercase from the API. They are proper nouns on the
 // card, where every other identifier is set the way its owner writes it.
 const PLATFORM_LABELS: Record<string, string> = {
@@ -4086,7 +4154,7 @@ function DeeperAnalysisPanel({ gate }: { gate: React.ReactNode }) {
     <section className="border-b border-black/14 bg-[#fffaf7] px-5 py-7 sm:px-6 sm:py-8">
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(20rem,0.72fr)] lg:items-center lg:gap-10">
         <div>
-          <p className="font-mono text-[10.5px] font-semibold uppercase tracking-[0.1em] text-signal-ink">
+          <p className="font-display text-[10.5px] font-semibold uppercase tracking-[0.08em] text-signal-ink">
             {copy.deeper.eyebrow}
           </p>
           <h3 className="mt-2 max-w-[34ch] text-[20px] font-semibold leading-[1.28] tracking-[-0.02em] text-ink-deep sm:text-[22px]">
@@ -4587,7 +4655,7 @@ function RejectedNotice({
             eventCategory="conversion"
             placement="answer_check_rejected"
             preserveUtm
-            className="group inline-flex min-h-12 items-center justify-center gap-2 bg-ink-deep px-6 text-[14px] font-semibold text-white transition-colors hover:bg-signal-ink"
+            className="rounded-button group inline-flex min-h-12 items-center justify-center gap-2 bg-ink-deep px-6 text-[14px] font-semibold text-white transition-colors hover:bg-signal-ink"
           >
             {copy.errors.continueCta}
             <ArrowRight
@@ -4654,7 +4722,7 @@ export function ResultCard({
 
   const onShare = async () => {
     const shareUrl = new URL(
-      locale === "de" ? "/de/scan" : "/scan",
+      locale === "en" ? "/scan" : `/${locale}/scan`,
       window.location.origin,
     );
     shareUrl.searchParams.set("domain", result.domain);
@@ -4740,7 +4808,9 @@ export function ResultCard({
                   : result.status === "failed"
                     ? copy.result.statusFailed
                     : (result.page_audits?.length ?? 0) > 0
-                      ? copy.result.statusCompleteSampled(result.page_audits!.length)
+                      ? copy.result.statusCompleteSampled(
+                          result.page_audits!.length,
+                        )
                       : copy.result.statusComplete}
           </span>
           <button
@@ -5264,7 +5334,7 @@ export default function AnswerCheck({
     <button
       type="submit"
       disabled={submitting}
-      className={`group inline-flex min-h-12 items-center justify-center gap-2 px-6 text-[15px] font-semibold disabled:opacity-70 ${
+      className={`rounded-button group inline-flex min-h-12 items-center justify-center gap-2 px-6 text-[15px] font-semibold disabled:opacity-70 ${
         inResultMode
           ? "border border-black/28 bg-white text-ink-deep transition-colors hover:border-signal-ink hover:text-signal-ink"
           : "bg-signal-ink text-white"
@@ -5357,7 +5427,7 @@ export default function AnswerCheck({
             <button
               type="submit"
               disabled={verificationSubmitting}
-              className="group inline-flex min-h-12 w-full items-center justify-center gap-2 bg-signal-ink px-6 text-[14px] font-semibold text-white disabled:opacity-70"
+              className="rounded-button group inline-flex min-h-12 w-full items-center justify-center gap-2 bg-signal-ink px-6 text-[14px] font-semibold text-white disabled:opacity-70"
             >
               {verificationSubmitting
                 ? copy.email.sending
@@ -5487,7 +5557,7 @@ export default function AnswerCheck({
               type="button"
               disabled={submitting}
               onClick={() => void runScan(domain.trim(), "")}
-              className="mt-3 inline-flex min-h-10 items-center gap-2 border border-black/36 bg-white px-4 text-[13px] font-semibold text-ink-deep transition-colors hover:border-signal-ink hover:text-signal-ink disabled:cursor-wait disabled:opacity-70"
+              className="rounded-button mt-3 inline-flex min-h-10 items-center gap-2 border border-black/36 bg-white px-4 text-[13px] font-semibold text-ink-deep transition-colors hover:border-signal-ink hover:text-signal-ink disabled:cursor-wait disabled:opacity-70"
             >
               <RefreshCw className="h-3.5 w-3.5" aria-hidden="true" />
               {submitting ? copy.errors.retrying : copy.errors.tryAgain}
@@ -5540,7 +5610,7 @@ export default function AnswerCheck({
                 type="button"
                 disabled={retrySubmitting}
                 onClick={() => void onRetryAudit()}
-                className="inline-flex min-h-11 shrink-0 items-center gap-2 bg-ink-deep px-4 text-[13px] font-semibold text-white transition-colors hover:bg-signal-ink disabled:cursor-wait disabled:opacity-70"
+                className="rounded-button inline-flex min-h-11 shrink-0 items-center gap-2 bg-ink-deep px-4 text-[13px] font-semibold text-white transition-colors hover:bg-signal-ink disabled:cursor-wait disabled:opacity-70"
               >
                 <RefreshCw
                   className={`h-3.5 w-3.5 ${retrySubmitting ? "animate-spin" : ""}`}

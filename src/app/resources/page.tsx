@@ -164,7 +164,7 @@ export default function ResourcesPage() {
               </h1>
               <Link
                 href="/resources/start-here"
-                className="mt-8 inline-flex min-h-12 items-center gap-3 bg-signal-ink px-5 text-[13px] font-semibold text-white"
+                className="rounded-button mt-8 inline-flex min-h-12 items-center gap-3 bg-signal-ink px-5 text-[13px] font-semibold text-white"
               >
                 Open the Fieldbook <ArrowRight className="h-4 w-4" />
               </Link>
@@ -179,7 +179,7 @@ export default function ResourcesPage() {
               <div className="mt-8">
                 <FieldbookSearch entries={searchEntries} />
               </div>
-              <p className="mt-5 font-mono text-[12px] uppercase tracking-[0.09em] text-black/62">
+              <p className="mt-5 font-display font-semibold text-[12px] uppercase tracking-[0.09em] text-black/62">
                 {problems.length} problem guides · {skills.length} agent skills
                 · {playbooks.length} playbooks · {ECOSYSTEM_RESOURCES.length}{" "}
                 reviewed references
@@ -243,7 +243,7 @@ export default function ResourcesPage() {
                     {String(index + 1).padStart(2, "0")}
                   </span>
                   <span>
-                    <span className="font-mono text-[12px] uppercase tracking-[0.08em] text-signal-ink">
+                    <span className="font-display font-semibold text-[12px] uppercase tracking-[0.08em] text-signal-ink">
                       {problem.frontmatter.category}
                     </span>
                     <span className="mt-1.5 block text-[14px] font-semibold text-ink-deep">
@@ -281,7 +281,7 @@ export default function ResourcesPage() {
           <div className="grid gap-px bg-white/16 sm:grid-cols-2 lg:grid-cols-3">
             {FEATURED_RESOURCES.map((resource) => (
               <article key={resource.slug} className="bg-ink-deep p-6">
-                <p className="font-mono text-[12px] uppercase tracking-[0.09em] text-white/72">
+                <p className="font-display font-semibold text-[12px] uppercase tracking-[0.09em] text-white/72">
                   {resource.category}
                 </p>
                 <h3 className="mt-4 text-[17px] font-semibold">
@@ -290,7 +290,7 @@ export default function ResourcesPage() {
                 <p className="mt-3 text-[12px] leading-relaxed text-white/72">
                   {resource.summary}
                 </p>
-                <p className="mt-5 font-mono text-[12px] uppercase tracking-[0.08em] text-signal">
+                <p className="mt-5 font-display font-semibold text-[12px] uppercase tracking-[0.08em] text-signal">
                   {resource.kind} · {resource.license}
                 </p>
               </article>

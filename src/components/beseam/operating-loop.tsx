@@ -29,7 +29,7 @@ export default function OperatingLoop() {
         <Reveal>
           <div className="grid gap-8 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:items-end lg:gap-16">
             <div>
-              <p className="font-mono text-[12px] font-semibold uppercase tracking-[0.14em] text-signal-ink">
+              <p className="font-display text-[12px] font-semibold uppercase tracking-[0.08em] text-signal-ink">
                 One continuous growth loop
               </p>
               <h2 className="mt-7 max-w-[16ch] text-balance font-display text-[clamp(2.25rem,3.4vw,3.5rem)] font-normal leading-[1.05] tracking-[-0.02em] text-ink-deep">

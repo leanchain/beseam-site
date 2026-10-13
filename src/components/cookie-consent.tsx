@@ -43,14 +43,14 @@ export default function CookieConsent() {
         <button
           type="button"
           onClick={decline}
-          className="min-h-8 border border-white/28 px-3 text-[11.5px] font-semibold text-white/88 transition-colors hover:border-signal hover:text-signal"
+          className="rounded-button min-h-8 border border-white/28 px-3 text-[11.5px] font-semibold text-white/88 transition-colors hover:border-signal hover:text-signal"
         >
           {t.cookies.reject}
         </button>
         <button
           type="button"
           onClick={accept}
-          className="min-h-8 bg-signal-ink px-3 text-[11.5px] font-semibold text-white"
+          className="rounded-button min-h-8 bg-signal px-3 text-[11.5px] font-semibold text-ink-deep"
         >
           {t.cookies.accept}
         </button>

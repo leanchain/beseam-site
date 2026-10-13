@@ -20,7 +20,7 @@ export default function SkillsIndexPage() {
   return (
     <FieldbookShell currentHref="/resources/skills">
       <header className="border-b border-black/18 pb-10">
-        <p className="font-mono text-[9px] uppercase tracking-[0.1em] text-[var(--beseam-accent)]">
+        <p className="font-display font-semibold text-[9px] uppercase tracking-[0.08em] text-[var(--beseam-accent)]">
           Commerce Fieldbook / Agent skills
         </p>
         <h1 className="mt-6 max-w-[12ch] font-serif text-[clamp(3.2rem,5vw,5.2rem)] leading-[0.98] tracking-[-0.05em]">
@@ -39,10 +39,10 @@ export default function SkillsIndexPage() {
             className="group flex min-h-full flex-col bg-[var(--beseam-surface)] p-6 transition-colors hover:bg-[var(--beseam-panel)]"
           >
             <div className="flex items-center justify-between gap-3">
-              <span className="font-mono text-[8px] uppercase tracking-[0.09em] text-[var(--beseam-accent)]">
+              <span className="font-display font-semibold text-[8px] uppercase tracking-[0.09em] text-[var(--beseam-accent)]">
                 {skill.frontmatter.category}
               </span>
-              <span className="font-mono text-[8px] uppercase tracking-[0.08em] text-black/36">
+              <span className="font-display font-semibold text-[8px] uppercase tracking-[0.08em] text-black/36">
                 v{skill.frontmatter.version}
               </span>
             </div>
@@ -52,7 +52,7 @@ export default function SkillsIndexPage() {
             <p className="mt-3 text-[13px] leading-relaxed text-black/52">
               {skill.frontmatter.summary}
             </p>
-            <p className="mt-5 font-mono text-[8px] uppercase tracking-[0.08em] text-black/34">
+            <p className="mt-5 font-display font-semibold text-[8px] uppercase tracking-[0.08em] text-black/34">
               Works with {skill.frontmatter.worksWith?.join(" · ")}
             </p>
             <span className="mt-auto inline-flex items-center gap-2 pt-6 text-[11px] font-semibold text-[var(--beseam-accent)]">

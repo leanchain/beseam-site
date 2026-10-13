@@ -39,7 +39,10 @@ const MARKETS = [
         "The words",
         "A UK shopper may phrase the use case as “cycling to work” rather than using the same wording as another market.",
       ],
-      ["The comparison", "Marketplace listings may compete alongside brand stores."],
+      [
+        "The comparison",
+        "Marketplace listings may compete alongside brand stores.",
+      ],
       [
         "The assumption",
         "Delivery speed and return terms may be taken for granted or asked about differently.",
@@ -50,7 +53,8 @@ const MARKETS = [
     place: "Italy",
     flag: "🇮🇹",
     language: "Italiano",
-    question: "«Qual è la migliore giacca antipioggia per andare in bici in città?»",
+    question:
+      "«Qual è la migliore giacca antipioggia per andare in bici in città?»",
     translation: "Which is the best rain jacket for cycling in the city?",
     rows: [
       [
@@ -79,7 +83,7 @@ export default function MarketsSection() {
         <Reveal>
           <div className="grid gap-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:items-end lg:gap-16">
             <div>
-              <p className="font-mono text-[12px] font-semibold uppercase tracking-[0.14em] text-signal">
+              <p className="font-display text-[12px] font-semibold uppercase tracking-[0.08em] text-signal">
                 Markets
               </p>
               <h2 className="mt-7 max-w-[20ch] text-balance font-display text-[clamp(2.3rem,3.8vw,3.9rem)] font-normal leading-[1.03] tracking-[-0.02em]">
@@ -87,7 +91,8 @@ export default function MarketsSection() {
               </h2>
             </div>
             <p className="max-w-[46ch] text-[17px] leading-[1.72] text-white/70">
-              Language, competitors, delivery expectations, and buying questions change by market.
+              Language, competitors, delivery expectations, and buying questions
+              change by market.
             </p>
           </div>
         </Reveal>
@@ -99,33 +104,50 @@ export default function MarketsSection() {
                 key={market.place}
                 className="border-b border-white/14 py-8 lg:border-b-0 lg:border-l lg:border-white/14 lg:px-8 lg:py-9 lg:first:border-l-0 lg:first:pl-0 lg:last:pr-0"
               >
-                <p className="flex flex-wrap items-baseline gap-x-2.5 font-mono text-[11px] font-semibold uppercase tracking-[0.12em] text-signal">
+                <p className="flex flex-wrap items-baseline gap-x-2.5 font-display text-[11px] font-semibold uppercase tracking-[0.08em] text-signal">
                   <span aria-hidden="true" className="text-[15px] leading-none">
                     {market.flag}
                   </span>
                   {market.place}
-                  <span aria-hidden="true" className="h-1 w-1 rounded-full bg-white/30" />
+                  <span
+                    aria-hidden="true"
+                    className="h-1 w-1 rounded-full bg-white/30"
+                  />
                   <span className="text-white/56">{market.language}</span>
                 </p>
 
                 <p
-                  lang={market.language === "Deutsch" ? "de" : market.language === "Italiano" ? "it" : "en"}
+                  lang={
+                    market.language === "Deutsch"
+                      ? "de"
+                      : market.language === "Italiano"
+                        ? "it"
+                        : "en"
+                  }
                   className="mt-5 font-display text-[clamp(1.2rem,1.65vw,1.55rem)] leading-[1.32] text-white/92 lg:min-h-[3.9em]"
                 >
                   {market.question}
                 </p>
                 {market.translation ? (
-                  <p className="mt-2 text-[12px] leading-[1.5] text-white/56">{market.translation}</p>
+                  <p className="mt-2 text-[12px] leading-[1.5] text-white/56">
+                    {market.translation}
+                  </p>
                 ) : (
-                  <p aria-hidden="true" className="mt-2 hidden text-[12px] leading-[1.5] text-transparent lg:block">
+                  <p
+                    aria-hidden="true"
+                    className="mt-2 hidden text-[12px] leading-[1.5] text-transparent lg:block"
+                  >
                     &nbsp;
                   </p>
                 )}
 
                 <dl className="mt-7 border-t border-white/14">
                   {market.rows.map(([term, detail]) => (
-                    <div key={term} className="border-b border-white/12 py-3.5 last:border-b-0">
-                      <dt className="font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-white/58">
+                    <div
+                      key={term}
+                      className="border-b border-white/12 py-3.5 last:border-b-0"
+                    >
+                      <dt className="font-display text-[10px] font-semibold uppercase tracking-[0.08em] text-white/58">
                         {term}
                       </dt>
                       <dd className="mt-1.5 max-w-[46ch] text-[14px] leading-[1.6] text-white/74">
@@ -141,7 +163,8 @@ export default function MarketsSection() {
 
         <Reveal delay={0.08}>
           <p className="mt-10 text-[12px] text-white/48">
-            Illustrative examples. Your market differences come from observed evidence.
+            Illustrative examples. Your market differences come from observed
+            evidence.
           </p>
         </Reveal>
       </div>

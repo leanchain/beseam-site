@@ -70,7 +70,7 @@ function FieldbookPager({
           href={previous.href}
           className="group bg-[var(--beseam-surface)] p-5 transition-colors hover:bg-[var(--beseam-panel)]"
         >
-          <span className="font-mono text-[8px] uppercase tracking-[0.1em] text-black/36">
+          <span className="font-display font-semibold text-[8px] uppercase tracking-[0.08em] text-black/36">
             Previous
           </span>
           <span className="mt-3 flex items-center gap-2 text-[13px] font-semibold text-[var(--beseam-ink)]">
@@ -86,7 +86,7 @@ function FieldbookPager({
           href={next.href}
           className="group bg-[var(--beseam-surface)] p-5 text-right transition-colors hover:bg-[var(--beseam-panel)]"
         >
-          <span className="font-mono text-[8px] uppercase tracking-[0.1em] text-black/36">
+          <span className="font-display font-semibold text-[8px] uppercase tracking-[0.08em] text-black/36">
             Next
           </span>
           <span className="mt-3 flex items-center justify-end gap-2 text-[13px] font-semibold text-[var(--beseam-ink)]">

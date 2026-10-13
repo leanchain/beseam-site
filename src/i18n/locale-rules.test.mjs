@@ -2,10 +2,12 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import {
+  localizedPath,
   counterpartPath,
   isCrawler,
   localeFromPathname,
   normalizePath,
+  preferredLocale,
   prefersGerman,
   primaryLanguage,
   readLocaleCookie,
@@ -218,5 +220,76 @@ test("doubled-slash paths redirect correctly", () => {
   assert.equal(
     redirectTargetFor(redirectInput({ country: "DE", pathname: "/scan//" })),
     "/de/scan",
+  );
+});
+
+test("localeFromPathname reads the /nl prefix", () => {
+  assert.equal(localeFromPathname("/nl"), "nl");
+  assert.equal(localeFromPathname("/nl/scan"), "nl");
+  assert.equal(localeFromPathname("/nlx"), "en");
+});
+
+test("counterpartPath pairs Dutch with English and German", () => {
+  assert.equal(counterpartPath("/", "nl"), "/nl");
+  assert.equal(counterpartPath("/scan", "nl"), "/nl/scan");
+  assert.equal(counterpartPath("/nl", "en"), "/");
+  assert.equal(counterpartPath("/nl/scan", "de"), "/de/scan");
+  assert.equal(counterpartPath("/de", "nl"), "/nl");
+  assert.equal(counterpartPath("/nl", "nl"), null, "already Dutch");
+  assert.equal(counterpartPath("/platform", "nl"), null);
+});
+
+test("preferredLocale picks Dutch for the Netherlands and Dutch speakers", () => {
+  assert.equal(preferredLocale("NL", "en-US"), "nl");
+  assert.equal(preferredLocale("BE", "nl-BE,nl;q=0.9"), "nl");
+  assert.equal(preferredLocale("BE", "fr-BE"), null, "Belgium is not guessed");
+  assert.equal(preferredLocale("CH", "nl-NL"), "nl", "language beats country");
+  assert.equal(preferredLocale("US", "en-US"), null);
+});
+
+test("a Dutch visitor or a remembered Dutch choice reaches the Dutch page", () => {
+  assert.equal(redirectTargetFor(redirectInput({ country: "NL" })), "/nl");
+  assert.equal(
+    redirectTargetFor(redirectInput({ country: "NL", pathname: "/scan" })),
+    "/nl/scan",
+  );
+  assert.equal(
+    redirectTargetFor(
+      redirectInput({ country: "DE", cookieHeader: "bs_lang=nl" }),
+    ),
+    "/nl",
+  );
+  assert.equal(readLocaleCookie("bs_lang=nl"), "nl");
+});
+
+test("counterpartPath covers the translated pages and sections", () => {
+  assert.equal(counterpartPath("/pricing", "de"), "/de/pricing");
+  assert.equal(
+    counterpartPath("/product/content-creation", "nl"),
+    "/nl/product/content-creation",
+  );
+  assert.equal(counterpartPath("/de/blog/x", "en"), "/blog/x");
+  assert.equal(counterpartPath("/privacy-policy", "de"), null);
+});
+
+test("localizedPath keeps links in the reader's language", () => {
+  assert.equal(localizedPath("/", "de"), "/de");
+  assert.equal(localizedPath("/#faq", "nl"), "/nl#faq");
+  assert.equal(
+    localizedPath("/solutions/footwear", "de"),
+    "/de/solutions/footwear",
+  );
+  assert.equal(localizedPath("/privacy-policy", "de"), "/privacy-policy");
+  assert.equal(localizedPath("/pricing", "en"), "/pricing");
+  assert.equal(
+    localizedPath("https://example.com", "de"),
+    "https://example.com",
+  );
+});
+
+test("only the homepage and the scan are redirected by the Worker", () => {
+  assert.equal(
+    redirectTargetFor(redirectInput({ country: "DE", pathname: "/pricing" })),
+    null,
   );
 });

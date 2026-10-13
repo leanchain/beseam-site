@@ -1,10 +1,11 @@
-import type { Locale } from "@/i18n/locale-rules.mjs";
 import { getDictionary } from "@/i18n";
+import type { Locale } from "@/i18n/locale-rules.mjs";
 import { SITE_URL } from "@/lib/seo";
 
 const HOME_PATH: Record<Locale, string> = {
   en: "/",
   de: "/de",
+  nl: "/nl",
 };
 
 /**

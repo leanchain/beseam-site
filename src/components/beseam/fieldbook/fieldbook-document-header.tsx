@@ -12,7 +12,7 @@ export default function FieldbookDocumentHeader({
   const { frontmatter } = document;
   return (
     <header className="border-b border-black/18 pb-10">
-      <div className="flex flex-wrap items-center gap-2 font-mono text-[9px] uppercase tracking-[0.1em] text-black/42">
+      <div className="flex flex-wrap items-center gap-2 font-display font-semibold text-[9px] uppercase tracking-[0.08em] text-black/42">
         <Link href="/resources" className="text-[var(--beseam-accent)]">
           Fieldbook
         </Link>
@@ -36,7 +36,7 @@ export default function FieldbookDocumentHeader({
           </p>
         </div>
       )}
-      <div className="mt-7 flex flex-wrap gap-x-6 gap-y-3 border-t border-black/14 pt-5 font-mono text-[9px] uppercase tracking-[0.08em] text-black/42">
+      <div className="mt-7 flex flex-wrap gap-x-6 gap-y-3 border-t border-black/14 pt-5 font-display font-semibold text-[9px] uppercase tracking-[0.08em] text-black/42">
         {frontmatter.version && (
           <span className="inline-flex items-center gap-2">
             <GitBranch className="h-3 w-3" />
@@ -59,7 +59,7 @@ export default function FieldbookDocumentHeader({
           {frontmatter.worksWith.map((item) => (
             <span
               key={item}
-              className="border border-black/14 bg-[var(--beseam-panel)] px-2.5 py-1 font-mono text-[8px] uppercase tracking-[0.07em] text-black/46"
+              className="border border-black/14 bg-[var(--beseam-panel)] px-2.5 py-1 font-display font-semibold text-[8px] uppercase tracking-[0.07em] text-black/46"
             >
               {item}
             </span>

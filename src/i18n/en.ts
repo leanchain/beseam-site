@@ -29,14 +29,47 @@ const enDictionary = {
     mobileAriaLabel: "Mobile",
     openNavigation: "Open navigation",
     closeNavigation: "Close navigation",
-    links: {
-      platform: "Platform",
-      howWeWork: "How we work",
-      report: "AI Shopping Report",
+    // Primary menu. Groups open as dropdowns; `pricing` is a plain link.
+    menu: {
+      product: {
+        label: "Product",
+        items: {
+          tracking: "AI visibility tracking",
+          descriptions: "Product descriptions",
+          content: "Content creation",
+          technical: "Technical performance",
+        },
+      },
+      solutions: {
+        label: "Solutions",
+        items: {
+          footwear: "Footwear",
+          apparel: "Fashion & apparel",
+          beauty: "Beauty & cosmetics",
+          electronics: "Consumer electronics",
+          shopify: "Beseam for Shopify",
+        },
+      },
+      resources: {
+        label: "Resources",
+        items: {
+          blog: "Blog",
+          report: "AI Shopping Report",
+          compare: "Comparisons",
+        },
+      },
+      company: {
+        label: "Company",
+        items: {
+          about: "About",
+          contact: "Contact",
+        },
+      },
+      pricing: "Pricing",
     },
     login: "Log in",
     register: "Register",
-    cta: "Scan my store",
+    cta: "Start for free",
   },
   switcher: {
     triggerAriaLabel: "Change language",
@@ -44,8 +77,8 @@ const enDictionary = {
     // `short` is the navbar trigger, `names` the open list. A code is enough
     // once you are already looking at the control; the choice itself is
     // spelled out, each language in its own language.
-    short: { en: "EN", de: "DE" },
-    names: { en: "English", de: "Deutsch" },
+    short: { en: "EN", de: "DE", nl: "NL" },
+    names: { en: "English", de: "Deutsch", nl: "Nederlands" },
   },
   // These three strings are German in BOTH dictionaries, deliberately: the
   // notice only ever appears to someone who has just asked for German by
@@ -68,74 +101,34 @@ const enDictionary = {
   },
   footer: {
     homeAriaLabel: "Beseam home",
-    tagline: {
-      before: "Make products easier to",
-      highlight: "find, choose, and buy",
-    },
-    description:
-      "Beseam finds why important products are being overlooked, helps fix the problems worth acting on first, and verifies what changed.",
-    groups: {
-      product: {
-        label: "Product",
-        links: {
-          platform: "Platform",
-          aiShoppingDiscovery: "AI shopping discovery",
-          compare: "Compare",
-        },
-      },
-      aiShoppingAgents: {
-        label: "AI shopping agents",
-        links: {
-          aiShoppingData: "AI shopping data",
-          forShoppingAgents: "For shopping agents",
-          report: "AI Shopping Report",
-        },
-      },
-      company: {
-        label: "Company",
-        links: {
-          howWeWork: "How we work",
-          about: "About",
-          manifesto: "Manifesto",
-          contact: "Contact us",
-        },
-      },
-      fieldbook: {
-        label: "Fieldbook",
-        links: {
-          fieldbook: "Fieldbook",
-        },
-      },
-    },
     copyright: (year: number) => `© ${year} Beseam. All rights reserved.`,
     privacy: "Privacy",
     terms: "Terms",
     bot: "BeseamBot",
     askAi: "Ask AI about Beseam",
-    madeWith: "Made with love in Switzerland",
+    madeWith: "Engineered in Switzerland",
     swissFlagAriaLabel: "Swiss flag",
   },
   meta: {
     home: {
-      title: "Beseam | Find why your products are being overlooked",
+      title: "Beseam | Make AI a revenue channel for your webshop",
       description:
-        "Beseam shows ecommerce brands where important products are being overlooked in ChatGPT, Google AI Mode, and their storefront, what to fix first, and what changed afterward.",
-      imageAlt:
-        "Beseam finding, fixing, and verifying product discovery problems",
+        "Beseam is the easiest way to get your products recommended by AI to millions of shoppers. Optimise descriptions, content and technical performance in minutes.",
+      imageAlt: "Beseam: make AI a revenue channel for your webshop",
       schemaSoftwareDescription:
-        "Beseam finds why important ecommerce products are being overlooked, prepares merchant-approved fixes, and rechecks the evidence after changes.",
+        "Beseam gets webshop products recommended by AI assistants like ChatGPT, Claude and Gemini. It tracks AI visibility, optimises product descriptions, content and technical performance, and links the results to AI traffic and revenue.",
       schemaFeatures: [
-        "Find where important products are being overlooked",
-        "Prioritize problems with observed evidence",
-        "Prepare merchant-approved fixes",
-        "Recheck the same evidence after a change",
+        "Track where your products appear in ChatGPT, Claude, Gemini and other AI assistants",
+        "Optimise product descriptions and product data for AI search",
+        "Create collection pages, comparisons and guides that AI assistants cite",
+        "Fix technical issues and link AI visibility to traffic and revenue",
       ] as Quad<string>,
       schemaFaqName: "Questions about Beseam",
     },
     scan: {
       title: "Free Store Scan | Beseam",
       description:
-        "A technical discoverability read of your public storefront: what search engines and AI assistants can see in your product pages, catalog data and site signals, and what to improve first. No login, no store access. Not a keyword report.",
+        "Check for free whether ChatGPT and other AI assistants can find and recommend your products, and what to improve first. No login, no store access.",
     },
   },
 
@@ -146,16 +139,12 @@ const enDictionary = {
    * emphasis -- German moves it to the middle of the sentence.
    */
   hero: {
-    headlineBefore: "Help more shoppers ",
-    headlineAccent: "choose your products",
-    headlineAfter: ".",
-    sub: "Beseam connects how shoppers discover, understand, compare, and buy your products. It finds where you’re losing them, shows what matters most, helps you make the right changes, and verifies what changed afterwards.",
-    scanReturns: {
-      readable: "Where products are being missed",
-      standing: "Why it is happening",
-      fixFirst: "What to fix first",
-    },
-    scanTrust: "No login · No store access required",
+    headlineBefore: "Make AI a ",
+    headlineAccent: "revenue channel",
+    headlineAfter: " for your webshop",
+    sub: "Beseam is the easiest way to get your products recommended by AI to millions of shoppers. Optimise product descriptions, content and technical performance in minutes.",
+    ctaStart: "Start for free",
+    ctaDemo: "Request a demo",
     scrollCue: "Scroll",
   },
 
@@ -1025,6 +1014,164 @@ const enDictionary = {
   },
 
   sections: {
+    // fixes-section.tsx -- the three things Beseam fixes.
+    fixes: {
+      heading: "Optimise what stops AI from recommending your products",
+      items: {
+        descriptions: {
+          title: "Product descriptions",
+          body: "Optimise descriptions and product data so AI assistants understand what each product is, who it's for and when to recommend it.",
+        },
+        content: {
+          title: "Content creation",
+          body: "Create and optimise the collection pages, comparison pages, blogs and guides that AI assistants draw on when shoppers ask what to buy.",
+        },
+        technical: {
+          title: "Technical performance",
+          body: "Fix structured data, crawler access and slow pages, so AI assistants can read and trust every page of your store.",
+        },
+      },
+    },
+    // quote-section.tsx -- one customer quote. PLACEHOLDER: replace with a
+    // real, approved quote before this goes live.
+    quote: {
+      // DRAFT customer quote, written for a customer to approve or adapt. It
+      // only appears in local previews until \`approved\` is true and
+      // \`name\` and \`role\` hold the real customer's details.
+      text: "Honestly, I expected another tool I'd have to babysit. We connected our Shopify store in one click, and now I just approve a few suggestions with my morning coffee. Beseam does the rest!",
+      name: "",
+      role: "",
+      approved: false,
+    },
+    // ai-platforms-strip.tsx -- the assistants Beseam checks, under the hero.
+    platforms: {
+      eyebrow: "Get recommended in",
+    },
+    // how-it-works.tsx -- four interactive steps.
+    howItWorks: {
+      heading: "How it works",
+      stepLabel: (n: number) => `Step ${n}`,
+      steps: {
+        connect: {
+          title: "Connect your Shopify webshop",
+          body: "Link your store in one click. Beseam imports your catalog without touching your theme.",
+          visual: {
+            label: "Store connection",
+            action: "Connect Shopify",
+            synced: {
+              products: "Products synced",
+              orders: "Order data synced",
+              pages: "Content pages synced",
+            },
+            done: "Connected",
+          },
+        },
+        actions: {
+          title: "Get actions prioritised on revenue impact",
+          body: "Beseam tells you what to improve first, ranked by how much revenue it can bring in.",
+          visual: {
+            label: "Today's actions",
+            items: {
+              description: "Rewrite descriptions for 12 bestsellers",
+              data: "Add missing sizes and materials",
+              speed: "Speed up 4 slow product pages",
+            },
+            impact: { high: "High impact", medium: "Medium impact" },
+          },
+        },
+        approve: {
+          title: "Approve actions, or automate them",
+          body: "Review each change with one click, or let Beseam apply the ones you trust automatically.",
+          visual: {
+            label: "Ready for you",
+            items: {
+              description: "Rewrite descriptions for 12 bestsellers",
+              data: "Add missing sizes and materials",
+            },
+            approve: "Approve",
+            approved: "Approved",
+            automate: "Automate similar actions",
+          },
+        },
+        measure: {
+          title: "Track the impact as you go",
+          body: "Track how your AI visibility, traffic and revenue grow over time.",
+          visual: { label: "AI-referred revenue", lift: "+23% in 30 days" },
+        },
+      },
+    },
+    // product-categories.tsx -- one card per product vertical.
+    categories: {
+      heading: "AI search optimisation for every product type",
+      learnMore: "Learn more",
+      items: {
+        footwear: {
+          title: "Footwear",
+          body: "Make sizes, fit and materials clear, so AI assistants can match your shoes to what shoppers ask for.",
+        },
+        apparel: {
+          title: "Apparel & Fashion",
+          body: "Turn colours, cuts and styling details into product data that AI recommends for the right occasion.",
+        },
+        beauty: {
+          title: "Beauty & Cosmetics",
+          body: "Highlight ingredients, skin types and benefits, so your products show up when shoppers ask what works for them.",
+        },
+        electronics: {
+          title: "Consumer Electronics",
+          body: "Keep specs, compatibility and prices accurate, so AI compares your products correctly against the competition.",
+        },
+      },
+    },
+    // feature-rows.tsx -- four alternating text/visual rows under the hero.
+    // Body copy is placeholder until final copy is supplied.
+    features: {
+      webshops: {
+        title: "Built specifically for webshops",
+        body: "With hundreds or thousands of products, optimising each one for AI search by hand isn't realistic. Most AI visibility tools are built for blogs and brand pages, not product catalogues. Beseam reads your whole store, product by product, and handles the work at catalogue scale.",
+        visual: {
+          label: "Your catalog",
+          stat: "1,240 products synced",
+          status: "Connected",
+        },
+      },
+      presence: {
+        title: "Track AI visibility and revenue impact in detail",
+        body: "Beseam monitors answers from ChatGPT, Claude, Gemini and other AI assistants to see when they mention your brand and products. It connects those mentions to the AI traffic and revenue they bring in, broken down by topic, prompt, product and landing page.",
+        visual: {
+          label: "AI visibility & revenue",
+          named: "Recommended",
+          missed: "Missing",
+          trend: "+€3.2k AI revenue this month",
+        },
+      },
+      revenue: {
+        title: "Turn data into actions, prioritised by revenue impact",
+        body: "Beseam combines what AI assistants say with your own sales data, then ranks every improvement by the revenue it's expected to bring. You always know what to fix first, and nothing gets lost in a long to-do list.",
+        visual: {
+          label: "Prioritised actions",
+          items: {
+            description: "Rewrite 12 bestseller texts",
+            data: "Add missing sizes & materials",
+            speed: "Speed up 4 product pages",
+          },
+          sorted: "Sorted by revenue",
+        },
+      },
+      impact: {
+        title: "Boost AI traffic in just a few minutes per week",
+        body: "Running a webshop is hard enough already, so we keep AI search optimisation simple. Review and approve the suggested changes in a few clicks, or let Beseam automate most of them for you.",
+        visual: {
+          label: "This week",
+          rows: {
+            suggested: "Actions suggested",
+            approved: "Approved by you",
+            automated: "Automated",
+          },
+          total: "4 min this week",
+        },
+      },
+    },
     // #proof -- connected-evidence.tsx
     proof: {
       heading: "See what gets in the way of the choice.",
@@ -1270,18 +1417,12 @@ const enDictionary = {
       body: "After a change, Beseam asks the same shopper questions again, and shows whether the answers now name your store.",
     },
 
-    // #promise -- first-month-promise.tsx. Two block spans, not one balanced
-    // line: the two sentences must not merge mid-thought.
+    // #promise -- first-month-promise.tsx, the closing call to action. Its
+    // buttons reuse the hero's labels.
     promise: {
-      headingLine1: "Start with a free scan.",
-      headingLine2: "Keep working from the same store.",
-      body: "See the first evidence before creating an account. If Beseam finds something worth fixing, connect Shopify to keep the store under watch, prepare changes for approval, and verify what changed afterward.",
-      cta: "Scan my store",
-      humanFallback: "Prefer to look at one product together?",
-      humanFallbackCta: "Talk to us",
+      heading: "Start boosting your webshop's AI revenue",
     },
 
-    // mobile-sticky-cta.tsx
     stickyCta: {
       cta: "Start for free",
     },
@@ -1295,48 +1436,48 @@ const enDictionary = {
    * locale ship four questions where English ships six.
    */
   faq: {
-    heading: "FAQ",
+    heading: "Frequently asked questions",
     items: {
-      scanVsBeseam: {
-        question: "What's the difference between the free scan and Beseam?",
+      whatIs: {
+        question: "What is AI search optimisation?",
         answer:
-          "The free scan is a one-time look at your public storefront. Beseam keeps working after that: it connects the signals that matter, finds what deserves attention, prepares changes, applies supported changes after approval, and checks what happened afterward.",
+          "AI search optimisation is the practice of making your products easy for AI assistants like ChatGPT, Claude and Gemini to find, understand and recommend. It covers your product descriptions, product data and technical setup, so assistants can match your products to what shoppers ask for.",
       },
-      watch: {
-        question: "What does Beseam actually watch?",
+      whyItMatters: {
+        question: "Why does AI search matter for webshops?",
         answer:
-          "Depending on what you connect, Beseam can use AI and search discovery, catalog and storefront data, shopper behavior, fit, experiments, reliability, campaigns, conversion, orders, and revenue. You do not need every source; Beseam uses the evidence relevant to the problem being investigated.",
+          "More shoppers now ask AI assistants what to buy instead of scrolling through search results, and an assistant recommends only a handful of products. If your products are not among them, the shopper never reaches your webshop. Beseam helps your products become one of those recommendations.",
       },
-      priority: {
-        question: "How does Beseam decide what deserves attention first?",
-        answer:
-          "Beseam brings the evidence for a problem into one place, separates observed facts from possible explanations, and weighs things such as evidence strength, affected products or journeys, business context, effort, and risk. The reason a change is prioritized stays attached to the work.",
-      },
-      changes: {
-        question: "What can Beseam actually change?",
-        answer:
-          "Where the connected system supports it, Beseam can prepare or apply changes to product data, content, merchandising, onsite search, recommendations and personalization, fit and sizing experiences, experiments, creative assets, campaigns, and other editable parts of the buying journey. Customer-facing changes follow your approval rules.",
-      },
-      alongside: {
+      getRecommended: {
         question:
-          "Does Beseam replace my analytics, personalization, or monitoring tools?",
+          "How do I get my products recommended by ChatGPT and other AI assistants?",
         answer:
-          "Not necessarily. Existing tools can remain specialist sources of evidence. Beseam's job is to connect useful signals around the same product, shopper question, journey, or business problem, turn the strongest findings into work, and keep the result attached. Exact integrations depend on your setup.",
+          "Beseam checks how ChatGPT, Claude, Gemini, Google AI Mode, Perplexity and Copilot answer the questions your shoppers ask, and finds out why your products are missing. It then suggests specific improvements to your product descriptions, content and technical setup, ranked by their expected revenue impact.",
+      },
+      different: {
+        question: "How is Beseam different from other AI visibility tools?",
+        answer:
+          "Beseam is built specifically for webshops with hundreds or thousands of products. Most AI visibility tools track brand mentions for blogs and company pages; Beseam works product by product, connects AI visibility to your traffic and revenue, and turns the results into actions you can approve or automate.",
+      },
+      platforms: {
+        question: "Which webshop platforms does Beseam work with?",
+        answer:
+          "Beseam currently works with Shopify webshops. You connect your store in one click, and Beseam imports your catalogue without touching your theme code.",
+      },
+      time: {
+        question: "How much time does Beseam take each week?",
+        answer:
+          "Beseam is designed to take just a few minutes per week. You review and approve the suggested changes in a few clicks, or let Beseam apply the types of changes you trust automatically.",
       },
       approval: {
-        question: "What needs approval before it goes live?",
+        question: "Does Beseam change my webshop without my approval?",
         answer:
-          "You set the rules. Beseam can keep checking, gathering evidence, and preparing work without waiting for you, but customer-facing changes that require approval do not go live until they have it. Changes that need brand judgment stop for review.",
+          "No. Every customer-facing change waits for your approval, unless you choose to automate that type of change. All changes stay reversible, so you can undo anything Beseam has applied.",
       },
-      measurement: {
-        question: "How does Beseam know whether a change worked?",
+      pricing: {
+        question: "How much does Beseam cost?",
         answer:
-          "Beseam checks the signal that exposed the problem again. That might be the same AI shopping question, a storefront or reliability check, shopper behavior, an experiment, campaign performance, conversion, orders, or revenue. The before-and-after stays with the change, and Beseam keeps observed movement separate from causation the evidence cannot prove.",
-      },
-      connect: {
-        question: "What do I need to connect to get started?",
-        answer:
-          "Start with your domain. For ongoing work, connect the store first, then add analytics, behavior, search, campaign, customer, or revenue data only when it helps explain a problem, make an approved change, or measure what happened.",
+          "You can start with Beseam for free and see the first results for your webshop before you choose a plan.",
       },
     },
   },

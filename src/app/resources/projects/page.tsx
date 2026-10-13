@@ -21,7 +21,7 @@ export default function ProjectsPage() {
   return (
     <FieldbookShell currentHref="/resources/projects" wide>
       <header className="border-b border-black/18 pb-10">
-        <p className="font-mono text-[9px] uppercase tracking-[0.1em] text-[var(--beseam-accent)]">
+        <p className="font-display font-semibold text-[9px] uppercase tracking-[0.08em] text-[var(--beseam-accent)]">
           Commerce Fieldbook / Projects and references
         </p>
         <div className="mt-6 grid gap-8 xl:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] xl:items-end xl:gap-16">
@@ -40,7 +40,7 @@ export default function ProjectsPage() {
               its own. The official source remains authoritative for current
               releases, compatibility, support, and usage terms.
             </p>
-            <p className="mt-4 font-mono text-[8px] uppercase tracking-[0.09em] text-[var(--beseam-accent)]">
+            <p className="mt-4 font-display font-semibold text-[8px] uppercase tracking-[0.09em] text-[var(--beseam-accent)]">
               Catalog review date · {FIELD_REVIEW_DATE}
             </p>
           </div>

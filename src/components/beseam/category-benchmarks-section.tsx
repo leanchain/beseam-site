@@ -122,7 +122,7 @@ export default function CategoryBenchmarksSection({
 
             <div>
               <figure className="border-t-2 border-ink-deep pt-4">
-                <figcaption className="flex flex-wrap items-center justify-between gap-2 font-mono text-[11px] uppercase tracking-[0.1em] text-black/52">
+                <figcaption className="flex flex-wrap items-center justify-between gap-2 font-display font-semibold text-[11px] uppercase tracking-[0.08em] text-black/52">
                   <span className="font-semibold text-black/62">
                     {benchmarks.figureLabel}
                   </span>
@@ -180,7 +180,7 @@ export default function CategoryBenchmarksSection({
               </figure>
 
               <div className="mt-6 border-t-2 border-ink-deep">
-                <div className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-x-4 border-b border-black/12 px-1 py-2.5 font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-black/46 sm:grid-cols-[10.25rem_minmax(0,1fr)_7.5rem]">
+                <div className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-x-4 border-b border-black/12 px-1 py-2.5 font-display text-[11px] font-semibold uppercase tracking-[0.08em] text-black/46 sm:grid-cols-[10.25rem_minmax(0,1fr)_7.5rem]">
                   <span>{benchmarks.columns.category}</span>
                   <span className="hidden sm:block">
                     {benchmarks.columns.question}
@@ -195,7 +195,7 @@ export default function CategoryBenchmarksSection({
                       key={benchmark.slug}
                       className="group grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-2.5 border-b border-black/12 px-1 py-3.5 transition-colors hover:bg-black/[0.025] sm:grid-cols-[10.25rem_minmax(0,1fr)_7.5rem] sm:gap-y-0 sm:py-2.5"
                     >
-                      <span className="min-w-0 font-mono text-[11px] font-semibold uppercase tracking-[0.1em] text-signal-ink sm:truncate sm:whitespace-nowrap">
+                      <span className="min-w-0 font-display text-[11px] font-semibold uppercase tracking-[0.08em] text-signal-ink sm:truncate sm:whitespace-nowrap">
                         {benchmark.category}
                       </span>
 

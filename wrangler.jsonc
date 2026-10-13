@@ -8,12 +8,17 @@
     "binding": "ASSETS",
     // Serve the exported Next 404 page instead of an empty body.
     "not_found_handling": "404-page",
-    "run_worker_first": ["/api/*", "/.well-known/http-message-signatures-directory", "/scan/verify", "/", "/scan"],
+    // Removed pages are listed too: they have no asset, so without the Worker
+    // running first Cloudflare would answer with the 404 page instead of the
+    // redirect in MOVED_PAGES (main.js). Keep this list in sync with it.
+    "run_worker_first": ["/api/*", "/.well-known/http-message-signatures-directory", "/scan/verify", "/", "/scan", "/how-we-work", "/platform", "/ai-visibility-monitoring", "/manifesto", "/agents", "/data", "/data/ai-shopping.json", "/data/ai-shopping.csv", "/compare/google-analytics", "/compare/microsoft-clarity", "/compare/hotjar", "/compare/noibu", "/compare/contentsquare", "/compare/amplitude", "/compare/vwo", "/compare/triple-whale", "/compare/mixpanel", "/compare/posthog", "/compare/fullstory", "/compare/logrocket", "/compare/crazy-egg", "/compare/mouseflow", "/compare/adobe-analytics"],
   },
   "send_email": [
     {
       "name": "REVIEW_EMAIL",
-      "destination_address": "contact@beseam.com",
+      // Each address must be a verified destination in Cloudflare Email
+      // Routing. guido@ receives copies of contact form messages.
+      "allowed_destination_addresses": ["contact@beseam.com", "guido@beseam.com"],
       "allowed_sender_addresses": ["website@beseam.com"],
     },
   ],

@@ -39,10 +39,10 @@ function SpecimenFrame({
   return (
     <figure className="border border-black/16 bg-white shadow-[0_18px_44px_-32px_rgba(17,19,24,0.5)]">
       <figcaption className="flex items-center justify-between gap-3 border-b border-black/12 bg-ground px-4 py-2.5 sm:px-5">
-        <span className="flex items-center gap-2 font-mono text-[11px] font-semibold uppercase tracking-[0.1em] text-black/58">
+        <span className="flex items-center gap-2 font-display text-[11px] font-semibold uppercase tracking-[0.08em] text-black/58">
           {label}
         </span>
-        <span className="shrink-0 bg-black/[0.06] px-2 py-0.5 font-mono text-[11px] font-semibold uppercase tracking-[0.1em] text-black/58">
+        <span className="shrink-0 bg-black/[0.06] px-2 py-0.5 font-display text-[11px] font-semibold uppercase tracking-[0.08em] text-black/58">
           Example
         </span>
       </figcaption>
@@ -53,7 +53,7 @@ function SpecimenFrame({
 
 function SpecimenLabel({ children }: { children: ReactNode }) {
   return (
-    <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.12em] text-black/58">
+    <p className="font-display text-[11px] font-semibold uppercase tracking-[0.08em] text-black/58">
       {children}
     </p>
   );
@@ -302,7 +302,7 @@ function CheckoutSpecimen() {
                     {step}
                   </span>
                   {stop ? (
-                    <span className="ml-auto shrink-0 bg-signal-ink px-2 py-0.5 font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-white">
+                    <span className="ml-auto shrink-0 bg-signal-ink px-2 py-0.5 font-display text-[11px] font-semibold uppercase tracking-[0.08em] text-white">
                       Stops here
                     </span>
                   ) : null}
@@ -438,14 +438,14 @@ export default function ShopperLoss() {
                       <span className="font-mono text-[12px] font-semibold tabular-nums text-signal-ink">
                         0{index + 1}
                       </span>
-                      <p className="font-mono text-[12px] font-semibold uppercase tracking-[0.12em] text-black/58">
+                      <p className="font-display text-[12px] font-semibold uppercase tracking-[0.08em] text-black/58">
                         {situation.stage}
                       </p>
                       <span
                         aria-hidden="true"
                         className="h-1 w-1 rounded-full bg-black/25"
                       />
-                      <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-black/56">
+                      <p className="font-display font-semibold text-[12px] uppercase tracking-[0.08em] text-black/56">
                         {situation.category}
                       </p>
                     </div>
@@ -462,7 +462,7 @@ export default function ShopperLoss() {
                           key={term}
                           className="grid gap-1 border-b border-black/14 py-4 sm:grid-cols-[10rem_minmax(0,1fr)] sm:gap-6"
                         >
-                          <dt className="font-mono text-[11px] font-semibold uppercase tracking-[0.1em] text-signal-ink">
+                          <dt className="font-display text-[11px] font-semibold uppercase tracking-[0.08em] text-signal-ink">
                             {term}
                           </dt>
                           <dd className="max-w-[52ch] text-[15px] leading-[1.6] text-black/72">

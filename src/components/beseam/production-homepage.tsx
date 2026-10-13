@@ -1,28 +1,24 @@
-import { Check } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
-import LiveAnswerCheck from "@/components/beseam/answer-check";
-import CategoryBenchmarksSection from "@/components/beseam/category-benchmarks-section";
-import ConnectedEvidence from "@/components/beseam/connected-evidence";
-import CredibilityRail from "@/components/beseam/credibility-rail";
-import DecisionBridge from "@/components/beseam/decision-bridge";
-import EvidenceToWork from "@/components/beseam/evidence-to-work";
+import AiPlatformsStrip from "@/components/beseam/ai-platforms-strip";
+import { BookReviewCta } from "@/components/beseam/book-review-cta";
+import FeatureRows from "@/components/beseam/feature-rows";
 import FirstMonthPromise from "@/components/beseam/first-month-promise";
-import HeroScrollCue from "@/components/beseam/hero-scroll-cue";
-import HeroSurfaceShift from "@/components/beseam/hero-surface-shift";
-import HeroViewportFit from "@/components/beseam/hero-viewport-fit";
-import MeasureImpact from "@/components/beseam/measure-impact";
+import FixesSection from "@/components/beseam/fixes-section";
+import Halftone from "@/components/beseam/halftone";
+import HowItWorks from "@/components/beseam/how-it-works";
+import ProductCategories from "@/components/beseam/product-categories";
+import QuoteSection from "@/components/beseam/quote-section";
 import { Reveal } from "@/components/beseam/reveal";
-import WhatBeseamDoes from "@/components/beseam/what-beseam-does";
+import TrackedLink from "@/components/beseam/tracked-link";
 import { getDictionary } from "@/i18n";
 import type { Locale } from "@/i18n/locale-rules.mjs";
+import { APP_REGISTER_URL } from "@/lib/app-urls";
 
 /**
- * The homepage starts with the outcome and live scan, then earns the broader
- * platform story progressively: discovery proof → what Beseam connects → one
- * finding end to end → proposed work → the connected product picture → verify.
- *
- * The scan is the first proof, not the whole product. The sections underneath
- * explain why the same evidence can become a fix and later a verified result.
+ * The homepage: the hero promise and its two actions, four feature rows,
+ * what Beseam fixes, how it works, the product types, a customer quote, and a closing call to action that repeats
+ * the hero's two actions.
  *
  * Every section below is handed the locale explicitly. None of them reads the
  * path, because under `output: "export"` a server component has no request to
@@ -30,77 +26,85 @@ import type { Locale } from "@/i18n/locale-rules.mjs";
  */
 export default function ProductionHomepage({ locale }: { locale: Locale }) {
   const t = getDictionary(locale);
-  const scanReturns = Object.entries(t.hero.scanReturns);
 
   return (
     <div className="bg-ground text-[#151515]">
-      <section id="home-hero" className="relative isolate overflow-hidden">
-        <HeroViewportFit />
-        <div className="pointer-events-none absolute inset-x-0 top-0 z-0 h-[calc(100svh-var(--hero-reserve))]">
-          <HeroSurfaceShift />
-        </div>
+      {/* A light cream-yellow block (Sunny palette) with a sunflower marker
+          on the accent phrase. */}
+      <section
+        id="home-hero"
+        className="relative isolate overflow-hidden bg-[#fff9e8]"
+      >
+        {/* The top corner sits beside the headline, so it only appears once
+            the page is wide enough to keep the dots clear of it. */}
+        <Halftone corner="top-left" size={230} className="hidden xl:block" />
+        {/* The platforms strip is kept narrow so it ends before this
+            corner; on narrower screens the set is smaller, and on phones and
+            tablets the buttons and strip fill the corner, so it is left out. */}
+        <Halftone
+          corner="bottom-right"
+          size={300}
+          className="hidden xl:block 2xl:hidden"
+        />
+        <Halftone
+          corner="bottom-right"
+          size={440}
+          className="hidden 2xl:block"
+        />
+        <Halftone
+          corner="bottom-right"
+          size={140}
+          className="hidden lg:block xl:hidden"
+        />
         <div
           id="ai-check"
-          className="pointer-events-none relative z-10 mx-auto flex min-h-[calc(100svh-var(--hero-reserve))] max-w-[92rem] scroll-mt-24 items-center justify-center px-5 py-20 sm:px-8 sm:py-24 lg:px-10 lg:py-24"
+          className="pointer-events-none relative z-10 mx-auto flex max-w-[92rem] scroll-mt-24 items-center justify-center px-5 pb-12 pt-16 sm:px-8 sm:pb-14 sm:pt-20 lg:px-10 lg:pb-16 lg:pt-24"
         >
           <Reveal className="w-full">
             <div className="mx-auto w-full max-w-[76rem] text-center">
-              <h1 className="pointer-events-auto mx-auto max-w-[18ch] text-balance font-display text-[clamp(3rem,5.6vw,5rem)] font-normal leading-[0.98] tracking-[-0.025em] text-ink-deep">
-                {t.hero.headlineBefore}
-                <span className="text-signal-ink">{t.hero.headlineAccent}</span>
-                {t.hero.headlineAfter}
+              <h1 className="pointer-events-auto mx-auto text-balance font-display text-[clamp(3rem,5.6vw,5rem)] font-semibold leading-[1.02] tracking-[-0.035em] text-ink-deep">
+                {/* The accented phrase closes the first line, so it never
+                    breaks; the rest of the sentence gets a line of its own. */}
+                <span className="lg:whitespace-nowrap">
+                  {t.hero.headlineBefore}
+                  <span className="box-decoration-clone rounded-[0.12em] bg-signal px-[0.1em]">
+                    {t.hero.headlineAccent}
+                  </span>
+                </span>
+                <span className="block">{t.hero.headlineAfter.trim()}</span>
               </h1>
-              <p className="pointer-events-auto mx-auto mt-6 max-w-[64ch] text-[17px] leading-[1.7] text-black/64 sm:text-[18px]">
+              <p className="pointer-events-auto mx-auto mt-6 max-w-[64ch] text-[17px] leading-[1.7] text-black/72 sm:text-[18px]">
                 {t.hero.sub}
               </p>
-              <div className="pointer-events-auto mx-auto mt-9 w-full">
-                <LiveAnswerCheck
+              <div className="pointer-events-auto mx-auto mt-9 flex w-full flex-col items-center justify-center gap-3 sm:flex-row">
+                <TrackedLink
+                  href={APP_REGISTER_URL}
+                  eventName="marketing_primary_cta_clicked"
+                  eventCategory="conversion"
                   placement="homepage_hero"
-                  handOffTo={locale === "de" ? "/de/scan" : "/scan"}
-                  glowInput
-                  formNote={
-                    <div className="mx-auto mt-2 flex flex-col items-center text-center">
-                      <ul className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
-                        {scanReturns.map(([key, item]) => (
-                          <li
-                            key={key}
-                            className="flex items-center gap-2 text-[13px] leading-snug text-black/62"
-                          >
-                            <Check
-                              aria-hidden="true"
-                              className="h-3.5 w-3.5 shrink-0 text-signal-ink"
-                            />
-                            {item}
-                          </li>
-                        ))}
-                      </ul>
-                      <p className="mt-2 font-mono text-[11px] uppercase tracking-[0.08em] text-black/44">
-                        {t.hero.scanTrust}
-                      </p>
-                    </div>
-                  }
+                  preserveUtm
+                  className="rounded-button group inline-flex min-h-12 w-full items-center justify-center gap-3 bg-signal-ink px-7 py-3 text-[15px] font-semibold leading-tight text-white focus-visible:ring-2 focus-visible:ring-signal-ink focus-visible:ring-offset-3 sm:w-auto"
+                >
+                  {t.hero.ctaStart}
+                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                </TrackedLink>
+                <BookReviewCta
+                  label={t.hero.ctaDemo}
+                  location="homepage_hero"
+                  className="w-full border border-black/15 bg-white text-ink-deep transition-colors hover:border-black/40 sm:w-auto"
                 />
               </div>
             </div>
           </Reveal>
         </div>
-        <HeroScrollCue />
+        <AiPlatformsStrip locale={locale} />
       </section>
 
-      <CredibilityRail locale={locale} />
-      <CategoryBenchmarksSection locale={locale} compact />
-      <WhatBeseamDoes locale={locale} />
-      <ConnectedEvidence locale={locale} />
-      <EvidenceToWork locale={locale} />
-      <DecisionBridge
-        id="system"
-        surfaceClassName="bg-ground-2"
-        eyebrow=""
-        heading={t.sections.system.heading}
-        body={t.sections.system.body}
-        compact={t.sections.system.compact}
-      />
-      <MeasureImpact locale={locale} />
+      <FeatureRows locale={locale} />
+      <FixesSection locale={locale} />
+      <HowItWorks locale={locale} />
+      <ProductCategories locale={locale} />
+      <QuoteSection locale={locale} />
       <FirstMonthPromise locale={locale} />
     </div>
   );

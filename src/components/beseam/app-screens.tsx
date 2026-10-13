@@ -117,7 +117,7 @@ function ScreenChrome({
         {title}
       </p>
       <p
-        className={`font-mono text-[11px] uppercase tracking-[0.1em] ${
+        className={`font-display font-semibold text-[11px] uppercase tracking-[0.08em] ${
           dark ? "text-white/50" : "text-black/50"
         }`}
       >
@@ -184,7 +184,7 @@ export function ActionsScreen({
       <div className="relative overflow-x-auto">
         <div className="min-w-[60rem]">
           <div
-            className="grid items-baseline gap-4 border-b border-black/12 bg-ground px-4 py-2.5 font-mono text-[11px] font-semibold uppercase tracking-[0.1em] text-black/50 sm:px-5"
+            className="grid items-baseline gap-4 border-b border-black/12 bg-ground px-4 py-2.5 font-display text-[11px] font-semibold uppercase tracking-[0.08em] text-black/50 sm:px-5"
             style={{
               gridTemplateColumns: "minmax(0,1fr) 11rem 5rem 8.5rem",
             }}

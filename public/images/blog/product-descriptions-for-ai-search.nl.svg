@@ -1,0 +1,116 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630" font-family="Inter, Helvetica, Arial, sans-serif">
+  <rect width="1200" height="630" fill="#fff9e8"/>
+  <g fill="#ffe14d"><circle cx="1186" cy="616" r="6.1"/>
+<circle cx="1164" cy="616" r="5.7"/>
+<circle cx="1142" cy="616" r="5.3"/>
+<circle cx="1120" cy="616" r="5.0"/>
+<circle cx="1098" cy="616" r="4.6"/>
+<circle cx="1076" cy="616" r="4.2"/>
+<circle cx="1054" cy="616" r="3.8"/>
+<circle cx="1032" cy="616" r="3.4"/>
+<circle cx="1186" cy="594" r="5.7"/>
+<circle cx="1164" cy="594" r="5.3"/>
+<circle cx="1142" cy="594" r="5.0"/>
+<circle cx="1120" cy="594" r="4.6"/>
+<circle cx="1098" cy="594" r="4.2"/>
+<circle cx="1076" cy="594" r="3.8"/>
+<circle cx="1054" cy="594" r="3.4"/>
+<circle cx="1032" cy="594" r="3.0"/>
+<circle cx="1186" cy="572" r="5.3"/>
+<circle cx="1164" cy="572" r="5.0"/>
+<circle cx="1142" cy="572" r="4.6"/>
+<circle cx="1120" cy="572" r="4.2"/>
+<circle cx="1098" cy="572" r="3.8"/>
+<circle cx="1076" cy="572" r="3.4"/>
+<circle cx="1054" cy="572" r="3.0"/>
+<circle cx="1032" cy="572" r="2.6"/>
+<circle cx="1186" cy="550" r="5.0"/>
+<circle cx="1164" cy="550" r="4.6"/>
+<circle cx="1142" cy="550" r="4.2"/>
+<circle cx="1120" cy="550" r="3.8"/>
+<circle cx="1098" cy="550" r="3.4"/>
+<circle cx="1076" cy="550" r="3.0"/>
+<circle cx="1054" cy="550" r="2.6"/>
+<circle cx="1032" cy="550" r="2.3"/>
+<circle cx="1186" cy="528" r="4.6"/>
+<circle cx="1164" cy="528" r="4.2"/>
+<circle cx="1142" cy="528" r="3.8"/>
+<circle cx="1120" cy="528" r="3.4"/>
+<circle cx="1098" cy="528" r="3.0"/>
+<circle cx="1076" cy="528" r="2.6"/>
+<circle cx="1054" cy="528" r="2.3"/>
+<circle cx="1032" cy="528" r="1.9"/>
+<circle cx="1186" cy="506" r="4.2"/>
+<circle cx="1164" cy="506" r="3.8"/>
+<circle cx="1142" cy="506" r="3.4"/>
+<circle cx="1120" cy="506" r="3.0"/>
+<circle cx="1098" cy="506" r="2.6"/>
+<circle cx="1076" cy="506" r="2.3"/>
+<circle cx="1054" cy="506" r="1.9"/>
+<circle cx="1032" cy="506" r="1.5"/>
+<circle cx="1186" cy="484" r="3.8"/>
+<circle cx="1164" cy="484" r="3.4"/>
+<circle cx="1142" cy="484" r="3.0"/>
+<circle cx="1120" cy="484" r="2.6"/>
+<circle cx="1098" cy="484" r="2.3"/>
+<circle cx="1076" cy="484" r="1.9"/>
+<circle cx="1054" cy="484" r="1.5"/>
+<circle cx="1186" cy="462" r="3.4"/>
+<circle cx="1164" cy="462" r="3.0"/>
+<circle cx="1142" cy="462" r="2.6"/>
+<circle cx="1120" cy="462" r="2.3"/>
+<circle cx="1098" cy="462" r="1.9"/>
+<circle cx="1076" cy="462" r="1.5"/></g> <g fill="#e3d3ff"><circle cx="14" cy="14" r="5.0"/>
+<circle cx="36" cy="14" r="4.5"/>
+<circle cx="58" cy="14" r="4.1"/>
+<circle cx="80" cy="14" r="3.7"/>
+<circle cx="102" cy="14" r="3.3"/>
+<circle cx="124" cy="14" r="2.9"/>
+<circle cx="14" cy="36" r="4.5"/>
+<circle cx="36" cy="36" r="4.1"/>
+<circle cx="58" cy="36" r="3.7"/>
+<circle cx="80" cy="36" r="3.3"/>
+<circle cx="102" cy="36" r="2.9"/>
+<circle cx="124" cy="36" r="2.5"/>
+<circle cx="14" cy="58" r="4.1"/>
+<circle cx="36" cy="58" r="3.7"/>
+<circle cx="58" cy="58" r="3.3"/>
+<circle cx="80" cy="58" r="2.9"/>
+<circle cx="102" cy="58" r="2.5"/>
+<circle cx="124" cy="58" r="2.0"/>
+<circle cx="14" cy="80" r="3.7"/>
+<circle cx="36" cy="80" r="3.3"/>
+<circle cx="58" cy="80" r="2.9"/>
+<circle cx="80" cy="80" r="2.5"/>
+<circle cx="102" cy="80" r="2.0"/>
+<circle cx="124" cy="80" r="1.6"/>
+<circle cx="14" cy="102" r="3.3"/>
+<circle cx="36" cy="102" r="2.9"/>
+<circle cx="58" cy="102" r="2.5"/>
+<circle cx="80" cy="102" r="2.0"/>
+<circle cx="102" cy="102" r="1.6"/>
+<circle cx="14" cy="124" r="2.9"/>
+<circle cx="36" cy="124" r="2.5"/>
+<circle cx="58" cy="124" r="2.0"/>
+<circle cx="80" cy="124" r="1.6"/></g>
+  <rect x="120" y="140" width="440" height="350" rx="16" fill="#fff" stroke="#e8e2d2" stroke-width="2"/>
+  <rect x="150" y="172" width="120" height="34" rx="8" fill="#ece7da"/>
+  <text x="168" y="196" font-size="20" font-weight="700" fill="#6f6a60">Voor</text>
+  <rect x="150" y="236" width="370" height="16" rx="8" fill="#e6e0d2"/>
+  <rect x="150" y="268" width="330" height="16" rx="8" fill="#e6e0d2"/>
+  <rect x="150" y="300" width="350" height="16" rx="8" fill="#e6e0d2"/>
+  <text x="150" y="380" font-size="26" fill="#a39d90" font-style="italic">‘Stijlvol en perfect</text>
+  <text x="150" y="414" font-size="26" fill="#a39d90" font-style="italic">voor elke gelegenheid!’</text>
+  <path d="M590 315 h40" stroke="#1d1c1a" stroke-width="6" stroke-linecap="round"/>
+  <path d="M620 300 l18 15 -18 15" stroke="#1d1c1a" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="660" y="110" width="440" height="410" rx="16" fill="#fff" stroke="#1d1c1a" stroke-width="4"/>
+  <rect x="690" y="142" width="268" height="34" rx="8" fill="#ffe14d"/>
+  <text x="706" y="166" font-size="20" font-weight="700" fill="#1d1c1a">Geoptimaliseerd voor AI</text>
+  <g font-size="22" fill="#1d1c1a" font-weight="600">
+    <rect x="690" y="208" width="30" height="30" rx="15" fill="#c6efdc"/><path d="M698 223 l6 6 10 -12" stroke="#1d1c1a" stroke-width="3" fill="none"/><text x="734" y="231">Gebruik: natte paden</text>
+    <rect x="690" y="262" width="30" height="30" rx="15" fill="#c6efdc"/><path d="M698 277 l6 6 10 -12" stroke="#1d1c1a" stroke-width="3" fill="none"/><text x="734" y="285">Pasvorm: brede teenbox</text>
+    <rect x="690" y="316" width="30" height="30" rx="15" fill="#c6efdc"/><path d="M698 331 l6 6 10 -12" stroke="#1d1c1a" stroke-width="3" fill="none"/><text x="734" y="339">Maten: EU 38–47</text>
+    <rect x="690" y="370" width="30" height="30" rx="15" fill="#c6efdc"/><path d="M698 385 l6 6 10 -12" stroke="#1d1c1a" stroke-width="3" fill="none"/><text x="734" y="393">Waterdicht, 8 mm drop</text>
+    <rect x="690" y="424" width="30" height="30" rx="15" fill="#c6efdc"/><path d="M698 439 l6 6 10 -12" stroke="#1d1c1a" stroke-width="3" fill="none"/><text x="734" y="447">Valt normaal</text>
+  </g>
+</svg>

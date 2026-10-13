@@ -1,0 +1,119 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630" font-family="Inter, Helvetica, Arial, sans-serif">
+  <rect width="1200" height="630" fill="#fff9e8"/>
+  <g fill="#ffe14d"><circle cx="1186" cy="616" r="6.1"/>
+<circle cx="1164" cy="616" r="5.7"/>
+<circle cx="1142" cy="616" r="5.3"/>
+<circle cx="1120" cy="616" r="5.0"/>
+<circle cx="1098" cy="616" r="4.6"/>
+<circle cx="1076" cy="616" r="4.2"/>
+<circle cx="1054" cy="616" r="3.8"/>
+<circle cx="1032" cy="616" r="3.4"/>
+<circle cx="1186" cy="594" r="5.7"/>
+<circle cx="1164" cy="594" r="5.3"/>
+<circle cx="1142" cy="594" r="5.0"/>
+<circle cx="1120" cy="594" r="4.6"/>
+<circle cx="1098" cy="594" r="4.2"/>
+<circle cx="1076" cy="594" r="3.8"/>
+<circle cx="1054" cy="594" r="3.4"/>
+<circle cx="1032" cy="594" r="3.0"/>
+<circle cx="1186" cy="572" r="5.3"/>
+<circle cx="1164" cy="572" r="5.0"/>
+<circle cx="1142" cy="572" r="4.6"/>
+<circle cx="1120" cy="572" r="4.2"/>
+<circle cx="1098" cy="572" r="3.8"/>
+<circle cx="1076" cy="572" r="3.4"/>
+<circle cx="1054" cy="572" r="3.0"/>
+<circle cx="1032" cy="572" r="2.6"/>
+<circle cx="1186" cy="550" r="5.0"/>
+<circle cx="1164" cy="550" r="4.6"/>
+<circle cx="1142" cy="550" r="4.2"/>
+<circle cx="1120" cy="550" r="3.8"/>
+<circle cx="1098" cy="550" r="3.4"/>
+<circle cx="1076" cy="550" r="3.0"/>
+<circle cx="1054" cy="550" r="2.6"/>
+<circle cx="1032" cy="550" r="2.3"/>
+<circle cx="1186" cy="528" r="4.6"/>
+<circle cx="1164" cy="528" r="4.2"/>
+<circle cx="1142" cy="528" r="3.8"/>
+<circle cx="1120" cy="528" r="3.4"/>
+<circle cx="1098" cy="528" r="3.0"/>
+<circle cx="1076" cy="528" r="2.6"/>
+<circle cx="1054" cy="528" r="2.3"/>
+<circle cx="1032" cy="528" r="1.9"/>
+<circle cx="1186" cy="506" r="4.2"/>
+<circle cx="1164" cy="506" r="3.8"/>
+<circle cx="1142" cy="506" r="3.4"/>
+<circle cx="1120" cy="506" r="3.0"/>
+<circle cx="1098" cy="506" r="2.6"/>
+<circle cx="1076" cy="506" r="2.3"/>
+<circle cx="1054" cy="506" r="1.9"/>
+<circle cx="1032" cy="506" r="1.5"/>
+<circle cx="1186" cy="484" r="3.8"/>
+<circle cx="1164" cy="484" r="3.4"/>
+<circle cx="1142" cy="484" r="3.0"/>
+<circle cx="1120" cy="484" r="2.6"/>
+<circle cx="1098" cy="484" r="2.3"/>
+<circle cx="1076" cy="484" r="1.9"/>
+<circle cx="1054" cy="484" r="1.5"/>
+<circle cx="1186" cy="462" r="3.4"/>
+<circle cx="1164" cy="462" r="3.0"/>
+<circle cx="1142" cy="462" r="2.6"/>
+<circle cx="1120" cy="462" r="2.3"/>
+<circle cx="1098" cy="462" r="1.9"/>
+<circle cx="1076" cy="462" r="1.5"/></g> <g fill="#e3d3ff"><circle cx="14" cy="14" r="5.0"/>
+<circle cx="36" cy="14" r="4.5"/>
+<circle cx="58" cy="14" r="4.1"/>
+<circle cx="80" cy="14" r="3.7"/>
+<circle cx="102" cy="14" r="3.3"/>
+<circle cx="124" cy="14" r="2.9"/>
+<circle cx="14" cy="36" r="4.5"/>
+<circle cx="36" cy="36" r="4.1"/>
+<circle cx="58" cy="36" r="3.7"/>
+<circle cx="80" cy="36" r="3.3"/>
+<circle cx="102" cy="36" r="2.9"/>
+<circle cx="124" cy="36" r="2.5"/>
+<circle cx="14" cy="58" r="4.1"/>
+<circle cx="36" cy="58" r="3.7"/>
+<circle cx="58" cy="58" r="3.3"/>
+<circle cx="80" cy="58" r="2.9"/>
+<circle cx="102" cy="58" r="2.5"/>
+<circle cx="124" cy="58" r="2.0"/>
+<circle cx="14" cy="80" r="3.7"/>
+<circle cx="36" cy="80" r="3.3"/>
+<circle cx="58" cy="80" r="2.9"/>
+<circle cx="80" cy="80" r="2.5"/>
+<circle cx="102" cy="80" r="2.0"/>
+<circle cx="124" cy="80" r="1.6"/>
+<circle cx="14" cy="102" r="3.3"/>
+<circle cx="36" cy="102" r="2.9"/>
+<circle cx="58" cy="102" r="2.5"/>
+<circle cx="80" cy="102" r="2.0"/>
+<circle cx="102" cy="102" r="1.6"/>
+<circle cx="14" cy="124" r="2.9"/>
+<circle cx="36" cy="124" r="2.5"/>
+<circle cx="58" cy="124" r="2.0"/>
+<circle cx="80" cy="124" r="1.6"/></g>
+  <rect x="560" y="92" width="520" height="66" rx="14" fill="#1d1c1a"/>
+  <text x="590" y="134" font-size="24" fill="#fff">Wasserdichte Stiefel für den Arbeitsweg?</text>
+  <rect x="300" y="190" width="780" height="330" rx="16" fill="#fff" stroke="#e8e2d2" stroke-width="2"/>
+  <g fill="#a98bf0"><path d="M340 222 l6 14 14 6 -14 6 -6 14 -6 -14 -14 -6 14 -6z"/></g>
+  <text x="372" y="250" font-size="18" font-weight="700" fill="#8a857a" letter-spacing="1.5">KI-ASSISTENT</text>
+  <rect x="340" y="276" width="560" height="14" rx="7" fill="#ece7da"/>
+  <rect x="340" y="302" width="440" height="14" rx="7" fill="#ece7da"/>
+  <rect x="340" y="342" width="700" height="146" rx="12" fill="#fff" stroke="#e8e2d2" stroke-width="2"/>
+  <rect x="360" y="360" width="128" height="110" rx="8" fill="#ffe680"/>
+  <g transform="translate(376 382)">
+    <path d="M14 0 h40 a4 4 0 0 1 4 4 v38 c18 3 34 9 40 17 c4 6 2 13 -4 13 h-92 a4 4 0 0 1 -4 -4 v-62 a6 6 0 0 1 6 -6z" fill="#1d1c1a"/>
+    <rect x="2" y="70" width="102" height="12" rx="5" fill="#fff"/>
+    <rect x="24" y="0" width="12" height="8" rx="2" fill="#ff8fb3"/>
+    <path d="M58 40 c-6 10 -6 20 0 30" stroke="#3a3833" stroke-width="3" fill="none"/>
+  </g>
+  <rect x="512" y="372" width="260" height="22" rx="6" fill="#1d1c1a"/>
+  <rect x="512" y="406" width="170" height="14" rx="7" fill="#d9d3c4"/>
+  <rect x="512" y="434" width="120" height="30" rx="8" fill="#c6efdc"/>
+  <rect x="642" y="434" width="110" height="30" rx="8" fill="#c6efdc"/>
+  <rect x="762" y="434" width="130" height="30" rx="8" fill="#c6efdc"/>
+  <rect x="220" y="492" width="330" height="62" rx="12" fill="#ffe14d"/>
+  <path d="M248 532 l14 -14 10 10 18 -20" stroke="#1d1c1a" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="306" y="534" font-size="24" font-weight="700" fill="#1d1c1a">Empfohlen</text>
+</svg>

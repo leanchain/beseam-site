@@ -1,4 +1,4 @@
-import { Figtree, Lora } from "next/font/google";
+import { Figtree, Inter_Tight } from "next/font/google";
 
 import type { Metadata } from "next";
 
@@ -17,22 +17,21 @@ const figtree = Figtree({
   preload: true,
 });
 
-// Established display face for marketing headings and serif accents.
-const lora = Lora({
+// Display face for marketing headings.
+const interTight = Inter_Tight({
   subsets: ["latin"],
-  weight: ["400", "600", "700"],
-  variable: "--font-lora",
+  variable: "--font-inter-tight",
   display: "swap",
   preload: true,
 });
 
 export const metadata: Metadata = {
   title: {
-    default: "Beseam | Find why your products are being overlooked",
+    default: "Beseam | Make AI a revenue channel for your webshop",
     template: "%s | Beseam",
   },
   description:
-    "Beseam finds why important ecommerce products are being overlooked, helps fix the problems worth acting on first, and verifies what changed.",
+    "Beseam is the easiest way to get your products recommended by AI to millions of shoppers. Optimise descriptions, content and technical performance in minutes.",
   authors: [{ name: "Beseam" }],
   creator: "Beseam",
   publisher: "Beseam",
@@ -58,9 +57,9 @@ export const metadata: Metadata = {
     apple: [{ url: "/favicon/apple-touch-icon.png", sizes: "180x180" }],
   },
   openGraph: {
-    title: "Beseam | Find why your products are being overlooked",
+    title: "Beseam | Make AI a revenue channel for your webshop",
     description:
-      "Beseam finds why important ecommerce products are being overlooked, helps fix the problems worth acting on first, and verifies what changed.",
+      "Beseam is the easiest way to get your products recommended by AI to millions of shoppers. Optimise descriptions, content and technical performance in minutes.",
     url: "/",
     siteName: "Beseam",
     type: "website",
@@ -69,16 +68,16 @@ export const metadata: Metadata = {
         url: HOME_SOCIAL_IMAGE,
         width: 1200,
         height: 630,
-        alt: "Beseam showing where shoppers find, choose, and buy products",
+        alt: "Beseam: make AI a revenue channel for your webshop",
         type: "image/png",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Beseam | Find why your products are being overlooked",
+    title: "Beseam | Make AI a revenue channel for your webshop",
     description:
-      "Beseam finds why important ecommerce products are being overlooked, helps fix the problems worth acting on first, and verifies what changed.",
+      "Beseam is the easiest way to get your products recommended by AI to millions of shoppers. Optimise descriptions, content and technical performance in minutes.",
     images: [HOME_SOCIAL_IMAGE],
   },
 };
@@ -95,7 +94,7 @@ export default function RootLayout({
         name: "Beseam",
         url: `${SITE_URL}/`,
         description:
-          "Beseam finds why important ecommerce products are being overlooked, helps merchants fix the highest-value problems, and verifies what changed afterward.",
+          "Beseam makes AI a revenue channel for webshops: it gets products recommended by AI assistants like ChatGPT, Claude and Gemini, and links AI visibility to traffic and revenue.",
         sameAs: ["https://www.linkedin.com/company/beseam/"],
         logo: {
           "@type": "ImageObject",
@@ -115,7 +114,9 @@ export default function RootLayout({
   };
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${figtree.variable} ${lora.variable} antialiased`}>
+      <body
+        className={`${figtree.variable} ${interTight.variable} antialiased`}
+      >
         {/* `Reveal` waits for the viewport before it plays, so without
             scripting its sections would stay at opacity 0 forever. Twenty-odd
             call sites, one fallback. */}

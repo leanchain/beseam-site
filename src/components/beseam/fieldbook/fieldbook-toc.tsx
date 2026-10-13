@@ -38,7 +38,7 @@ export default function FieldbookToc({
   return (
     <aside className="hidden xl:block">
       <div className="sticky top-[9.5rem] border-l border-black/14 pl-5">
-        <p className="font-mono text-[9px] font-semibold uppercase tracking-[0.12em] text-black/38">
+        <p className="font-display text-[9px] font-semibold uppercase tracking-[0.08em] text-black/38">
           On this page
         </p>
         <ul className="mt-4 space-y-2.5">
