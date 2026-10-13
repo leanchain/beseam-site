@@ -83,7 +83,7 @@ export default function FieldbookSearch({
         onClick={() => setOpen(true)}
         className={
           compact
-            ? "inline-flex h-10 items-center gap-2 border border-black/18 bg-[var(--beseam-surface)] px-3 text-[12px] font-medium text-black/58 transition-colors hover:border-black/30 hover:text-[var(--beseam-ink)]"
+            ? "rounded-button inline-flex h-10 items-center gap-2 border border-black/18 bg-[var(--beseam-surface)] px-3 text-[12px] font-medium text-black/58 transition-colors hover:border-black/30 hover:text-[var(--beseam-ink)]"
             : "flex min-h-11 w-full items-center justify-between gap-4 border border-black/18 bg-[var(--beseam-surface)] px-4 text-left text-[13px] text-black/48 transition-colors hover:border-black/30 hover:text-[var(--beseam-ink)]"
         }
         aria-label="Search the Commerce Fieldbook"
@@ -123,7 +123,7 @@ export default function FieldbookSearch({
               <button
                 type="button"
                 onClick={() => setOpen(false)}
-                className="inline-flex h-10 w-10 items-center justify-center border border-black/16 text-black/48 hover:text-[var(--beseam-ink)]"
+                className="rounded-button inline-flex h-10 w-10 items-center justify-center border border-black/16 text-black/48 hover:text-[var(--beseam-ink)]"
                 aria-label="Close search"
               >
                 <X className="h-4 w-4" />
@@ -139,7 +139,7 @@ export default function FieldbookSearch({
                     className="group grid w-full grid-cols-[1fr_auto] gap-5 border-b border-black/12 px-4 py-4 text-left transition-colors last:border-b-0 hover:bg-[var(--beseam-panel)]"
                   >
                     <span>
-                      <span className="font-mono text-[9px] uppercase tracking-[0.09em] text-[var(--beseam-accent)]">
+                      <span className="font-display font-semibold text-[9px] uppercase tracking-[0.09em] text-[var(--beseam-accent)]">
                         {entry.section} · {entry.category}
                       </span>
                       <span className="mt-1.5 block text-[15px] font-semibold text-[var(--beseam-ink)]">
@@ -163,7 +163,7 @@ export default function FieldbookSearch({
                 </div>
               )}
             </div>
-            <div className="flex items-center justify-between border-t border-black/14 px-4 py-3 font-mono text-[9px] uppercase tracking-[0.08em] text-black/36">
+            <div className="flex items-center justify-between border-t border-black/14 px-4 py-3 font-display font-semibold text-[9px] uppercase tracking-[0.08em] text-black/36">
               <span>{results.length} results</span>
               <span>Esc to close · / to search</span>
             </div>

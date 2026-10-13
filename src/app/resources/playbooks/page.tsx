@@ -20,7 +20,7 @@ export default function PlaybooksPage() {
   return (
     <FieldbookShell currentHref="/resources/playbooks">
       <header className="border-b border-black/18 pb-10">
-        <p className="font-mono text-[9px] uppercase tracking-[0.1em] text-[var(--beseam-accent)]">
+        <p className="font-display font-semibold text-[9px] uppercase tracking-[0.08em] text-[var(--beseam-accent)]">
           Commerce Fieldbook / Playbooks
         </p>
         <h1 className="mt-6 max-w-[13ch] font-serif text-[clamp(3.2rem,5vw,5.2rem)] leading-[0.98] tracking-[-0.05em]">
@@ -42,7 +42,7 @@ export default function PlaybooksPage() {
               {String(index + 1).padStart(2, "0")}
             </span>
             <span>
-              <span className="font-mono text-[8px] uppercase tracking-[0.09em] text-[var(--beseam-accent)]">
+              <span className="font-display font-semibold text-[8px] uppercase tracking-[0.09em] text-[var(--beseam-accent)]">
                 {playbook.frontmatter.category}
               </span>
               <span className="mt-2 block text-[17px] font-semibold text-[var(--beseam-ink)]">

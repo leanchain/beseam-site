@@ -136,7 +136,7 @@ export default function MarketingDetailPage({
                   eventCategory="conversion"
                   placement={page.slug + "_hero"}
                   preserveUtm
-                  className="group inline-flex min-h-12 items-center justify-center gap-2 bg-signal-ink px-6 text-[15px] font-semibold text-white"
+                  className="rounded-button group inline-flex min-h-12 items-center justify-center gap-2 bg-signal-ink px-6 text-[15px] font-semibold text-white"
                 >
                   Start for free
                   <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
@@ -211,7 +211,7 @@ export default function MarketingDetailPage({
                 <div className="grid gap-px border border-rule bg-rule sm:grid-cols-2">
                   {PLATFORM_SURFACES.map((surface, index) => (
                     <article key={surface.stage} className="bg-panel-white p-6">
-                      <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.1em] text-signal-ink">
+                      <p className="font-display text-[11px] font-semibold uppercase tracking-[0.08em] text-signal-ink">
                         0{index + 1} · {surface.stage}
                       </p>
                       <h3 className="mt-4 max-w-[24ch] text-[17px] font-semibold leading-snug text-ink">
@@ -235,7 +235,7 @@ export default function MarketingDetailPage({
               <div className="mt-16 grid gap-10 lg:grid-cols-2 lg:gap-12">
                 <div>
                   <div className="mb-5">
-                    <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.1em] text-signal-ink">
+                    <p className="font-display text-[11px] font-semibold uppercase tracking-[0.08em] text-signal-ink">
                       Act
                     </p>
                     <h3 className="mt-3 text-[20px] font-semibold text-ink">
@@ -246,7 +246,7 @@ export default function MarketingDetailPage({
                 </div>
                 <div>
                   <div className="mb-5">
-                    <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.1em] text-signal-ink">
+                    <p className="font-display text-[11px] font-semibold uppercase tracking-[0.08em] text-signal-ink">
                       Learn
                     </p>
                     <h3 className="mt-3 text-[20px] font-semibold text-ink">
@@ -407,7 +407,7 @@ export default function MarketingDetailPage({
               eventCategory="conversion"
               placement={page.slug + "_footer"}
               preserveUtm
-              className="group inline-flex min-h-12 items-center justify-center gap-2 bg-signal-ink px-6 text-[15px] font-semibold text-white transition-colors hover:bg-pigment"
+              className="rounded-button group inline-flex min-h-12 items-center justify-center gap-2 bg-signal-ink px-6 text-[15px] font-semibold text-white transition-colors hover:bg-pigment"
             >
               Start for free
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />

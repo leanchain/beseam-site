@@ -6,6 +6,7 @@ import { ArrowRight } from "lucide-react";
 
 import TrackedLink from "@/components/beseam/tracked-link";
 import { useDictionary } from "@/i18n/use-locale";
+import { APP_REGISTER_URL } from "@/lib/app-urls";
 
 /** Roughly one screen of scroll: the bar appears once the hero copy is behind you. */
 const SHOW_AFTER_SCROLL_Y = 600;
@@ -64,12 +65,12 @@ export default function MobileStickyCta() {
       className="fixed bottom-4 left-4 right-4 z-40 md:hidden"
     >
       <TrackedLink
-        href="/scan"
+        href={APP_REGISTER_URL}
         eventName="marketing_primary_cta_clicked"
         eventCategory="conversion"
         placement="mobile_sticky"
         preserveUtm
-        className="flex min-h-12 items-center justify-center gap-3 border border-white/18 bg-signal-ink px-5 text-sm font-semibold text-white"
+        className="rounded-button flex min-h-12 items-center justify-center gap-3 border border-white/18 bg-signal-ink px-5 text-sm font-semibold text-white"
       >
         {t.nav.cta}
         <ArrowRight className="h-4 w-4" />

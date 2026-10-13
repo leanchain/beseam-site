@@ -19,11 +19,12 @@ export default function WhyBeseam() {
       <div className="mx-auto max-w-[92rem] px-5 py-16 sm:px-8 sm:py-20 lg:px-10 lg:py-24">
         <Reveal>
           <div>
-            <p className="font-mono text-[12px] font-semibold uppercase tracking-[0.14em] text-signal-ink">
+            <p className="font-display text-[12px] font-semibold uppercase tracking-[0.08em] text-signal-ink">
               Why Beseam
             </p>
             <h2 className="mt-5 max-w-[20ch] text-balance font-display text-[clamp(2rem,3.2vw,3.2rem)] font-normal leading-[1.04] tracking-[-0.02em] text-ink-deep">
-              You don&rsquo;t need another dashboard. You need to know what to fix next.
+              You don&rsquo;t need another dashboard. You need to know what to
+              fix next.
             </h2>
           </div>
         </Reveal>
@@ -31,7 +32,7 @@ export default function WhyBeseam() {
         <div className="mt-10 grid gap-px border border-black/14 bg-black/14 lg:grid-cols-2">
           <Reveal delay={0.04}>
             <article className="h-full bg-white p-7 sm:p-8">
-              <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.11em] text-signal-ink">
+              <p className="font-display text-[11px] font-semibold uppercase tracking-[0.08em] text-signal-ink">
                 Prioritize
               </p>
               <h3 className="mt-4 max-w-[18ch] font-display text-[clamp(1.6rem,2.4vw,2.2rem)] font-normal leading-[1.1] tracking-[-0.02em] text-ink-deep">
@@ -46,7 +47,10 @@ export default function WhyBeseam() {
                     key={signal}
                     className="flex items-center gap-3 border-b border-black/12 py-3 text-[13px] text-black/66 last:border-b-0"
                   >
-                    <Check className="h-3.5 w-3.5 shrink-0 text-signal-ink" aria-hidden="true" />
+                    <Check
+                      className="h-3.5 w-3.5 shrink-0 text-signal-ink"
+                      aria-hidden="true"
+                    />
                     {signal}
                   </li>
                 ))}
@@ -56,7 +60,7 @@ export default function WhyBeseam() {
 
           <Reveal delay={0.06}>
             <article className="h-full bg-[#fff8f4] p-7 sm:p-8">
-              <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.11em] text-signal-ink">
+              <p className="font-display text-[11px] font-semibold uppercase tracking-[0.08em] text-signal-ink">
                 Continuous loop
               </p>
               <h3 className="mt-4 max-w-[18ch] font-display text-[clamp(1.6rem,2.4vw,2.2rem)] font-normal leading-[1.1] tracking-[-0.02em] text-ink-deep">
@@ -64,10 +68,11 @@ export default function WhyBeseam() {
               </h3>
               <p className="mt-4 max-w-[44ch] text-[15px] leading-[1.7] text-black/64">
                 It keeps finding what to improve, prepares the change, gets your
-                approval when customers will see it, applies it, and checks what happened.
+                approval when customers will see it, applies it, and checks what
+                happened.
               </p>
               <Link
-                href="/how-we-work"
+                href="/#how-it-works"
                 className="group mt-6 inline-flex min-h-11 items-center gap-2 text-[14px] font-semibold text-ink-deep underline decoration-black/30 underline-offset-6 hover:decoration-signal-ink"
               >
                 See how Beseam works

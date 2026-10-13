@@ -46,7 +46,7 @@ function StepHeader({
 }) {
   return (
     <div>
-      <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.12em] text-signal-ink">
+      <p className="font-display text-[11px] font-semibold uppercase tracking-[0.08em] text-signal-ink">
         {number} · {title}
       </p>
       <div className="mt-4 max-w-[42ch] text-[15px] leading-[1.7] text-black/64">
@@ -66,7 +66,7 @@ export default function BuyingDecisionStory() {
         <Reveal>
           <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(22rem,0.78fr)] lg:items-end lg:gap-20">
             <div>
-              <p className="font-mono text-[12px] font-semibold uppercase tracking-[0.14em] text-signal-ink">
+              <p className="font-display text-[12px] font-semibold uppercase tracking-[0.08em] text-signal-ink">
                 One buying decision
               </p>
               <h2 className="mt-6 max-w-[18ch] text-balance font-display text-[clamp(2.4rem,4vw,4rem)] font-normal leading-[1.03] tracking-[-0.02em] text-ink-deep">
@@ -80,7 +80,7 @@ export default function BuyingDecisionStory() {
                 what may explain the gap, what should change, and what happens
                 when the same question is checked again.
               </p>
-              <p className="mt-4 font-mono text-[11px] font-semibold uppercase tracking-[0.1em] text-signal-ink">
+              <p className="mt-4 font-display text-[11px] font-semibold uppercase tracking-[0.08em] text-signal-ink">
                 Observe → Understand → Act → Learn
               </p>
             </div>
@@ -100,7 +100,7 @@ export default function BuyingDecisionStory() {
                 key={label}
                 className={`relative px-4 py-5 sm:px-5 ${index > 0 ? "border-t border-black/12 sm:border-l sm:border-t-0" : ""}`}
               >
-                <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.1em] text-black/46">
+                <p className="font-display text-[10px] font-semibold uppercase tracking-[0.08em] text-black/46">
                   {label}
                 </p>
                 <p className="mt-2 text-[13px] font-semibold leading-[1.45] text-ink-deep">
@@ -128,7 +128,7 @@ export default function BuyingDecisionStory() {
                 <div className="border border-black/16 bg-ground">
                   <div className="flex flex-wrap items-center justify-between gap-3 border-b border-black/12 bg-white px-5 py-4">
                     <div>
-                      <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.1em] text-black/44">
+                      <p className="font-display text-[10px] font-semibold uppercase tracking-[0.08em] text-black/44">
                         Shopper question · illustrative example
                       </p>
                       <p className="mt-1 text-[15px] font-semibold text-ink-deep">
@@ -138,7 +138,7 @@ export default function BuyingDecisionStory() {
                   </div>
                   <div className="grid sm:grid-cols-3">
                     <div className="border-b border-black/12 p-5 sm:border-b-0 sm:border-r">
-                      <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.1em] text-black/44">
+                      <p className="font-display text-[10px] font-semibold uppercase tracking-[0.08em] text-black/44">
                         ChatGPT
                       </p>
                       <p className="mt-4 text-[14px] font-semibold text-ink-deep">
@@ -153,7 +153,7 @@ export default function BuyingDecisionStory() {
                       </p>
                     </div>
                     <div className="border-b border-black/12 p-5 sm:border-b-0 sm:border-r">
-                      <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.1em] text-black/44">
+                      <p className="font-display text-[10px] font-semibold uppercase tracking-[0.08em] text-black/44">
                         Google AI Mode
                       </p>
                       <p className="mt-4 text-[14px] font-semibold text-ink-deep">
@@ -168,7 +168,7 @@ export default function BuyingDecisionStory() {
                       </p>
                     </div>
                     <div className="p-5">
-                      <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.1em] text-black/44">
+                      <p className="font-display text-[10px] font-semibold uppercase tracking-[0.08em] text-black/44">
                         Copilot
                       </p>
                       <p className="mt-4 text-[14px] font-semibold text-ink-deep">
@@ -189,14 +189,14 @@ export default function BuyingDecisionStory() {
                   <div className="border border-black/16 bg-white">
                     <div className="flex items-center justify-between gap-4 border-b border-black/12 px-5 py-4">
                       <div>
-                        <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.1em] text-black/44">
+                        <p className="font-display text-[10px] font-semibold uppercase tracking-[0.08em] text-black/44">
                           Product page · illustrative example
                         </p>
                         <p className="mt-1 text-[16px] font-semibold text-ink-deep">
                           Urban Shell Jacket
                         </p>
                       </div>
-                      <span className="border border-black/16 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.08em] text-black/48">
+                      <span className="border border-black/16 px-2 py-1 font-display font-semibold text-[10px] uppercase tracking-[0.08em] text-black/48">
                         In stock
                       </span>
                     </div>
@@ -228,8 +228,8 @@ export default function BuyingDecisionStory() {
                       )}
                     </div>
                   </div>
-                  <div className="border border-black/16 bg-[#faf1eb] p-6">
-                    <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.1em] text-black/44">
+                  <div className="border border-black/16 bg-[#fff9e8] p-6">
+                    <p className="font-display text-[10px] font-semibold uppercase tracking-[0.08em] text-black/44">
                       The gap
                     </p>
                     <p className="mt-4 text-[17px] font-semibold leading-snug text-ink-deep">
@@ -259,7 +259,7 @@ export default function BuyingDecisionStory() {
                     }
                   >
                     <p
-                      className={`font-mono text-[10px] font-semibold uppercase tracking-[0.1em] ${item.active ? "text-signal-ink" : "text-black/42"}`}
+                      className={`font-display text-[10px] font-semibold uppercase tracking-[0.08em] ${item.active ? "text-signal-ink" : "text-black/42"}`}
                     >
                       {item.state}
                     </p>
@@ -297,13 +297,13 @@ export default function BuyingDecisionStory() {
                         Shopify changes prepared
                       </p>
                     </div>
-                    <span className="border border-signal-ink/30 bg-signal-ink/[0.07] px-2.5 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.09em] text-signal-ink">
+                    <span className="border border-signal-ink/30 bg-signal-ink/[0.07] px-2.5 py-1 font-display text-[10px] font-semibold uppercase tracking-[0.09em] text-signal-ink">
                       Awaiting approval
                     </span>
                   </div>
                   <div className="grid gap-px bg-black/12 sm:grid-cols-2">
                     <div className="bg-white p-6">
-                      <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.1em] text-black/44">
+                      <p className="font-display text-[10px] font-semibold uppercase tracking-[0.08em] text-black/44">
                         Product copy
                       </p>
                       <p className="mt-3 text-[15px] font-semibold text-ink-deep">
@@ -314,7 +314,7 @@ export default function BuyingDecisionStory() {
                       </p>
                     </div>
                     <div className="bg-white p-6">
-                      <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.1em] text-black/44">
+                      <p className="font-display text-[10px] font-semibold uppercase tracking-[0.08em] text-black/44">
                         Fit guidance
                       </p>
                       <p className="mt-3 text-[15px] font-semibold text-ink-deep">

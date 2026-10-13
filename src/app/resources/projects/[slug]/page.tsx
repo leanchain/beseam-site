@@ -150,7 +150,7 @@ export default async function ResourcePage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <header className="border-b border-black/18 pb-10">
-        <div className="flex flex-wrap items-center gap-2 font-mono text-[9px] uppercase tracking-[0.1em] text-black/42">
+        <div className="flex flex-wrap items-center gap-2 font-display font-semibold text-[9px] uppercase tracking-[0.08em] text-black/42">
           <Link
             href="/resources/projects"
             className="text-[var(--beseam-accent)]"
@@ -167,10 +167,10 @@ export default async function ResourcePage({
           {resource.summary}
         </p>
         <div className="mt-7 flex flex-wrap gap-2">
-          <span className="border border-black/16 px-2.5 py-1 font-mono text-[8px] uppercase tracking-[0.08em] text-[var(--beseam-accent)]">
+          <span className="border border-black/16 px-2.5 py-1 font-display font-semibold text-[8px] uppercase tracking-[0.08em] text-[var(--beseam-accent)]">
             {resource.kind}
           </span>
-          <span className="border border-black/16 px-2.5 py-1 font-mono text-[8px] uppercase tracking-[0.08em] text-black/46">
+          <span className="border border-black/16 px-2.5 py-1 font-display font-semibold text-[8px] uppercase tracking-[0.08em] text-black/46">
             Reviewed {resource.reviewedAt}
           </span>
         </div>
@@ -219,7 +219,7 @@ export default async function ResourcePage({
           {resource.tags.map((tag) => (
             <span
               key={tag}
-              className="border border-black/16 bg-[var(--beseam-panel)] px-2.5 py-1 font-mono text-[8px] uppercase tracking-[0.07em] text-black/46"
+              className="border border-black/16 bg-[var(--beseam-panel)] px-2.5 py-1 font-display font-semibold text-[8px] uppercase tracking-[0.07em] text-black/46"
             >
               {tag}
             </span>
@@ -234,7 +234,7 @@ export default async function ResourcePage({
         </h2>
         <dl className="grid gap-px border border-black/16 bg-black/16 sm:grid-cols-2">
           <div className="bg-[var(--beseam-surface)] p-5">
-            <dt className="font-mono text-[8px] uppercase tracking-[0.09em] text-black/36">
+            <dt className="font-display font-semibold text-[8px] uppercase tracking-[0.09em] text-black/36">
               Maintainer
             </dt>
             <dd className="mt-2 text-[14px] font-semibold text-[var(--beseam-ink)]">
@@ -242,7 +242,7 @@ export default async function ResourcePage({
             </dd>
           </div>
           <div className="bg-[var(--beseam-surface)] p-5">
-            <dt className="font-mono text-[8px] uppercase tracking-[0.09em] text-black/36">
+            <dt className="font-display font-semibold text-[8px] uppercase tracking-[0.09em] text-black/36">
               License or usage boundary
             </dt>
             <dd className="mt-2 text-[14px] font-semibold text-[var(--beseam-ink)]">
@@ -270,7 +270,7 @@ export default async function ResourcePage({
                 href={document.href}
                 className="group bg-[var(--beseam-surface)] p-5 transition-colors hover:bg-[var(--beseam-panel)]"
               >
-                <p className="font-mono text-[8px] uppercase tracking-[0.08em] text-[var(--beseam-accent)]">
+                <p className="font-display font-semibold text-[8px] uppercase tracking-[0.08em] text-[var(--beseam-accent)]">
                   {document.frontmatter.kind}
                 </p>
                 <h3 className="mt-3 text-[14px] font-semibold text-[var(--beseam-ink)]">
@@ -301,7 +301,7 @@ export default async function ResourcePage({
                 className="group flex items-center justify-between gap-5 border-b border-black/14 py-4"
               >
                 <span>
-                  <span className="font-mono text-[8px] uppercase tracking-[0.08em] text-black/36">
+                  <span className="font-display font-semibold text-[8px] uppercase tracking-[0.08em] text-black/36">
                     Also in {related.category}
                   </span>
                   <span className="mt-1 block text-[13px] font-semibold text-[var(--beseam-ink)]">

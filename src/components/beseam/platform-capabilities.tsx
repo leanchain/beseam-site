@@ -95,7 +95,7 @@ export default function PlatformCapabilities() {
         <Reveal>
           <div className="grid gap-8 lg:grid-cols-[minmax(0,0.78fr)_minmax(0,1.22fr)] lg:items-end lg:gap-20">
             <div>
-              <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.12em] text-signal-ink">
+              <p className="font-display text-[11px] font-semibold uppercase tracking-[0.08em] text-signal-ink">
                 Capabilities
               </p>
               <h2 className="mt-4 max-w-[17ch] font-display text-[clamp(2.2rem,3.6vw,3.4rem)] font-normal leading-[1.04] tracking-[-0.02em] text-ink-deep">
@@ -128,7 +128,7 @@ export default function PlatformCapabilities() {
                 <div className={group.more ? "lg:max-w-[34rem]" : undefined}>
                   <div className="flex items-center justify-between gap-4">
                     <p
-                      className={`font-mono text-[10.5px] font-semibold uppercase tracking-[0.11em] ${
+                      className={`font-display text-[10.5px] font-semibold uppercase tracking-[0.08em] ${
                         group.more ? "text-signal" : "text-signal-ink"
                       }`}
                     >

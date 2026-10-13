@@ -204,7 +204,9 @@ describe("landing Umami config", () => {
   });
 
   it("uses committed public defaults in production so Git builds cannot silently disable it", () => {
-    expect(landingUmamiConfig({}, "production")).toEqual(BESEAM_PRODUCTION_UMAMI_CONFIG);
+    expect(landingUmamiConfig({}, "production")).toEqual(
+      BESEAM_PRODUCTION_UMAMI_CONFIG,
+    );
   });
 
   it("lets build-time values override production defaults", () => {

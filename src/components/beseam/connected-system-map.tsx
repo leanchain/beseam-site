@@ -38,7 +38,7 @@ import { useDictionary } from "@/i18n/use-locale";
 const SIGNALS = [
   {
     id: "discovery",
-    hue: "#b8441d",
+    hue: "#1d1c1a",
     inputs: [
       "chatgpt",
       "google_ai_mode",
@@ -151,7 +151,7 @@ function ColumnHead({ children }: { children?: React.ReactNode }) {
 
 function HeadLabel({ children }: { children: React.ReactNode }) {
   return (
-    <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.12em] text-black/58">
+    <p className="font-display text-[11px] font-semibold uppercase tracking-[0.08em] text-black/58">
       {children}
     </p>
   );
@@ -159,7 +159,7 @@ function HeadLabel({ children }: { children: React.ReactNode }) {
 
 function MonoNote({ children }: { children: React.ReactNode }) {
   return (
-    <p className="whitespace-nowrap font-mono text-[11px] uppercase tracking-[0.1em] text-black/55">
+    <p className="whitespace-nowrap font-display font-semibold text-[11px] uppercase tracking-[0.08em] text-black/55">
       {children}
     </p>
   );
@@ -356,7 +356,7 @@ export default function ConnectedSystemMap({
                       </p>
                     </div>
                     <span
-                      className="shrink-0 font-mono text-[11px] font-semibold uppercase tracking-[0.08em] transition-colors"
+                      className="shrink-0 font-display text-[11px] font-semibold uppercase tracking-[0.08em] transition-colors"
                       style={{
                         color: selected ? signal.hue : "rgba(0,0,0,0.58)",
                       }}
@@ -377,7 +377,7 @@ export default function ConnectedSystemMap({
                     </p>
                     <p
                       aria-hidden={selected}
-                      className={`absolute inset-x-0 top-0 font-mono text-[11px] uppercase tracking-[0.08em] text-black/45 transition-opacity duration-300 ${
+                      className={`absolute inset-x-0 top-0 font-display font-semibold text-[11px] uppercase tracking-[0.08em] text-black/45 transition-opacity duration-300 ${
                         selected ? "opacity-0" : "opacity-100"
                       }`}
                     >
@@ -667,7 +667,7 @@ export default function ConnectedSystemMap({
                         </p>
                         <p
                           aria-hidden="true"
-                          className={`absolute inset-x-0 top-0 font-mono text-[10.5px] uppercase tracking-[0.08em] text-black/42 transition-opacity duration-300 ${
+                          className={`absolute inset-x-0 top-0 font-display font-semibold text-[10.5px] uppercase tracking-[0.08em] text-black/42 transition-opacity duration-300 ${
                             related ? "opacity-0" : "opacity-100"
                           }`}
                         >
@@ -679,7 +679,7 @@ export default function ConnectedSystemMap({
                 );
               })}
               <li className="rounded-md border border-dashed border-black/16 px-3.5 py-3 sm:px-4">
-                <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.1em] text-black/45">
+                <p className="font-display text-[11px] font-semibold uppercase tracking-[0.08em] text-black/45">
                   {t.moreLabel}
                 </p>
                 <p className="mt-2 text-[11.5px] leading-[1.45] text-black/55">

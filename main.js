@@ -1,4 +1,9 @@
-import { LOCALES, redirectTargetFor } from "./src/i18n/locale-rules.mjs";
+import { redirectTargetFor } from "./src/i18n/locale-rules.mjs";
+
+// The scan API only knows the locales it had when it was built; a site locale
+// it has not been taught yet (Dutch) is dropped and the scan answers in its
+// default language rather than failing. Widen this once the API supports it.
+const SCAN_API_LOCALES = ["en", "de"];
 
 const ALLOWED_ORIGINS = new Set([
   "https://beseam.com",
@@ -20,6 +25,13 @@ const REVIEW_SOURCES = new Set([
   "product_visibility_monitoring",
   "contact",
 ]);
+
+// Who else gets a copy of a form submission, by source. Every address here
+// must also be listed in wrangler.jsonc (send_email) and be a verified
+// destination in Cloudflare Email Routing.
+const EXTRA_NOTIFY = {
+  contact: ["guido@beseam.com"],
+};
 
 const UTM_KEYS = new Set([
   "utm_source",
@@ -353,17 +365,18 @@ async function submitReview(lead, env) {
     "</code></p>";
 
   if (env.REVIEW_EMAIL) {
+    const notification = {
+      from: "website@beseam.com",
+      replyTo: email,
+      subject:
+        source === "contact" ? label + " from " + name : label + " - " + store,
+      text: textBody,
+      html: htmlBody,
+    };
     try {
       await env.REVIEW_EMAIL.send({
+        ...notification,
         to: "contact@beseam.com",
-        from: "website@beseam.com",
-        replyTo: email,
-        subject:
-          source === "contact"
-            ? label + " from " + name
-            : label + " - " + store,
-        text: textBody,
-        html: htmlBody,
       });
     } catch (error) {
       if (!capturedByTrevra)
@@ -372,6 +385,16 @@ async function submitReview(lead, env) {
         "[lead] review notification email failed after Trevra capture",
         error,
       );
+    }
+    // Extra recipients get a best-effort copy: contact@ above is the
+    // delivery that decides success, so a failed copy never makes the
+    // visitor resend a message that already arrived.
+    for (const to of EXTRA_NOTIFY[source] ?? []) {
+      try {
+        await env.REVIEW_EMAIL.send({ ...notification, to });
+      } catch (error) {
+        console.error("[lead] copy to " + to + " failed", error);
+      }
     }
   }
 
@@ -409,7 +432,8 @@ async function proxyAnswerCheck(request, url, env) {
     const upstream = new URL(
       `${apiBase}/monitoring/public/answer-check/${encodeURIComponent(domain)}`,
     );
-    if (LOCALES.includes(locale)) upstream.searchParams.set("locale", locale);
+    if (SCAN_API_LOCALES.includes(locale))
+      upstream.searchParams.set("locale", locale);
     return forwardJson(upstream.toString(), { method: "GET" });
   }
 
@@ -449,7 +473,7 @@ async function proxyAnswerCheck(request, url, env) {
       // Honeypot passes straight through: the backend decides what to do.
       website: clean(payload?.website, 200) || null,
       ...(payload?.retry === true ? { retry: true } : {}),
-      ...(LOCALES.includes(locale) ? { locale } : {}),
+      ...(SCAN_API_LOCALES.includes(locale) ? { locale } : {}),
     }),
   });
 }
@@ -617,7 +641,6 @@ async function forwardJson(target, init) {
   }
 }
 
-
 function bytesToBase64(bytes) {
   let binary = "";
   for (const byte of bytes) binary += String.fromCharCode(byte);
@@ -638,7 +661,11 @@ function base64ToBytes(value) {
 
 async function webBotKeyId(publicKeyX) {
   // RFC 7638 JWK thumbprint: exact lexicographic member order, no whitespace.
-  const canonical = JSON.stringify({ crv: "Ed25519", kty: "OKP", x: publicKeyX });
+  const canonical = JSON.stringify({
+    crv: "Ed25519",
+    kty: "OKP",
+    x: publicKeyX,
+  });
   const digest = await crypto.subtle.digest(
     "SHA-256",
     new TextEncoder().encode(canonical),
@@ -668,7 +695,10 @@ async function webBotAuthDirectory(request, env) {
   if (!publicKeyX || !privateKey) {
     return new Response("Web Bot Auth identity is not configured.", {
       status: 503,
-      headers: { "cache-control": "no-store", "content-type": "text/plain; charset=utf-8" },
+      headers: {
+        "cache-control": "no-store",
+        "content-type": "text/plain; charset=utf-8",
+      },
     });
   }
 
@@ -678,8 +708,7 @@ async function webBotAuthDirectory(request, env) {
   const expires = created + 60;
   const nonceBytes = crypto.getRandomValues(new Uint8Array(32));
   const nonce = bytesToBase64(nonceBytes);
-  const signatureParams =
-    `("@authority";req);alg="ed25519";keyid="${keyId}";nonce="${nonce}";tag="http-message-signatures-directory";created=${created};expires=${expires}`;
+  const signatureParams = `("@authority";req);alg="ed25519";keyid="${keyId}";nonce="${nonce}";tag="http-message-signatures-directory";created=${created};expires=${expires}`;
   const signatureBase =
     `"@authority";req: ${url.host}\n` +
     `"@signature-params": ${signatureParams}`;
@@ -729,6 +758,38 @@ function localeRedirect(request, url) {
   });
 }
 
+/**
+ * Pages that were removed, mapped to where their visitors should land. 301 on
+ * purpose: unlike the locale default, the old URL is gone for good, so search
+ * engines and browsers may remember the move.
+ */
+export const MOVED_PAGES = {
+  "/how-we-work": "/about",
+  "/platform": "/",
+  "/ai-visibility-monitoring": "/product/ai-visibility-tracking",
+  "/manifesto": "/about",
+  "/agents": "/AGENTS.md",
+  "/data": "/benchmarks",
+  "/data/ai-shopping.json": "/benchmarks",
+  "/data/ai-shopping.csv": "/benchmarks",
+  // Comparisons with tools that are not direct competitors.
+  "/compare/google-analytics": "/compare",
+  "/compare/microsoft-clarity": "/compare",
+  "/compare/hotjar": "/compare",
+  "/compare/noibu": "/compare",
+  "/compare/contentsquare": "/compare",
+  "/compare/amplitude": "/compare",
+  "/compare/vwo": "/compare",
+  "/compare/triple-whale": "/compare",
+  "/compare/mixpanel": "/compare",
+  "/compare/posthog": "/compare",
+  "/compare/fullstory": "/compare",
+  "/compare/logrocket": "/compare",
+  "/compare/crazy-egg": "/compare",
+  "/compare/mouseflow": "/compare",
+  "/compare/adobe-analytics": "/compare",
+};
+
 const worker = {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -761,6 +822,9 @@ const worker = {
         ? submitReview(parsed.lead, env)
         : submitScanLead(parsed.lead, env);
     }
+    const moved = MOVED_PAGES[url.pathname.replace(/\/+$/, "") || "/"];
+    if (moved) return Response.redirect(new URL(moved, url).toString(), 301);
+
     const redirected = localeRedirect(request, url);
     if (redirected) return redirected;
 

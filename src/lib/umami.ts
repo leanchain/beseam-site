@@ -155,7 +155,8 @@ export function landingUmamiConfig(
   input: { websiteId?: string; scriptUrl?: string; domains?: string },
   environment: string | undefined,
 ): UmamiConfig | null {
-  const defaults = environment === "production" ? BESEAM_PRODUCTION_UMAMI_CONFIG : undefined;
+  const defaults =
+    environment === "production" ? BESEAM_PRODUCTION_UMAMI_CONFIG : undefined;
   return umamiConfig({
     websiteId: input.websiteId?.trim() || defaults?.websiteId,
     scriptUrl: input.scriptUrl?.trim() || defaults?.scriptUrl,

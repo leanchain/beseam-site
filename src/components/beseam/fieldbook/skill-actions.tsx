@@ -34,7 +34,7 @@ export default function SkillActions({
       <a
         href={downloadHref}
         download
-        className="inline-flex min-h-11 items-center gap-2 border border-black/18 px-4 text-[12px] font-semibold text-[var(--beseam-ink)] transition-colors hover:bg-[var(--beseam-panel)]"
+        className="rounded-button inline-flex min-h-11 items-center gap-2 border border-black/18 px-4 text-[12px] font-semibold text-[var(--beseam-ink)] transition-colors hover:bg-[var(--beseam-panel)]"
       >
         <Download className="h-4 w-4 text-[var(--beseam-accent)]" />
         Download SKILL.md

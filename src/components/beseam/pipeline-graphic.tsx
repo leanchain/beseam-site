@@ -24,7 +24,7 @@ function ObserveVignette() {
   return (
     <Panel>
       <div className="flex items-center justify-between gap-3 pb-1">
-        <span className="font-mono text-[9px] font-semibold uppercase tracking-[0.08em] text-white/56">
+        <span className="font-display text-[9px] font-semibold uppercase tracking-[0.08em] text-white/56">
           AI answers
         </span>
         <span className="flex items-center gap-2 text-white/70">
@@ -35,25 +35,25 @@ function ObserveVignette() {
         </span>
       </div>
       <div className="flex items-center justify-between gap-3 border-t border-white/10 pt-2.5">
-        <span className="font-mono text-[9px] font-semibold uppercase tracking-[0.08em] text-white/56">
+        <span className="font-display text-[9px] font-semibold uppercase tracking-[0.08em] text-white/56">
           Search & shopping
         </span>
         <ChannelIcon brand="google" className="h-3.5 w-3.5 text-white/70" />
       </div>
       <div className="flex items-center justify-between gap-3 border-t border-white/10 pt-2.5">
-        <span className="font-mono text-[9px] font-semibold uppercase tracking-[0.08em] text-white/56">
+        <span className="font-display text-[9px] font-semibold uppercase tracking-[0.08em] text-white/56">
           Store, catalog & orders
         </span>
         <ChannelIcon brand="shopify" className="h-3.5 w-3.5 text-white/70" />
       </div>
       <div className="flex items-center justify-between gap-3 border-t border-white/10 pt-2.5">
-        <span className="font-mono text-[9px] font-semibold uppercase tracking-[0.08em] text-white/56">
+        <span className="font-display text-[9px] font-semibold uppercase tracking-[0.08em] text-white/56">
           Google Analytics
         </span>
         <ChannelIcon brand="google" className="h-3.5 w-3.5 text-white/70" />
       </div>
       <div className="flex items-center justify-between gap-3 border-t border-white/10 pt-2.5">
-        <span className="font-mono text-[9px] font-semibold uppercase tracking-[0.08em] text-white/56">
+        <span className="font-display text-[9px] font-semibold uppercase tracking-[0.08em] text-white/56">
           Microsoft Clarity
         </span>
         <MousePointerClick
@@ -62,7 +62,7 @@ function ObserveVignette() {
         />
       </div>
       <div className="flex items-center justify-between gap-3 border-t border-white/10 pt-2.5">
-        <span className="font-mono text-[9px] font-semibold uppercase tracking-[0.08em] text-white/56">
+        <span className="font-display text-[9px] font-semibold uppercase tracking-[0.08em] text-white/56">
           Sessions & tracking
         </span>
         <Activity aria-hidden="true" className="h-3.5 w-3.5 text-white/70" />
@@ -90,7 +90,7 @@ function UnderstandVignette() {
           className={index > 0 ? "border-t border-white/10 pt-2.5" : ""}
         >
           <div className="flex items-center justify-between gap-2">
-            <span className="font-mono text-[9px] font-semibold uppercase tracking-[0.08em] text-white/78">
+            <span className="font-display text-[9px] font-semibold uppercase tracking-[0.08em] text-white/78">
               {title}
             </span>
             <Check
@@ -140,7 +140,7 @@ function ActVignette() {
             {task}
           </span>
           <span
-            className={`shrink-0 px-1.5 py-0.5 font-mono text-[8.5px] font-semibold uppercase tracking-[0.06em] ${
+            className={`shrink-0 px-1.5 py-0.5 font-display text-[8.5px] font-semibold uppercase tracking-[0.06em] ${
               lead
                 ? "bg-signal text-[#16110e]"
                 : "border border-white/18 text-white/56"
@@ -152,7 +152,7 @@ function ActVignette() {
       ))}
       <div className="mt-1 flex items-center gap-2 border-t border-white/10 pt-2.5">
         <Check aria-hidden="true" className="h-3 w-3 shrink-0 text-signal" />
-        <span className="font-mono text-[8.5px] uppercase tracking-[0.06em] text-white/50">
+        <span className="font-display font-semibold text-[8.5px] uppercase tracking-[0.06em] text-white/50">
           Customer-facing changes require approval
         </span>
       </div>
@@ -164,7 +164,7 @@ function ActVignette() {
 function LearnVignette() {
   return (
     <Panel>
-      <span className="absolute right-2.5 top-1.5 font-mono text-[8px] uppercase tracking-[0.08em] text-white/40">
+      <span className="absolute right-2.5 top-1.5 font-display font-semibold text-[8px] uppercase tracking-[0.08em] text-white/40">
         Example
       </span>
       {(
@@ -180,7 +180,7 @@ function LearnVignette() {
         ] as const
       ).map(([label, range, delta, moved]) => (
         <div key={label} className="flex items-center gap-2">
-          <span className="truncate font-mono text-[9px] uppercase tracking-[0.06em] text-white/56">
+          <span className="truncate font-display font-semibold text-[9px] uppercase tracking-[0.06em] text-white/56">
             {label}
           </span>
           <span className="h-px min-w-3 flex-1 bg-white/12" />
@@ -196,7 +196,7 @@ function LearnVignette() {
           </span>
         </div>
       ))}
-      <p className="mt-1 border-t border-white/10 pt-2.5 font-mono text-[8.5px] uppercase tracking-[0.06em] text-white/50">
+      <p className="mt-1 border-t border-white/10 pt-2.5 font-display font-semibold text-[8.5px] uppercase tracking-[0.06em] text-white/50">
         Same question, asked again
       </p>
     </Panel>

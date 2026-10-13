@@ -46,7 +46,7 @@ const R = 122;
  * caption stay on `currentColor`, because they are read rather than traced and
  * accent text at 13px on ink loses too much contrast.
  */
-const ACCENT = "#e8653a";
+const ACCENT = "#ffe14d";
 const ACCENT_RAIL = `color-mix(in srgb, ${ACCENT} 34%, transparent)`;
 const ACCENT_RING = `color-mix(in srgb, ${ACCENT} 52%, transparent)`;
 
@@ -254,7 +254,7 @@ export default function LoopDiagram({
           dominantBaseline="central"
           fill="currentColor"
           fillOpacity="0.45"
-          className="font-mono text-[15px] font-semibold uppercase tracking-[0.12em] sm:text-[12px]"
+          className="font-display text-[15px] font-semibold uppercase tracking-[0.08em] sm:text-[12px]"
         >
           {t.centre.line1}
         </text>
@@ -265,7 +265,7 @@ export default function LoopDiagram({
           dominantBaseline="central"
           fill="currentColor"
           fillOpacity="0.45"
-          className="font-mono text-[15px] font-semibold uppercase tracking-[0.12em] sm:text-[12px]"
+          className="font-display text-[15px] font-semibold uppercase tracking-[0.08em] sm:text-[12px]"
         >
           {t.centre.line2}
         </text>

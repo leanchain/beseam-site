@@ -15,7 +15,7 @@ export default function ScanPageContent({ locale }: { locale: Locale }) {
   const t = getDictionary(locale).scan;
 
   return (
-    <section className="min-h-screen bg-[#faf1eb] text-ink-deep">
+    <section className="min-h-screen bg-[#fff9e8] text-ink-deep">
       <div className="mx-auto max-w-[92rem] px-5 py-12 sm:px-8 sm:py-16 lg:px-10 lg:py-20">
         <div className="mx-auto max-w-[76rem]">
           <LiveAnswerCheck
@@ -58,7 +58,7 @@ export default function ScanPageContent({ locale }: { locale: Locale }) {
                       key={term}
                       className="border-b border-black/12 p-5 last:border-b-0 sm:border-b-0 sm:border-r sm:last:border-r-0 sm:p-6"
                     >
-                      <p className="font-mono text-[10.5px] font-semibold uppercase tracking-[0.1em] text-signal-ink">
+                      <p className="font-display text-[10.5px] font-semibold uppercase tracking-[0.08em] text-signal-ink">
                         0{index + 1}
                       </p>
                       <h3 className="mt-2 text-[15px] font-semibold tracking-[-0.01em] text-ink-deep">

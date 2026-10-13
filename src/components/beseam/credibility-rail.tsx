@@ -30,7 +30,7 @@ export default function CredibilityRail({
   locale?: Locale;
 }) {
   const t = getDictionary(locale);
-  const runDate = new Intl.DateTimeFormat(locale === "de" ? "de-CH" : "en-CH", {
+  const runDate = new Intl.DateTimeFormat(`${locale}-CH`, {
     day: "numeric",
     month: "short",
     year: "numeric",
@@ -41,16 +41,16 @@ export default function CredibilityRail({
     <section
       id="research-rail"
       aria-label={t.rail.ariaLabel}
-      className="border-y border-black/14 bg-[#faf1eb]"
+      className="border-y border-black/14 bg-[#fff9e8]"
     >
       <div className="mx-auto flex max-w-[92rem] flex-wrap items-baseline justify-center gap-x-2.5 gap-y-1 px-5 py-3 text-center sm:px-8 lg:px-10">
-        <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.12em] text-signal-ink">
+        <span className="font-display text-[11px] font-semibold uppercase tracking-[0.08em] text-signal-ink">
           {t.rail.eyebrow}
         </span>
         <p className="text-[13px] font-medium leading-[1.4] text-black/70">
           {t.rail.finding(SOLO_SHARE)}
         </p>
-        <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-black/42">
+        <span className="font-display font-semibold text-[10px] uppercase tracking-[0.08em] text-black/42">
           {t.rail.runDate(runDate)}
         </span>
         <Link

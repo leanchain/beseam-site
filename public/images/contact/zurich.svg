@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" width="1200" height="720">
+  <rect width="1200" height="720" fill="#fff9e8"/>
+  <g fill="#e3d3ff"><circle cx="1186" cy="14" r="5.0"/>
+<circle cx="1164" cy="14" r="4.5"/>
+<circle cx="1142" cy="14" r="4.1"/>
+<circle cx="1120" cy="14" r="3.7"/>
+<circle cx="1098" cy="14" r="3.3"/>
+<circle cx="1076" cy="14" r="2.9"/>
+<circle cx="1186" cy="36" r="4.5"/>
+<circle cx="1164" cy="36" r="4.1"/>
+<circle cx="1142" cy="36" r="3.7"/>
+<circle cx="1120" cy="36" r="3.3"/>
+<circle cx="1098" cy="36" r="2.9"/>
+<circle cx="1076" cy="36" r="2.5"/>
+<circle cx="1186" cy="58" r="4.1"/>
+<circle cx="1164" cy="58" r="3.7"/>
+<circle cx="1142" cy="58" r="3.3"/>
+<circle cx="1120" cy="58" r="2.9"/>
+<circle cx="1098" cy="58" r="2.5"/>
+<circle cx="1076" cy="58" r="2.0"/>
+<circle cx="1186" cy="80" r="3.7"/>
+<circle cx="1164" cy="80" r="3.3"/>
+<circle cx="1142" cy="80" r="2.9"/>
+<circle cx="1120" cy="80" r="2.5"/>
+<circle cx="1098" cy="80" r="2.0"/>
+<circle cx="1076" cy="80" r="1.6"/>
+<circle cx="1186" cy="102" r="3.3"/>
+<circle cx="1164" cy="102" r="2.9"/>
+<circle cx="1142" cy="102" r="2.5"/>
+<circle cx="1120" cy="102" r="2.0"/>
+<circle cx="1098" cy="102" r="1.6"/>
+<circle cx="1186" cy="124" r="2.9"/>
+<circle cx="1164" cy="124" r="2.5"/>
+<circle cx="1142" cy="124" r="2.0"/>
+<circle cx="1120" cy="124" r="1.6"/></g>
+  <circle cx="930" cy="170" r="70" fill="#ffe14d"/>
+  <!-- Alps -->
+  <path d="M0 430 L120 300 L200 360 L330 220 L450 340 L560 250 L690 370 L800 260 L930 350 L1050 240 L1200 340 L1200 470 L0 470Z" fill="#e3d3ff"/>
+  <path d="M330 220 L300 255 L322 250 L338 262 L360 248Z M800 260 L772 292 L795 286 L812 296 L828 285Z M1050 240 L1020 275 L1044 268 L1060 280 L1078 266Z M560 250 L538 276 L556 272 L572 282Z" fill="#fff"/>
+  <path d="M0 470 L160 400 L300 440 L470 390 L640 445 L820 400 L1000 450 L1200 410 L1200 520 L0 520Z" fill="#c9b2f7" opacity="0.55"/>
+  <!-- Lake -->
+  <rect x="0" y="560" width="1200" height="160" fill="#c6efdc"/>
+  <g stroke="#fff" stroke-width="5" stroke-linecap="round" opacity="0.9">
+    <path d="M120 615 h70 M260 650 h90 M520 625 h60 M760 660 h110 M980 620 h70 M380 690 h80 M880 700 h60"/>
+  </g>
+  <!-- Boat -->
+  <path d="M1000 640 h90 l-14 18 h-62z" fill="#1d1c1a"/>
+  <path d="M1040 640 v-62 l34 54 z" fill="#fff"/><rect x="1038" y="576" width="4" height="66" fill="#1d1c1a"/>
+  <!-- Old town houses -->
+  <g>
+    <rect x="60" y="470" width="90" height="90" fill="#ffd3e2"/><path d="M52 472 L105 430 L158 472Z" fill="#1d1c1a"/>
+    <rect x="150" y="490" width="70" height="70" fill="#ffe680"/><path d="M144 492 L185 458 L226 492Z" fill="#1d1c1a"/>
+    <rect x="360" y="480" width="80" height="80" fill="#ffe680"/><path d="M352 482 L400 444 L448 482Z" fill="#1d1c1a"/>
+    <rect x="640" y="485" width="76" height="75" fill="#ffd3e2"/><path d="M632 487 L678 450 L724 487Z" fill="#1d1c1a"/>
+    <rect x="716" y="470" width="96" height="90" fill="#fff"/><path d="M708 472 L764 426 L820 472Z" fill="#1d1c1a"/>
+    <rect x="812" y="495" width="70" height="65" fill="#ffe680"/><path d="M806 497 L847 465 L888 497Z" fill="#1d1c1a"/>
+    <rect x="980" y="480" width="86" height="80" fill="#ffd3e2"/><path d="M972 482 L1023 442 L1074 482Z" fill="#1d1c1a"/>
+    <rect x="1066" y="498" width="80" height="62" fill="#fff"/><path d="M1060 500 L1106 466 L1152 500Z" fill="#1d1c1a"/>
+  </g>
+  <g fill="#1d1c1a" opacity="0.85">
+    <rect x="80" y="500" width="14" height="18" rx="2"/><rect x="116" y="500" width="14" height="18" rx="2"/>
+    <rect x="378" y="505" width="14" height="18" rx="2"/><rect x="410" y="505" width="14" height="18" rx="2"/>
+    <rect x="740" y="495" width="14" height="18" rx="2"/><rect x="772" y="495" width="14" height="18" rx="2"/>
+    <rect x="1000" y="505" width="14" height="18" rx="2"/><rect x="1034" y="505" width="14" height="18" rx="2"/>
+  </g>
+  <!-- Fraumünster: slim green spire -->
+  <rect x="250" y="360" width="40" height="200" fill="#fff"/>
+  <path d="M244 362 L270 250 L296 362Z" fill="#7fc8a3"/>
+  <rect x="262" y="390" width="16" height="26" rx="8" fill="#1d1c1a"/>
+  <!-- Grossmünster: twin towers with domed tops -->
+  <rect x="480" y="440" width="150" height="120" fill="#fff"/>
+  <rect x="490" y="300" width="50" height="190" fill="#fff"/>
+  <rect x="570" y="300" width="50" height="190" fill="#fff"/>
+  <path d="M490 302 q25 -60 50 0z M570 302 q25 -60 50 0z" fill="#1d1c1a"/>
+  <rect x="512" y="248" width="6" height="26" fill="#1d1c1a"/><rect x="592" y="248" width="6" height="26" fill="#1d1c1a"/><rect x="507" y="254" width="16" height="5" fill="#1d1c1a"/><rect x="587" y="254" width="16" height="5" fill="#1d1c1a"/>
+  <g fill="#1d1c1a">
+    <rect x="505" y="330" width="20" height="30" rx="10"/><rect x="585" y="330" width="20" height="30" rx="10"/>
+    <rect x="505" y="390" width="20" height="30" rx="10"/><rect x="585" y="390" width="20" height="30" rx="10"/>
+    <rect x="538" y="480" width="34" height="80" rx="17"/>
+  </g>
+  <rect x="0" y="556" width="1200" height="8" fill="#1d1c1a" opacity="0.12"/>
+  <!-- Pin -->
+  <g transform="translate(555 120)">
+    <path d="M0 0 a36 36 0 0 1 36 36 c0 26 -36 62 -36 62 c0 0 -36 -36 -36 -62 a36 36 0 0 1 36 -36z" fill="#1d1c1a" transform="translate(-0 0)"/>
+    <circle cx="0" cy="36" r="13" fill="#ffe14d"/>
+  </g>
+</svg>

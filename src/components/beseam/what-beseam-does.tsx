@@ -206,7 +206,7 @@ function DiscoveryVignette({ t }: { t: Dictionary }) {
       className="flex h-[23rem] min-w-0 flex-col overflow-hidden rounded-md bg-white p-3.5 ring-1 ring-black/10"
     >
       <div className="flex shrink-0 items-center justify-between gap-2 border-b border-black/10 pb-2">
-        <span className="vig-step font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-black/60">
+        <span className="vig-step font-display text-[11px] font-semibold uppercase tracking-[0.08em] text-black/60">
           {discovery.buyingQuestion}
         </span>
         {/* The engine mark and the word EXAMPLE travel together, in the panel's
@@ -217,7 +217,7 @@ function DiscoveryVignette({ t }: { t: Dictionary }) {
             brand="openai"
             className="h-[15px] w-[15px] shrink-0 text-ink-deep/55"
           />
-          <span className="border border-black/15 px-1.5 py-px font-mono text-[11px] font-semibold uppercase tracking-[0.09em] text-black/45">
+          <span className="border border-black/15 px-1.5 py-px font-display text-[11px] font-semibold uppercase tracking-[0.09em] text-black/45">
             {discovery.example}
           </span>
         </div>
@@ -313,7 +313,7 @@ function DiscoveryVignette({ t }: { t: Dictionary }) {
         style={vig(7, "1.35s")}
       >
         <X className="h-3.5 w-3.5 shrink-0" />
-        <span className="font-mono text-[12px] font-semibold uppercase tracking-[0.06em]">
+        <span className="font-display text-[12px] font-semibold uppercase tracking-[0.06em]">
           {discovery.verdict}
         </span>
       </div>
@@ -340,7 +340,7 @@ function StoreVignette({ t }: { t: Dictionary }) {
         className="vig-step shrink-0 border-b border-black/10 px-3.5 pb-2 pt-2.5"
         style={vig(0, "0.2s")}
       >
-        <p className="truncate font-mono text-[11.5px] uppercase tracking-[0.07em] text-black/55">
+        <p className="truncate font-display font-semibold text-[11.5px] uppercase tracking-[0.07em] text-black/55">
           {store.breadcrumb(PRODUCT.name)}
         </p>
         <div className="mt-1 flex items-baseline justify-between gap-3">
@@ -393,7 +393,7 @@ function StoreVignette({ t }: { t: Dictionary }) {
           </span>
 
           <div className="mt-2.5 flex items-center gap-1.5">
-            <span className="shrink-0 font-mono text-[11.5px] uppercase tracking-[0.07em] text-black/45">
+            <span className="shrink-0 font-display font-semibold text-[11.5px] uppercase tracking-[0.07em] text-black/45">
               {store.size}
             </span>
             {SIZES.map((size) => (
@@ -414,7 +414,7 @@ function StoreVignette({ t }: { t: Dictionary }) {
               ink, not signal. Signal in this section means the thing that is
               wrong, and a rust-coloured buy button would outshout the two
               crosses the panel exists to show. */}
-          <span className="mt-2.5 flex items-center justify-center bg-ink-deep py-[7px] font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-white">
+          <span className="mt-2.5 flex items-center justify-center bg-ink-deep py-[7px] font-display text-[11px] font-semibold uppercase tracking-[0.08em] text-white">
             {store.addToCart}
           </span>
           <span className="mt-1.5 truncate font-mono text-[11.5px] text-black/55">
@@ -429,7 +429,7 @@ function StoreVignette({ t }: { t: Dictionary }) {
           last panel picks up. */}
       <div className="flex min-h-0 flex-1 flex-col border-t border-black/10 px-3.5 pb-3 pt-2">
         <span
-          className="vig-step shrink-0 font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-black/60"
+          className="vig-step shrink-0 font-display text-[11px] font-semibold uppercase tracking-[0.08em] text-black/60"
           style={vig(1, "0.2s")}
         >
           {store.whatShoppersAsk}
@@ -473,7 +473,7 @@ function StoreVignette({ t }: { t: Dictionary }) {
           style={vig(6, "0.2s")}
         >
           <X className="h-3.5 w-3.5 shrink-0" />
-          <span className="font-mono text-[12px] font-semibold uppercase tracking-[0.06em]">
+          <span className="font-display text-[12px] font-semibold uppercase tracking-[0.06em]">
             {store.verdict}
           </span>
         </div>
@@ -507,7 +507,7 @@ function PersonalizationVignette({ t }: { t: Dictionary }) {
         className="vig-step shrink-0 border-b border-black/10 px-3.5 pb-2 pt-2.5"
         style={vig(0, "0.2s")}
       >
-        <p className="truncate font-mono text-[11.5px] uppercase tracking-[0.07em] text-black/55">
+        <p className="truncate font-display font-semibold text-[11.5px] uppercase tracking-[0.07em] text-black/55">
           {store.breadcrumb(PRODUCT.name)}
         </p>
         <div className="mt-1 flex items-baseline justify-between gap-3">
@@ -526,7 +526,7 @@ function PersonalizationVignette({ t }: { t: Dictionary }) {
         className="vig-step flex shrink-0 flex-wrap items-center gap-1.5 border-b border-black/10 bg-ground/50 px-3.5 py-1.5"
         style={vig(1, "0.2s")}
       >
-        <span className="shrink-0 font-mono text-[11.5px] uppercase tracking-[0.07em] text-black/45">
+        <span className="shrink-0 font-display font-semibold text-[11.5px] uppercase tracking-[0.07em] text-black/45">
           {personalization.forThisShopper}
         </span>
         {wants.map(([key, want]) => (
@@ -574,7 +574,7 @@ function PersonalizationVignette({ t }: { t: Dictionary }) {
           </span>
 
           <div className="mt-2 flex items-center gap-1.5">
-            <span className="shrink-0 font-mono text-[11.5px] uppercase tracking-[0.07em] text-black/45">
+            <span className="shrink-0 font-display font-semibold text-[11.5px] uppercase tracking-[0.07em] text-black/45">
               {store.size}
             </span>
             {SIZES.map((size) => (
@@ -594,7 +594,7 @@ function PersonalizationVignette({ t }: { t: Dictionary }) {
           {/* The same button as the middle panel, in the only state this
               section spends green on: the shopper went through with it. */}
           <span
-            className="vig-stamp mt-2 flex items-center justify-center gap-1.5 py-[7px] font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-white"
+            className="vig-stamp mt-2 flex items-center justify-center gap-1.5 py-[7px] font-display text-[11px] font-semibold uppercase tracking-[0.08em] text-white"
             style={{ backgroundColor: CHOSE }}
           >
             <CheckCircle2 className="h-3.5 w-3.5 shrink-0" strokeWidth={2} />
@@ -612,11 +612,11 @@ function PersonalizationVignette({ t }: { t: Dictionary }) {
           className="vig-step flex shrink-0 items-center justify-between gap-2"
           style={vig(2, "0.2s")}
         >
-          <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-black/60">
+          <span className="font-display text-[11px] font-semibold uppercase tracking-[0.08em] text-black/60">
             {store.whatShoppersAsk}
           </span>
           <span
-            className="flex shrink-0 items-center gap-1 font-mono text-[11.5px] font-semibold uppercase tracking-[0.07em]"
+            className="flex shrink-0 items-center gap-1 font-display text-[11.5px] font-semibold uppercase tracking-[0.07em]"
             style={{ color: CHOSE }}
           >
             <WandSparkles className="h-3 w-3 shrink-0" />
@@ -657,7 +657,7 @@ function PersonalizationVignette({ t }: { t: Dictionary }) {
           style={{ ...vig(7, "0.2s"), color: CHOSE }}
         >
           <CheckCircle2 className="h-3.5 w-3.5 shrink-0" strokeWidth={2} />
-          <span className="font-mono text-[12px] font-semibold uppercase tracking-[0.06em]">
+          <span className="font-display text-[12px] font-semibold uppercase tracking-[0.06em]">
             {personalization.verdict}
           </span>
         </div>
@@ -786,7 +786,7 @@ export default function WhatBeseamDoes({ locale = "en" }: { locale?: Locale }) {
           <div className="mt-5 min-w-0 border-y border-white/10 bg-ink-deep px-5 py-6 text-white sm:px-6 sm:py-7 lg:px-8">
             <div className="grid min-w-0 gap-6 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:items-center lg:gap-12">
               <div className="min-w-0">
-                <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.12em] text-signal">
+                <p className="font-display text-[11px] font-semibold uppercase tracking-[0.08em] text-signal">
                   {oneSystem.gate.eyebrow}
                 </p>
                 <p className="mt-3 max-w-[38ch] text-[15px] leading-[1.65] text-white/72">

@@ -1,44 +1,75 @@
 import type { MetadataRoute } from "next";
 
 import { CATEGORY_BENCHMARKS } from "@/data/category-benchmarks";
-import { ECOSYSTEM_RESOURCES } from "@/lib/commerce-fieldbook";
+import { LOCALES, localizedPath } from "@/i18n/locale-rules.mjs";
+import { BLOG_POSTS } from "@/lib/blog-posts";
 import { COMPARISONS } from "@/lib/comparisons";
-import { getAllFieldbookDocuments } from "@/lib/fieldbook-content";
+import { PRICING_PUBLIC } from "@/lib/pricing";
 
 export const dynamic = "force-static";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://beseam.com";
-  const fieldbookDocuments = getAllFieldbookDocuments();
 
   const routes = [
     { path: "/", changeFrequency: "weekly" as const, priority: 1 },
     {
-      path: "/ai-visibility-monitoring",
+      path: "/product/ai-visibility-tracking",
       changeFrequency: "monthly" as const,
-      priority: 0.95,
+      priority: 0.9,
     },
     {
-      path: "/platform",
+      path: "/product/product-descriptions",
+      changeFrequency: "monthly" as const,
+      priority: 0.9,
+    },
+    {
+      path: "/product/content-creation",
+      changeFrequency: "monthly" as const,
+      priority: 0.9,
+    },
+    {
+      path: "/product/technical-performance",
+      changeFrequency: "monthly" as const,
+      priority: 0.9,
+    },
+    {
+      path: "/solutions/footwear",
       changeFrequency: "monthly" as const,
       priority: 0.85,
     },
     {
-      path: "/how-we-work",
+      path: "/solutions/fashion-apparel",
       changeFrequency: "monthly" as const,
       priority: 0.85,
     },
+    {
+      path: "/solutions/beauty-cosmetics",
+      changeFrequency: "monthly" as const,
+      priority: 0.85,
+    },
+    {
+      path: "/solutions/consumer-electronics",
+      changeFrequency: "monthly" as const,
+      priority: 0.85,
+    },
+    {
+      path: "/solutions/shopify",
+      changeFrequency: "monthly" as const,
+      priority: 0.85,
+    },
+    ...(PRICING_PUBLIC
+      ? [
+          {
+            path: "/pricing",
+            changeFrequency: "monthly" as const,
+            priority: 0.8,
+          },
+        ]
+      : []),
     { path: "/about", changeFrequency: "monthly" as const, priority: 0.7 },
     { path: "/contact", changeFrequency: "monthly" as const, priority: 0.6 },
     { path: "/bot", changeFrequency: "monthly" as const, priority: 0.5 },
-    { path: "/data", changeFrequency: "weekly" as const, priority: 0.78 },
-    { path: "/agents", changeFrequency: "monthly" as const, priority: 0.72 },
-    {
-      path: "/manifesto",
-      changeFrequency: "monthly" as const,
-      priority: 0.7,
-      lastModified: new Date("2026-08-22"),
-    },
     {
       path: "/scan",
       changeFrequency: "monthly" as const,
@@ -54,39 +85,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "yearly" as const,
       priority: 0.2,
     },
-    { path: "/resources", changeFrequency: "weekly" as const, priority: 0.85 },
-    {
-      path: "/resources/problems",
-      changeFrequency: "weekly" as const,
-      priority: 0.78,
-    },
-    {
-      path: "/resources/skills",
-      changeFrequency: "weekly" as const,
-      priority: 0.78,
-    },
-    {
-      path: "/resources/playbooks",
-      changeFrequency: "weekly" as const,
-      priority: 0.76,
-    },
-    {
-      path: "/resources/projects",
-      changeFrequency: "monthly" as const,
-      priority: 0.72,
-    },
-    ...ECOSYSTEM_RESOURCES.map((resource) => ({
-      path: `/resources/projects/${resource.slug}`,
-      changeFrequency: "monthly" as const,
-      priority: 0.62,
-      lastModified: new Date(resource.reviewedAt),
-    })),
-    ...fieldbookDocuments.map((document) => ({
-      path: document.href,
-      changeFrequency: "monthly" as const,
-      priority: document.section === "start-here" ? 0.74 : 0.7,
-      lastModified: new Date(document.frontmatter.reviewedAt),
-    })),
     // Listed only once a real run is published: matches the noindex on the
     // page itself while the benchmark set is empty.
     ...(CATEGORY_BENCHMARKS.length > 0
@@ -99,6 +97,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
         ]
       : []),
     { path: "/compare", changeFrequency: "monthly" as const, priority: 0.75 },
+    { path: "/blog", changeFrequency: "weekly" as const, priority: 0.8 },
+    ...BLOG_POSTS.map((post) => ({
+      path: `/blog/${post.slug}`,
+      changeFrequency: "monthly" as const,
+      priority: 0.8,
+      lastModified: new Date(post.updated),
+    })),
     ...COMPARISONS.map((comparison) => ({
       path: `/compare/${comparison.slug}`,
       changeFrequency: "monthly" as const,
@@ -106,13 +111,33 @@ export default function sitemap(): MetadataRoute.Sitemap {
     })),
   ];
 
-  const uniqueRoutes = routes.filter(
+  const absolute = (path: string) => new URL(path, baseUrl).toString();
+
+  // Every translated page is listed in all three languages, each entry
+  // pointing at the others as hreflang alternates.
+  const withLanguages = routes.flatMap((route) => {
+    if (localizedPath(route.path, "de") === route.path) return [route];
+    const languages = Object.fromEntries(
+      LOCALES.map((locale) => [
+        locale,
+        absolute(localizedPath(route.path, locale)),
+      ]),
+    );
+    return LOCALES.map((locale) => ({
+      ...route,
+      path: localizedPath(route.path, locale),
+      alternates: { languages },
+    }));
+  });
+
+  const uniqueRoutes = withLanguages.filter(
     (route, index) =>
-      routes.findIndex((candidate) => candidate.path === route.path) === index,
+      withLanguages.findIndex((candidate) => candidate.path === route.path) ===
+      index,
   );
 
   return uniqueRoutes.map(({ path, ...route }) => ({
-    url: new URL(path, baseUrl).toString(),
+    url: absolute(path),
     ...route,
   }));
 }

@@ -91,7 +91,7 @@ export default function ResourceIndex({
           />
         </div>
         <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-black/14 pt-4">
-          <p className="font-mono text-[12px] uppercase tracking-[0.09em] text-black/62">
+          <p className="font-display font-semibold text-[12px] uppercase tracking-[0.09em] text-black/62">
             Showing {filtered.length} of {resources.length} reviewed resources
           </p>
           {hasFilters && (
@@ -117,7 +117,7 @@ export default function ResourceIndex({
                 className="group flex min-h-full flex-col bg-panel-white p-6 transition-colors hover:bg-ground-2"
               >
                 <div className="flex flex-wrap items-center justify-between gap-2">
-                  <p className="font-mono text-[12px] uppercase tracking-[0.09em] text-black/62">
+                  <p className="font-display font-semibold text-[12px] uppercase tracking-[0.09em] text-black/62">
                     {resource.category}
                   </p>
                 </div>
@@ -128,7 +128,7 @@ export default function ResourceIndex({
                 <p className="mt-3 text-[12px] leading-relaxed text-black/62">
                   Maintained by {resource.maintainer}
                 </p>
-                <p className="mt-1 font-mono text-[12px] uppercase tracking-[0.08em] text-signal-ink">
+                <p className="mt-1 font-display font-semibold text-[12px] uppercase tracking-[0.08em] text-signal-ink">
                   {resource.kind} · {resource.license}
                 </p>
                 <p className="mt-5 text-[14px] leading-relaxed text-black/62">
@@ -148,13 +148,13 @@ export default function ResourceIndex({
                   {resource.tags.map((tag) => (
                     <span
                       key={tag}
-                      className="border border-black/16 px-2.5 py-1 font-mono text-[12px] uppercase tracking-[0.07em] text-black/62"
+                      className="border border-black/16 px-2.5 py-1 font-display font-semibold text-[12px] uppercase tracking-[0.07em] text-black/62"
                     >
                       {tag}
                     </span>
                   ))}
                 </div>
-                <p className="mt-auto pt-6 font-mono text-[12px] uppercase tracking-[0.08em] text-black/62">
+                <p className="mt-auto pt-6 font-display font-semibold text-[12px] uppercase tracking-[0.08em] text-black/62">
                   Reviewed {resource.reviewedAt}
                 </p>
               </Link>

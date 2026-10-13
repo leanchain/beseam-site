@@ -58,7 +58,7 @@ export function Callout({
             : "border-[var(--beseam-accent)]",
       )}
     >
-      <p className="!m-0 font-mono text-[9px] font-semibold uppercase tracking-[0.12em] text-[var(--beseam-accent)]">
+      <p className="!m-0 font-display text-[9px] font-semibold uppercase tracking-[0.08em] text-[var(--beseam-accent)]">
         {labels[type]}
       </p>
       <p className="!mb-0 !mt-2 text-[14px] font-semibold text-[var(--beseam-ink)]">

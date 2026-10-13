@@ -5,24 +5,13 @@ import { usePathname } from "next/navigation";
 
 import Logo from "@/components/beseam/logo";
 import type { Dictionary } from "@/i18n";
-import { useDictionary } from "@/i18n/use-locale";
-
-type FooterGroupKey = keyof Dictionary["footer"]["groups"];
-
-// A per-key mapped type, indexed by the union itself, so each member's
-// `links[].key` is checked against *that same* group's dictionary shape --
-// not the shape of any of the other three groups. This is what lets
-// `as const satisfies` below catch a key typo (or a key borrowed from the
-// wrong group) at this declaration, rather than only at render time.
-type FooterGroup = {
-  [K in FooterGroupKey]: {
-    key: K;
-    links: readonly {
-      key: keyof Dictionary["footer"]["groups"][K]["links"] & string;
-      href: string;
-    }[];
-  };
-}[FooterGroupKey];
+import {
+  LOCALIZED_ROUTES,
+  localizedPath,
+  normalizePath,
+} from "@/i18n/locale-rules.mjs";
+import { useDictionary, useLocale } from "@/i18n/use-locale";
+import { PRICING_PUBLIC } from "@/lib/pricing";
 
 const ASK_AI_PROMPT = encodeURIComponent(
   "What is Beseam and what does it do for ecommerce brands?",
@@ -31,53 +20,103 @@ const ASK_AI_PROMPT = encodeURIComponent(
 const ASK_AI_LINKS = [
   { label: "ChatGPT", href: `https://chatgpt.com/?q=${ASK_AI_PROMPT}` },
   { label: "Claude", href: `https://claude.ai/new?q=${ASK_AI_PROMPT}` },
-  { label: "Gemini", href: `https://www.google.com/search?udm=50&source=searchlabs&q=${ASK_AI_PROMPT}` },
+  {
+    label: "Gemini",
+    href: `https://www.google.com/search?udm=50&source=searchlabs&q=${ASK_AI_PROMPT}`,
+  },
   { label: "Grok", href: `https://grok.com/?q=${ASK_AI_PROMPT}` },
-  { label: "Perplexity", href: `https://www.perplexity.ai/search?q=${ASK_AI_PROMPT}` },
+  {
+    label: "Perplexity",
+    href: `https://www.perplexity.ai/search?q=${ASK_AI_PROMPT}`,
+  },
 ] as const;
 
-const FOOTER_GROUPS = [
-  {
-    key: "product",
-    links: [
-      { key: "platform", href: "/platform" },
-      { key: "aiShoppingDiscovery", href: "/ai-visibility-monitoring" },
-      { key: "compare", href: "/compare" },
-    ],
-  },
-  {
-    key: "aiShoppingAgents",
-    links: [
-      { key: "aiShoppingData", href: "/data" },
-      { key: "forShoppingAgents", href: "/agents" },
-      { key: "report", href: "/benchmarks" },
-    ],
-  },
-  {
-    key: "company",
-    links: [
-      { key: "howWeWork", href: "/how-we-work" },
-      { key: "about", href: "/about" },
-      { key: "manifesto", href: "/manifesto" },
-      { key: "contact", href: "/contact" },
-    ],
-  },
-  {
-    key: "fieldbook",
-    links: [{ key: "fieldbook", href: "/resources" }],
-  },
-] as const satisfies readonly FooterGroup[];
+/**
+ * The footer mirrors the navbar's four menu groups, with the same labels
+ * (`nav.menu`). Pricing sits under Product once `PRICING_PUBLIC` is on.
+ */
+function footerGroups(t: Dictionary) {
+  const menu = t.nav.menu;
+  return [
+    {
+      label: menu.product.label,
+      links: [
+        {
+          label: menu.product.items.tracking,
+          href: "/product/ai-visibility-tracking",
+        },
+        {
+          label: menu.product.items.descriptions,
+          href: "/product/product-descriptions",
+        },
+        {
+          label: menu.product.items.content,
+          href: "/product/content-creation",
+        },
+        {
+          label: menu.product.items.technical,
+          href: "/product/technical-performance",
+        },
+        ...(PRICING_PUBLIC ? [{ label: menu.pricing, href: "/pricing" }] : []),
+      ],
+    },
+    {
+      label: menu.solutions.label,
+      links: [
+        { label: menu.solutions.items.footwear, href: "/solutions/footwear" },
+        {
+          label: menu.solutions.items.apparel,
+          href: "/solutions/fashion-apparel",
+        },
+        {
+          label: menu.solutions.items.beauty,
+          href: "/solutions/beauty-cosmetics",
+        },
+        {
+          label: menu.solutions.items.electronics,
+          href: "/solutions/consumer-electronics",
+        },
+        { label: menu.solutions.items.shopify, href: "/solutions/shopify" },
+      ],
+    },
+    {
+      label: menu.resources.label,
+      links: [
+        { label: menu.resources.items.blog, href: "/blog" },
+        { label: menu.resources.items.report, href: "/benchmarks" },
+        { label: menu.resources.items.compare, href: "/compare" },
+      ],
+    },
+    {
+      label: menu.company.label,
+      links: [
+        { label: menu.company.items.about, href: "/about" },
+        { label: menu.company.items.contact, href: "/contact" },
+      ],
+    },
+  ];
+}
+
+const SCAN_PATHS = new Set([
+  "/scan",
+  ...Object.values(LOCALIZED_ROUTES["/scan"]),
+]);
 
 export default function BeseamFooter() {
   const t = useDictionary();
+  const locale = useLocale();
   const pathname = usePathname();
-  const compactReportFooter = pathname === "/scan" || pathname === "/de/scan";
+  const compactReportFooter = SCAN_PATHS.has(normalizePath(pathname ?? "/"));
 
   if (compactReportFooter) {
     return (
       <footer className="border-t border-white/12 bg-ink-deep text-white">
         <div className="mx-auto flex max-w-[92rem] flex-col gap-5 px-5 py-7 sm:flex-row sm:items-center sm:justify-between sm:px-8 lg:px-10">
-          <Link href="/" aria-label={t.footer.homeAriaLabel} className="inline-flex">
+          <Link
+            href={localizedPath("/", locale)}
+            aria-label={t.footer.homeAriaLabel}
+            className="inline-flex"
+          >
             <Logo
               variant="secondary-inverted"
               className="text-white"
@@ -86,14 +125,23 @@ export default function BeseamFooter() {
           </Link>
           <div className="flex flex-wrap items-center gap-x-5 gap-y-3 text-[12px] text-white/56">
             <p>{t.footer.copyright(new Date().getFullYear())}</p>
-            <Link href="/privacy-policy" className="transition-colors hover:text-white">
+            <Link
+              href="/privacy-policy"
+              className="text-signal transition-colors hover:text-white"
+            >
               {t.footer.privacy}
             </Link>
-            <Link href="/terms-of-service" className="transition-colors hover:text-white">
+            <Link
+              href="/terms-of-service"
+              className="text-signal transition-colors hover:text-white"
+            >
               {t.footer.terms}
             </Link>
-            <Link href="/contact" className="transition-colors hover:text-white">
-              {t.footer.groups.company.links.contact}
+            <Link
+              href={localizedPath("/contact", locale)}
+              className="text-signal transition-colors hover:text-white"
+            >
+              {t.nav.menu.company.items.contact}
             </Link>
           </div>
         </div>
@@ -107,7 +155,7 @@ export default function BeseamFooter() {
         <div className="grid gap-12 border-b border-white/18 pb-12 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1.25fr)] lg:gap-20">
           <div>
             <Link
-              href="/"
+              href={localizedPath("/", locale)}
               aria-label={t.footer.homeAriaLabel}
               className="inline-flex max-w-full"
             >
@@ -121,18 +169,21 @@ export default function BeseamFooter() {
                     className="pointer-events-none absolute left-1/2 top-1/2 -z-10 h-[42rem] w-[42rem] -translate-x-1/2 -translate-y-1/2 opacity-90 blur-3xl"
                     style={{
                       background:
-                        "radial-gradient(circle, rgba(255,91,61,0.22) 0%, rgba(255,91,61,0.10) 34%, rgba(255,91,61,0.025) 56%, transparent 72%)",
+                        "radial-gradient(circle, rgba(255,225,77,0.16) 0%, rgba(255,225,77,0.07) 34%, rgba(255,225,77,0.02) 56%, transparent 72%)",
                     }}
                   />
                 }
               />
             </Link>
             <p className="mt-7 max-w-[20ch] font-display text-[34px] leading-[1.08] tracking-[-0.02em] text-white/92">
-              {t.footer.tagline.before}{" "}
-              <span className="text-signal">{t.footer.tagline.highlight}</span>.
+              {/* Same words as the hero, so the page opens and closes on one
+                  promise. */}
+              {t.hero.headlineBefore}
+              <span className="text-signal">{t.hero.headlineAccent}</span>
+              {t.hero.headlineAfter}
             </p>
             <p className="mt-6 max-w-[54ch] text-[14px] leading-relaxed text-white/62">
-              {t.footer.description}
+              {t.hero.sub}
             </p>
           </div>
 
@@ -140,48 +191,27 @@ export default function BeseamFooter() {
             className="grid w-full grid-cols-2 gap-x-8 gap-y-8 sm:grid-cols-4 sm:gap-x-8"
             style={{ maxWidth: "48rem", marginLeft: "auto" }}
           >
-            {FOOTER_GROUPS.map((group) => {
-              const groupCopy = t.footer.groups[group.key];
-              return (
-                <nav key={group.key} aria-label={groupCopy.label}>
-                  <p className="text-[13px] font-semibold text-white">
-                    {groupCopy.label}
-                  </p>
-                  <ul className="mt-4 space-y-1.5">
-                    {group.links.map((link) => {
-                      // `FOOTER_GROUPS` is checked against `FooterGroup`
-                      // above (a mapped type indexed by the union itself),
-                      // so a key typo -- or a key borrowed from the wrong
-                      // group -- is already a compile error at that
-                      // declaration. What's left here is a plain TypeScript
-                      // limitation: `.map` over a union of differently-shaped
-                      // arrays widens `link.key` to the union of *all* groups'
-                      // keys, and indexed access can't re-correlate it back to
-                      // this one iteration's `groupCopy` without an explicit
-                      // switch on `group.key`. The cast below only bridges
-                      // that gap; it grants no new typo safety, because the
-                      // `satisfies` check already owns that job.
-                      const groupLinks = groupCopy.links as Record<
-                        string,
-                        string
-                      >;
-                      return (
-                        <li key={link.key}>
-                          <Link
-                            href={link.href}
-                            className="inline-flex min-h-11 items-center text-[13px] text-white/62 transition-colors hover:text-white lg:min-h-9"
-                          >
-                            {groupLinks[link.key]}
-                          </Link>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                </nav>
-              );
-            })}
+            {footerGroups(t).map((group) => (
+              <nav key={group.label} aria-label={group.label}>
+                <p className="text-[13px] font-semibold text-white">
+                  {group.label}
+                </p>
+                <ul className="mt-4 space-y-1.5">
+                  {group.links.map((link) => (
+                    <li key={link.href}>
+                      <Link
+                        href={localizedPath(link.href, locale)}
+                        className="inline-flex min-h-11 items-center text-[13px] text-white/62 transition-colors hover:text-white lg:min-h-9"
+                      >
+                        {link.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            ))}
             <div className="col-span-2 border-t border-white/12 pt-5 sm:col-span-4">
-              <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-white/44">
+              <p className="font-display text-[10px] font-semibold uppercase tracking-[0.08em] text-white/44">
                 {t.footer.askAi}
               </p>
               <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2">
@@ -206,17 +236,20 @@ export default function BeseamFooter() {
             <p>{t.footer.copyright(new Date().getFullYear())}</p>
             <Link
               href="/privacy-policy"
-              className="transition-colors hover:text-white"
+              className="text-signal transition-colors hover:text-white"
             >
               {t.footer.privacy}
             </Link>
             <Link
               href="/terms-of-service"
-              className="transition-colors hover:text-white"
+              className="text-signal transition-colors hover:text-white"
             >
               {t.footer.terms}
             </Link>
-            <Link href="/bot" className="transition-colors hover:text-white">
+            <Link
+              href="/bot"
+              className="text-signal transition-colors hover:text-white"
+            >
               {t.footer.bot}
             </Link>
           </div>

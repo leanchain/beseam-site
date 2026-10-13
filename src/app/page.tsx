@@ -17,7 +17,7 @@ export const metadata: Metadata = buildPublicMetadata({
   path: "/",
   image: HOME_SOCIAL_IMAGE,
   imageAlt: t.meta.home.imageAlt,
-  languages: { en: "/", de: "/de", "x-default": "/" },
+  languages: { en: "/", de: "/de", nl: "/nl", "x-default": "/" },
 });
 
 export default function Home() {

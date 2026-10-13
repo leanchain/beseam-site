@@ -20,7 +20,7 @@ export default function BotPage() {
         <div className="mx-auto max-w-[92rem] px-5 py-20 sm:px-8 sm:py-24 lg:px-10 lg:py-28">
           <div className="grid gap-12 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:items-end lg:gap-20">
             <div>
-              <p className="font-mono text-[12px] font-semibold uppercase tracking-[0.14em] text-signal-ink">
+              <p className="font-display text-[12px] font-semibold uppercase tracking-[0.08em] text-signal-ink">
                 Official crawler information
               </p>
               <h1 className="mt-7 max-w-[14ch] font-display text-[clamp(2.8rem,6.2vw,4.5rem)] font-normal leading-[1] tracking-[-0.02em] text-ink-deep">
@@ -35,7 +35,7 @@ export default function BotPage() {
                 affect product discovery and store experience.
               </p>
               <div className="mt-7 border border-black/18 bg-white px-5 py-4">
-                <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.12em] text-black/48">
+                <p className="font-display text-[11px] font-semibold uppercase tracking-[0.08em] text-black/48">
                   User-Agent
                 </p>
                 <code className="mt-2 block overflow-x-auto font-mono text-[13px] leading-6 text-ink-deep">
@@ -50,7 +50,7 @@ export default function BotPage() {
       <section className="border-b border-black/18 bg-white">
         <div className="mx-auto grid max-w-[92rem] gap-12 px-5 py-16 sm:px-8 sm:py-20 lg:grid-cols-3 lg:gap-12 lg:px-10 lg:py-24">
           <div>
-            <p className="font-mono text-[12px] font-semibold uppercase tracking-[0.12em] text-signal-ink">
+            <p className="font-display text-[12px] font-semibold uppercase tracking-[0.08em] text-signal-ink">
               What it accesses
             </p>
             <p className="mt-5 text-[16px] leading-[1.72] text-black/66">
@@ -61,7 +61,7 @@ export default function BotPage() {
             </p>
           </div>
           <div>
-            <p className="font-mono text-[12px] font-semibold uppercase tracking-[0.12em] text-signal-ink">
+            <p className="font-display text-[12px] font-semibold uppercase tracking-[0.08em] text-signal-ink">
               Why it visits
             </p>
             <p className="mt-5 text-[16px] leading-[1.72] text-black/66">
@@ -72,7 +72,7 @@ export default function BotPage() {
             </p>
           </div>
           <div>
-            <p className="font-mono text-[12px] font-semibold uppercase tracking-[0.12em] text-signal-ink">
+            <p className="font-display text-[12px] font-semibold uppercase tracking-[0.08em] text-signal-ink">
               Operator
             </p>
             <p className="mt-5 text-[16px] leading-[1.72] text-black/66">
@@ -88,7 +88,7 @@ export default function BotPage() {
         <div className="mx-auto max-w-[92rem] px-5 py-16 sm:px-8 sm:py-20 lg:px-10 lg:py-24">
           <div className="grid gap-12 lg:grid-cols-[minmax(0,0.7fr)_minmax(0,1.3fr)] lg:gap-20">
             <div>
-              <p className="font-mono text-[12px] font-semibold uppercase tracking-[0.12em] text-signal-ink">
+              <p className="font-display text-[12px] font-semibold uppercase tracking-[0.08em] text-signal-ink">
                 Polite crawling
               </p>
               <h2 className="mt-6 max-w-[15ch] font-display text-[clamp(2.25rem,3.4vw,3.5rem)] font-normal leading-[1.05] tracking-[-0.02em] text-ink-deep">
@@ -131,7 +131,7 @@ export default function BotPage() {
       <section className="border-b border-black/18 bg-ground">
         <div className="mx-auto grid max-w-[92rem] gap-12 px-5 py-16 sm:px-8 sm:py-20 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-20 lg:px-10 lg:py-24">
           <div>
-            <p className="font-mono text-[12px] font-semibold uppercase tracking-[0.12em] text-signal-ink">
+            <p className="font-display text-[12px] font-semibold uppercase tracking-[0.08em] text-signal-ink">
               Control access
             </p>
             <h2 className="mt-6 font-display text-[clamp(2.1rem,3vw,3rem)] font-normal leading-[1.08] tracking-[-0.02em] text-ink-deep">
@@ -144,13 +144,13 @@ export default function BotPage() {
           </div>
           <div className="space-y-5">
             <div className="border border-black/18 bg-ink-deep p-5 text-white">
-              <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.12em] text-white/48">
+              <p className="font-display text-[11px] font-semibold uppercase tracking-[0.08em] text-white/48">
                 Block BeseamBot
               </p>
               <pre className="mt-4 overflow-x-auto font-mono text-[13px] leading-6 text-white/88">{`User-agent: BeseamBot\nDisallow: /`}</pre>
             </div>
             <div className="border border-black/18 bg-white p-5">
-              <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.12em] text-black/48">
+              <p className="font-display text-[11px] font-semibold uppercase tracking-[0.08em] text-black/48">
                 Ask for a slower crawl
               </p>
               <pre className="mt-4 overflow-x-auto font-mono text-[13px] leading-6 text-ink-deep">{`User-agent: BeseamBot\nCrawl-delay: 5`}</pre>
@@ -173,7 +173,7 @@ export default function BotPage() {
             </div>
             <Link
               href="/contact"
-              className="inline-flex min-h-11 items-center justify-center border border-signal-ink px-5 py-3 text-[14px] font-semibold text-signal-ink transition-colors hover:bg-signal-ink hover:text-white"
+              className="rounded-button inline-flex min-h-11 items-center justify-center border border-signal-ink px-5 py-3 text-[14px] font-semibold text-signal-ink transition-colors hover:bg-signal-ink hover:text-white"
             >
               Contact Beseam
             </Link>

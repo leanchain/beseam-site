@@ -262,7 +262,7 @@ export const MARKETING_PAGES: Record<string, MarketingPageData> = {
       },
     ],
     related: [
-      { label: "How we work", href: "/how-we-work" },
+      { label: "About Beseam", href: "/about" },
       { label: "AI shopping discovery", href: "/ai-visibility-monitoring" },
       { label: "See Beseam work", href: "/#proof" },
     ],

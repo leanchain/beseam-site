@@ -1,4 +1,6 @@
 import type { CategoryBenchmark } from "@/data/category-benchmarks";
+import type { Locale } from "@/i18n/locale-rules.mjs";
+import { getPageCopy } from "@/i18n/pages";
 
 /**
  * One published category benchmark: a real shopper question, and which brands
@@ -18,11 +20,11 @@ import type { CategoryBenchmark } from "@/data/category-benchmarks";
 /** Shared data ink, reused by the run-level figures on /benchmarks. */
 export const BENCHMARK_INK = {
   /** An engine that named the brand. */
-  named: "#334155",
+  named: "#a98bf0",
   /** An engine that answered and did not name it. */
-  absent: "#cbd5e1",
+  absent: "#ddd6c6",
   /** Named by every engine that answered. */
-  consensus: "#047857",
+  consensus: "#1d1c1a",
 } as const;
 
 /** Column headings stay short so three engines fit a phone width. */
@@ -49,28 +51,40 @@ const MONTHS = [
   "Dec",
 ];
 
-export function formatBenchmarkDate(iso: string) {
+export function formatBenchmarkDate(iso: string, dateLocale?: string) {
+  if (dateLocale) {
+    return new Intl.DateTimeFormat(dateLocale, {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+      timeZone: "UTC",
+    }).format(new Date(`${iso}T00:00:00Z`));
+  }
   const [year, month, day] = iso.split("-");
   const index = Number(month) - 1;
   if (!year || !day || Number.isNaN(index) || !MONTHS[index]) return iso;
   return `${Number(day)} ${MONTHS[index]} ${year}`;
 }
 
-function listEngines(engines: string[]) {
-  if (engines.length <= 1) return engines[0] ?? "";
-  return `${engines.slice(0, -1).join(", ")} and ${engines[engines.length - 1]}`;
-}
-
 export default function CategoryBenchmarkFigure({
   benchmark,
   index,
   maxBrands,
+  locale = "en",
 }: {
   benchmark: CategoryBenchmark;
   index: number;
   maxBrands?: number;
+  locale?: Locale;
 }) {
-  const { category, question, askedOn, engines, brands } = benchmark;
+  const copy = getPageCopy(locale);
+  const t = copy.report;
+  const { question, askedOn, engines, brands } = benchmark;
+  const category = t.categoryNames[benchmark.category] ?? benchmark.category;
+  const date = formatBenchmarkDate(
+    askedOn,
+    locale === "en" ? undefined : copy.common.dateLocale,
+  );
 
   const engineCount = engines.length;
   const shown = maxBrands ? brands.slice(0, maxBrands) : brands;
@@ -89,48 +103,41 @@ export default function CategoryBenchmarkFigure({
 
   return (
     <figure id={benchmark.slug} className="scroll-mt-24">
-      <div className="border border-black/18 bg-white px-4 py-5 sm:px-6">
-        <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2 border-b border-black/12 pb-3">
-          <span className="font-mono text-[12px] font-semibold uppercase tracking-[0.12em] text-black/62">
+      <div className="rounded-t-media border border-b-0 border-black/10 bg-white px-5 py-6 sm:px-7">
+        <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
+          <span className="rounded-button bg-[#e3d3ff] px-2.5 py-1 text-[12px] font-semibold text-ink-deep">
             {category}
           </span>
-          <span className="font-mono text-[12px] tabular-nums text-black/55">
-            {engineCount} engines · {formatBenchmarkDate(askedOn)}
+          <span className="text-[13px] tabular-nums text-black/55">
+            {t.figEngines(engineCount, date)}
           </span>
         </div>
 
-        <p className="mt-5 max-w-[42ch] text-[17px] font-semibold leading-[1.4] text-ink-deep">
+        <p className="mt-5 max-w-[42ch] font-display text-[20px] font-semibold leading-[1.3] tracking-[-0.01em] text-ink-deep">
           &ldquo;{question}&rdquo;
         </p>
 
-        <p className="mt-4 text-[13px] leading-relaxed text-black/62">
-          <span className="font-semibold tabular-nums text-ink-deep">
-            {brands.length}
-          </span>{" "}
-          brands named in total.{" "}
-          <span className="font-semibold tabular-nums text-ink-deep">
-            {soloCount}
-          </span>{" "}
-          of them by only one engine.
+        <p className="mt-3 text-[15px] leading-relaxed text-black/64">
+          {t.figTotals(brands.length, soloCount)}
         </p>
 
         <div
-          className="mt-5 grid items-end gap-x-2 border-b border-black/20 pb-2"
+          className="mt-6 grid items-end gap-x-2 border-b border-black/12 pb-2"
           style={columns}
           aria-hidden="true"
         >
-          <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.1em] text-black/50">
-            Brand
+          <span className="text-[13px] font-semibold text-black/50">
+            {t.figBrand}
           </span>
           {perEngine.map(({ engine, named }) => (
             <span key={engine} className="flex flex-col items-center gap-1">
               <span
-                className="font-mono text-[11px] font-semibold uppercase tracking-[0.06em] text-black/62"
+                className="text-[12px] font-semibold text-black/62"
                 title={engine}
               >
                 {engineLabel(engine)}
               </span>
-              <span className="font-mono text-[12px] tabular-nums text-ink-deep">
+              <span className="text-[13px] font-semibold tabular-nums text-ink-deep">
                 {named}
               </span>
             </span>
@@ -143,7 +150,7 @@ export default function CategoryBenchmarkFigure({
             return (
               <div
                 key={row.brand}
-                className="grid items-center gap-x-2 border-b border-black/10 py-2 transition-colors last:border-b-0 hover:bg-black/[0.03]"
+                className="grid items-center gap-x-2 border-b border-black/[0.06] py-2 transition-colors last:border-b-0 hover:bg-[#fff9e8]"
                 style={columns}
               >
                 {/* Names wrap rather than truncate: a clipped brand is the one
@@ -164,9 +171,7 @@ export default function CategoryBenchmarkFigure({
                       aria-hidden="true"
                     >
                       <span
-                        className={
-                          named ? "h-2.5 w-2.5 rounded-[2px]" : "h-px w-2.5"
-                        }
+                        className={named ? "h-3 w-3 rounded-full" : "h-px w-3"}
                         style={{
                           backgroundColor: named
                             ? consensus
@@ -179,7 +184,7 @@ export default function CategoryBenchmarkFigure({
                   );
                 })}
                 <span className="sr-only">
-                  {row.brand}: named by {listEngines(row.namedBy)}
+                  {t.figNamedBy(row.brand, t.list(row.namedBy))}
                 </span>
               </div>
             );
@@ -187,20 +192,19 @@ export default function CategoryBenchmarkFigure({
         </div>
 
         {hidden > 0 ? (
-          <p className="mt-3 text-[13px] text-black/55">
-            + {hidden} more brands, each named by a single engine.
-          </p>
+          <p className="mt-3 text-[14px] text-black/55">{t.figMore(hidden)}</p>
         ) : null}
       </div>
 
-      <figcaption className="grid gap-2 border-x border-b border-black/18 bg-white px-4 py-3 sm:grid-cols-[9rem_1fr] sm:px-5">
-        <span className="font-mono text-[12px] font-semibold uppercase tracking-[0.12em] text-black/62">
-          Fig. {index + 1}: {category.toLowerCase()}
+      <figcaption className="grid gap-1 rounded-b-media border border-black/10 bg-[#fff9e8] px-5 py-4 sm:px-7">
+        <span className="text-[13px] font-semibold text-ink-deep">
+          {t.figCaption(
+            index + 1,
+            t.lowercaseCategories ? category.toLowerCase() : category,
+          )}
         </span>
         <span className="text-[13px] leading-relaxed text-black/62">
-          Asked verbatim on {engines.join(", ")}, {formatBenchmarkDate(askedOn)}
-          . Public brands, observed: no customer data, and no ranking is
-          implied.
+          {t.figNote(t.list(engines), date)}
         </span>
       </figcaption>
     </figure>

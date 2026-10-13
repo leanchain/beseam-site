@@ -8,28 +8,73 @@
  * inputs as arguments so `node --test` can exercise all of it.
  */
 
-/** @type {readonly ["en", "de"]} */
-export const LOCALES = ["en", "de"];
+/** @type {readonly ["en", "de", "nl"]} */
+export const LOCALES = ["en", "de", "nl"];
 export const DEFAULT_LOCALE = "en";
 export const LOCALE_COOKIE = "bs_lang";
+
+/** Every locale that lives under its own path prefix (`/de`, `/nl`). */
+const PREFIXED_LOCALES = LOCALES.filter((locale) => locale !== DEFAULT_LOCALE);
 
 const COOKIE_MAX_AGE_SECONDS = 31536000; // one year
 
 /**
- * The only pairs that exist. English path -> German path. Adding a page to
- * this map is the single edit that makes the switcher, the notice and the
- * Worker redirect all agree about it.
+ * Pages the Worker may redirect a first-time visitor to their own language.
+ * Only these run through the Worker (see `run_worker_first` in
+ * wrangler.jsonc); every other page is served straight from the assets.
  */
-export const LOCALIZED_ROUTES = Object.freeze({
-  "/": "/de",
-  "/scan": "/de/scan",
-});
+const REDIRECTED_PATHS = Object.freeze(["/", "/scan"]);
 
-const GERMAN_TO_ENGLISH = Object.freeze(
+/**
+ * Every English page that has a German and a Dutch version, under the same
+ * path behind a `/de` or `/nl` prefix. Every prefixed locale translates the
+ * same set, so adding a page here is the single edit that makes the switcher,
+ * the notice and in-page links agree about it.
+ */
+const TRANSLATED_PATHS = Object.freeze([
+  ...REDIRECTED_PATHS,
+  "/about",
+  "/contact",
+  "/pricing",
+  "/blog",
+  "/benchmarks",
+  "/compare",
+]);
+
+/** Sections whose every page is translated, e.g. `/product/<slug>`. */
+const TRANSLATED_PREFIXES = Object.freeze([
+  "/product/",
+  "/solutions/",
+  "/blog/",
+  "/compare/",
+]);
+
+/** @param {string} englishPath */
+function isTranslated(englishPath) {
+  return (
+    TRANSLATED_PATHS.includes(englishPath) ||
+    TRANSLATED_PREFIXES.some((prefix) => englishPath.startsWith(prefix))
+  );
+}
+
+/** @param {string} locale @param {string} englishPath */
+function prefixed(locale, englishPath) {
+  return englishPath === "/" ? `/${locale}` : `/${locale}${englishPath}`;
+}
+
+/**
+ * English path -> that page in every prefixed locale, e.g.
+ * `LOCALIZED_ROUTES["/"].de === "/de"`.
+ */
+export const LOCALIZED_ROUTES = Object.freeze(
   Object.fromEntries(
-    Object.entries(LOCALIZED_ROUTES).map(([english, german]) => [
-      german,
-      english,
+    REDIRECTED_PATHS.map((path) => [
+      path,
+      Object.freeze(
+        Object.fromEntries(
+          PREFIXED_LOCALES.map((locale) => [locale, prefixed(locale, path)]),
+        ),
+      ),
     ]),
   ),
 );
@@ -37,8 +82,16 @@ const GERMAN_TO_ENGLISH = Object.freeze(
 // Country is a proxy for language, never a statement about it. CH and LI are
 // multilingual and are mapped to German deliberately: German is the largest
 // language in both, the switcher is one click away, and there is no French or
-// Italian page to send anyone to yet.
-const GERMAN_COUNTRIES = new Set(["DE", "AT", "CH", "LI"]);
+// Italian page to send anyone to yet. Belgium is left to Accept-Language: it
+// splits between Dutch and French, and guessing wrong sends half of it to a
+// language it does not read.
+const COUNTRY_LOCALE = Object.freeze({
+  DE: "de",
+  AT: "de",
+  CH: "de",
+  LI: "de",
+  NL: "nl",
+});
 
 // Crawler names carry `bot` as a compound suffix (`Googlebot/2.1`,
 // `SemrushBot-BA`), so a left `\b` would break them. What separates a crawler
@@ -61,19 +114,53 @@ export function normalizePath(pathname) {
 /** @param {string} pathname */
 export function localeFromPathname(pathname) {
   const path = normalizePath(pathname);
-  return path === "/de" || path.startsWith("/de/") ? "de" : DEFAULT_LOCALE;
+  for (const locale of PREFIXED_LOCALES) {
+    if (path === `/${locale}` || path.startsWith(`/${locale}/`)) return locale;
+  }
+  return DEFAULT_LOCALE;
+}
+
+/** @param {string} pathname the English path behind any locale prefix. */
+function englishPathOf(pathname) {
+  const path = normalizePath(pathname);
+  const locale = localeFromPathname(path);
+  if (locale === DEFAULT_LOCALE) return path;
+  return normalizePath(path.slice(locale.length + 1));
 }
 
 /**
  * @param {string} pathname
- * @param {"en" | "de"} target
- * @returns {string | null} the same page in `target`, or null when it has none.
+ * @param {"en" | "de" | "nl"} target
+ * @returns {string | null} the same page in `target`, or null when it has
+ *   none or the path is already in `target`.
  */
 export function counterpartPath(pathname, target) {
   const path = normalizePath(pathname);
-  const table = target === "de" ? LOCALIZED_ROUTES : GERMAN_TO_ENGLISH;
-  return Object.hasOwn(table, path) ? table[path] : null;
+  if (localeFromPathname(path) === target) return null;
+  const english = englishPathOf(path);
+  if (!isTranslated(english)) return null;
+  return target === DEFAULT_LOCALE ? english : prefixed(target, english);
 }
+
+/**
+ * Where an internal link should point for a reader of `locale`: the page in
+ * their language when it exists, otherwise the English page. Anchors and
+ * query strings are kept; external URLs and `#` links pass through.
+ *
+ * @param {string} href an English path such as `/product/x` or `/#faq`.
+ * @param {"en" | "de" | "nl"} locale
+ */
+export function localizedPath(href, locale) {
+  if (locale === DEFAULT_LOCALE || !href.startsWith("/")) return href;
+  const match = /^([^?#]*)(.*)$/.exec(href);
+  const path = normalizePath(match?.[1] ?? href);
+  const rest = match?.[2] ?? "";
+  if (!isTranslated(path)) return href;
+  return prefixed(locale, path) + rest;
+}
+
+/** Every translated English path that is a fixed page (not a section). */
+export const TRANSLATED_PAGES = TRANSLATED_PATHS;
 
 /** @param {string | null | undefined} cookieHeader */
 export function readLocaleCookie(cookieHeader) {
@@ -89,7 +176,7 @@ export function readLocaleCookie(cookieHeader) {
 }
 
 /**
- * @param {"en" | "de"} locale
+ * @param {"en" | "de" | "nl"} locale
  * @param {boolean} secure `Secure` is dropped by the browser on the http
  *   localhost dev worker, which would make the redirect untestable locally.
  */
@@ -114,12 +201,33 @@ export function primaryLanguage(header) {
 }
 
 /**
+ * The translated locale a first-time visitor most likely reads, or null for
+ * English. A browser language of German or Dutch wins over the country, so a
+ * Dutch speaker in Zurich is not sent to the German page.
+ *
+ * @param {string | null | undefined} country
+ * @param {string | null | undefined} acceptLanguage
+ * @returns {"de" | "nl" | null}
+ */
+export function preferredLocale(country, acceptLanguage) {
+  const language = primaryLanguage(acceptLanguage);
+  if (PREFIXED_LOCALES.includes(/** @type {any} */ (language))) {
+    return /** @type {"de" | "nl"} */ (language);
+  }
+  if (!country) return null;
+  return (
+    COUNTRY_LOCALE[
+      /** @type {keyof typeof COUNTRY_LOCALE} */ (country.toUpperCase())
+    ] ?? null
+  );
+}
+
+/**
  * @param {string | null | undefined} country
  * @param {string | null | undefined} acceptLanguage
  */
 export function prefersGerman(country, acceptLanguage) {
-  if (country && GERMAN_COUNTRIES.has(country.toUpperCase())) return true;
-  return primaryLanguage(acceptLanguage) === "de";
+  return preferredLocale(country, acceptLanguage) === "de";
 }
 
 /** @param {string | null | undefined} userAgent */
@@ -153,12 +261,14 @@ export function redirectTargetFor(input) {
   if (input.hasLangParam) return null;
 
   const chosen = readLocaleCookie(input.cookieHeader);
-  if (chosen === "en") return null;
+  if (chosen === DEFAULT_LOCALE) return null;
 
-  if (chosen !== "de") {
+  let target = chosen;
+  if (!target) {
     if (isCrawler(input.userAgent)) return null;
-    if (!prefersGerman(input.country, input.acceptLanguage)) return null;
+    target = preferredLocale(input.country, input.acceptLanguage);
+    if (!target) return null;
   }
 
-  return LOCALIZED_ROUTES[path] + (input.search || "");
+  return LOCALIZED_ROUTES[path][target] + (input.search || "");
 }

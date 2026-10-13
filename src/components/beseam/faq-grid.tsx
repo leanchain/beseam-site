@@ -1,10 +1,16 @@
 import type { ReactNode } from "react";
 
+import Link from "next/link";
+
+import { ArrowRight } from "lucide-react";
+
 import { Reveal } from "@/components/beseam/reveal";
 
 export type FaqItem = {
   question: string;
   answer: string;
+  /** Optional follow-up link shown under the answer (not in structured data). */
+  link?: { label: string; href: string };
 };
 
 type FaqGridProps = {
@@ -41,11 +47,13 @@ export default function FaqGrid({
           <div className="grid gap-7 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:items-end lg:gap-16">
             <div>
               {eyebrow ? (
-                <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.12em] text-signal-ink">
+                <p className="font-display text-[11px] font-semibold uppercase tracking-[0.08em] text-signal-ink">
                   {eyebrow}
                 </p>
               ) : null}
-              <h2 className="mt-5 max-w-[18ch] text-balance font-display text-[clamp(2rem,3.2vw,3rem)] font-normal leading-[1.06] tracking-[-0.025em] text-ink-deep">
+              <h2
+                className={`${eyebrow ? "mt-5 " : ""}max-w-[18ch] text-balance font-display text-[clamp(2rem,3.2vw,3rem)] font-normal leading-[1.06] tracking-[-0.025em] text-ink-deep`}
+              >
                 {heading}
               </h2>
             </div>
@@ -77,9 +85,22 @@ export default function FaqGrid({
                     +
                   </span>
                 </summary>
-                <p className="max-w-[62ch] pb-7 pr-10 text-[15px] leading-[1.72] text-black/64 [text-wrap:pretty]">
+                <p
+                  className={`max-w-[62ch] pr-10 text-[15px] leading-[1.72] text-black/64 [text-wrap:pretty] ${
+                    faq.link ? "pb-3" : "pb-7"
+                  }`}
+                >
                   {faq.answer}
                 </p>
+                {faq.link ? (
+                  <Link
+                    href={faq.link.href}
+                    className="group mb-7 inline-flex items-center gap-1.5 text-[15px] font-semibold text-ink-deep underline-offset-4 hover:underline"
+                  >
+                    {faq.link.label}
+                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                  </Link>
+                ) : null}
               </details>
             ))}
           </div>
