@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { KeyboardEvent, ReactNode } from "react";
+import type { CSSProperties, KeyboardEvent, ReactNode } from "react";
 
 import { Check, Plug, TrendingUp, Zap } from "lucide-react";
 
@@ -273,16 +273,22 @@ function StepPanel({
                 : steps.connect.visual.action}
             </span>
           </div>
-          <div className="mt-6">
-            <div className="flex items-baseline justify-between text-[13px]">
-              <span className="text-black/58">
-                {steps.connect.visual.imported}
-              </span>
-              <span className="font-mono tabular-nums text-ink-deep">
-                1,240
-              </span>
-            </div>
-            <Bar value={entered ? 100 : 0} />
+          <div className="mt-6 space-y-4">
+            {[
+              { label: steps.connect.visual.synced.products, count: "1,240" },
+              { label: steps.connect.visual.synced.orders, count: "8,415" },
+              { label: steps.connect.visual.synced.pages, count: "36" },
+            ].map(({ label, count }, index) => (
+              <div key={label}>
+                <div className="flex items-baseline justify-between text-[13px]">
+                  <span className="text-black/58">{label}</span>
+                  <span className="font-mono tabular-nums text-ink-deep">
+                    {count}
+                  </span>
+                </div>
+                <Bar value={entered ? 100 : 0} delay={index * 250} />
+              </div>
+            ))}
           </div>
         </Card>
       );
@@ -383,18 +389,50 @@ function StepPanel({
     case "measure": {
       const bars = [28, 34, 31, 42, 48, 55, 63];
       return (
-        <Card label={steps.measure.visual.label} className={fade}>
+        <Card label={steps.measure.visual.label} className={fade} overflow>
           <div className="flex h-36 items-end gap-2">
-            {bars.map((height, index) => (
-              <span
-                key={index}
-                className="flex-1 rounded-t-[4px] bg-signal-ink/80 transition-[height] duration-700 ease-out"
-                style={{
-                  height: entered ? `${height + 30}%` : "4%",
-                  transitionDelay: `${index * 90}ms`,
-                }}
-              />
-            ))}
+            {bars.map((height, index) => {
+              const last = index === bars.length - 1;
+              return (
+                <span
+                  key={index}
+                  className="relative flex-1 rounded-t-[4px] bg-signal-ink/80 transition-[height] duration-700 ease-out"
+                  style={{
+                    height: entered ? `${height + 30}%` : "4%",
+                    transitionDelay: `${index * 90}ms`,
+                  }}
+                >
+                  {/* A small one-time burst once the last bar has grown;
+                      remounted (and so replayed) each time the step shows. */}
+                  {last && entered ? (
+                    <span
+                      aria-hidden="true"
+                      className="pointer-events-none absolute left-1/2 top-0"
+                    >
+                      {CONFETTI.map((piece, i) => (
+                        <span
+                          key={i}
+                          className="confetti-piece"
+                          style={
+                            {
+                              "--x": `${piece.x}px`,
+                              "--y": `${piece.y}px`,
+                              "--fall": `${piece.fall}px`,
+                              "--r": `${piece.r}deg`,
+                              background: piece.color,
+                              width: piece.width,
+                              height: piece.height,
+                              borderRadius: piece.round ? "9999px" : "2px",
+                              animationDelay: `${CONFETTI_DELAY + piece.delay}ms`,
+                            } as CSSProperties
+                          }
+                        />
+                      ))}
+                    </span>
+                  ) : null}
+                </span>
+              );
+            })}
           </div>
           <p className="mt-4 flex items-center gap-2 text-[15px] font-semibold text-[#1a6b43]">
             <TrendingUp aria-hidden="true" className="h-4 w-4" />
@@ -406,18 +444,54 @@ function StepPanel({
   }
 }
 
+/** When the last bar has finished growing: its delay plus the 700ms rise. */
+const CONFETTI_DELAY = 6 * 90 + 650;
+
+/**
+ * A fan of confetti in the brand colours (sunflower, gold, lilac, charcoal)
+ * bursting up and out of the last bar, then drifting down. Positions come
+ * from a fixed formula rather than Math.random, so server and client render
+ * the same markup.
+ */
+const CONFETTI_COLORS = ["#ffe14d", "#f5c400", "#a98bf0", "#1d1c1a", "#c9b6f7"];
+const CONFETTI_COUNT = 34;
+const CONFETTI = Array.from({ length: CONFETTI_COUNT }, (_, i) => {
+  const jitter = ((i * 37) % 11) / 10; // 0..1, deterministic
+  // A wide, even burst centred on the bar: from just below left (200°) over
+  // the top to just below right (-20°). Pieces may fly past the card's edge;
+  // the measure card doesn't clip.
+  const angle =
+    ((200 - (i / (CONFETTI_COUNT - 1)) * 240 + jitter * 6) * Math.PI) / 180;
+  const distance = 70 + ((i * 53) % 70);
+  const shape = i % 3; // 0 rectangle, 1 dot, 2 streamer
+  return {
+    x: Math.round(Math.cos(angle) * distance),
+    y: Math.round(-Math.sin(angle) * distance),
+    fall: 30 + Math.round(jitter * 30),
+    r: ((i * 97) % 540) - 270,
+    color: CONFETTI_COLORS[i % CONFETTI_COLORS.length],
+    width: shape === 2 ? 4 : shape === 1 ? 8 : 9,
+    height: shape === 2 ? 16 : shape === 1 ? 8 : 13,
+    round: shape === 1,
+    delay: (i % 6) * 25,
+  };
+});
+
 function Card({
   label,
   className,
+  overflow = false,
   children,
 }: {
   label: string;
   className?: string;
+  /** Let content (the confetti) spill past the card's edge. */
+  overflow?: boolean;
   children: ReactNode;
 }) {
   return (
     <div
-      className={`overflow-hidden rounded-media border border-black/12 bg-white shadow-[0_18px_40px_-24px_rgba(17,19,24,0.35)] ${className ?? ""}`}
+      className={`${overflow ? "relative z-10" : "overflow-hidden"} rounded-media border border-black/12 bg-white shadow-[0_18px_40px_-24px_rgba(17,19,24,0.35)] ${className ?? ""}`}
     >
       <p className="border-b border-black/10 px-5 py-3 font-display font-semibold text-[11px] uppercase tracking-[0.08em] text-black/50">
         {label}

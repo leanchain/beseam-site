@@ -225,7 +225,9 @@
    */
   --font-display: var(--font-inter-tight, "Inter Tight"), system-ui, sans-serif;
   --font-serif: var(--font-inter-tight, "Inter Tight"), system-ui, sans-serif;
-  --font-mono: ui-monospace, "SF Mono", SFMono-Regular, "Cascadia Mono", Menlo, Consolas, monospace;
+  --font-mono:
+    ui-monospace, "SF Mono", SFMono-Regular, "Cascadia Mono", Menlo, Consolas,
+    monospace;
 
   /* Shadow variables */
   --shadow-color: 0 0% 0%;
@@ -360,7 +362,9 @@
   --font-heading: var(--font-inter-tight, "Inter Tight"), system-ui, sans-serif;
   --font-accent: var(--font-figtree);
   --font-serif: var(--font-inter-tight, "Inter Tight"), system-ui, sans-serif;
-  --font-mono: ui-monospace, "SF Mono", SFMono-Regular, "Cascadia Mono", Menlo, Consolas, monospace;
+  --font-mono:
+    ui-monospace, "SF Mono", SFMono-Regular, "Cascadia Mono", Menlo, Consolas,
+    monospace;
 
   --color-ground: var(--ground);
   --color-ground-report: var(--ground-report);
@@ -554,16 +558,18 @@
  * not grow a second outline/ring around themselves when activated.
  */
 :where(
-    input:not([type='button']):not([type='submit']):not([type='reset']):not([type='range']),
-    textarea,
-    select,
-    [role='combobox'],
-    [data-slot='select-trigger'],
-    [role='checkbox'],
-    [role='radio'],
-    [role='switch'],
-    [role='slider']
-  ):focus {
+  input:not([type="button"]):not([type="submit"]):not([type="reset"]):not(
+      [type="range"]
+    ),
+  textarea,
+  select,
+  [role="combobox"],
+  [data-slot="select-trigger"],
+  [role="checkbox"],
+  [role="radio"],
+  [role="switch"],
+  [role="slider"]
+):focus {
   border-color: var(--signal-ink);
   outline: none;
   --tw-ring-offset-shadow: 0 0 #0000;
@@ -571,16 +577,18 @@
 }
 
 :where(
-    input:not([type='button']):not([type='submit']):not([type='reset']):not([type='range']),
+    input:not([type="button"]):not([type="submit"]):not([type="reset"]):not(
+        [type="range"]
+      ),
     textarea,
     select,
-    [role='combobox'],
-    [data-slot='select-trigger'],
-    [role='checkbox'],
-    [role='radio'],
-    [role='switch'],
-    [role='slider']
-  )[aria-invalid='true']:focus {
+    [role="combobox"],
+    [data-slot="select-trigger"],
+    [role="checkbox"],
+    [role="radio"],
+    [role="switch"],
+    [role="slider"]
+  )[aria-invalid="true"]:focus {
   border-color: var(--destructive);
 }
 
@@ -1288,4 +1296,50 @@ html.theme-transition::view-transition-new(root) {
 :lang(nl) :is(h1, h2, h3, .font-display) {
   hyphens: auto;
   overflow-wrap: break-word;
+}
+
+/* One-time confetti burst on the last bar of "Track the impact as you go"
+   (how-it-works.tsx). Each piece pops out from the bar's top, drifts to its
+   own offset and fades; nothing loops. */
+.confetti-piece {
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  animation: confetti-pop 1700ms forwards;
+}
+
+/* Burst out fast, then drift down under "gravity" while spinning. */
+@keyframes confetti-pop {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 0) scale(0.3) rotate(0deg);
+    animation-timing-function: cubic-bezier(0.15, 0.8, 0.3, 1);
+  }
+  8% {
+    opacity: 1;
+  }
+  35% {
+    opacity: 1;
+    transform: translate(calc(-50% + var(--x)), var(--y)) scale(1)
+      rotate(calc(var(--r) * 0.4));
+    animation-timing-function: cubic-bezier(0.4, 0, 0.8, 0.6);
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(
+        calc(-50% + var(--x) * 1.15),
+        calc(var(--y) + var(--fall))
+      )
+      scale(0.9) rotate(var(--r));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .confetti-piece {
+    display: none;
+  }
 }

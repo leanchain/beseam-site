@@ -1058,7 +1058,11 @@ const enDictionary = {
           visual: {
             label: "Store connection",
             action: "Connect Shopify",
-            imported: "Products imported",
+            synced: {
+              products: "Products synced",
+              orders: "Order data synced",
+              pages: "Content pages synced",
+            },
             done: "Connected",
           },
         },

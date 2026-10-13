@@ -998,7 +998,11 @@ export const de: Dictionary = {
           visual: {
             label: "Shop-Verbindung",
             action: "Shopify verbinden",
-            imported: "Produkte importiert",
+            synced: {
+              products: "Produkte synchronisiert",
+              orders: "Bestelldaten synchronisiert",
+              pages: "Inhaltsseiten synchronisiert",
+            },
             done: "Verbunden",
           },
         },

@@ -982,7 +982,11 @@ export const nl: Dictionary = {
           visual: {
             label: "Winkelkoppeling",
             action: "Koppel Shopify",
-            imported: "Producten geïmporteerd",
+            synced: {
+              products: "Producten gesynchroniseerd",
+              orders: "Bestelgegevens gesynchroniseerd",
+              pages: "Contentpagina's gesynchroniseerd",
+            },
             done: "Gekoppeld",
           },
         },
