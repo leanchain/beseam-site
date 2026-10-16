@@ -9,6 +9,7 @@ import { ArrowRight, ChevronDown, Menu, X } from "lucide-react";
 
 import { shouldShowPrimaryCta } from "./navbar-state";
 
+import { EarlyAccessCta } from "@/components/beseam/early-access-cta";
 import LanguageSwitcher from "@/components/beseam/language-switcher";
 import Logo from "@/components/beseam/logo";
 import TrackedLink from "@/components/beseam/tracked-link";
@@ -19,7 +20,7 @@ import {
   normalizePath,
 } from "@/i18n/locale-rules.mjs";
 import { useDictionary, useLocale } from "@/i18n/use-locale";
-import { APP_LOGIN_URL, APP_REGISTER_URL } from "@/lib/app-urls";
+import { APP_LOGIN_URL } from "@/lib/app-urls";
 import { PRICING_PUBLIC } from "@/lib/pricing";
 import { cn } from "@/lib/utils";
 
@@ -202,17 +203,13 @@ export default function BeseamNavbar() {
               {t.nav.login}
             </TrackedLink>
             {showCta && (
-              <TrackedLink
-                href={APP_REGISTER_URL}
-                eventName="marketing_primary_cta_clicked"
-                eventCategory="conversion"
+              <EarlyAccessCta
                 placement="navbar"
-                preserveUtm
                 className="group inline-flex min-h-10 items-center justify-center gap-2 whitespace-nowrap rounded-button bg-signal-ink px-4 text-[13px] font-semibold text-white focus-visible:ring-2 focus-visible:ring-signal-ink focus-visible:ring-offset-3"
               >
                 {t.nav.cta}
                 <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
-              </TrackedLink>
+              </EarlyAccessCta>
             )}
           </div>
 
@@ -291,18 +288,14 @@ export default function BeseamNavbar() {
                 {t.nav.login}
               </TrackedLink>
               {showCta ? (
-                <TrackedLink
-                  href={APP_REGISTER_URL}
-                  eventName="marketing_primary_cta_clicked"
-                  eventCategory="conversion"
+                <EarlyAccessCta
                   placement="mobile_nav"
-                  preserveUtm
-                  onClick={() => setMobileOpen(false)}
+                  onOpen={() => setMobileOpen(false)}
                   className="flex min-h-12 items-center justify-center gap-2 rounded-button bg-signal-ink px-5 text-[14px] font-semibold text-white"
                 >
                   {t.nav.cta}
                   <ArrowRight className="h-4 w-4" />
-                </TrackedLink>
+                </EarlyAccessCta>
               ) : null}
             </div>
           </div>

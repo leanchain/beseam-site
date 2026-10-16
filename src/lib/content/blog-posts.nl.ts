@@ -8,18 +8,18 @@ export const BLOG_POSTS_NL: readonly BlogPost[] = [
       "Zo laat je ChatGPT en andere AI-assistenten je producten aanbevelen",
     metaTitle: "Je producten laten aanbevelen door ChatGPT (gids 2026)",
     metaDescription:
-      "Een praktische gids voor webwinkels: hoe ChatGPT en Gemini kiezen welke producten ze aanbevelen, en vijf stappen om in AI-antwoorden te komen.",
+      "Een praktische gids voor webshops: hoe ChatGPT en Gemini kiezen welke producten ze aanbevelen, en vijf stappen om in AI-antwoorden te komen.",
     excerpt:
-      "Hoe AI-assistenten kiezen welke producten ze aanbevelen, en de vijf stappen die je webwinkel in hun antwoorden brengen.",
+      "Hoe AI-assistenten kiezen welke producten ze aanbevelen, en de vijf stappen die je webshop in hun antwoorden brengen.",
     summary:
-      "AI-assistenten bevelen producten aan die ze kunnen vinden, begrijpen en vertrouwen. Wil je aanbevolen worden, zorg dan dat assistenten je winkel kunnen bereiken (productfeeds en crawlertoegang), geef elke productpagina de concrete feiten waar klanten naar vragen, publiceer content die koopvragen beantwoordt, houd prijzen en voorraad correct, en volg de vragen die je wilt winnen.",
+      "AI-assistenten bevelen producten aan die ze kunnen vinden, begrijpen en vertrouwen. Wil je aanbevolen worden, zorg dan dat assistenten je webshop kunnen bereiken (productfeeds en crawlertoegang), geef elke productpagina de concrete feiten waar klanten naar vragen, publiceer content die koopvragen beantwoordt, houd prijzen en voorraad correct, en volg de vragen die je wilt winnen.",
     published: "2026-10-11",
     updated: "2026-10-11",
     readingMinutes: 8,
     image: {
       src: "/images/blog/get-products-recommended-by-chatgpt.nl.svg",
       og: "/images/blog/get-products-recommended-by-chatgpt.nl.png",
-      alt: "Illustratie van een klant die een AI-assistent om waterdichte laarzen vraagt, en de assistent die het product van een webwinkel aanbeveelt.",
+      alt: "Illustratie van een klant die een AI-assistent om waterdichte laarzen vraagt, en de assistent die het product van een webshop aanbeveelt.",
     },
     keywords: [
       "producten laten aanbevelen door ChatGPT",
@@ -31,7 +31,7 @@ export const BLOG_POSTS_NL: readonly BlogPost[] = [
     sections: [
       {
         id: "why-it-matters",
-        heading: "Waarom zijn AI-aanbevelingen belangrijk voor webwinkels?",
+        heading: "Waarom zijn AI-aanbevelingen belangrijk voor webshops?",
         blocks: [
           {
             type: "p",
@@ -39,12 +39,12 @@ export const BLOG_POSTS_NL: readonly BlogPost[] = [
           },
           {
             type: "p",
-            text: "Het verkeer is nog klein naast zoekmachines en advertenties, maar het groeit snel en het converteert. Volgens data van Adobe over Amerikaanse webwinkels lag het aantal bezoeken via AI-assistenten in juli 2026 62% hoger dan een jaar eerder, converteerden die bezoekers 60% beter dan ander verkeer en leverden ze 53% meer omzet per bezoek op. In maart 2025 converteerde hetzelfde verkeer nog 38% slechter.",
+            text: "Het verkeer is nog klein naast zoekmachines en advertenties, maar het groeit snel en het converteert. Volgens data van Adobe over Amerikaanse webshops lag het aantal bezoeken via AI-assistenten in juli 2026 62% hoger dan een jaar eerder, converteerden die bezoekers 60% beter dan ander verkeer en leverden ze 53% meer omzet per bezoek op. In maart 2025 converteerde hetzelfde verkeer nog 38% slechter.",
           },
           {
             type: "callout",
             title: "Wat dit betekent",
-            text: "AI wordt een eigen verkoopkanaal. Winkels die nu worden aanbevolen, bouwen een voorsprong op die later moeilijk in te halen is.",
+            text: "AI wordt een eigen verkoopkanaal. Webshops die nu worden aanbevolen, bouwen een voorsprong op die later moeilijk in te halen is.",
           },
         ],
       },
@@ -98,7 +98,7 @@ export const BLOG_POSTS_NL: readonly BlogPost[] = [
           {
             type: "ul",
             items: [
-              "**Productfeeds en catalogi.** OpenAI zegt dat Shopify-productdata al via Shopify Catalog in ChatGPT is geïntegreerd, zonder extra werk voor individuele verkopers. Verkopers op andere platforms kunnen zich aanmelden om direct een productfeed te sturen. Controleer in je Shopify-beheer onder Verkoopkanalen welke AI-kanalen voor je winkel actief zijn, want de beschikbaarheid verschilt per kanaal en land.",
+              "**Productfeeds en catalogi.** OpenAI zegt dat Shopify-productdata al via Shopify Catalog in ChatGPT is geïntegreerd, zonder extra werk voor individuele verkopers. Verkopers op andere platforms kunnen zich aanmelden om direct een productfeed te sturen. Controleer in je Shopify-beheer onder Verkoopkanalen welke AI-kanalen voor je webshop actief zijn, want de beschikbaarheid verschilt per kanaal en land.",
               "**Crawlertoegang.** AI-bedrijven gebruiken hun eigen crawlers, zoals OAI-SearchBot van OpenAI. Botbescherming, firewallregels of een oude regel in robots.txt kunnen ze blokkeren zonder dat iemand het merkt. Controleer of de crawlers van de assistenten die voor jou belangrijk zijn je product- en categoriepagina's kunnen bereiken.",
             ],
           },
@@ -158,7 +158,7 @@ export const BLOG_POSTS_NL: readonly BlogPost[] = [
         blocks: [
           {
             type: "p",
-            text: "Beschikbaarheid en prijs staan niet voor niets op de lijst van rankingfactoren van OpenAI: een assistent wil geen klant naar een uitverkocht product of een verkeerde prijs sturen. Zorg dat je gestructureerde data, productfeed en zichtbare pagina voor elke variant overeenkomen in prijs en voorraad. Dubbele gestructureerde data van een thema en een app is bij Shopify-winkels een veelvoorkomende oorzaak van conflicten.",
+            text: "Beschikbaarheid en prijs staan niet voor niets op de lijst van rankingfactoren van OpenAI: een assistent wil geen klant naar een uitverkocht product of een verkeerde prijs sturen. Zorg dat je gestructureerde data, productfeed en zichtbare pagina voor elke variant overeenkomen in prijs en voorraad. Dubbele gestructureerde data van een thema en een app is bij Shopify-webshops een veelvoorkomende oorzaak van conflicten.",
           },
         ],
       },
@@ -205,7 +205,7 @@ export const BLOG_POSTS_NL: readonly BlogPost[] = [
           "Het bouwt voort op dezelfde basis: crawlbare pagina's, duidelijke content en gestructureerde data. Het verschil zit in het doel. In plaats van een pagina in een lijst links te laten scoren, wil je dat een assistent je product kiest als een van een paar aanbevelingen, en dat beloont concrete productfeiten en correcte data.",
       },
       {
-        question: "Welke AI-assistenten zijn het belangrijkst voor webwinkels?",
+        question: "Welke AI-assistenten zijn het belangrijkst voor webshops?",
         answer:
           "ChatGPT is de grootste, maar klanten gebruiken ook Gemini en Google AI Mode, Microsoft Copilot, Perplexity en Claude. Elk gebruikt andere bronnen, dus het loont om ze naast elkaar te volgen.",
       },
@@ -364,7 +364,7 @@ export const BLOG_POSTS_NL: readonly BlogPost[] = [
           {
             type: "ul",
             items: [
-              "**Leveranciersbeschrijvingen ongewijzigd overgenomen.** Ze zijn gelijk aan die van honderden andere winkels en beantwoorden zelden de vragen van klanten.",
+              "**Leveranciersbeschrijvingen ongewijzigd overgenomen.** Ze zijn gelijk aan die van honderden andere webshops en beantwoorden zelden de vragen van klanten.",
               "**Belangrijke feiten alleen in afbeeldingen.** Maattabellen en ingrediëntenlijsten als afbeelding zijn moeilijk te lezen voor AI. Zet ze in de tekst.",
               "**Pasvormadvies alleen in reviews.** Staat ‘neem een maat kleiner’ alleen in reviews, noem het dan in de beschrijving.",
               "**Beschrijving en data spreken elkaar tegen.** Als de tekst iets anders zegt dan de productdata, vertrouwen assistenten geen van beide.",
@@ -439,9 +439,9 @@ export const BLOG_POSTS_NL: readonly BlogPost[] = [
     title: "Zo meet je AI-verkeer en omzet in GA4 en Shopify",
     metaTitle: "AI-verkeer en omzet meten in GA4 en Shopify",
     metaDescription:
-      "Zie hoeveel bezoekers en omzet ChatGPT, Gemini, Perplexity en andere AI-assistenten je webwinkel opleveren, met het AI Assistant-kanaal in GA4.",
+      "Zie hoeveel bezoekers en omzet ChatGPT, Gemini, Perplexity en andere AI-assistenten je webshop opleveren, met het AI Assistant-kanaal in GA4.",
     excerpt:
-      "Gebruik het nieuwe AI Assistant-kanaal in GA4 en een eigen kanaalgroep om te zien hoeveel verkeer en omzet AI-assistenten je webwinkel opleveren.",
+      "Gebruik het nieuwe AI Assistant-kanaal in GA4 en een eigen kanaalgroep om te zien hoeveel verkeer en omzet AI-assistenten je webshop opleveren.",
     summary:
       "GA4 groepeert bezoeken van AI-assistenten zoals ChatGPT, Gemini en Copilot nu in een standaardkanaal ‘AI Assistant’. Voor het volledige beeld voeg je een eigen kanaalgroep toe die ook Perplexity en Claude meeneemt, zorg je dat Shopify aankoopgebeurtenissen naar GA4 stuurt, en vergelijk je omzet en conversieratio per kanaal. Reken op een onderschatting: sommige AI-bezoeken komen zonder referrer binnen en verschijnen als Direct.",
     published: "2026-10-09",
@@ -462,11 +462,11 @@ export const BLOG_POSTS_NL: readonly BlogPost[] = [
     sections: [
       {
         id: "why-track",
-        heading: "Waarom zouden webwinkels AI-verkeer apart moeten meten?",
+        heading: "Waarom zouden webshops AI-verkeer apart moeten meten?",
         blocks: [
           {
             type: "p",
-            text: "Bezoekers uit AI-assistenten gedragen zich anders dan andere bezoekers. Volgens data van Adobe over Amerikaanse webwinkels converteerden ze in juli 2026 60% beter dan ander verkeer en leverden ze 53% meer omzet per bezoek op. Als dat verkeer is vermengd met Referral of Direct, kun je het niet zien, niet waarderen en niet laten groeien.",
+            text: "Bezoekers uit AI-assistenten gedragen zich anders dan andere bezoekers. Volgens data van Adobe over Amerikaanse webshops converteerden ze in juli 2026 60% beter dan ander verkeer en leverden ze 53% meer omzet per bezoek op. Als dat verkeer is vermengd met Referral of Direct, kun je het niet zien, niet waarderen en niet laten groeien.",
           },
           {
             type: "p",
@@ -528,7 +528,7 @@ export const BLOG_POSTS_NL: readonly BlogPost[] = [
           {
             type: "ol",
             items: [
-              "Zorg dat je Shopify-winkel aankoopgebeurtenissen naar GA4 stuurt, bijvoorbeeld via de app Google & YouTube.",
+              "Zorg dat je Shopify-webshop aankoopgebeurtenissen naar GA4 stuurt, bijvoorbeeld via de app Google & YouTube.",
               "Voeg in het rapport Verkeersacquisitie de statistieken **Totale opbrengst**, **Belangrijke gebeurtenissen** en **Percentage belangrijke gebeurtenissen per sessie** toe.",
               "Vergelijk het kanaal AI-assistenten met Organic Search en Paid Search op conversieratio en omzet per sessie.",
               "Voeg **Bestemmingspagina** toe als secundaire dimensie om te zien naar welke producten en pagina's AI-assistenten klanten sturen.",
@@ -589,7 +589,7 @@ export const BLOG_POSTS_NL: readonly BlogPost[] = [
       {
         question: "Hoeveel van mijn verkeer komt van AI-assistenten?",
         answer:
-          "Bij de meeste webwinkels is het nog een klein deel van alle bezoeken, maar het groeit snel en converteert bovengemiddeld. Bekijk het kanaal AI Assistant, of je eigen kanaalgroep, in het rapport Verkeersacquisitie in GA4.",
+          "Bij de meeste webshops is het nog een klein deel van alle bezoeken, maar het groeit snel en converteert bovengemiddeld. Bekijk het kanaal AI Assistant, of je eigen kanaalgroep, in het rapport Verkeersacquisitie in GA4.",
       },
       {
         question: "Kan ik AI-verkeer zien in Shopify Analytics?",
@@ -599,7 +599,7 @@ export const BLOG_POSTS_NL: readonly BlogPost[] = [
       {
         question: "Is het de moeite waard om voor AI-verkeer te optimaliseren?",
         answer:
-          "Volgens data van Adobe over Amerikaanse webwinkels converteerden bezoekers uit AI-assistenten in juli 2026 60% beter dan ander verkeer, met 53% meer omzet per bezoek. Het kanaal is klein maar waardevol, en het groeit snel.",
+          "Volgens data van Adobe over Amerikaanse webshops converteerden bezoekers uit AI-assistenten in juli 2026 60% beter dan ander verkeer, met 53% meer omzet per bezoek. Het kanaal is klein maar waardevol, en het groeit snel.",
       },
     ],
     sources: [

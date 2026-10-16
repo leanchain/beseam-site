@@ -3,10 +3,9 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
 import { ActionsScreen, ImpactScreen } from "@/components/beseam/app-screens";
+import { EarlyAccessCta } from "@/components/beseam/early-access-cta";
 import FaqGrid from "@/components/beseam/faq-grid";
 import PipelineGraphic from "@/components/beseam/pipeline-graphic";
-import TrackedLink from "@/components/beseam/tracked-link";
-import { APP_REGISTER_URL } from "@/lib/app-urls";
 import type { MarketingPageData } from "@/lib/marketing-pages";
 const PLATFORM_SURFACES = [
   {
@@ -130,17 +129,13 @@ export default function MarketingDetailPage({
                 {page.intro}
               </p>
               <div className="mt-7">
-                <TrackedLink
-                  href={APP_REGISTER_URL}
-                  eventName="marketing_primary_cta_clicked"
-                  eventCategory="conversion"
+                <EarlyAccessCta
                   placement={page.slug + "_hero"}
-                  preserveUtm
                   className="rounded-button group inline-flex min-h-12 items-center justify-center gap-2 bg-signal-ink px-6 text-[15px] font-semibold text-white"
                 >
-                  Start for free
+                  Get early access
                   <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-                </TrackedLink>
+                </EarlyAccessCta>
               </div>
             </div>
           </div>
@@ -401,17 +396,13 @@ export default function MarketingDetailPage({
             approval, applies it, and checks the same things again afterward.
           </p>
           <div className="mt-8">
-            <TrackedLink
-              href={APP_REGISTER_URL}
-              eventName="marketing_primary_cta_clicked"
-              eventCategory="conversion"
+            <EarlyAccessCta
               placement={page.slug + "_footer"}
-              preserveUtm
               className="rounded-button group inline-flex min-h-12 items-center justify-center gap-2 bg-signal-ink px-6 text-[15px] font-semibold text-white transition-colors hover:bg-pigment"
             >
-              Start for free
+              Get early access
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-            </TrackedLink>
+            </EarlyAccessCta>
           </div>
         </div>
       </section>

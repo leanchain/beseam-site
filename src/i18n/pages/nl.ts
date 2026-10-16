@@ -47,27 +47,27 @@ export const pagesNl: PageCopy = {
   about: {
     metaTitle: "Over Beseam",
     metaDescription:
-      "Beseam helpt webwinkels om hun producten aanbevolen te krijgen door AI-assistenten zoals ChatGPT, Claude en Gemini. Maak kennis met de oprichter en adviseurs.",
+      "Beseam helpt webshops om hun producten aanbevolen te krijgen door AI-assistenten zoals ChatGPT, Claude en Gemini. Maak kennis met de oprichter en adviseurs.",
     jsonLdDescription:
-      "Beseam helpt webwinkels om hun producten aanbevolen te krijgen door AI-assistenten, en maakt van AI een omzetkanaal. Maak kennis met de oprichter en adviseurs.",
+      "Beseam helpt webshops om hun producten aanbevolen te krijgen door AI-assistenten, en maakt van AI een omzetkanaal. Maak kennis met de oprichter en adviseurs.",
     breadcrumb: "Over ons",
-    title: "We helpen webwinkels om door AI aanbevolen te worden.",
+    title: "We helpen webshops om door AI aanbevolen te worden.",
     intro:
-      "Beseam is de makkelijkste manier voor webwinkels om hun producten aanbevolen te krijgen door AI-assistenten zoals ChatGPT, Claude en Gemini. We volgen waar je producten in AI-antwoorden verschijnen, optimaliseren je productbeschrijvingen, content en techniek, en laten zien wat het je oplevert, zodat AI een omzetkanaal wordt voor je winkel.",
+      "Beseam is de makkelijkste manier voor webshops om hun producten aanbevolen te krijgen door AI-assistenten zoals ChatGPT, Claude en Gemini. We volgen waar je producten in AI-antwoorden verschijnen, optimaliseren je productbeschrijvingen, content en techniek, en laten zien wat het je oplevert, zodat AI een omzetkanaal wordt voor je webshop.",
     swissFlag: "Zwitserse vlag",
     builtIn: "Gemaakt in Zürich, Zwitserland",
     founderEyebrow: "De oprichter",
     founderHeading: "Gebouwd door een engineer van Google en Amazon.",
     founderParagraphs: [
       "Beseam is opgericht door Pankaj Kumar, een voormalig engineer bij Google en Amazon met een focus op meten, betrouwbaarheid en data-infrastructuur.",
-      "Het afgelopen jaar werkte hij nauw samen met oprichters en eigenaren van webwinkels aan echte winkels, en volgde hij steeds dezelfde klantreis: hoe producten gevonden worden, wat klanten helpt kiezen, en waar aankopen stranden.",
+      "Het afgelopen jaar werkte hij nauw samen met oprichters en eigenaren van webshops aan echte webshops, en volgde hij steeds dezelfde klantreis: hoe producten gevonden worden, wat klanten helpt kiezen, en waar aankopen stranden.",
       "Steeds weer kwam hetzelfde probleem terug: teams konden verkeer, pagina's, gedrag en conversie meten, maar zagen moeilijk waarom een klant voor het ene product koos en niet voor het andere. Beseam is gebouwd om vast te leggen wat er gebeurde, wat er veranderde en wat het opleverde, allemaal op één plek.",
     ],
     founderPhotoAlt: "Pankaj Kumar, oprichter van Beseam",
     founderRole: "Oprichter, Beseam",
     advisorsHeading: "Geworteld in de echte handel.",
     advisorsIntro:
-      "Beseam wordt geadviseerd door mensen uit de praktijk die merken hebben gebouwd, e-commerceteams hebben geleid en direct hebben gewerkt met de systemen waar webwinkels op draaien.",
+      "Beseam wordt geadviseerd door mensen uit de praktijk die merken hebben gebouwd, e-commerceteams hebben geleid en direct hebben gewerkt met de systemen waar webshops op draaien.",
     advisors: {
       bettina: {
         role: "E-commerce-expert & DTC-oprichter",
@@ -93,7 +93,7 @@ export const pagesNl: PageCopy = {
       },
       {
         role: "E-commerce en operations",
-        body: "Verbind klantgedrag, drempels in de winkel, goedgekeurde wijzigingen en gemeten resultaten rond dezelfde commerciële vraag.",
+        body: "Verbind klantgedrag, drempels in de webshop, goedgekeurde wijzigingen en gemeten resultaten rond dezelfde commerciële vraag.",
       },
       {
         role: "Developers en bureaus",
@@ -102,8 +102,8 @@ export const pagesNl: PageCopy = {
     ],
     ctaHeading: "Zie hoe Beseam één klantreis van begin tot eind volgt.",
     ctaBody:
-      "In een winkelreview van 20 minuten laten we aan de hand van één echte bevinding zien wat Beseam vond, wat het zou veranderen en wat het daarna opnieuw controleert.",
-    ctaButton: "Plan een winkelreview van 20 minuten",
+      "In een webshopreview van 20 minuten laten we aan de hand van één echte bevinding zien wat Beseam vond, wat het zou veranderen en wat het daarna opnieuw controleert.",
+    ctaButton: "Plan een webshopreview van 20 minuten",
   },
   contact: {
     metaTitle: "Contact | Beseam",
@@ -111,9 +111,9 @@ export const pagesNl: PageCopy = {
       "Plan een gesprek van 20 minuten met het Beseam-team, of stuur een kort bericht en ontvang binnen één werkdag antwoord.",
     jsonLdName: "Contact met Beseam",
     breadcrumb: "Contact",
-    title: "Laten we het over je winkel hebben",
+    title: "Laten we het over je webshop hebben",
     intro:
-      "Benieuwd wat Beseam voor je webwinkel kan doen, of heb je eerst een vraag? Plan een kennismakingsgesprek van 20 minuten, of stuur ons een bericht en we reageren binnen één werkdag.",
+      "Benieuwd wat Beseam voor je webshop kan doen, of heb je eerst een vraag? Plan een kennismakingsgesprek van 20 minuten, of stuur ons een bericht en we reageren binnen één werkdag.",
     callPrompt: "Liever even bellen? Plan een gesprek van 20 minuten.",
     bookCall: "Plan een gesprek van 20 minuten",
     formEyebrow: "Of stuur een bericht",
@@ -133,14 +133,14 @@ export const pagesNl: PageCopy = {
     officeEyebrow: "Ons kantoor",
     officeHeading: "Gevestigd in Zürich, Zwitserland",
     officeBody:
-      "We bouwen Beseam in Zürich, tussen het meer en de Alpen. Onze gesprekken zijn online, dus waar je webwinkel ook gevestigd is, we zijn maar één klik verwijderd.",
+      "We bouwen Beseam in Zürich, tussen het meer en de Alpen. Onze gesprekken zijn online, dus waar je webshop ook gevestigd is, we zijn maar één klik verwijderd.",
     officeImageAlt:
       "Illustratie van Zürich: de dubbele torens van het Grossmünster, de torenspits van het Fraumünster en oude huizen aan het meer, met de Alpen erachter.",
   },
   blog: {
-    metaTitle: "Blog: AI-zoekopdrachten voor webwinkels | Beseam",
+    metaTitle: "Blog: AI-zoekopdrachten voor webshops | Beseam",
     metaDescription:
-      "Praktische gidsen voor webwinkels over hoe je je producten laat aanbevelen door ChatGPT en andere AI-assistenten, en van AI een omzetkanaal maakt.",
+      "Praktische gidsen voor webshops over hoe je je producten laat aanbevelen door ChatGPT en andere AI-assistenten, en van AI een omzetkanaal maakt.",
     jsonLdName: "Beseam blog",
     breadcrumb: "Blog",
     title: "Beseam blog",
@@ -164,7 +164,7 @@ export const pagesNl: PageCopy = {
     breadcrumb: "Vergelijkingen",
     title: "Vergelijk Beseam met andere tools voor AI-zichtbaarheid.",
     intro:
-      "De meeste tools voor AI-zichtbaarheid laten zien of AI je merk noemt. Beseam is gemaakt voor webwinkels: het volgt je producten in AI-antwoorden, optimaliseert daarna je productpagina's, content en techniek, en laat zien wat het je oplevert.",
+      "De meeste tools voor AI-zichtbaarheid laten zien of AI je merk noemt. Beseam is gemaakt voor webshops: het volgt je producten in AI-antwoorden, optimaliseert daarna je productpagina's, content en techniek, en laat zien wat het je oplevert.",
     meta: "Officiële productbronnen · gecontroleerd op 22 augustus 2026",
     gridHeading: (count: number) => `${count} tools naast elkaar`,
     compare: "Vergelijken",
@@ -194,11 +194,11 @@ export const pagesNl: PageCopy = {
     ctaButton: "Bekijk Beseam met mijn tools",
     hubCtaHeading: "Zie hoe Beseam past bij de tools die je al gebruikt.",
     hubCtaBody:
-      "In een winkelreview van 20 minuten laten we aan de hand van één echte bevinding zien hoe Beseam je bestaande systemen verbindt, een wijziging voorbereidt voor goedkeuring, en controleert wat er daarna gebeurt.",
+      "In een webshopreview van 20 minuten laten we aan de hand van één echte bevinding zien hoe Beseam je bestaande systemen verbindt, een wijziging voorbereidt voor goedkeuring, en controleert wat er daarna gebeurt.",
     detailCtaHeading:
       "Houd de systemen die werken. Verbind wat ze los van elkaar laten.",
     detailCtaBody:
-      "In een winkelreview van 20 minuten laten we aan de hand van één echte bevinding zien hoe Beseam je bestaande tools verbindt en de stap van inzicht naar gemeten wijziging in beweging houdt.",
+      "In een webshopreview van 20 minuten laten we aan de hand van één echte bevinding zien hoe Beseam je bestaande tools verbindt en de stap van inzicht naar gemeten wijziging in beweging houdt.",
   },
   report: {
     metaTitle: "AI Shopping Rapport | Beseam",
@@ -260,7 +260,7 @@ export const pagesNl: PageCopy = {
       `De kolommen staan in elke figuur in dezelfde volgorde: ${engines}. Het getal onder een engine is hoeveel merken die bij die vraag noemde, dus een kolom met streepjes onder een 0 is een engine die antwoordde en niets noemde. Een engine zonder volledig antwoord wordt bij die vraag helemaal weggelaten, in plaats van als nul te verschijnen.`,
     methodHeading: "Zo komt elk cijfer op deze pagina tot stand.",
     methodIntro:
-      "Dezelfde vindbaarheidscheck als op de homepage van Beseam, gericht op een openbare categorie in plaats van een klantwinkel. De datum en de noemer blijven erbij, zodat je het resultaat in context kunt lezen.",
+      "Dezelfde vindbaarheidscheck als op de homepage van Beseam, gericht op een openbare categorie in plaats van een klantwebshop. De datum en de noemer blijven erbij, zodat je het resultaat in context kunt lezen.",
     method: [
       [
         "De vraag",
@@ -280,7 +280,7 @@ export const pagesNl: PageCopy = {
       ],
       [
         "Wiens data dit is",
-        "Openbare merken, van buitenaf bekeken. Geen klantwinkel, geen privécatalogus, en geen bewering over waarom een merk wel of niet werd genoemd.",
+        "Openbare merken, van buitenaf bekeken. Geen klantwebshop, geen privécatalogus, en geen bewering over waarom een merk wel of niet werd genoemd.",
       ],
       [
         "Wat niet wordt beweerd",

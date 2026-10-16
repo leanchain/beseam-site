@@ -69,7 +69,7 @@ const enDictionary = {
     },
     login: "Log in",
     register: "Register",
-    cta: "Start for free",
+    cta: "Get early access",
   },
   switcher: {
     triggerAriaLabel: "Change language",
@@ -99,6 +99,23 @@ const enDictionary = {
     link: "Zur deutschen Startseite",
     dismiss: "Hinweis schliessen",
   },
+  // The early access dialog behind every primary call to action
+  // (early-access-cta.tsx).
+  earlyAccess: {
+    title: "Get early access to Beseam",
+    body: "Be one of the first webshops to turn AI into a revenue channel. We'll set up your store with you and show you the first actions that bring in sales.",
+    name: "Name",
+    email: "Work email",
+    company: "Company",
+    submit: "Request early access",
+    sending: "Sending…",
+    successEyebrow: "Request received",
+    successTitle: "You're on the list",
+    successBody: "Thanks! We'll be in touch soon to get your webshop set up.",
+    error: "Something went wrong. Please try again in a moment.",
+    close: "Close",
+    honeypot: "Leave this field empty",
+  },
   footer: {
     homeAriaLabel: "Beseam home",
     copyright: (year: number) => `© ${year} Beseam. All rights reserved.`,
@@ -106,6 +123,7 @@ const enDictionary = {
     terms: "Terms",
     bot: "BeseamBot",
     askAi: "Ask AI about Beseam",
+    linkedin: "Beseam on LinkedIn",
     madeWith: "Engineered in Switzerland",
     swissFlagAriaLabel: "Swiss flag",
   },
@@ -143,7 +161,7 @@ const enDictionary = {
     headlineAccent: "revenue channel",
     headlineAfter: " for your webshop",
     sub: "Beseam is the easiest way to get your products recommended by AI to millions of shoppers. Optimise product descriptions, content and technical performance in minutes.",
-    ctaStart: "Start for free",
+    ctaStart: "Get early access",
     ctaDemo: "Request a demo",
     scrollCue: "Scroll",
   },
@@ -1424,7 +1442,7 @@ const enDictionary = {
     },
 
     stickyCta: {
-      cta: "Start for free",
+      cta: "Get early access",
     },
   },
 

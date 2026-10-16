@@ -14,12 +14,12 @@ export const TEMPLATE_NL: ComparisonTemplate = {
     "Beseam volgt ook AI-antwoorden, en volgt daarna een gemiste koopvraag tot aan het product of de pagina die je kunt aanpassen. Het bereidt de wijziging voor en stelt daarna dezelfde vraag opnieuw.",
   competitorSummary: (name, bestFor) => `Kies ${name} wanneer ${bestFor}`,
   beseamSummary:
-    "Kies Beseam wanneer je meer nodig hebt dan een zichtbaarheidsscore: zie welke koopvraag je hebt gemist, wat je in je winkel kunt veranderen, voer de wijziging door met goedkeuring, en vraag het opnieuw.",
+    "Kies Beseam wanneer je meer nodig hebt dan een zichtbaarheidsscore: zie welke koopvraag je hebt gemist, wat je in je webshop kunt veranderen, voer de wijziging door met goedkeuring, en vraag het opnieuw.",
   useTogetherSummary: (name) =>
-    `Houd ${name} voor gespecialiseerde monitoring van AI-zichtbaarheid. Gebruik Beseam wanneer een gemiste koopvraag een wijziging in je winkel moet worden en daarna opnieuw gecontroleerd moet worden.`,
+    `Houd ${name} voor gespecialiseerde monitoring van AI-zichtbaarheid. Gebruik Beseam wanneer een gemiste koopvraag een wijziging in je webshop moet worden en daarna opnieuw gecontroleerd moet worden.`,
   chooseBeseamWhen: [
     "Een ontbrekende aanbeveling of bronvermelding moet aan het juiste product, de juiste pagina, bron of catalogusgegeven worden gekoppeld voordat iemand content aanpast.",
-    "Het team wil zien wie er werd aanbevolen en welke product-, winkel-, klant- of aankoopdata kan verklaren waarom.",
+    "Het team wil zien wie er werd aanbevolen en welke product-, webshop-, klant- of aankoopdata kan verklaren waarom.",
     "De oorspronkelijke koopvraag, de voorgestelde wijziging, de goedkeuring, de uitvoering en de controle daarna moeten bij elkaar blijven.",
   ],
   notAReplacementFor: (name) =>
@@ -45,13 +45,13 @@ export const TEMPLATE_NL: ComparisonTemplate = {
       competitor:
         "Gespecialiseerde data over AI-antwoorden, vermeldingen, bronvermeldingen, concurrenten, vragen en bronnen.",
       beseam:
-        "Het antwoord verbinden met productfeiten, de winkel, klantgedrag, de checkout, bestellingen en dezelfde vraag die opnieuw wordt gesteld.",
+        "Het antwoord verbinden met productfeiten, de webshop, klantgedrag, de checkout, bestellingen en dezelfde vraag die opnieuw wordt gesteld.",
     },
     relationship: {
       criterion: "Het meest geschikt voor",
       competitor: "Gespecialiseerde monitoring en analyse van AI-vindbaarheid.",
       beseam:
-        "Brengt een gemiste koopvraag tot een goedgekeurde wijziging in de winkel en controleert die opnieuw.",
+        "Brengt een gemiste koopvraag tot een goedgekeurde wijziging in de webshop en controleert die opnieuw.",
     },
   },
   workflow: {
@@ -65,7 +65,7 @@ export const TEMPLATE_NL: ComparisonTemplate = {
     understand: {
       step: "Het gat begrijpen",
       beseam:
-        "De gemiste aanbeveling koppelen aan het juiste product, de juiste pagina, bron, claim of het juiste winkelprobleem voordat je kiest wat je verandert.",
+        "De gemiste aanbeveling koppelen aan het juiste product, de juiste pagina, bron, claim of het juiste webshopprobleem voordat je kiest wat je verandert.",
     },
     change: {
       step: "Veranderen wat je in de hand hebt",
@@ -87,7 +87,7 @@ export const TEMPLATE_NL: ComparisonTemplate = {
   faqs: {
     replace: (name) => ({
       question: `Vervangt Beseam ${name}?`,
-      answer: `Niet per se. ${name} is een gespecialiseerd platform voor AI-zichtbaarheid. Beseam volgt ook AI-antwoorden, en verbindt een relevante gemiste aanbeveling met de product-, winkel-, klant- en resultaatdata die je nodig hebt om te bepalen wat je daarna doet.`,
+      answer: `Niet per se. ${name} is een gespecialiseerd platform voor AI-zichtbaarheid. Beseam volgt ook AI-antwoorden, en verbindt een relevante gemiste aanbeveling met de product-, webshop-, klant- en resultaatdata die je nodig hebt om te bepalen wat je daarna doet.`,
     }),
     together: (name) => ({
       question: `Kun je ${name} en Beseam samen gebruiken?`,
@@ -95,7 +95,7 @@ export const TEMPLATE_NL: ComparisonTemplate = {
     }),
     choose: (name, bestFor) => ({
       question: `Wanneer kies ik ${name} in plaats van Beseam?`,
-      answer: `Kies ${name} wanneer ${bestFor} Kies Beseam wanneer de grotere uitdaging is om inzichten over vindbaarheid door te vertalen naar beslissingen over product, winkel, klanten en business, in plaats van te stoppen bij monitoring.`,
+      answer: `Kies ${name} wanneer ${bestFor} Kies Beseam wanneer de grotere uitdaging is om inzichten over vindbaarheid door te vertalen naar beslissingen over product, webshop, klanten en business, in plaats van te stoppen bij monitoring.`,
     }),
   },
 };
@@ -141,7 +141,7 @@ export const SEED_TEXT_NL: Record<string, SeedText> = {
   },
   "otterly-ai": {
     headline:
-      "Otterly.AI maakt van zichtbaarheidsbevindingen to-do's. Beseam brengt een gemiste koopvraag tot een wijziging in de winkel en controleert die opnieuw.",
+      "Otterly.AI maakt van zichtbaarheidsbevindingen to-do's. Beseam brengt een gemiste koopvraag tot een wijziging in de webshop en controleert die opnieuw.",
     platformSummary:
       "Otterly.AI volgt merkzichtbaarheid en sentiment in AI-zoekopdrachten, met een Brand Visibility Index en een aanbevelingsproces dat bevindingen in een gevolgde to-dolijst kan zetten.",
     bestFor:
@@ -179,7 +179,7 @@ export const SEED_TEXT_NL: Record<string, SeedText> = {
   },
   "athena-hq": {
     headline:
-      "Athena volgt AI-share of voice en beveelt content aan. Beseam koppelt een gemiste koopvraag aan de wijziging in product of winkel en controleert opnieuw.",
+      "Athena volgt AI-share of voice en beveelt content aan. Beseam koppelt een gemiste koopvraag aan de wijziging in product of webshop en controleert opnieuw.",
     platformSummary:
       "Athena is een platform voor zichtbaarheid in AI-zoekopdrachten, gericht op share of voice, het ontdekken van concurrenten, bronanalyse en een Action Center voor geprioriteerde aanbevelingen en contentwerk.",
     bestFor:
@@ -198,7 +198,7 @@ export const SEED_TEXT_NL: Record<string, SeedText> = {
   },
   amionai: {
     headline:
-      "AmIOnAI geeft je een plan voor AI-zichtbaarheid. Beseam koppelt elke gemiste koopvraag aan de wijziging in de winkel en het resultaat.",
+      "AmIOnAI geeft je een plan voor AI-zichtbaarheid. Beseam koppelt elke gemiste koopvraag aan de wijziging in de webshop en het resultaat.",
     platformSummary:
       "AmIOnAI is een product voor AI-zichtbaarheid rond een zichtbaarheidsscore, bronanalyse en een weekplan om je aanwezigheid in ChatGPT en de AI-onderdelen van Google te verbeteren.",
     bestFor:
@@ -236,7 +236,7 @@ export const SEED_TEXT_NL: Record<string, SeedText> = {
   },
   "semrush-ai-toolkit": {
     headline:
-      "Semrush vindt onderwerp- en brongaten in AI. Beseam maakt van een gemiste koopvraag een wijziging in de winkel en controleert opnieuw.",
+      "Semrush vindt onderwerp- en brongaten in AI. Beseam maakt van een gemiste koopvraag een wijziging in de webshop en controleert opnieuw.",
     platformSummary:
       "De Semrush AI Toolkit meet AI-zichtbaarheid ten opzichte van concurrenten in de branche en zet gaten om in onderwerp- en bronkansen, inclusief vragen en domeinen waar concurrenten verschijnen en het gevolgde merk niet.",
     bestFor:
@@ -259,7 +259,7 @@ const BESEAM_PRACTICAL_NL = {
   owner:
     "E-commerce of commerce operations, met product, groei, marketing of development erbij, afhankelijk van de vraag.",
   setup:
-    "De winkel en databronnen koppelen die relevant zijn voor de zakelijke vraag die wordt onderzocht.",
+    "De webshop en databronnen koppelen die relevant zijn voor de zakelijke vraag die wordt onderzocht.",
   output:
     "Een onderbouwde beslissing, een actie met een eigenaar, expliciete goedkeuring, en een nieuwe controle van het oorspronkelijke probleem.",
   pricing:
@@ -297,7 +297,7 @@ export const PRACTICAL_NL: Record<string, PracticalComparison> = {
         competitor:
           "Houd Profound wanneer gespecialiseerde monitoring van AI-zichtbaarheid over meerdere engines een kernproces is.",
         beseam:
-          "Gebruik Beseam ernaast wanneer een zichtbaarheidsgat een beslissing in de winkel, een wijziging en een nieuwe controle moet worden.",
+          "Gebruik Beseam ernaast wanneer een zichtbaarheidsgat een beslissing in de webshop, een wijziging en een nieuwe controle moet worden.",
       },
       {
         criterion: "Prijsmodel",
@@ -374,7 +374,7 @@ export const PRACTICAL_NL: Record<string, PracticalComparison> = {
         competitor:
           "Houd Otterly.AI wanneer het volgen van vragen en gespecialiseerde GEO-aanbevelingen het centrale proces zijn.",
         beseam:
-          "Gebruik Beseam wanneer de aanbeveling verbonden moet blijven met signalen uit de winkel, een eigenaar, de uitvoering en de volgende controle van het antwoord.",
+          "Gebruik Beseam wanneer de aanbeveling verbonden moet blijven met signalen uit de webshop, een eigenaar, de uitvoering en de volgende controle van het antwoord.",
       },
       {
         criterion: "Prijsmodel",

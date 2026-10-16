@@ -16,6 +16,7 @@ const LEAD_SOURCES = new Set([
   "store_health_review",
   "product_visibility_monitoring",
   "contact",
+  "early_access",
 ]);
 
 // Sources where a person is waiting to hear back: notify contact@beseam.com
@@ -24,6 +25,7 @@ const REVIEW_SOURCES = new Set([
   "store_health_review",
   "product_visibility_monitoring",
   "contact",
+  "early_access",
 ]);
 
 // Who else gets a copy of a form submission, by source. Every address here
@@ -31,7 +33,13 @@ const REVIEW_SOURCES = new Set([
 // destination in Cloudflare Email Routing.
 const EXTRA_NOTIFY = {
   contact: ["guido@beseam.com"],
+  early_access: ["guido@beseam.com"],
 };
+
+// Trevra only knows the lead kinds it was set up with. An early access
+// request is stored as a contact, with the company in its message, until
+// Trevra has its own kind for it.
+const TREVRA_KINDS = { early_access: "contact" };
 
 const UTM_KEYS = new Set([
   "utm_source",
@@ -109,6 +117,7 @@ async function readLead(request, url, forcedSource) {
       submissionId: clean(body.submissionId, 100),
       name: clean(body.name, 100),
       store: clean(body.store, 300),
+      company: clean(body.company, 200),
       message: clean(body.message, 2000),
       utm: cleanUtm(body.utm),
     },
@@ -158,13 +167,23 @@ async function addLeadToTrevra(env, lead) {
   if (!trevraCaptureConfigured(env)) return false;
 
   const payload = {
-    kind: lead.source,
+    kind: TREVRA_KINDS[lead.source] ?? lead.source,
     person: {
       email: lead.email,
       ...(lead.name ? { name: lead.name } : {}),
     },
     ...(lead.store ? { company: { domain: lead.store } } : {}),
-    ...(lead.message ? { message: lead.message } : {}),
+    ...(lead.message || lead.company
+      ? {
+          message: [
+            lead.source === "early_access" ? "Early access request" : null,
+            lead.company ? "Company: " + lead.company : null,
+            lead.message || null,
+          ]
+            .filter(Boolean)
+            .join("\n"),
+        }
+      : {}),
     ...(Object.keys(lead.utm).length ? { attribution: lead.utm } : {}),
   };
   const raw = JSON.stringify(payload);
@@ -297,23 +316,32 @@ async function submitScanLead(lead, env) {
 }
 
 async function submitReview(lead, env) {
-  const { source, name, email, store, message, utm } = lead;
-  const requiresStore = source !== "contact";
+  const { source, name, email, store, company, message, utm } = lead;
   const label =
     source === "contact"
       ? "New contact form message"
-      : "New Store Health Review request";
+      : source === "early_access"
+        ? "New early access request"
+        : "New Store Health Review request";
 
-  if (
-    name.length < 2 ||
-    (requiresStore && store.length < 4) ||
-    (!requiresStore && message.length < 3)
-  ) {
+  // What each form must include besides a valid email.
+  const missing =
+    name.length < 2
+      ? true
+      : source === "contact"
+        ? message.length < 3
+        : source === "early_access"
+          ? company.length < 2
+          : store.length < 4;
+  if (missing) {
     return json(
       {
-        error: requiresStore
-          ? "Name, work email and store URL are required."
-          : "Name, work email and a message are required.",
+        error:
+          source === "contact"
+            ? "Name, work email and a message are required."
+            : source === "early_access"
+              ? "Name, work email and company are required."
+              : "Name, work email and store URL are required.",
       },
       400,
     );
@@ -339,8 +367,11 @@ async function submitReview(lead, env) {
     "",
     "Name: " + name,
     "Work email: " + email,
+    company ? "Company: " + company : null,
     store ? "Store: " + store : null,
-    "Message: " + (message || "Not provided"),
+    source === "early_access"
+      ? null
+      : "Message: " + (message || "Not provided"),
     "",
     "Attribution:",
     JSON.stringify(utm, null, 2),
@@ -357,10 +388,16 @@ async function submitReview(lead, env) {
     "</p><p><strong>Work email:</strong> " +
     escapeHtml(email) +
     "</p>" +
+    (company
+      ? "<p><strong>Company:</strong> " + escapeHtml(company) + "</p>"
+      : "") +
     (store ? "<p><strong>Store:</strong> " + escapeHtml(store) + "</p>" : "") +
-    "<p><strong>Message:</strong><br>" +
-    escapeHtml(message || "Not provided").replaceAll("\n", "<br>") +
-    "</p><p><strong>Attribution:</strong><br><code>" +
+    (source === "early_access"
+      ? ""
+      : "<p><strong>Message:</strong><br>" +
+        escapeHtml(message || "Not provided").replaceAll("\n", "<br>") +
+        "</p>") +
+    "<p><strong>Attribution:</strong><br><code>" +
     escapeHtml(JSON.stringify(utm)) +
     "</code></p>";
 
@@ -369,7 +406,11 @@ async function submitReview(lead, env) {
       from: "website@beseam.com",
       replyTo: email,
       subject:
-        source === "contact" ? label + " from " + name : label + " - " + store,
+        source === "contact"
+          ? label + " from " + name
+          : source === "early_access"
+            ? label + " from " + name + " (" + company + ")"
+            : label + " - " + store,
       text: textBody,
       html: htmlBody,
     };

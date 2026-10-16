@@ -56,7 +56,7 @@ export const nl: Dictionary = {
     },
     login: "Inloggen",
     register: "Registreren",
-    cta: "Gratis starten",
+    cta: "Krijg vroege toegang",
   },
   switcher: {
     triggerAriaLabel: "Taal wijzigen",
@@ -78,6 +78,24 @@ export const nl: Dictionary = {
     link: "Naar de Nederlandse homepage",
     dismiss: "Melding sluiten",
   },
+  // The early access dialog behind every primary call to action
+  // (early-access-cta.tsx).
+  earlyAccess: {
+    title: "Krijg vroege toegang tot Beseam",
+    body: "Hoor bij de eerste webshops die van AI een omzetkanaal maken. We richten je webshop samen met je in en laten je de eerste acties zien die omzet opleveren.",
+    name: "Naam",
+    email: "Zakelijk e-mailadres",
+    company: "Bedrijf",
+    submit: "Vraag vroege toegang aan",
+    sending: "Versturen…",
+    successEyebrow: "Aanvraag ontvangen",
+    successTitle: "Je staat op de lijst",
+    successBody:
+      "Bedankt! We nemen snel contact op om je webshop in te richten.",
+    error: "Er ging iets mis. Probeer het zo nog eens.",
+    close: "Sluiten",
+    honeypot: "Laat dit veld leeg",
+  },
   footer: {
     homeAriaLabel: "Beseam home",
     copyright: (year: number) => `© ${year} Beseam. Alle rechten voorbehouden.`,
@@ -85,6 +103,7 @@ export const nl: Dictionary = {
     terms: "Voorwaarden",
     bot: "BeseamBot",
     askAi: "Vraag AI over Beseam",
+    linkedin: "Beseam op LinkedIn",
     madeWith: "Ontwikkeld in Zwitserland",
     swissFlagAriaLabel: "Zwitserse vlag",
   },
@@ -105,9 +124,9 @@ export const nl: Dictionary = {
       schemaFaqName: "Vragen over Beseam",
     },
     scan: {
-      title: "Gratis winkelscan | Beseam",
+      title: "Gratis webshopscan | Beseam",
       description:
-        "Check gratis of ChatGPT en andere AI-assistenten je producten kunnen vinden en aanbevelen, en wat je eerst verbetert. Zonder login of winkeltoegang.",
+        "Check gratis of ChatGPT en andere AI-assistenten je producten kunnen vinden en aanbevelen, en wat je eerst verbetert. Zonder login of webshoptoegang.",
     },
   },
 
@@ -116,7 +135,7 @@ export const nl: Dictionary = {
     headlineAccent: "omzetkanaal",
     headlineAfter: " voor je webshop",
     sub: "Beseam is de makkelijkste manier om je producten door AI te laten aanbevelen aan miljoenen shoppers. Optimaliseer productbeschrijvingen, content en technische prestaties in een paar minuten.",
-    ctaStart: "Gratis starten",
+    ctaStart: "Krijg vroege toegang",
     ctaDemo: "Demo aanvragen",
     scrollCue: "Scroll",
   },
@@ -238,7 +257,7 @@ export const nl: Dictionary = {
           3: {
             label: "Goedgekeurde wijzigingen",
             description:
-              "Door de webshop goedgekeurde productwijzigingen, klaar voor de winkel.",
+              "Door de webshop goedgekeurde productwijzigingen, klaar voor de webshop.",
           },
           4: {
             label: "Variantkeuzes",
@@ -404,7 +423,7 @@ export const nl: Dictionary = {
           1: {
             label: "Aanbod en boodschap",
             description:
-              "De belofte die een shopper ziet voordat hij bij het product of de winkel aankomt.",
+              "De belofte die een shopper ziet voordat hij bij het product of de webshop aankomt.",
           },
           2: {
             label: "Goedgekeurde campagnewijziging",
@@ -438,7 +457,7 @@ export const nl: Dictionary = {
         },
       },
       onsite: {
-        label: "Zoeken in de winkel",
+        label: "Zoeken in de webshop",
         satellites: {
           0: "vindbaarheid",
           1: "top 3",
@@ -699,7 +718,7 @@ export const nl: Dictionary = {
           5: {
             label: "Klopt de omzet?",
             description:
-              "Controleer of de gevolgde omzet overeenkomt met de omzetdata van de winkel.",
+              "Controleer of de gevolgde omzet overeenkomt met de omzetdata van de webshop.",
           },
         },
       },
@@ -792,7 +811,7 @@ export const nl: Dictionary = {
         does: "Zichtbaarheid op de shortlist",
       },
       store: {
-        label: "Winkel & product",
+        label: "Webshop & product",
         layer: "Webshop",
         scope: "Wat de pagina beantwoordt, en wat ze daarna biedt.",
         caveat:
@@ -818,7 +837,7 @@ export const nl: Dictionary = {
     },
     short: {
       discovery: "Vindbaarheid",
-      store: "Winkel",
+      store: "Webshop",
       behavior: "Gedrag",
       revenue: "Omzet",
     },
@@ -956,7 +975,7 @@ export const nl: Dictionary = {
         },
         technical: {
           title: "Technische prestaties",
-          body: "Los problemen op met gestructureerde data, crawlertoegang en trage pagina's, zodat AI-assistenten elke pagina van je winkel kunnen lezen en vertrouwen.",
+          body: "Los problemen op met gestructureerde data, crawlertoegang en trage pagina's, zodat AI-assistenten elke pagina van je webshop kunnen lezen en vertrouwen.",
         },
       },
     },
@@ -964,7 +983,7 @@ export const nl: Dictionary = {
       // DRAFT customer quote, written for a customer to approve or adapt. It
       // only appears in local previews until \`approved\` is true and
       // \`name\` and \`role\` hold the real customer's details.
-      text: "Eerlijk gezegd verwachtte ik weer een tool waar ik constant achteraan moest. We koppelden onze Shopify-winkel met één klik, en nu keur ik bij mijn ochtendkoffie een paar suggesties goed. Beseam doet de rest!",
+      text: "Eerlijk gezegd verwachtte ik weer een tool waar ik constant achteraan moest. We koppelden onze Shopify-webshop met één klik, en nu keur ik bij mijn ochtendkoffie een paar suggesties goed. Beseam doet de rest!",
       name: "",
       role: "",
       approved: false,
@@ -978,9 +997,9 @@ export const nl: Dictionary = {
       steps: {
         connect: {
           title: "Koppel je Shopify-webshop",
-          body: "Koppel je winkel met één klik. Beseam importeert je catalogus zonder je thema aan te raken.",
+          body: "Koppel je webshop met één klik. Beseam importeert je catalogus zonder je thema aan te raken.",
           visual: {
-            label: "Winkelkoppeling",
+            label: "Webshopkoppeling",
             action: "Koppel Shopify",
             synced: {
               products: "Producten gesynchroniseerd",
@@ -1049,7 +1068,7 @@ export const nl: Dictionary = {
     features: {
       webshops: {
         title: "Speciaal gebouwd voor webshops",
-        body: "Met honderden of duizenden producten is het onhaalbaar om ze allemaal met de hand te optimaliseren voor AI-zoekmachines. De meeste tools voor AI-zichtbaarheid zijn gemaakt voor blogs en merkpagina's, niet voor productcatalogi. Beseam leest je hele winkel, product voor product, en doet het werk op de schaal van je catalogus.",
+        body: "Met honderden of duizenden producten is het onhaalbaar om ze allemaal met de hand te optimaliseren voor AI-zoekmachines. De meeste tools voor AI-zichtbaarheid zijn gemaakt voor blogs en merkpagina's, niet voor productcatalogi. Beseam leest je hele webshop, product voor product, en doet het werk op de schaal van je catalogus.",
         visual: {
           label: "Je catalogus",
           stat: "1.240 producten gesynchroniseerd",
@@ -1097,7 +1116,7 @@ export const nl: Dictionary = {
       heading: "Zie wat de keuze in de weg staat.",
       body: "Beseam kijkt naar wat de shopper deed, controleert product-, zoek- en voorraaddata, sluit zwakkere verklaringen uit en maakt van het sterkste inzicht een concrete wijziging.",
       traceLabel: "Voorbeeldspoor",
-      traceScope: "Vindbaarheid in de winkel · schematisch",
+      traceScope: "Vindbaarheid in de webshop · schematisch",
       queries: {
         searched: { label: "Zocht op", value: "“waterdichte jas”" },
         thenAdded: {
@@ -1109,7 +1128,7 @@ export const nl: Dictionary = {
       whatHappenedNext: "Wat er daarna gebeurde",
       candidates: {
         onsiteSearch: {
-          domain: "Zoeken in de winkel",
+          domain: "Zoeken in de webshop",
           verdict: "Zoeken werkt",
           claim: "De verfijning leverde helemaal niets op.",
           why: "Ze toont nog steeds de waterdichte jassen.",
@@ -1142,7 +1161,7 @@ export const nl: Dictionary = {
           "Dezelfde jassen getoond. De shopper vertrok zonder er één te openen.",
         findings: {
           onsiteSearch: {
-            domain: "Zoeken in de winkel",
+            domain: "Zoeken in de webshop",
             finding: "Zoeken werkt.",
             detail:
               "De verfijnde zoekopdracht toont nog steeds de waterdichte jassen.",
@@ -1176,7 +1195,7 @@ export const nl: Dictionary = {
           price: "Onder €200",
         },
         andMore: "en nog zeven, geen ervan van jou",
-        verdict: "Jouw winkel, niet genoemd",
+        verdict: "Jouw webshop, niet genoemd",
       },
       store: {
         breadcrumb: (product: string) => `Home / Jassen / ${product}`,
@@ -1231,7 +1250,7 @@ export const nl: Dictionary = {
           title: "Zie waarom shoppers twijfelen",
           capabilities: {
             productPages: "Productpagina's",
-            onsiteSearch: "Zoeken in de winkel",
+            onsiteSearch: "Zoeken in de webshop",
             behavior: "Gedrag",
           },
           detail: "Vind de onbeantwoorde vraag die de shopper laat twijfelen.",
@@ -1287,11 +1306,11 @@ export const nl: Dictionary = {
     system: {
       eyebrow: "Eén verbonden overzicht",
       heading: "Eén probleem. Al het bewijs erachter.",
-      body: "Een gemiste aanbeveling, een twijfelende shopper of een misgelopen verkoop zit zelden in één tool. Beseam verbindt AI-vindbaarheid, je winkel, shoppergedrag en resultaten, zodat de volgende wijziging begint met het volledige beeld.",
+      body: "Een gemiste aanbeveling, een twijfelende shopper of een misgelopen verkoop zit zelden in één tool. Beseam verbindt AI-vindbaarheid, je webshop, shoppergedrag en resultaten, zodat de volgende wijziging begint met het volledige beeld.",
       compact: {
         inputs: [
           "AI & zoeken",
-          "Product & winkel",
+          "Product & webshop",
           "Shoppergedrag",
           "Orders & omzet",
         ],
@@ -1308,7 +1327,7 @@ export const nl: Dictionary = {
 
     impact: {
       heading: "Het telt alleen als het resultaat verandert.",
-      body: "Na een wijziging stelt Beseam dezelfde shoppervragen opnieuw, en laat zien of de antwoorden nu jouw winkel noemen.",
+      body: "Na een wijziging stelt Beseam dezelfde shoppervragen opnieuw, en laat zien of de antwoorden nu jouw webshop noemen.",
     },
 
     promise: {
@@ -1316,7 +1335,7 @@ export const nl: Dictionary = {
     },
 
     stickyCta: {
-      cta: "Gratis starten",
+      cta: "Krijg vroege toegang",
     },
   },
 
@@ -1348,7 +1367,7 @@ export const nl: Dictionary = {
       platforms: {
         question: "Met welke webshopplatformen werkt Beseam?",
         answer:
-          "Beseam werkt op dit moment met Shopify-webshops. Je koppelt je winkel met één klik, en Beseam importeert je catalogus zonder je themacode aan te raken.",
+          "Beseam werkt op dit moment met Shopify-webshops. Je koppelt je webshop met één klik, en Beseam importeert je catalogus zonder je themacode aan te raken.",
       },
       time: {
         question: "Hoeveel tijd kost Beseam per week?",
@@ -1378,7 +1397,7 @@ export const nl: Dictionary = {
         answers: "Controleren hoe je producten gevonden worden",
       },
       technical: (position: number, total: number) =>
-        `Je winkel scannen · stap ${position} van ${total}`,
+        `Je webshop scannen · stap ${position} van ${total}`,
       readingDomain: (domain: string) => `${domain} lezen`,
       readingStorefront: "Je webshop lezen",
       resultsAsTheyArrive:
@@ -1422,7 +1441,7 @@ export const nl: Dictionary = {
         count === 1 ? "ondersteunend inzicht" : "ondersteunende inzichten",
       readOn: (date: string) => `Webshop gelezen op ${date}`,
       answeredOn: (date: string) => `AI-antwoorden van ${date}`,
-      statusRejected: "Kon deze winkel niet lezen",
+      statusRejected: "Kon deze webshop niet lezen",
       statusRunning: "Nog bezig",
       statusFreeReady: "Gratis scan klaar",
       statusFailed: "Audit onvolledig",
@@ -1522,7 +1541,7 @@ export const nl: Dictionary = {
       close: "Sluiten",
       whyItMatters: "Waarom het telt",
       improveNext: "Volgende stap:",
-      startFixing: "Ga verder met deze winkel in Beseam",
+      startFixing: "Ga verder met deze webshop in Beseam",
       evidence: "Bewijs",
       measuredEvidence: "Gemeten bewijs",
       affectedExamples: "Getroffen voorbeelden",
@@ -1585,7 +1604,7 @@ export const nl: Dictionary = {
       aiVisibilitySomeMissed: (missed: number, total: number) =>
         `Je merk ontbrak in ${missed} van de ${total} bruikbare AI-shoppingantwoorden.`,
       aiVisibilityWhy:
-        "Als een AI-shoppingassistent een koopvraag beantwoordt zonder jouw winkel te noemen, worden shoppers naar concurrenten geleid voordat ze ooit je webshop bereiken. Ontbrekende identificatiecodes of afwijkende prijzen zorgen er vaak voor dat AI-systemen listings laten vallen ten gunste van geverifieerde concurrenten.",
+        "Als een AI-shoppingassistent een koopvraag beantwoordt zonder jouw webshop te noemen, worden shoppers naar concurrenten geleid voordat ze ooit je webshop bereiken. Ontbrekende identificatiecodes of afwijkende prijzen zorgen er vaak voor dat AI-systemen listings laten vallen ten gunste van geverifieerde concurrenten.",
       aiVisibilityNext:
         "Open de vragen hieronder om te zien wat er gevraagd werd, welke assistenten een bruikbaar antwoord gaven, wie ze in plaats van jou noemden en welk productbewijs je het best eerst kunt versterken.",
       aiVisibilityAttempts: (usable: number, total: number) =>
@@ -1597,12 +1616,12 @@ export const nl: Dictionary = {
       aiVisibilityExpected:
         "Het merk wordt aanbevolen in bruikbare AI-shoppingantwoorden op relevante koopvragen",
       discoveryFiles: {
-        llms: "Een korte samenvatting van je winkel voor AI-assistenten die ernaar zoeken. Optioneel.",
+        llms: "Een korte samenvatting van je webshop voor AI-assistenten die ernaar zoeken. Optioneel.",
         agents:
-          "Notities voor AI-agents die namens een shopper door je winkel bladeren. Optioneel.",
+          "Notities voor AI-agents die namens een shopper door je webshop bladeren. Optioneel.",
         skill:
-          "Beschrijft wat een assistent in je winkel kan doen, in een formaat dat sommige AI-tools lezen. Heel nieuw en optioneel. Sla het over tenzij je al met AI-agents werkt.",
-        ucp: "Een machineleesbare kaart die je winkel beschrijft voor commerce-agents. Optioneel.",
+          "Beschrijft wat een assistent in je webshop kan doen, in een formaat dat sommige AI-tools lezen. Heel nieuw en optioneel. Sla het over tenzij je al met AI-agents werkt.",
+        ucp: "Een machineleesbare kaart die je webshop beschrijft voor commerce-agents. Optioneel.",
       },
     },
     boundary: {
@@ -1611,7 +1630,7 @@ export const nl: Dictionary = {
         "Een openbare scan kan maar zo ver reiken. Dit is precies hoe ver hij ging, en wat daarna doorloopt.",
       did: "Wat deze scan deed",
       didPublic:
-        "Je openbare webshop gelezen zoals elke bezoeker dat kan: geen login, geen toegang tot je winkel.",
+        "Je openbare webshop gelezen zoals elke bezoeker dat kan: geen login, geen toegang tot je webshop.",
       didPages: (count: number) =>
         `De paginachecks uitgevoerd op ${count} ${count === 1 ? "productpagina" : "productpagina's"}, plus je robots-bestand, sitemap en crawlertoegang.`,
       didPagesSample:
@@ -1647,9 +1666,9 @@ export const nl: Dictionary = {
         count === 0
           ? "Deze scan is een momentopname. Beseam blijft volgen wat er verandert."
           : "Deze scan vond de gaten. Beseam blijft eraan werken.",
-      body: "Koppel Shopify om met deze winkel verder te gaan in Beseam. Laat vindbaarheids- en winkelchecks doorlopen, maak van de sterkste inzichten verbeteringen ter goedkeuring en controleer daarna wat er veranderde.",
+      body: "Koppel Shopify om met deze webshop verder te gaan in Beseam. Laat vindbaarheids- en webshopchecks doorlopen, maak van de sterkste inzichten verbeteringen ter goedkeuring en controleer daarna wat er veranderde.",
       benefits: [
-        "Houd dezelfde winkel in de gaten",
+        "Houd dezelfde webshop in de gaten",
         "Maak van inzichten voorbereide wijzigingen",
         "Eerst goedkeuren, dan opnieuw meten",
       ],
@@ -1665,18 +1684,18 @@ export const nl: Dictionary = {
       start: "Koppel Shopify en ga verder",
       mobileStart: "Koppel Shopify en ga verder",
       carryStore: (domain: string) =>
-        `${domain} wordt meegenomen in de setup, zodat je de winkel niet opnieuw hoeft in te voeren.`,
+        `${domain} wordt meegenomen in de setup, zodat je de webshop niet opnieuw hoeft in te voeren.`,
       closingEyebrow: "Volgende stap",
       closingTitle: (count: number) =>
         `Maak van ${count === 1 ? "deze prioriteit" : `deze ${count} prioriteiten`} verbeteringen die Beseam kan controleren.`,
       closingBody:
-        "Beseam blijft de winkel controleren, bereidt de wijzigingen voor, wacht op jouw goedkeuring en controleert hetzelfde bewijs opnieuw na elke wijziging.",
+        "Beseam blijft de webshop controleren, bereidt de wijzigingen voor, wacht op jouw goedkeuring en controleert hetzelfde bewijs opnieuw na elke wijziging.",
       reviewWithFinding: "Loop je dit liever samen met ons door?",
       reviewWithoutFinding: "Loop je dit liever samen met ons door?",
       startingWith: (headline: string) => `Te beginnen met “${headline}”`,
       reviewBody:
-        "In 20 minuten gebruiken we één inzicht uit deze scan om de volledige cyclus op jouw winkel te laten zien: bewijs, voorgestelde wijziging, goedkeuring en hercontrole.",
-      reviewCta: "Plan een winkelreview van 20 minuten",
+        "In 20 minuten gebruiken we één inzicht uit deze scan om de volledige cyclus op jouw webshop te laten zien: bewijs, voorgestelde wijziging, goedkeuring en hercontrole.",
+      reviewCta: "Plan een webshopreview van 20 minuten",
     },
     visibility: {
       googleSearch: "Google-zoekopdracht:",
@@ -1717,9 +1736,9 @@ export const nl: Dictionary = {
       ) =>
         `${named === 0 ? `Geen van de ${usable}` : named === usable ? `Alle ${usable}` : `${named} van ${usable}`} bruikbare AI-shopping${usable === 1 ? "antwoord" : "antwoorden"} raadde${named > 1 ? "n" : ""} je aan · ${attempts} pogingen over ${questions} ${questions === 1 ? "koopvraag" : "koopvragen"}`,
       usableAttempts: (usable: number, total: number) =>
-        `${usable} van ${total} pogingen raadden specifieke winkels aan (de rest was informatief)`,
+        `${usable} van ${total} pogingen raadden specifieke webshops aan (de rest was informatief)`,
       noUsableAttempts: (total: number) =>
-        `${total} ${total === 1 ? "poging" : "pogingen"} · alleen informatief (geen winkels genoemd)`,
+        `${total} ${total === 1 ? "poging" : "pogingen"} · alleen informatief (geen webshops genoemd)`,
       noUsableSummary: (attempts: number, questions: number) =>
         `0/${attempts} pogingen bij assistenten gaven een bruikbaar antwoord · ${questions} ${questions === 1 ? "koopvraag" : "koopvragen"}`,
       checking: "Controleren wat shoppers te zien krijgen",
@@ -1751,7 +1770,7 @@ export const nl: Dictionary = {
       contactPage: "Contactpagina",
       pageCouldNotRead: "We konden deze pagina in deze ronde niet lezen.",
       openFullReport: "Volledig rapport openen",
-      store: "Winkel",
+      store: "Webshop",
       catalog: "Catalogus",
       productPages: "Productpagina's",
       collectionPageAudits: "Collectiepagina's",
@@ -1892,7 +1911,7 @@ export const nl: Dictionary = {
       homepageSample:
         "Paden vanaf de homepage zijn hier een steekproef. Echte dekking van verweesde pagina's vraagt de volledige interne linkstructuur.",
       emergingFiles: (present: number, total: number) =>
-        `Die vier zijn opkomende standaarden om AI-assistenten te vertellen wat je winkel is en hoe ze die kunnen gebruiken. ${present} van ${total} zijn gepubliceerd. Geen ervan is verplicht, van geen ervan is bekend dat het vandaag je positie in zoekmachines beïnvloedt, en een ontbrekend bestand is geen fout. We melden ze omdat winkels die ze publiceren makkelijker correct te lezen zijn voor assistenten, niet omdat je zonder ze iets verkeerd doet.`,
+        `Die vier zijn opkomende standaarden om AI-assistenten te vertellen wat je webshop is en hoe ze die kunnen gebruiken. ${present} van ${total} zijn gepubliceerd. Geen ervan is verplicht, van geen ervan is bekend dat het vandaag je positie in zoekmachines beïnvloedt, en een ontbrekend bestand is geen fout. We melden ze omdat webshops die ze publiceren makkelijker correct te lezen zijn voor assistenten, niet omdat je zonder ze iets verkeerd doet.`,
       catalogQuestion: "Zijn producten te begrijpen en te onderscheiden?",
       countsChecked:
         "aantallen hieronder gaan over de gecontroleerde producten",
@@ -1951,13 +1970,13 @@ export const nl: Dictionary = {
       pagesGated: (count: number) =>
         `${count} productpagina's · nadat je je e-mailadres bevestigt`,
       pagesGatedBody:
-        "Deze pagina's grondig lezen is de trage helft van de scan, en het bevestigen van je e-mailadres start die. Het winkel- en catalogusbewijs hierboven blijft gewoon staan.",
+        "Deze pagina's grondig lezen is de trage helft van de scan, en het bevestigen van je e-mailadres start die. Het webshop- en catalogusbewijs hierboven blijft gewoon staan.",
       inspecting: (count: number) =>
         `${count} representatieve productpagina's worden gecontroleerd`,
       evidenceReady:
-        "Winkel- en catalogusbewijs staat al hierboven. Resultaten per pagina verschijnen hier automatisch.",
+        "Webshop- en catalogusbewijs staat al hierboven. Resultaten per pagina verschijnen hier automatisch.",
       pdpFailed:
-        "De observaties over winkel en catalogus blijven geldig. De controle van representatieve productpagina's kon in deze ronde niet worden afgerond.",
+        "De observaties over webshop en catalogus blijven geldig. De controle van representatieve productpagina's kon in deze ronde niet worden afgerond.",
       sampleShows: "Wat de voorbeeldproductpagina's laten zien",
       deepAuditCoverage: "Auditdiepte per onderdeel",
       deepAuditCoverageSummary: (
@@ -2094,10 +2113,10 @@ export const nl: Dictionary = {
         "Die verificatielink is ongeldig of al gebruikt. Start de scan opnieuw als je een nieuwe link nodig hebt.",
       verifyUnavailable:
         "We konden die link nu niet verifiëren. Probeer de link uit je e-mail opnieuw.",
-      enterDomain: "Vul het domein van je winkel in.",
+      enterDomain: "Vul het domein van je webshop in.",
       enterEmail: "Vul je zakelijke e-mailadres in.",
       invalidEmail: "Vul een geldig zakelijk e-mailadres in.",
-      ownDomain: "Vul het domein van je eigen winkel in.",
+      ownDomain: "Vul het domein van je eigen webshop in.",
       rateLimited:
         "Er zijn nu te veel scanverzoeken. Probeer het zo meteen opnieuw.",
       sendEmail: "We konden de verificatie-e-mail niet versturen.",
@@ -2119,14 +2138,14 @@ export const nl: Dictionary = {
       runAgain: "Opnieuw uitvoeren",
       rejectedTitle: (domain: string) => `We konden ${domain} niet lezen.`,
       blockedExplanation:
-        "Je webshop weigerde ons verzoek. Dat komt meestal door een firewall of botbeveiliging, en het betekent niet dat er iets mis is met je winkel.",
+        "Je webshop weigerde ons verzoek. Dat komt meestal door een firewall of botbeveiliging, en het betekent niet dat er iets mis is met je webshop.",
       noProductsExplanation:
-        "We bereikten de site, maar vonden er geen openbare productpagina's. Dat gebeurt bij webshops die producten pas na inloggen tonen, of die helemaal geen winkel zijn.",
+        "We bereikten de site, maar vonden er geen openbare productpagina's. Dat gebeurt bij webshops die producten pas na inloggen tonen, of die helemaal geen webshop zijn.",
       genericExplanation:
         "Het domein reageerde niet op een openbaar verzoek. Het is misschien verkeerd gespeld, geparkeerd of tijdelijk offline.",
       blockedSuggestions: [
         "Controleer of het domein de webshop is die shoppers gebruiken, en geen staging- of beheeradres.",
-        "Vraag wie de winkel beheert of botbeveiliging externe lezers blokkeert. Dezelfde regel blokkeert meestal ook zoekmachines.",
+        "Vraag wie de webshop beheert of botbeveiliging externe lezers blokkeert. Dezelfde regel blokkeert meestal ook zoekmachines.",
       ],
       noProductsSuggestions: [
         "Probeer het domein waarop shoppers echt producten bekijken, inclusief een eventueel marktvoorvoegsel.",
@@ -2137,40 +2156,40 @@ export const nl: Dictionary = {
         "Als de site live is in je browser, wacht dan even en probeer het opnieuw.",
       ],
       reported: (reason: string) => `Wat de scan meldde: ${reason}`,
-      continueCta: "Koppel deze winkel in Beseam",
-      reviewCta: "Hulp krijgen met deze winkel",
+      continueCta: "Koppel deze webshop in Beseam",
+      reviewCta: "Hulp krijgen met deze webshop",
     },
   },
   scan: {
-    eyebrow: "Gratis winkelscan",
+    eyebrow: "Gratis webshopscan",
     heading:
       "Zie wat je producten moeilijker maakt om te vinden, te kiezen of te kopen.",
     intro:
-      "Vul het domein van je winkel in. Beseam leest de openbare webshop en laat zien waar producten gemist kunnen worden, lastig te vergelijken zijn of het kopen bemoeilijken, met bewijs en wat je eerst oplost.",
+      "Vul het domein van je webshop in. Beseam leest de openbare webshop en laat zien waar producten gemist kunnen worden, lastig te vergelijken zijn of het kopen bemoeilijken, met bewijs en wat je eerst oplost.",
     duration: "Meestal ongeveer een minuut.",
     promiseBody:
-      "We lezen je openbare winkel zoals een zoekmachine of een AI-assistent dat doet: je productpagina's, je catalogusdata en je site-instellingen. We mailen je de link naar je audit, zodat je ziet wat zij kunnen zien en wat je eerst oplost. Het is geen zoekwoordenrapport. We meten geen zoekvolume, en shoppervragen komen later, niet hier.",
+      "We lezen je openbare webshop zoals een zoekmachine of een AI-assistent dat doet: je productpagina's, je catalogusdata en je site-instellingen. We mailen je de link naar je audit, zodat je ziet wat zij kunnen zien en wat je eerst oplost. Het is geen zoekwoordenrapport. We meten geen zoekvolume, en shoppervragen komen later, niet hier.",
     assurances: [
       "Geen account, geen creditcard",
       "Alleen openbare webshoppagina's",
-      "Geen toegang tot je winkel",
+      "Geen toegang tot je webshop",
     ],
     formNote: {
-      line: "De gratis scan leest je winkel één keer.",
+      line: "De gratis scan leest je webshop één keer.",
       loop: "Beseam: Vinden → Voorbereiden → Goedkeuren → Toepassen → Meten",
     },
     form: {
-      domainLabel: "Domein van je winkel",
+      domainLabel: "Domein van je webshop",
       websiteHoneypot: "Website",
-      domainPlaceholder: "jouwwinkel.nl",
-      submit: "Scan mijn winkel",
-      submitting: "Je winkel wordt gelezen…",
-      again: "Een andere winkel scannen",
+      domainPlaceholder: "jouwwebshop.nl",
+      submit: "Scan mijn webshop",
+      submitting: "Je webshop wordt gelezen…",
+      again: "Een andere webshop scannen",
       startNote:
         "Start meteen. We vragen pas om je e-mailadres als de eerste inzichten op je scherm staan.",
     },
     contentsHeading: "Wat we controleren",
-    scopeNote: "Alleen de openbare webshop · geen toegang tot je winkel",
+    scopeNote: "Alleen de openbare webshop · geen toegang tot je webshop",
     contents: [
       {
         label: "Je webshop",
@@ -2190,7 +2209,7 @@ export const nl: Dictionary = {
       {
         label: "Een voorbeeld-AI-antwoord",
         detail:
-          "Eén blik op hoe assistenten je winkel vandaag beschrijven. Hier één keer gevraagd; in de app volgens een planning.",
+          "Eén blik op hoe assistenten je webshop vandaag beschrijven. Hier één keer gevraagd; in de app volgens een planning.",
       },
     ],
     notKeywordReport:
@@ -2213,16 +2232,16 @@ export const nl: Dictionary = {
           "Eén volgende stap per inzicht, met het bewijs eronder. Een openbare scan kan geen omzeteffect bewijzen, en dat beweren we ook niet.",
       },
     ],
-    once: "Deze scan leest je winkel één keer. Beseam blijft controleren en bewijst wat er veranderde.",
+    once: "Deze scan leest je webshop één keer. Beseam blijft controleren en bewijst wat er veranderde.",
     continuous: "Zie wat er doorlopend draait →",
     beyond: {
       eyebrow: "Na de gratis scan",
       heading: "Een scan vindt het gat. Beseam blijft werken nadat je weggaat.",
       body: "Laat dezelfde shoppervragen doorlopen, maak van de sterkste inzichten voorbereide wijzigingen, keur goed wat klanten te zien krijgen en controleer het bewijs opnieuw na elke wijziging.",
       review:
-        "Of breng je winkel naar een review van twintig minuten, en we gebruiken één echt inzicht om te laten zien wat Beseam vond, wat het zou veranderen en wat het daarna opnieuw controleert.",
-      start: "Gratis starten met mijn winkel",
-      book: "Plan een winkelreview van 20 minuten",
+        "Of breng je webshop naar een review van twintig minuten, en we gebruiken één echt inzicht om te laten zien wat Beseam vond, wat het zou veranderen en wat het daarna opnieuw controleert.",
+      start: "Gratis starten met mijn webshop",
+      book: "Plan een webshopreview van 20 minuten",
     },
   },
 };
