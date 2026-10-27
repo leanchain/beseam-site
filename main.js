@@ -28,14 +28,6 @@ const REVIEW_SOURCES = new Set([
   "early_access",
 ]);
 
-// Who else gets a copy of a form submission, by source. Every address here
-// must also be listed in wrangler.jsonc (send_email) and be a verified
-// destination in Cloudflare Email Routing.
-const EXTRA_NOTIFY = {
-  contact: ["guido@beseam.com"],
-  early_access: ["guido@beseam.com"],
-};
-
 // Trevra only knows the lead kinds it was set up with. An early access
 // request is stored as a contact, with the company in its message, until
 // Trevra has its own kind for it.
@@ -403,7 +395,7 @@ async function submitReview(lead, env) {
 
   if (env.REVIEW_EMAIL) {
     const notification = {
-      from: "website@beseam.com",
+      from: "noreply@beseam.com",
       replyTo: email,
       subject:
         source === "contact"
@@ -426,16 +418,6 @@ async function submitReview(lead, env) {
         "[lead] review notification email failed after Trevra capture",
         error,
       );
-    }
-    // Extra recipients get a best-effort copy: contact@ above is the
-    // delivery that decides success, so a failed copy never makes the
-    // visitor resend a message that already arrived.
-    for (const to of EXTRA_NOTIFY[source] ?? []) {
-      try {
-        await env.REVIEW_EMAIL.send({ ...notification, to });
-      } catch (error) {
-        console.error("[lead] copy to " + to + " failed", error);
-      }
     }
   }
 

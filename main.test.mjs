@@ -520,54 +520,58 @@ test("removed pages redirect permanently to their replacements", async () => {
   }
 });
 
-test("contact form messages are emailed to contact@ and copied to guido@", async () => {
+test("contact messages notify only contact@ from noreply@", async () => {
   const sent = [];
-  const env = {
-    REVIEW_EMAIL: {
-      send: async (message) => {
-        sent.push(message);
-      },
-    },
-  };
-  const response = await worker.fetch(
-    leadRequest({
-      source: "contact",
-      name: "Test Person",
-      email: "test@example.com",
-      message: "Hello there",
-    }),
-    env,
-  );
+  const env = { REVIEW_EMAIL: { send: async (message) => sent.push(message) } };
+  const response = await worker.fetch(leadRequest({
+    source: "contact", name: "Test Person", email: "test@example.com", message: "Hello there",
+  }), env);
   assert.equal(response.status, 202);
-  assert.deepEqual(
-    sent.map((message) => message.to),
-    ["contact@beseam.com", "guido@beseam.com"],
-  );
-  assert.equal(sent[1].replyTo, "test@example.com");
-  assert.match(sent[1].text, /Hello there/);
+  assert.equal(sent.length, 1);
+  assert.equal(sent[0].to, "contact@beseam.com");
+  assert.equal(sent[0].from, "noreply@beseam.com");
+  assert.equal(sent[0].replyTo, "test@example.com");
+  assert.match(sent[0].text, /Hello there/);
 });
 
-test("a failed copy to guido@ does not fail the contact form", async () => {
+test("early access is captured in Trevra and sent once to contact@ from noreply@", async () => {
+  const sent = [], calls = [];
   const env = {
-    REVIEW_EMAIL: {
-      send: async (message) => {
-        if (message.to === "guido@beseam.com") throw new Error("not verified");
-      },
-    },
+    ...TREVRA_ENV,
+    REVIEW_EMAIL: { send: async (message) => sent.push(message) },
   };
-  const response = await worker.fetch(
-    leadRequest({
-      source: "contact",
-      name: "Test Person",
-      email: "test@example.com",
-      message: "Hello there",
-    }),
-    env,
-  );
+  const response = await withFetch(async (input, init) => {
+    calls.push({ url: String(input), init });
+    return new Response(JSON.stringify({ submissionId: "submitted" }), { status: 202 });
+  }, () => worker.fetch(leadRequest({
+    source: "early_access", name: "Test Person", email: "founder@example.com",
+    company: "Acme Shop", submissionId: "early-test-123",
+  }), env));
   assert.equal(response.status, 202);
+  assert.equal(calls.length, 1);
+  const lead = JSON.parse(calls[0].init.body);
+  assert.equal(lead.kind, "contact");
+  assert.equal(lead.person.email, "founder@example.com");
+  assert.match(lead.message, /Early access request\nCompany: Acme Shop/);
+  assert.equal(calls[0].init.headers["x-trevra-idempotency-key"], "early-test-123");
+  assert.equal(sent.length, 1);
+  assert.equal(sent[0].to, "contact@beseam.com");
+  assert.equal(sent[0].from, "noreply@beseam.com");
+  assert.equal(sent[0].replyTo, "founder@example.com");
+  assert.match(sent[0].subject, /New early access request/);
+  assert.match(sent[0].text, /Company: Acme Shop/);
 });
 
-test("early access requests are emailed to contact@ and guido@ with the company", async () => {
+test("invalid early access does not capture or email", async () => {
+  const sent = [];
+  const response = await worker.fetch(leadRequest({
+    source: "early_access", name: "Test Person", email: "founder@example.com", company: "",
+  }), { ...TREVRA_ENV, REVIEW_EMAIL: { send: async (message) => sent.push(message) } });
+  assert.equal(response.status, 400);
+  assert.equal(sent.length, 0);
+});
+
+test("early access requests are emailed only to contact@ with the company", async () => {
   const sent = [];
   const env = {
     REVIEW_EMAIL: {
@@ -588,7 +592,7 @@ test("early access requests are emailed to contact@ and guido@ with the company"
   assert.equal(response.status, 202);
   assert.deepEqual(
     sent.map((message) => message.to),
-    ["contact@beseam.com", "guido@beseam.com"],
+    ["contact@beseam.com"],
   );
   assert.match(
     sent[0].subject,

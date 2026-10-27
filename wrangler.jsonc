@@ -16,10 +16,9 @@
   "send_email": [
     {
       "name": "REVIEW_EMAIL",
-      // Each address must be a verified destination in Cloudflare Email
-      // Routing. guido@ receives copies of contact form messages.
-      "allowed_destination_addresses": ["contact@beseam.com", "guido@beseam.com"],
-      "allowed_sender_addresses": ["website@beseam.com"],
+      // Contact is the only notification recipient; mailbox hosting remains Zoho.
+      "allowed_destination_addresses": ["contact@beseam.com"],
+      "allowed_sender_addresses": ["noreply@beseam.com"],
     },
   ],
   "observability": {
