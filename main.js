@@ -1,4 +1,4 @@
-import { redirectTargetFor } from "./src/i18n/locale-rules.mjs";
+import { LOCALIZED_ROUTES, redirectTargetFor } from "./src/i18n/locale-rules.mjs";
 
 // The scan API only knows the locales it had when it was built; a site locale
 // it has not been taught yet (Dutch) is dropped and the scan answers in its
@@ -110,19 +110,19 @@ async function readLead(request, url, forcedSource) {
       name: clean(body.name, 100),
       store: clean(body.store, 300),
       message: clean(body.message, 2000),
-      utm:
-        body.utm && typeof body.utm === "object"
-          ? Object.fromEntries(
-              Object.entries(body.utm)
-                .filter(
-                  ([key, value]) =>
-                    UTM_KEYS.has(key) && typeof value === "string",
-                )
-                .map(([key, value]) => [key, clean(value, 200)]),
-            )
-          : {},
+      utm: cleanUtm(body.utm),
     },
   };
+}
+
+function cleanUtm(raw) {
+  return raw && typeof raw === "object"
+    ? Object.fromEntries(
+        Object.entries(raw)
+          .filter(([key, value]) => UTM_KEYS.has(key) && typeof value === "string")
+          .map(([key, value]) => [key, clean(value, 200)]),
+      )
+    : {};
 }
 
 function trevraCaptureConfigured(env) {
@@ -422,7 +422,7 @@ const DEFAULT_API_BASE = "https://api.beseam.com/api";
 // local verification click lands on the local app instead of production.
 const DEFAULT_APP_BASE = "https://app.beseam.com";
 
-async function proxyAnswerCheck(request, url, env) {
+async function proxyAnswerCheck(request, url, env, ctx) {
   const apiBase = (env.API_BASE_URL || DEFAULT_API_BASE).replace(/\/$/, "");
 
   if (request.method === "GET") {
@@ -463,19 +463,36 @@ async function proxyAnswerCheck(request, url, env) {
     return json({ error: "Enter a valid work email." }, 422);
   }
 
-  return forwardJson(`${apiBase}/monitoring/public/answer-check`, {
+  const honeypot = clean(payload?.website, 200);
+  const upstream = await forwardJson(`${apiBase}/monitoring/public/answer-check`, {
     method: "POST",
     headers: { "content-type": "application/json" },
     body: JSON.stringify({
       domain,
       email: email || null,
       source: clean(payload?.source, 64) || "homepage_hero",
-      // Honeypot passes straight through: the backend decides what to do.
-      website: clean(payload?.website, 200) || null,
+      website: honeypot || null,
       ...(payload?.retry === true ? { retry: true } : {}),
       ...(SCAN_API_LOCALES.includes(locale) ? { locale } : {}),
     }),
   });
+
+  // Capture the opt-in verification request after the scan succeeds. A CRM
+  // outage must not break the scan; a honeypot or rejected request is never a lead.
+  if (email && !honeypot && upstream.ok && ctx?.waitUntil) {
+    ctx.waitUntil(
+      submitScanLead({
+        source: "ai_visibility_scan",
+        email: email.toLowerCase(),
+        submissionId: clean(payload?.submissionId, 100),
+        name: "",
+        store: domain,
+        message: "",
+        utm: cleanUtm(payload?.utm),
+      }, env),
+    );
+  }
+  return upstream;
 }
 
 // Merchant CDNs serve product images with Cross-Origin-Resource-Policy, so the
@@ -583,7 +600,10 @@ async function verifyAnswerCheck(url, env) {
   const token = clean(url.searchParams.get("token"), 128);
   const reportId = clean(url.searchParams.get("report_id"), 32);
   const scan = new URL(url);
-  scan.pathname = "/scan";
+  const locale = url.searchParams.get("locale");
+  scan.pathname = locale === "de" || locale === "nl"
+    ? LOCALIZED_ROUTES["/scan"][locale]
+    : "/scan";
   scan.search = "";
 
   if (!token) {
@@ -596,8 +616,12 @@ async function verifyAnswerCheck(url, env) {
       `${apiBase}/monitoring/public/answer-check/verify?token=${encodeURIComponent(token)}`,
       { method: "POST" },
     );
+    if (!response.ok) {
+      scan.searchParams.set("scan_error", response.status === 404 ? "link_used" : "unavailable");
+      return Response.redirect(scan.toString(), 302);
+    }
     const payload = await response.json();
-    if (!response.ok || !payload?.domain) {
+    if (!payload?.domain) {
       scan.searchParams.set("scan_error", "link_used");
       return Response.redirect(scan.toString(), 302);
     }
@@ -791,7 +815,7 @@ export const MOVED_PAGES = {
 };
 
 const worker = {
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
     const url = new URL(request.url);
 
     if (url.pathname === "/.well-known/http-message-signatures-directory") {
@@ -799,7 +823,7 @@ const worker = {
     }
 
     if (url.pathname === "/api/answer-check") {
-      return proxyAnswerCheck(request, url, env);
+      return proxyAnswerCheck(request, url, env, ctx);
     }
 
     if (

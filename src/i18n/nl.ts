@@ -1420,6 +1420,8 @@ export const nl: Dictionary = {
         count === 1 ? "prioriteit" : "prioriteiten",
       supportingFindings: (count: number): string =>
         count === 1 ? "ondersteunend inzicht" : "ondersteunende inzichten",
+      readOn: (date: string) => `Webshop gelezen op ${date}`,
+      answeredOn: (date: string) => `AI-antwoorden van ${date}`,
       statusRejected: "Kon deze winkel niet lezen",
       statusRunning: "Nog bezig",
       statusFreeReady: "Gratis scan klaar",
@@ -1590,6 +1592,10 @@ export const nl: Dictionary = {
         `${usable} van ${total} pogingen bij assistenten gaven een bruikbaar antwoord.`,
       aiVisibilityRivals: (names: string) =>
         `Genoemde alternatieven: ${names}.`,
+      aiVisibilityObserved: (named: number, usable: number, brand: string) =>
+        `${named} van ${usable} bruikbare AI-shoppingantwoorden raadden ${brand} aan`,
+      aiVisibilityExpected:
+        "Het merk wordt aanbevolen in bruikbare AI-shoppingantwoorden op relevante koopvragen",
       discoveryFiles: {
         llms: "Een korte samenvatting van je winkel voor AI-assistenten die ernaar zoeken. Optioneel.",
         agents:
@@ -2096,6 +2102,10 @@ export const nl: Dictionary = {
         "Er zijn nu te veel scanverzoeken. Probeer het zo meteen opnieuw.",
       sendEmail: "We konden de verificatie-e-mail niet versturen.",
       sendEmailNow: "We konden de verificatie-e-mail nu niet versturen.",
+      retryNeedsEmail: "Bevestig je e-mailadres voordat je de volledige audit opnieuw probeert.",
+      retryLimit: "Deze audit heeft alle automatische nieuwe pogingen al gebruikt.",
+      noScanYet: "Er is nog geen scan voor dit domein.",
+      scansPaused: "Scans zijn tijdelijk gepauzeerd. Probeer het later opnieuw.",
       retrying: "Opnieuw proberen…",
       tryAgain: "Opnieuw proberen",
       pollExhausted:

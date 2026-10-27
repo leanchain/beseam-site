@@ -1,5 +1,22 @@
 import type { AnswerCheckResult, Finding } from "./answer-check-types";
 
+// A cached store read is not evidence of the store's current state forever.
+export const FREE_READ_MAX_AGE_MS = 24 * 60 * 60 * 1000;
+
+export function needsFreshRead(
+  result: Pick<AnswerCheckResult, "status" | "retryable" | "observed_at">,
+  now: number,
+): boolean {
+  if (result.status === "failed" && !result.retryable) return true;
+  const observed = Date.parse(result.observed_at ?? "");
+  return !Number.isFinite(observed) || now - observed > FREE_READ_MAX_AGE_MS;
+}
+
+/** Back off failed status reads, never exceed one request per minute. */
+export function pollDelay(failures: number, base = 6000, cap = 60_000) {
+  return Math.min(base * 2 ** Math.max(0, failures), cap);
+}
+
 export type HomepageAuditCardState =
   "gated" | "reading" | "failed" | "complete";
 

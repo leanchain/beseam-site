@@ -69,6 +69,8 @@ export type Finding = {
   why?: string;
   next_step?: string;
   area?: string;
+  /** Backend signalled a generic fallback headline, not a concrete observation. */
+  generic_copy?: boolean;
 };
 
 export type PageAuditSignal = {
@@ -293,6 +295,8 @@ export type AnswerCheckResult = {
   brand: string | null;
   platform: string | null;
   reject_reason: string | null;
+  /** Machine-readable rejection category; stable across languages. */
+  reject_kind?: "blocked" | "no_products" | "unreachable" | null;
   steps: Step[];
   findings: Finding[];
   questions: string[];
@@ -337,4 +341,7 @@ export type AnswerCheckResult = {
   pdp_template_summary?: PdpTemplateSummary | null;
   site_inventory?: SiteInventory;
   catalog_inventory?: CatalogInventory;
+  /** ISO dates provided by the API; legacy cached scans may lack these. */
+  observed_at?: string | null;
+  answered_at?: string | null;
 };

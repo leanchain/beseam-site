@@ -30,6 +30,8 @@ import {
   deriveSampledAuditGroups,
   deriveTemplatePatterns,
   isCatalogFinding,
+  needsFreshRead,
+  pollDelay,
 } from "@/components/beseam/answer-check-state";
 import type {
   Answer,
@@ -47,6 +49,7 @@ import useAnalytics from "@/hooks/useAnalytics";
 import type { Dictionary, Locale } from "@/i18n";
 import { useDictionary, useLocale } from "@/i18n/use-locale";
 import { APP_REGISTER_URL, APP_REPORT_URL } from "@/lib/app-urls";
+import { getUtmValues } from "@/lib/marketing-analytics";
 
 export type { AnswerCheckResult };
 
@@ -241,9 +244,8 @@ const GENERIC_FINDING_HEADLINES = new Set([
 
 function findingHeadline(finding: Finding) {
   const headline = finding.headline?.trim();
-  return headline && !GENERIC_FINDING_HEADLINES.has(headline)
-    ? headline
-    : finding.title;
+  const generic = finding.generic_copy ?? (headline ? GENERIC_FINDING_HEADLINES.has(headline) : true);
+  return headline && !generic ? headline : finding.title;
 }
 
 function findingWhy(finding: Finding) {
@@ -1281,8 +1283,8 @@ function aiVisibilityFinding(
     area: "Getting found",
     evidence,
     proof: {
-      observed: `${named} of ${usable.length} usable AI shopping answers recommended ${result.brand || result.domain}`,
-      expected: `The brand is recommended in usable AI shopping answers for relevant buying questions`,
+      observed: copy.findings.aiVisibilityObserved(named, usable.length, result.brand || result.domain),
+      expected: copy.findings.aiVisibilityExpected,
       inputs: [
         { label: "usable_answers", value: String(usable.length) },
         { label: "answers_recommending_brand", value: String(named) },
@@ -1343,6 +1345,7 @@ function FindingRow({
   featured: boolean;
 }) {
   const copy = useDictionary().answerCheck;
+  const locale = useLocale();
   const { trackEvent } = useAnalytics();
   const evidenceViewed = useRef(false);
   const finding = group.lead;
@@ -1354,6 +1357,7 @@ function FindingRow({
   const example = fixExampleFor(finding.code, {
     ...exampleContext,
     product: finding.product ?? exampleContext.product,
+    locale,
   });
   const affectedPageCount = new Set(
     group.members
@@ -4607,8 +4611,9 @@ function RejectedNotice({
 }) {
   const copy = useDictionary().answerCheck;
   const reason = result.reject_reason ?? "";
-  const blocked = reason.toLowerCase().includes("blocked");
-  const noProducts = reason.toLowerCase().includes("product pages");
+  const kind = result.reject_kind;
+  const blocked = kind ? kind === "blocked" : reason.toLowerCase().includes("blocked");
+  const noProducts = kind ? kind === "no_products" : reason.toLowerCase().includes("product pages");
 
   const explanation = blocked
     ? copy.errors.blockedExplanation
@@ -4763,6 +4768,22 @@ export function ResultCard({
       .filter(Boolean)
       .join(" · ");
 
+  // Store reads and assistant observations may have different collection dates.
+  const formatDay = (iso: string | null | undefined) => {
+    const time = Date.parse(iso ?? "");
+    return Number.isFinite(time)
+      ? new Intl.DateTimeFormat(locale === "de" ? "de-DE" : locale === "nl" ? "nl-NL" : "en-GB", {
+          day: "numeric", month: "short", year: "numeric",
+        }).format(time)
+      : null;
+  };
+  const readDay = formatDay(result.observed_at);
+  const answeredDay = formatDay(result.answered_at);
+  const freshnessLine = [
+    readDay ? copy.result.readOn(readDay) : null,
+    answeredDay ? copy.result.answeredOn(answeredDay) : null,
+  ].filter(Boolean).join(" · ");
+
   return (
     <div className="overflow-hidden rounded-[3px] border border-black/16 bg-white text-left shadow-[0_18px_55px_rgba(44,31,24,0.055)]">
       <div className="flex flex-wrap items-start justify-between gap-4 border-b border-black/12 bg-white px-5 py-4 sm:px-6 sm:py-5">
@@ -4782,6 +4803,9 @@ export function ResultCard({
           <p className="mt-1.5 text-[12px] leading-relaxed text-[#5f5a55]">
             {identityLine}
           </p>
+          {freshnessLine ? (
+            <p className="mt-0.5 text-[12px] leading-relaxed text-[#5f5a55]">{freshnessLine}</p>
+          ) : null}
         </div>
         {/* One status statement for the whole card. The run detail lives in the
             progress list above; repeating it here — next to a section that also
@@ -4994,6 +5018,10 @@ export default function AnswerCheck({
         copy.errors.serviceUnavailable,
       "We could not scan that domain.": copy.errors.scanDomain,
       "We could not send the verification email.": copy.errors.sendEmail,
+      "Confirm your email before retrying the full audit.": copy.errors.retryNeedsEmail,
+      "This audit has already used its automatic retries.": copy.errors.retryLimit,
+      "No scan exists for this domain yet.": copy.errors.noScanYet,
+      "Scans are paused right now. Try again later.": copy.errors.scansPaused,
     };
     return (known[value] ?? value) || fallback;
   };
@@ -5009,16 +5037,22 @@ export default function AnswerCheck({
   const [verificationSubmitting, setVerificationSubmitting] = useState(false);
   const [retrySubmitting, setRetrySubmitting] = useState(false);
   const pollCount = useRef(0);
+  const pollFailures = useRef(0);
+  const [pollTick, setPollTick] = useState(0);
   const scanCompletedTracked = useRef<string | null>(null);
   const [pollExhausted, setPollExhausted] = useState(false);
 
   const load = useCallback(
     async (target: string) => {
-      const response = await fetch(
-        `/api/answer-check?domain=${encodeURIComponent(target)}&locale=${encodeURIComponent(locale)}`,
-      );
-      if (!response.ok) return null;
-      return (await response.json()) as AnswerCheckResult;
+      try {
+        const response = await fetch(
+          `/api/answer-check?domain=${encodeURIComponent(target)}&locale=${encodeURIComponent(locale)}`,
+        );
+        if (!response.ok) return null;
+        return (await response.json()) as AnswerCheckResult;
+      } catch {
+        return null;
+      }
     },
     [locale],
   );
@@ -5027,7 +5061,7 @@ export default function AnswerCheck({
   // ?domain= go through it, so a link to a domain nobody has scanned yet
   // behaves exactly like typing that domain into the field.
   const runScan = useCallback(
-    async (target: string, address: string) => {
+    async (target: string, address: string, fallback?: AnswerCheckResult) => {
       setSubmitting(true);
       try {
         const response = await fetch("/api/answer-check", {
@@ -5044,11 +5078,13 @@ export default function AnswerCheck({
         const payload = await response.json();
 
         if (!response.ok) {
+          if (fallback) { setResult(fallback); return; }
           setError(apiError(payload, response.status, copy.errors.scanDomain));
           return;
         }
 
         pollCount.current = 0;
+        pollFailures.current = 0;
         setPollExhausted(false);
         const scan = payload as AnswerCheckResult;
         setResult(scan);
@@ -5065,7 +5101,8 @@ export default function AnswerCheck({
           });
         }
       } catch {
-        setError(copy.errors.serviceUnavailable);
+        if (fallback) setResult(fallback);
+        else setError(copy.errors.serviceUnavailable);
       } finally {
         setSubmitting(false);
       }
@@ -5102,6 +5139,10 @@ export default function AnswerCheck({
 
     const fromUrl = params.get("domain");
     if (!fromUrl) return;
+    if (handOffTo) {
+      router.replace(`${handOffTo}${window.location.search}`);
+      return;
+    }
     setDomain(fromUrl);
     void load(fromUrl).then((payload) => {
       // A cached scan renders immediately — this is the path back from the
@@ -5109,19 +5150,19 @@ export default function AnswerCheck({
       // anything for this domain, so the arrival starts it on the domain alone:
       // the hero promised a scan, and a page that only re-asks for the domain
       // does not deliver one. The address is asked once the store is on screen.
-      if (payload && hasUsableFreeStage(payload)) {
-        setResult(payload);
+      const cached = payload && hasUsableFreeStage(payload) ? payload : null;
+      if (cached && (isVerifiedArrival || isScanInFlight(cached) || !needsFreshRead(cached, Date.now()))) {
+        setResult(cached);
         return;
       }
-      if (handOffTo) return;
       trackEvent({
         action: "answer_check_started",
         category: "conversion",
         label: placement,
       });
-      void runScan(fromUrl, "");
+      void runScan(fromUrl, "", cached ?? undefined);
     });
-  }, [load, runScan, handOffTo, placement, trackEvent]);
+  }, [load, runScan, handOffTo, placement, router, trackEvent]);
 
   useEffect(() => {
     if (
@@ -5162,12 +5203,19 @@ export default function AnswerCheck({
     const timer = setTimeout(() => {
       pollCount.current += 1;
       void load(result.domain).then((payload) => {
-        if (payload) setResult(payload);
+        if (payload) {
+          pollFailures.current = 0;
+          setResult(payload);
+        } else {
+          pollFailures.current += 1;
+        }
+        // Re-arm even when the API is down or returns an unchanged result.
+        setPollTick((tick) => tick + 1);
       });
-    }, POLL_MS);
+    }, pollDelay(pollFailures.current, POLL_MS));
 
     return () => clearTimeout(timer);
-  }, [result, load, awaitingClick]);
+  }, [result, load, awaitingClick, pollTick]);
 
   const onSubmit = async (event: FormEvent) => {
     event.preventDefault();
@@ -5219,6 +5267,8 @@ export default function AnswerCheck({
     if (!result) return;
 
     setVerificationSubmitting(true);
+    // Both attempts after a transient 429 are one logical Trevra submission.
+    const submissionId = crypto.randomUUID();
     try {
       const send = () =>
         fetch("/api/answer-check", {
@@ -5230,6 +5280,8 @@ export default function AnswerCheck({
             source: placement,
             website,
             locale,
+            utm: getUtmValues(),
+            submissionId,
           }),
         });
 
@@ -5261,6 +5313,7 @@ export default function AnswerCheck({
       // own budget: whatever the free stage already spent polling must not eat
       // into it.
       pollCount.current = 0;
+      pollFailures.current = 0;
       setPollExhausted(false);
       trackEvent({
         action: "answer_check_verification_requested",

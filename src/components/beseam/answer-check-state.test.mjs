@@ -6,7 +6,10 @@ import {
   deriveSampledAuditGroups,
   deriveTemplatePatterns,
   isCatalogFinding,
+  needsFreshRead,
+  pollDelay,
 } from "./answer-check-state.ts";
+import { fixExampleFor } from "./fix-examples.ts";
 
 function result(overrides) {
   return {
@@ -296,4 +299,34 @@ describe("PDP layout coverage", () => {
   it("stays hidden before a verified layout read exists", () => {
     assert.equal(derivePdpLayoutCoverage(result()), null);
   });
+});
+
+
+describe("scan read freshness and polling", () => {
+  const now = Date.parse("2026-10-27T12:00:00Z");
+  it("keeps a fresh cached result and refreshes one older than 24 hours", () => {
+    assert.equal(needsFreshRead({status: "ready", observed_at: "2026-10-27T11:00:00Z"}, now), false);
+    assert.equal(needsFreshRead({status: "ready", observed_at: "2026-10-26T11:00:00Z"}, now), true);
+  });
+  it("refreshes legacy undated results and unretryable failures", () => {
+    assert.equal(needsFreshRead({status: "ready"}, now), true);
+    assert.equal(needsFreshRead({status: "failed", retryable: false, observed_at: "2026-10-27T11:00:00Z"}, now), true);
+    assert.equal(needsFreshRead({status: "failed", retryable: true, observed_at: "2026-10-27T11:00:00Z"}, now), false);
+  });
+  it("backs off after failed reads without hammering the upstream API", () => {
+    assert.deepEqual([0,1,2,3,4,5].map(n => pollDelay(n)), [6000,12000,24000,48000,60000,60000]);
+  });
+});
+
+describe("localized finding code examples", () => {
+  const context = {brand: "Store", product: null, country: null, currency: null, image: null};
+  for (const [locale, marker] of [["en","YOUR_COUNTRY"],["de","IHR_LAND"],["nl","JOUW_LAND"]]) {
+    it(`${locale} translates instructions without translating schema keys`, () => {
+      const example = fixExampleFor("merchant_return_policy", {...context, locale});
+      assert.ok(example);
+      assert.ok(example.code.includes(marker));
+      assert.ok(example.code.includes('"hasMerchantReturnPolicy"'));
+      assert.ok(example.caption.length > 40);
+    });
+  }
 });

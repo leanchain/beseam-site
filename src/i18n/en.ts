@@ -1543,6 +1543,8 @@ const enDictionary = {
         count === 1 ? "priority" : "priorities",
       supportingFindings: (count: number): string =>
         count === 1 ? "supporting finding" : "supporting findings",
+      readOn: (date: string) => `Store read ${date}`,
+      answeredOn: (date: string) => `AI answers from ${date}`,
       statusRejected: "Could not read this store",
       statusRunning: "Still running",
       statusFreeReady: "Free scan ready",
@@ -1708,6 +1710,10 @@ const enDictionary = {
       aiVisibilityAttempts: (usable: number, total: number) =>
         `${usable} of ${total} assistant attempts returned a usable answer.`,
       aiVisibilityRivals: (names: string) => `Alternatives named: ${names}.`,
+      aiVisibilityObserved: (named: number, usable: number, brand: string) =>
+        `${named} of ${usable} usable AI shopping answers recommended ${brand}`,
+      aiVisibilityExpected:
+        "The brand is recommended in usable AI shopping answers for relevant buying questions",
       discoveryFiles: {
         llms: "A short summary of your store for AI assistants that look for one. Optional.",
         agents:
@@ -2208,6 +2214,10 @@ const enDictionary = {
         "Too many scan requests right now. Please try again shortly.",
       sendEmail: "We could not send the verification email.",
       sendEmailNow: "We could not send the verification email right now.",
+      retryNeedsEmail: "Confirm your email before retrying the full audit.",
+      retryLimit: "This audit has already used its automatic retries.",
+      noScanYet: "No scan exists for this domain yet.",
+      scansPaused: "Scans are paused right now. Try again later.",
       retrying: "Retrying…",
       tryAgain: "Try again",
       pollExhausted:

@@ -1446,6 +1446,8 @@ export const de: Dictionary = {
         count === 1 ? "Priorität" : "Prioritäten",
       supportingFindings: (count: number) =>
         count === 1 ? "stützender Befund" : "stützende Befunde",
+      readOn: (date: string) => `Shop gelesen am ${date}`,
+      answeredOn: (date: string) => `KI-Antworten vom ${date}`,
       statusRejected: "Dieser Shop konnte nicht gelesen werden",
       statusRunning: "Läuft noch",
       statusFreeReady: "Kostenloser Scan bereit",
@@ -1615,6 +1617,10 @@ export const de: Dictionary = {
       aiVisibilityAttempts: (usable: number, total: number) =>
         `${usable} von ${total} Assistenten-Versuchen lieferten eine verwertbare Antwort.`,
       aiVisibilityRivals: (names: string) => `Genannte Alternativen: ${names}.`,
+      aiVisibilityObserved: (named: number, usable: number, brand: string) =>
+        `${named} von ${usable} verwertbaren KI-Shopping-Antworten ${named === 1 ? "empfahl" : "empfahlen"} ${brand}`,
+      aiVisibilityExpected:
+        "Die Marke wird in verwertbaren KI-Shopping-Antworten auf relevante Kauffragen empfohlen",
       discoveryFiles: {
         llms: "Eine kurze Zusammenfassung Ihres Shops für KI-Assistenten, die danach suchen. Optional.",
         agents:
@@ -2136,6 +2142,10 @@ export const de: Dictionary = {
       sendEmail: "Die Bestätigungs-E-Mail konnte nicht gesendet werden.",
       sendEmailNow:
         "Die Bestätigungs-E-Mail konnte gerade nicht gesendet werden.",
+      retryNeedsEmail: "Bestätigen Sie Ihre E-Mail, bevor Sie die vollständige Analyse erneut ausführen.",
+      retryLimit: "Diese Analyse hat ihre automatischen Wiederholungen bereits aufgebraucht.",
+      noScanYet: "Für diese Domain gibt es noch keinen Scan.",
+      scansPaused: "Scans sind gerade pausiert. Versuchen Sie es später erneut.",
       retrying: "Wird erneut versucht…",
       tryAgain: "Erneut versuchen",
       pollExhausted:

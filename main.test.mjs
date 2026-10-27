@@ -587,3 +587,56 @@ test("every redirected path runs through the Worker on Cloudflare", () => {
     );
   }
 });
+
+
+test("verification stays in the selected language and preserves transient errors", async () => {
+  const env = {API_BASE_URL: "https://api.beseam.test/api"};
+  const missing = await worker.fetch(new Request("https://beseam.com/scan/verify?locale=nl"), env);
+  assert.equal(missing.headers.get("location"), "https://beseam.com/nl/scan?scan_error=missing_token");
+  for (const [code, expected] of [[404, "link_used"], [429, "unavailable"], [500, "unavailable"]]) {
+    const response = await withFetch(async () => new Response("{}", {status: code}),
+      () => worker.fetch(new Request("https://beseam.com/scan/verify?token=fake&locale=de"), env));
+    assert.equal(response.status, 302);
+    assert.equal(response.headers.get("location"), `https://beseam.com/de/scan?scan_error=${expected}`);
+  }
+  const good = await withFetch(async () => new Response(JSON.stringify({domain:"shop.example"}), {status: 200}),
+    () => worker.fetch(new Request("https://beseam.com/scan/verify?token=fake&locale=nl"), env));
+  assert.equal(good.headers.get("location"), "https://beseam.com/nl/scan?domain=shop.example&verified=1");
+});
+
+test("successful verification email also captures one Trevra lead outside the scan response", async () => {
+  const calls = [], pending = [];
+  const response = await withFetch(async (input, init) => {
+    const url = String(input);
+    calls.push({url, init});
+    if (url.includes("/monitoring/public/answer-check")) return new Response(JSON.stringify({status: "awaiting_verification"}), {status: 200});
+    return new Response("{}", {status: 202});
+  }, async () => {
+    const result = await worker.fetch(new Request("https://beseam.com/api/answer-check", {
+      method: "POST", headers: {"content-type": "application/json"},
+      body: JSON.stringify({domain:"shop.example",email:"Founder@Example.com",submissionId:"scan-once-01",utm:{utm_source:"newsletter",user_email:"unsafe"}}),
+    }), {...TREVRA_ENV,API_BASE_URL:"https://api.beseam.test/api"}, {waitUntil(promise){pending.push(promise);}});
+    await Promise.all(pending);
+    return result;
+  });
+  assert.equal(response.status, 200);
+  assert.equal(calls.length, 2);
+  const lead = JSON.parse(calls[1].init.body);
+  assert.equal(lead.kind,"ai_visibility_scan");
+  assert.equal(lead.person.email,"founder@example.com");
+  assert.equal(lead.company.domain,"shop.example");
+  assert.deepEqual(lead.attribution,{utm_source:"newsletter"});
+  assert.equal(calls[1].init.headers["x-trevra-idempotency-key"],"scan-once-01");
+});
+
+test("domain-only, honeypot and failed scan requests never create leads", async () => {
+  for (const [email,website,status] of [[null,"",200],["founder@example.com","bot",200],["founder@example.com","",429]]) {
+    const calls = [], pending = [];
+    await withFetch(async (input) => {calls.push(String(input));return new Response("{}",{status});}, async () => {
+      await worker.fetch(new Request("https://beseam.com/api/answer-check",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({domain:"shop.example",email,website})}),
+        {...TREVRA_ENV,API_BASE_URL:"https://api.beseam.test/api"},{waitUntil(p){pending.push(p);}});
+      await Promise.all(pending);
+    });
+    assert.equal(calls.length, 1);
+  }
+});
