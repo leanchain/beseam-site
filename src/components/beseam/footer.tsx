@@ -102,6 +102,8 @@ const SCAN_PATHS = new Set([
   ...Object.values(LOCALIZED_ROUTES["/scan"]),
 ]);
 
+const LINKEDIN_URL = "https://www.linkedin.com/company/beseam";
+
 export default function BeseamFooter() {
   const t = useDictionary();
   const locale = useLocale();
@@ -201,7 +203,7 @@ export default function BeseamFooter() {
                     <li key={link.href}>
                       <Link
                         href={localizedPath(link.href, locale)}
-                        className="inline-flex min-h-11 items-center text-[13px] text-white/62 transition-colors hover:text-white lg:min-h-9"
+                        className="inline-flex min-h-11 items-center text-[13px] text-white/62 hyphens-auto transition-colors hover:text-white lg:min-h-9"
                       >
                         {link.label}
                       </Link>
@@ -254,17 +256,36 @@ export default function BeseamFooter() {
             </Link>
           </div>
 
-          <p className="inline-flex items-center gap-2 sm:justify-end">
-            <span>{t.footer.madeWith}</span>
-            <span
-              aria-label={t.footer.swissFlagAriaLabel}
-              role="img"
-              className="relative inline-block h-4 w-4 shrink-0 bg-[#d52b1e]"
+          <div className="flex items-center gap-5 sm:justify-end">
+            <a
+              href={LINKEDIN_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={t.footer.linkedin}
+              title={t.footer.linkedin}
+              className="inline-flex h-11 w-11 items-center justify-center rounded-button text-white/62 transition-colors hover:text-white lg:h-9 lg:w-9"
             >
-              <span className="absolute left-1/2 top-[3px] h-[10px] w-[3px] -translate-x-1/2 bg-white" />
-              <span className="absolute left-[3px] top-1/2 h-[3px] w-[10px] -translate-y-1/2 bg-white" />
-            </span>
-          </p>
+              <svg
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+                className="h-[18px] w-[18px]"
+                fill="currentColor"
+              >
+                <path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28ZM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13ZM7.12 20.45H3.56V9h3.56v11.45ZM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0Z" />
+              </svg>
+            </a>
+            <p className="inline-flex items-center gap-2">
+              <span>{t.footer.madeWith}</span>
+              <span
+                aria-label={t.footer.swissFlagAriaLabel}
+                role="img"
+                className="relative inline-block h-4 w-4 shrink-0 bg-[#d52b1e]"
+              >
+                <span className="absolute left-1/2 top-[3px] h-[10px] w-[3px] -translate-x-1/2 bg-white" />
+                <span className="absolute left-[3px] top-1/2 h-[3px] w-[10px] -translate-y-1/2 bg-white" />
+              </span>
+            </p>
+          </div>
         </div>
       </div>
     </footer>

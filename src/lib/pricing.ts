@@ -340,7 +340,7 @@ const NL: PricingCopy = {
     {
       id: "starter",
       name: "Starter",
-      audience: "Voor webwinkels die beginnen met AI-zoekopdrachten",
+      audience: "Voor webshops die beginnen met AI-zoekopdrachten",
       monthly: PRICES.starter,
       features: [
         "Tot 500 producten",
@@ -348,13 +348,13 @@ const NL: PricingCopy = {
         "Alle 6 AI-assistenten",
         "Optimalisatie van productbeschrijvingen",
         "Technische controle",
-        "1 Shopify-winkel",
+        "1 Shopify-webshop",
       ],
     },
     {
       id: "growth",
       name: "Growth",
-      audience: "Voor webwinkels die van AI een omzetkanaal maken",
+      audience: "Voor webshops die van AI een omzetkanaal maken",
       monthly: PRICES.growth,
       highlighted: true,
       includesFrom: "Starter",
@@ -378,7 +378,7 @@ const NL: PricingCopy = {
         "30 contentpagina's per maand",
         "Automatiseer de wijzigingen die je vertrouwt",
         "Meerdere markten en talen",
-        "Tot 3 Shopify-winkels",
+        "Tot 3 Shopify-webshops",
         "Onboardinggesprek en priority support",
       ],
     },
@@ -399,7 +399,7 @@ const NL: PricingCopy = {
           values: ["Dagelijks", "Dagelijks", "Dagelijks"],
         },
         { label: "Inzicht in concurrenten", values: [false, true, true] },
-        { label: "Shopify-winkels", values: ["1", "1", "3"] },
+        { label: "Shopify-webshops", values: ["1", "1", "3"] },
       ],
     },
     {
@@ -437,7 +437,7 @@ const NL: PricingCopy = {
     {
       question: "Kan ik Beseam gratis proberen?",
       answer:
-        "Ja. Elk abonnement begint met een gratis proefperiode van 14 dagen, zodat je de eerste resultaten voor je webwinkel ziet voordat je iets betaalt.",
+        "Ja. Elk abonnement begint met een gratis proefperiode van 14 dagen, zodat je de eerste resultaten voor je webshop ziet voordat je iets betaalt.",
     },
     {
       question: "Wat telt als product?",

@@ -2,6 +2,7 @@ import { ArrowRight } from "lucide-react";
 
 import AiPlatformsStrip from "@/components/beseam/ai-platforms-strip";
 import { BookReviewCta } from "@/components/beseam/book-review-cta";
+import { EarlyAccessCta } from "@/components/beseam/early-access-cta";
 import FeatureRows from "@/components/beseam/feature-rows";
 import FirstMonthPromise from "@/components/beseam/first-month-promise";
 import FixesSection from "@/components/beseam/fixes-section";
@@ -10,10 +11,8 @@ import HowItWorks from "@/components/beseam/how-it-works";
 import ProductCategories from "@/components/beseam/product-categories";
 import QuoteSection from "@/components/beseam/quote-section";
 import { Reveal } from "@/components/beseam/reveal";
-import TrackedLink from "@/components/beseam/tracked-link";
 import { getDictionary } from "@/i18n";
 import type { Locale } from "@/i18n/locale-rules.mjs";
-import { APP_REGISTER_URL } from "@/lib/app-urls";
 
 /**
  * The homepage: the hero promise and its two actions, four feature rows,
@@ -77,17 +76,13 @@ export default function ProductionHomepage({ locale }: { locale: Locale }) {
                 {t.hero.sub}
               </p>
               <div className="pointer-events-auto mx-auto mt-9 flex w-full flex-col items-center justify-center gap-3 sm:flex-row">
-                <TrackedLink
-                  href={APP_REGISTER_URL}
-                  eventName="marketing_primary_cta_clicked"
-                  eventCategory="conversion"
+                <EarlyAccessCta
                   placement="homepage_hero"
-                  preserveUtm
                   className="rounded-button group inline-flex min-h-12 w-full items-center justify-center gap-3 bg-signal-ink px-7 py-3 text-[15px] font-semibold leading-tight text-white focus-visible:ring-2 focus-visible:ring-signal-ink focus-visible:ring-offset-3 sm:w-auto"
                 >
                   {t.hero.ctaStart}
                   <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-                </TrackedLink>
+                </EarlyAccessCta>
                 <BookReviewCta
                   label={t.hero.ctaDemo}
                   location="homepage_hero"

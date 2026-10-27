@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ArrowRight, Sparkles, X } from "lucide-react";
 
 import { BookReviewCta } from "@/components/beseam/book-review-cta";
+import { EarlyAccessCta } from "@/components/beseam/early-access-cta";
 import FaqGrid from "@/components/beseam/faq-grid";
 import FirstMonthPromise from "@/components/beseam/first-month-promise";
 import Halftone from "@/components/beseam/halftone";
@@ -12,11 +13,9 @@ import HeroChat, { HeroCard } from "@/components/beseam/hero-chat";
 import MobileStickyCta from "@/components/beseam/mobile-sticky-cta";
 import { Reveal } from "@/components/beseam/reveal";
 import SolutionPillars from "@/components/beseam/solution-pillars";
-import TrackedLink from "@/components/beseam/tracked-link";
 import { getDictionary } from "@/i18n";
 import { localizedPath, type Locale } from "@/i18n/locale-rules.mjs";
 import { getPageCopy } from "@/i18n/pages";
-import { APP_REGISTER_URL } from "@/lib/app-urls";
 import { getProductPages, type ProductPageData } from "@/lib/product-pages";
 import { SITE_URL } from "@/lib/seo";
 
@@ -299,17 +298,13 @@ export default function ProductPage({
             <div
               className={`mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row ${split ? "lg:justify-start" : ""}`}
             >
-              <TrackedLink
-                href={APP_REGISTER_URL}
-                eventName="marketing_primary_cta_clicked"
-                eventCategory="conversion"
+              <EarlyAccessCta
                 placement={`product_${page.slug}_hero`}
-                preserveUtm
                 className="group inline-flex min-h-12 w-full items-center justify-center gap-3 rounded-button bg-signal-ink px-7 py-3 text-[15px] font-semibold leading-tight text-white focus-visible:ring-2 focus-visible:ring-signal-ink focus-visible:ring-offset-3 sm:w-auto"
               >
                 {t.hero.ctaStart}
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-              </TrackedLink>
+              </EarlyAccessCta>
               <BookReviewCta
                 label={t.hero.ctaDemo}
                 location={`product_${page.slug}_hero`}

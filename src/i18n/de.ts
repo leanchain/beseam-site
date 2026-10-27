@@ -59,7 +59,7 @@ export const de: Dictionary = {
     },
     login: "Anmelden",
     register: "Registrieren",
-    cta: "Kostenlos starten",
+    cta: "Frühzugang sichern",
   },
   switcher: {
     triggerAriaLabel: "Sprache wechseln",
@@ -79,6 +79,25 @@ export const de: Dictionary = {
     link: "Zur deutschen Startseite",
     dismiss: "Hinweis schliessen",
   },
+  // The early access dialog behind every primary call to action
+  // (early-access-cta.tsx).
+  earlyAccess: {
+    title: "Sichern Sie sich frühen Zugang zu Beseam",
+    body: "Gehören Sie zu den ersten Onlineshops, die KI zu einem Umsatzkanal machen. Wir richten Ihren Shop gemeinsam mit Ihnen ein und zeigen Ihnen die ersten Massnahmen, die Umsatz bringen.",
+    name: "Name",
+    email: "Geschäftliche E-Mail",
+    company: "Unternehmen",
+    submit: "Frühzugang anfragen",
+    sending: "Wird gesendet …",
+    successEyebrow: "Anfrage erhalten",
+    successTitle: "Sie sind auf der Liste",
+    successBody:
+      "Danke! Wir melden uns bald, um Ihren Onlineshop einzurichten.",
+    error:
+      "Etwas ist schiefgelaufen. Bitte versuchen Sie es gleich noch einmal.",
+    close: "Schliessen",
+    honeypot: "Dieses Feld leer lassen",
+  },
   footer: {
     homeAriaLabel: "Beseam Startseite",
     copyright: (year: number) => `© ${year} Beseam. Alle Rechte vorbehalten.`,
@@ -86,6 +105,7 @@ export const de: Dictionary = {
     terms: "Nutzungsbedingungen",
     bot: "BeseamBot",
     askAi: "KI zu Beseam fragen",
+    linkedin: "Beseam auf LinkedIn",
     madeWith: "Entwickelt in der Schweiz",
     swissFlagAriaLabel: "Schweizer Flagge",
   },
@@ -118,7 +138,7 @@ export const de: Dictionary = {
     headlineAccent: "Umsatzkanal",
     headlineAfter: " für Ihren Onlineshop",
     sub: "Beseam ist der einfachste Weg, Ihre Produkte von KI an Millionen von Shoppern empfehlen zu lassen. Optimieren Sie Produktbeschreibungen, Inhalte und technische Performance in wenigen Minuten.",
-    ctaStart: "Kostenlos starten",
+    ctaStart: "Frühzugang sichern",
     ctaDemo: "Demo anfragen",
     scrollCue: "Scrollen",
   },
@@ -1341,7 +1361,7 @@ export const de: Dictionary = {
     },
 
     stickyCta: {
-      cta: "Kostenlos starten",
+      cta: "Frühzugang sichern",
     },
   },
 

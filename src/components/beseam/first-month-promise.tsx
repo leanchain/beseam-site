@@ -1,12 +1,11 @@
 import { ArrowRight } from "lucide-react";
 
 import { BookReviewCta } from "@/components/beseam/book-review-cta";
+import { EarlyAccessCta } from "@/components/beseam/early-access-cta";
 import Halftone from "@/components/beseam/halftone";
 import { Reveal } from "@/components/beseam/reveal";
-import TrackedLink from "@/components/beseam/tracked-link";
 import { getDictionary } from "@/i18n";
 import type { Locale } from "@/i18n/locale-rules.mjs";
-import { APP_REGISTER_URL } from "@/lib/app-urls";
 
 /**
  * The closing call to action: one title on the brand's dark pigment band (not
@@ -58,17 +57,13 @@ export default function FirstMonthPromise({
             {t.sections.promise.heading}
           </h2>
           <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <TrackedLink
-              href={APP_REGISTER_URL}
-              eventName="marketing_primary_cta_clicked"
-              eventCategory="conversion"
+            <EarlyAccessCta
               placement="first_month_promise"
-              preserveUtm
               className="group inline-flex min-h-12 w-full items-center justify-center gap-3 rounded-button bg-signal px-7 py-3 text-[15px] font-semibold leading-tight text-ink-deep transition-colors hover:bg-white focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-pigment sm:w-auto"
             >
               {t.hero.ctaStart}
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-            </TrackedLink>
+            </EarlyAccessCta>
             <BookReviewCta
               label={t.hero.ctaDemo}
               location="first_month_promise"

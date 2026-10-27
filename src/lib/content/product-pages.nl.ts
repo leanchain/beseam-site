@@ -20,7 +20,7 @@ export const PRODUCT_PAGES_NL: readonly ProductPageData[] = [
   {
     slug: "ai-visibility-tracking",
     name: "AI-zichtbaarheid volgen",
-    metaTitle: "AI-zichtbaarheid volgen voor webwinkels | Beseam",
+    metaTitle: "AI-zichtbaarheid volgen voor webshops | Beseam",
     metaDescription:
       "Zie wanneer ChatGPT, Claude, Gemini en andere AI-assistenten je producten aanbevelen, en hoe AI-zichtbaarheid zich vertaalt in verkeer en omzet.",
     headline: "Zie wanneer AI je producten aanbeveelt",
@@ -62,7 +62,7 @@ export const PRODUCT_PAGES_NL: readonly ProductPageData[] = [
     stepsHeading: "Zo werkt het volgen van AI-zichtbaarheid",
     steps: [
       {
-        title: "Koppel je Shopify-winkel",
+        title: "Koppel je Shopify-webshop",
         body: "Beseam importeert je catalogus en stelt de vragen op die klanten over je producten stellen.",
       },
       {
@@ -213,19 +213,19 @@ export const PRODUCT_PAGES_NL: readonly ProductPageData[] = [
           "Duidelijke, specifieke productinformatie wordt door zoekmachines en AI-assistenten allebei beloond, dus optimaliseren voor AI en voor Google wijst dezelfde kant op.",
       },
       {
-        question: "Met welke webwinkelplatforms werkt Beseam?",
+        question: "Met welke webshopplatforms werkt Beseam?",
         answer:
-          "Beseam werkt op dit moment met Shopify-webwinkels, die je met één klik koppelt zonder je themacode aan te raken.",
+          "Beseam werkt op dit moment met Shopify-webshops, die je met één klik koppelt zonder je themacode aan te raken.",
       },
     ],
   },
   {
     slug: "content-creation",
     name: "Contentcreatie",
-    metaTitle: "AI-geoptimaliseerde content voor webwinkels | Beseam",
+    metaTitle: "AI-geoptimaliseerde content voor webshops | Beseam",
     metaDescription:
       "Maak en optimaliseer categoriepagina's, vergelijkingspagina's, blogs en gidsen waar AI-assistenten op terugvallen wanneer klanten vragen wat ze moeten kopen.",
-    headline: "Content die je webwinkel in AI-antwoorden brengt",
+    headline: "Content die je webshop in AI-antwoorden brengt",
     intro:
       "Wanneer klanten AI vragen wat ze moeten kopen, gebruiken assistenten pagina's die uitleggen, vergelijken en aanbevelen. Beseam helpt je de categoriepagina's, vergelijkingspagina's, blogs en gidsen te maken en te optimaliseren die je producten in die antwoorden brengen.",
     heroCard: {
@@ -271,7 +271,7 @@ export const PRODUCT_PAGES_NL: readonly ProductPageData[] = [
       },
       {
         title: "Blogs en gidsen",
-        body: "Behandel de onderwerpen die klanten uitzoeken voordat ze kopen, zodat assistenten je winkel als bron noemen.",
+        body: "Behandel de onderwerpen die klanten uitzoeken voordat ze kopen, zodat assistenten je webshop als bron noemen.",
         icon: BookOpen,
       },
     ],
@@ -279,7 +279,7 @@ export const PRODUCT_PAGES_NL: readonly ProductPageData[] = [
     steps: [
       {
         title: "Vind de contenthiaten",
-        body: "Beseam laat zien voor welke vragen van klanten je webwinkel nog geen goede pagina heeft.",
+        body: "Beseam laat zien voor welke vragen van klanten je webshop nog geen goede pagina heeft.",
       },
       {
         title: "Ontvang een concept",
@@ -304,12 +304,12 @@ export const PRODUCT_PAGES_NL: readonly ProductPageData[] = [
       {
         question: "Waarom is content belangrijk voor AI-zoekopdrachten?",
         answer:
-          "AI-assistenten baseren hun aanbevelingen op bronnen die producten uitleggen en vergelijken. Nuttige content op je eigen webwinkel geeft ze een reden om je producten te noemen.",
+          "AI-assistenten baseren hun aanbevelingen op bronnen die producten uitleggen en vergelijken. Nuttige content op je eigen webshop geeft ze een reden om je producten te noemen.",
       },
       {
         question: "Hoe vindt Beseam contenthiaten?",
         answer:
-          "Beseam vergelijkt de vragen die klanten aan AI-assistenten stellen met de pagina's op je webwinkel, en laat zien voor welke vragen nog geen goede pagina bestaat.",
+          "Beseam vergelijkt de vragen die klanten aan AI-assistenten stellen met de pagina's op je webshop, en laat zien voor welke vragen nog geen goede pagina bestaat.",
       },
       {
         question: "Welke content stelt Beseam als eerste voor?",
@@ -336,12 +336,12 @@ export const PRODUCT_PAGES_NL: readonly ProductPageData[] = [
   {
     slug: "technical-performance",
     name: "Technische prestaties",
-    metaTitle: "Technische AI-zoekoptimalisatie voor webwinkels | Beseam",
+    metaTitle: "Technische AI-zoekoptimalisatie voor webshops | Beseam",
     metaDescription:
-      "Los problemen met gestructureerde data, crawlertoegang en trage pagina's op, zodat AI-assistenten elke pagina van je webwinkel kunnen lezen.",
-    headline: "Maak elke pagina van je webwinkel leesbaar voor AI",
+      "Los problemen met gestructureerde data, crawlertoegang en trage pagina's op, zodat AI-assistenten elke pagina van je webshop kunnen lezen.",
+    headline: "Maak elke pagina van je webshop leesbaar voor AI",
     intro:
-      "AI-assistenten kunnen alleen aanbevelen wat ze kunnen lezen. Beseam controleert je gestructureerde data, crawlertoegang en laadsnelheid, en laat precies zien wat je moet oplossen zodat assistenten elke pagina van je winkel kunnen lezen en vertrouwen.",
+      "AI-assistenten kunnen alleen aanbevelen wat ze kunnen lezen. Beseam controleert je gestructureerde data, crawlertoegang en laadsnelheid, en laat precies zien wat je moet oplossen zodat assistenten elke pagina van je webshop kunnen lezen en vertrouwen.",
     heroCard: {
       visual: {
         kind: "checks",
@@ -385,7 +385,7 @@ export const PRODUCT_PAGES_NL: readonly ProductPageData[] = [
     stepsHeading: "Zo werkt technische optimalisatie",
     steps: [
       {
-        title: "Scan je winkel",
+        title: "Scan je webshop",
         body: "Beseam controleert je pagina's, sitemap, robots-bestand en gestructureerde data.",
       },
       {
@@ -405,7 +405,7 @@ export const PRODUCT_PAGES_NL: readonly ProductPageData[] = [
       },
       {
         question:
-          "Kan mijn webwinkel AI-crawlers blokkeren zonder dat ik het weet?",
+          "Kan mijn webshop AI-crawlers blokkeren zonder dat ik het weet?",
         answer:
           "Ja. Botbescherming, firewallregels of instellingen in robots.txt kunnen AI-crawlers per ongeluk blokkeren. Beseam controleert of ze je pagina's kunnen bereiken.",
       },
@@ -420,7 +420,7 @@ export const PRODUCT_PAGES_NL: readonly ProductPageData[] = [
           "Beseam controleert je pagina's, sitemap, robots-bestand, gestructureerde data, crawlertoegang en laadsnelheid, gemeten met echte browsertests.",
       },
       {
-        question: "Welke AI-crawlers moeten mijn webwinkel kunnen bereiken?",
+        question: "Welke AI-crawlers moeten mijn webshop kunnen bereiken?",
         answer:
           "AI-bedrijven gebruiken hun eigen crawlers, zoals OAI-SearchBot en GPTBot van OpenAI, PerplexityBot en ClaudeBot. Als ze je pagina's niet kunnen bereiken, hebben assistenten minder om op af te gaan bij het aanbevelen van je producten.",
       },

@@ -567,6 +567,71 @@ test("a failed copy to guido@ does not fail the contact form", async () => {
   assert.equal(response.status, 202);
 });
 
+test("early access requests are emailed to contact@ and guido@ with the company", async () => {
+  const sent = [];
+  const env = {
+    REVIEW_EMAIL: {
+      send: async (message) => {
+        sent.push(message);
+      },
+    },
+  };
+  const response = await worker.fetch(
+    leadRequest({
+      source: "early_access",
+      name: "Test Person",
+      email: "test@example.com",
+      company: "Example Shoes",
+    }),
+    env,
+  );
+  assert.equal(response.status, 202);
+  assert.deepEqual(
+    sent.map((message) => message.to),
+    ["contact@beseam.com", "guido@beseam.com"],
+  );
+  assert.match(
+    sent[0].subject,
+    /early access request from Test Person \(Example Shoes\)/,
+  );
+  assert.match(sent[0].text, /Company: Example Shoes/);
+  assert.doesNotMatch(sent[0].text, /Message:/);
+});
+
+test("an early access request without a company is refused", async () => {
+  const response = await worker.fetch(
+    leadRequest({
+      source: "early_access",
+      name: "Test Person",
+      email: "test@example.com",
+    }),
+    { REVIEW_EMAIL: { send: async () => {} } },
+  );
+  assert.equal(response.status, 400);
+});
+
+test("Trevra stores an early access request as a contact with the company", async () => {
+  let body;
+  await withFetch(
+    async (_url, init) => {
+      body = JSON.parse(init.body);
+      return new Response("{}", { status: 202 });
+    },
+    () =>
+      worker.fetch(
+        leadRequest({
+          source: "early_access",
+          name: "Test Person",
+          email: "test@example.com",
+          company: "Example Shoes",
+        }),
+        TREVRA_ENV,
+      ),
+  );
+  assert.equal(body.kind, "contact");
+  assert.match(body.message, /Early access request\nCompany: Example Shoes/);
+});
+
 test("every redirected path runs through the Worker on Cloudflare", () => {
   // Without a run_worker_first entry, Cloudflare answers a removed page with
   // its 404 page and the redirect in MOVED_PAGES never runs.

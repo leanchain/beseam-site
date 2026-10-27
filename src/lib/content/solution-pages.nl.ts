@@ -24,7 +24,7 @@ import type { ProductPageData } from "@/lib/product-pages";
 const steps = (category: string) =>
   [
     {
-      title: "Koppel je Shopify-winkel",
+      title: "Koppel je Shopify-webshop",
       body: "Beseam importeert je catalogus zonder je themacode aan te raken.",
     },
     {
@@ -40,13 +40,13 @@ const steps = (category: string) =>
 const catalogueFaq = {
   question: "Werkt Beseam ook met grote catalogi?",
   answer:
-    "Ja. Beseam is gemaakt voor webwinkels met honderden of duizenden producten en varianten, en begint met de producten die het meest bijdragen aan je omzet.",
+    "Ja. Beseam is gemaakt voor webshops met honderden of duizenden producten en varianten, en begint met de producten die het meest bijdragen aan je omzet.",
 } as const;
 
 const platformFaq = {
-  question: "Werkt Beseam met mijn webwinkelplatform?",
+  question: "Werkt Beseam met mijn webshopplatform?",
   answer:
-    "Beseam werkt op dit moment met Shopify-webwinkels, die je met één klik koppelt zonder je themacode aan te raken.",
+    "Beseam werkt op dit moment met Shopify-webshops, die je met één klik koppelt zonder je themacode aan te raken.",
 } as const;
 
 const trackedCompetitorsAnswer =
@@ -82,7 +82,7 @@ export const SOLUTION_PAGES_NL: readonly ProductPageData[] = [
   {
     slug: "footwear",
     name: "Schoenen",
-    metaTitle: "AI-zoekoptimalisatie voor schoenenwebwinkels | Beseam",
+    metaTitle: "AI-zoekoptimalisatie voor schoenenwebshops | Beseam",
     metaDescription:
       "Laat ChatGPT, Gemini en andere AI-assistenten je schoenen aanbevelen. Volg je AI-zichtbaarheid en optimaliseer productpagina's, content en techniek.",
     headline: "Laat je schoenen aanbevelen wanneer klanten het AI vragen",
@@ -95,7 +95,7 @@ export const SOLUTION_PAGES_NL: readonly ProductPageData[] = [
         "Voor dagelijks woon-werkverkeer in de regen werkt een waterdichte leren laars met een stevige zool goed. Deze is er ook in een brede pasvorm:",
       product: {
         name: "City Leather Boot",
-        store: "jouwwinkel.nl",
+        store: "jouwwebshop.nl",
         price: "€149",
         image: "/images/catalog/boot.webp",
         facts: ["Waterdicht", "Brede pasvorm", "Valt normaal"],
@@ -232,7 +232,7 @@ export const SOLUTION_PAGES_NL: readonly ProductPageData[] = [
       ],
     },
     checklist: {
-      heading: "Wat AI nodig heeft van een schoenenwebwinkel",
+      heading: "Wat AI nodig heeft van een schoenenwebshop",
       intro:
         "AI-assistenten bevelen schoenen aan die ze kunnen begrijpen, vergelijken en vertrouwen. Dit zijn de details die het meest tellen, op je productpagina's en daarbuiten.",
       items: [
@@ -262,7 +262,7 @@ export const SOLUTION_PAGES_NL: readonly ProductPageData[] = [
         },
         {
           title: "Gidsen en vergelijkingen",
-          body: "Content over maat, pasvorm en het kiezen van de juiste schoen geeft assistenten een reden om je winkel te noemen.",
+          body: "Content over maat, pasvorm en het kiezen van de juiste schoen geeft assistenten een reden om je webshop te noemen.",
         },
         {
           title: "Correcte data per variant",
@@ -270,7 +270,7 @@ export const SOLUTION_PAGES_NL: readonly ProductPageData[] = [
         },
       ],
     },
-    benefitsHeading: "Hoe Beseam schoenenwebwinkels helpt",
+    benefitsHeading: "Hoe Beseam schoenenwebshops helpt",
     benefits: [
       {
         title: "Maat en pasvorm, duidelijk beschreven",
@@ -302,7 +302,7 @@ export const SOLUTION_PAGES_NL: readonly ProductPageData[] = [
         },
         {
           title: "Alleen productpagina's, geen gidsen",
-          body: "Bij ‘welke hardloopschoen moet ik kopen?’ gebruiken assistenten gidsen en vergelijkingen. Zonder die pagina's is je winkel geen onderdeel van het antwoord.",
+          body: "Bij ‘welke hardloopschoen moet ik kopen?’ gebruiken assistenten gidsen en vergelijkingen. Zonder die pagina's is je webshop geen onderdeel van het antwoord.",
         },
         {
           title: "Uitverkochte maten als beschikbaar getoond",
@@ -311,7 +311,7 @@ export const SOLUTION_PAGES_NL: readonly ProductPageData[] = [
         crawlerMistake,
       ],
     },
-    stepsHeading: "Zo werkt Beseam voor schoenenwebwinkels",
+    stepsHeading: "Zo werkt Beseam voor schoenenwebshops",
     steps: steps("schoenen"),
     faqs: [
       {
@@ -326,13 +326,13 @@ export const SOLUTION_PAGES_NL: readonly ProductPageData[] = [
       },
       {
         question:
-          "Welke content helpt schoenenwebwinkels om aanbevolen te worden?",
+          "Welke content helpt schoenenwebshops om aanbevolen te worden?",
         answer:
           "Categoriepagina's voor veelvoorkomende behoeften, zoals brede of waterdichte schoenen, vergelijkingen zoals trail- of wegschoenen, en koopgidsen over maat en pasvorm. AI-assistenten gebruiken dit soort content wanneer klanten om advies vragen.",
       },
       {
         question:
-          "Welke technische problemen komen vaak voor bij schoenenwebwinkels?",
+          "Welke technische problemen komen vaak voor bij schoenenwebshops?",
         answer:
           "Gestructureerde data waarin maatvarianten ontbreken, voorraad per maat die niet klopt met de pagina, en AI-crawlers die door botbescherming worden geblokkeerd. Omdat schoenen in veel maten en kleuren komen, raken kleine datafouten veel producten tegelijk.",
       },
@@ -354,7 +354,7 @@ export const SOLUTION_PAGES_NL: readonly ProductPageData[] = [
   {
     slug: "fashion-apparel",
     name: "Mode & kleding",
-    metaTitle: "AI-zoekoptimalisatie voor modewebwinkels | Beseam",
+    metaTitle: "AI-zoekoptimalisatie voor modewebshops | Beseam",
     metaDescription:
       "Laat ChatGPT, Gemini en andere AI-assistenten je kleding aanbevelen. Volg je AI-zichtbaarheid en optimaliseer productpagina's, content en techniek voor mode.",
     headline: "Laat AI je modecollectie aanbevelen",
@@ -366,7 +366,7 @@ export const SOLUTION_PAGES_NL: readonly ProductPageData[] = [
         "Kies voor zwaarder, voorgewassen biologisch katoen, dat wasbeurt na wasbeurt in vorm blijft. Deze past goed:",
       product: {
         name: "Everyday Organic Tee",
-        store: "jouwwinkel.nl",
+        store: "jouwwebshop.nl",
         price: "€35",
         image: "/images/catalog/tshirt.webp",
         facts: ["Biologisch katoen", "Voorgewassen", "Normale pasvorm"],
@@ -496,7 +496,7 @@ export const SOLUTION_PAGES_NL: readonly ProductPageData[] = [
       ],
     },
     checklist: {
-      heading: "Wat AI nodig heeft van een modewebwinkel",
+      heading: "Wat AI nodig heeft van een modewebshop",
       intro:
         "AI-assistenten bevelen kleding aan die ze kunnen begrijpen, vergelijken en vertrouwen. Dit zijn de details die het meest tellen, op je productpagina's en daarbuiten.",
       items: [
@@ -526,7 +526,7 @@ export const SOLUTION_PAGES_NL: readonly ProductPageData[] = [
         },
         {
           title: "Stijlgidsen en vergelijkingen",
-          body: "Content over wat je draagt en hoe je kiest geeft assistenten een reden om je winkel te noemen.",
+          body: "Content over wat je draagt en hoe je kiest geeft assistenten een reden om je webshop te noemen.",
         },
         {
           title: "Correcte data per variant",
@@ -575,7 +575,7 @@ export const SOLUTION_PAGES_NL: readonly ProductPageData[] = [
         crawlerMistake,
       ],
     },
-    stepsHeading: "Zo werkt Beseam voor modewebwinkels",
+    stepsHeading: "Zo werkt Beseam voor modewebshops",
     steps: steps("mode"),
     faqs: [
       {
@@ -594,7 +594,7 @@ export const SOLUTION_PAGES_NL: readonly ProductPageData[] = [
           "Klanten vragen AI vaak wat ze moeten dragen voor een bepaalde gelegenheid. Productpagina's en categorieën die die gelegenheden noemen, worden makkelijker aanbevolen door assistenten.",
       },
       {
-        question: "Welke content helpt modewebwinkels om aanbevolen te worden?",
+        question: "Welke content helpt modewebshops om aanbevolen te worden?",
         answer:
           "Categoriepagina's voor gelegenheden en stijlen, stijlgidsen zoals wat je draagt op kantoor, en vergelijkingen van stoffen of pasvormen. AI-assistenten gebruiken dit soort content wanneer klanten om advies vragen.",
       },
@@ -616,7 +616,7 @@ export const SOLUTION_PAGES_NL: readonly ProductPageData[] = [
   {
     slug: "beauty-cosmetics",
     name: "Beauty & cosmetica",
-    metaTitle: "AI-zoekoptimalisatie voor beautywebwinkels | Beseam",
+    metaTitle: "AI-zoekoptimalisatie voor beautywebshops | Beseam",
     metaDescription:
       "Laat ChatGPT en andere AI-assistenten je beauty- en huidverzorgingsproducten aanbevelen. Volg je AI-zichtbaarheid en optimaliseer pagina's en techniek.",
     headline: "Laat AI je beautyproducten aanbevelen",
@@ -628,7 +628,7 @@ export const SOLUTION_PAGES_NL: readonly ProductPageData[] = [
         "Voor een gevoelige huid ondersteunt een parfumvrije crème met ceramiden de huidbarrière. Deze past bij wat je zoekt:",
       product: {
         name: "Calm Barrier Moisturiser",
-        store: "jouwwinkel.nl",
+        store: "jouwwebshop.nl",
         price: "€24",
         // "A jar of cream with mint leaves on a white table" by Maria
         // Kovalets, unsplash.com/photos/Y89Qfa_H7-o (Unsplash licence).
@@ -770,7 +770,7 @@ export const SOLUTION_PAGES_NL: readonly ProductPageData[] = [
       ],
     },
     checklist: {
-      heading: "Wat AI nodig heeft van een beautywebwinkel",
+      heading: "Wat AI nodig heeft van een beautywebshop",
       intro:
         "AI-assistenten bevelen beautyproducten aan die ze kunnen begrijpen, vergelijken en vertrouwen. Dit zijn de details die het meest tellen, op je productpagina's en daarbuiten.",
       items: [
@@ -800,7 +800,7 @@ export const SOLUTION_PAGES_NL: readonly ProductPageData[] = [
         },
         {
           title: "Routines en ingrediëntengidsen",
-          body: "Content over routines en ingrediënten geeft assistenten een reden om je winkel te noemen.",
+          body: "Content over routines en ingrediënten geeft assistenten een reden om je webshop te noemen.",
         },
         {
           title: "Correcte data per variant",
@@ -822,7 +822,7 @@ export const SOLUTION_PAGES_NL: readonly ProductPageData[] = [
       },
       {
         title: "Duidelijke, consistente claims",
-        body: "Houd productclaims, certificeringen en gebruiksaanwijzingen duidelijk en consistent in je hele winkel.",
+        body: "Houd productclaims, certificeringen en gebruiksaanwijzingen duidelijk en consistent in je hele webshop.",
         icon: BadgeCheck,
       },
     ],
@@ -845,12 +845,12 @@ export const SOLUTION_PAGES_NL: readonly ProductPageData[] = [
         },
         {
           title: "Geen routines of gidsen",
-          body: "Bij ‘wat is een goede routine voor een droge huid?’ gebruiken assistenten gidsen. Zonder die pagina's is je winkel geen onderdeel van het antwoord.",
+          body: "Bij ‘wat is een goede routine voor een droge huid?’ gebruiken assistenten gidsen. Zonder die pagina's is je webshop geen onderdeel van het antwoord.",
         },
         crawlerMistake,
       ],
     },
-    stepsHeading: "Zo werkt Beseam voor beautywebwinkels",
+    stepsHeading: "Zo werkt Beseam voor beautywebshops",
     steps: steps("beauty"),
     faqs: [
       {
@@ -865,7 +865,7 @@ export const SOLUTION_PAGES_NL: readonly ProductPageData[] = [
       },
       {
         question:
-          "Welke content helpt beautywebwinkels om aanbevolen te worden?",
+          "Welke content helpt beautywebshops om aanbevolen te worden?",
         answer:
           "Categoriepagina's per huidtype of aandachtspunt, routinegidsen en uitleg over ingrediënten. AI-assistenten gebruiken dit soort content wanneer klanten om advies vragen.",
       },
@@ -892,7 +892,7 @@ export const SOLUTION_PAGES_NL: readonly ProductPageData[] = [
   {
     slug: "consumer-electronics",
     name: "Consumentenelektronica",
-    metaTitle: "AI-zoekoptimalisatie voor elektronicawebwinkels | Beseam",
+    metaTitle: "AI-zoekoptimalisatie voor elektronicawebshops | Beseam",
     metaDescription:
       "Laat ChatGPT, Gemini en andere AI-assistenten je elektronica aanbevelen. Volg je AI-zichtbaarheid en optimaliseer specificaties, content en techniek.",
     headline: "Laat je elektronica aanbevelen wanneer klanten het AI vragen",
@@ -904,7 +904,7 @@ export const SOLUTION_PAGES_NL: readonly ProductPageData[] = [
         "Als accuduur het belangrijkst is, kies dan voor 40 uur of meer met noise cancelling aan. Deze is een sterke keuze:",
       product: {
         name: "Studio ANC Headphones",
-        store: "jouwwinkel.nl",
+        store: "jouwwebshop.nl",
         price: "€229",
         // "Black and brown wireless headphones" by Blaz Erzetic,
         // unsplash.com/photos/tqAmHGbIPdM (Unsplash licence).
@@ -935,7 +935,7 @@ export const SOLUTION_PAGES_NL: readonly ProductPageData[] = [
           body: "Beseam stelt AI-assistenten de vragen van je klanten, van koptelefoons met de langste accuduur tot opladers voor een specifieke telefoon, en laat zien waar je producten worden aanbevolen en wie in plaats daarvan verschijnt.",
           points: [
             "Gevolgd per vraag, product en assistent",
-            "Zie welke merken en winkels in plaats daarvan worden aanbevolen",
+            "Zie welke merken en webshops in plaats daarvan worden aanbevolen",
             "Gekoppeld aan verkeer en omzet uit AI-assistenten",
           ],
           visual: {
@@ -1008,7 +1008,7 @@ export const SOLUTION_PAGES_NL: readonly ProductPageData[] = [
         {
           product: "technical-performance",
           title: "Prijzen, voorraad en specificaties die AI vertrouwt",
-          body: "Prijzen en voorraad van elektronica veranderen vaak, en assistenten vergelijken ze tussen winkels. Beseam controleert of gestructureerde data, prijzen en beschikbaarheid overeenkomen met je pagina's, en of AI-crawlers ze kunnen bereiken.",
+          body: "Prijzen en voorraad van elektronica veranderen vaak, en assistenten vergelijken ze tussen webshops. Beseam controleert of gestructureerde data, prijzen en beschikbaarheid overeenkomen met je pagina's, en of AI-crawlers ze kunnen bereiken.",
           points: [
             "Prijzen en voorraad die kloppen met de pagina",
             "Gestructureerde data met kenmerken zoals de GTIN",
@@ -1040,7 +1040,7 @@ export const SOLUTION_PAGES_NL: readonly ProductPageData[] = [
       ],
     },
     checklist: {
-      heading: "Wat AI nodig heeft van een elektronicawebwinkel",
+      heading: "Wat AI nodig heeft van een elektronicawebshop",
       intro:
         "AI-assistenten bevelen elektronica aan die ze kunnen vergelijken en vertrouwen. Dit zijn de details die het meest tellen, op je productpagina's en daarbuiten.",
       items: [
@@ -1066,7 +1066,7 @@ export const SOLUTION_PAGES_NL: readonly ProductPageData[] = [
         },
         {
           title: "Vergelijkingen en koopgidsen",
-          body: "Content die modellen vergelijkt en keuzes uitlegt, geeft assistenten een reden om je winkel te noemen.",
+          body: "Content die modellen vergelijkt en keuzes uitlegt, geeft assistenten een reden om je webshop te noemen.",
         },
         {
           title: "Categoriepagina's voor behoeften",
@@ -1119,7 +1119,7 @@ export const SOLUTION_PAGES_NL: readonly ProductPageData[] = [
         crawlerMistake,
       ],
     },
-    stepsHeading: "Zo werkt Beseam voor elektronicawebwinkels",
+    stepsHeading: "Zo werkt Beseam voor elektronicawebshops",
     steps: steps("elektronica"),
     faqs: [
       {
@@ -1135,7 +1135,7 @@ export const SOLUTION_PAGES_NL: readonly ProductPageData[] = [
       },
       {
         question:
-          "Welke content helpt elektronicawebwinkels om aanbevolen te worden?",
+          "Welke content helpt elektronicawebshops om aanbevolen te worden?",
         answer:
           "Vergelijkingen tussen modellen, koopgidsen die keuzes uitleggen, en categoriepagina's voor specifieke behoeften. AI-assistenten gebruiken dit soort content wanneer klanten vragen welk product ze moeten kopen.",
       },
@@ -1143,11 +1143,11 @@ export const SOLUTION_PAGES_NL: readonly ProductPageData[] = [
         question:
           "Waarom zijn prijzen en voorraad belangrijk voor AI-zoekopdrachten?",
         answer:
-          "Assistenten vergelijken producten tussen winkels en vermijden aanbevelingen voor artikelen die niet leverbaar of verkeerd geprijsd lijken. Gestructureerde data die klopt met je pagina's helpt ze je winkel te vertrouwen.",
+          "Assistenten vergelijken producten tussen webshops en vermijden aanbevelingen voor artikelen die niet leverbaar of verkeerd geprijsd lijken. Gestructureerde data die klopt met je pagina's helpt ze je webshop te vertrouwen.",
       },
       {
         question:
-          "Kan ik zien welke winkels AI in plaats van de mijne aanbeveelt?",
+          "Kan ik zien welke webshops AI in plaats van de mijne aanbeveelt?",
         answer: trackedCompetitorsAnswer,
       },
       {
@@ -1163,19 +1163,19 @@ export const SOLUTION_PAGES_NL: readonly ProductPageData[] = [
   {
     slug: "shopify",
     name: "Beseam voor Shopify",
-    metaTitle: "AI-zoekoptimalisatie voor Shopify-winkels | Beseam",
+    metaTitle: "AI-zoekoptimalisatie voor Shopify-webshops | Beseam",
     metaDescription:
-      "Koppel je Shopify-winkel met één klik. Volg je AI-zichtbaarheid en optimaliseer pagina's, content en techniek zodat ChatGPT je producten aanbeveelt.",
+      "Koppel je Shopify-webshop met één klik. Volg je AI-zichtbaarheid en optimaliseer pagina's, content en techniek zodat ChatGPT je producten aanbeveelt.",
     headline: "AI-zoekoptimalisatie, gemaakt voor Shopify",
     intro:
-      "Koppel je Shopify-winkel met één klik. Beseam importeert je catalogus zonder je themacode aan te raken, volgt hoe AI-assistenten over je producten praten, en optimaliseert je productpagina's, content en techniek, te beginnen met de wijzigingen die de meeste omzet kunnen opleveren.",
+      "Koppel je Shopify-webshop met één klik. Beseam importeert je catalogus zonder je themacode aan te raken, volgt hoe AI-assistenten over je producten praten, en optimaliseert je productpagina's, content en techniek, te beginnen met de wijzigingen die de meeste omzet kunnen opleveren.",
     heroChat: {
       prompt: "Lichte jas voor het voorjaar?",
       reply:
         "Voor het voorjaar werkt een lichte bomberjack die een bui tegenhoudt en over een trui past goed. Deze past goed:",
       product: {
         name: "Lightweight Bomber Jacket",
-        store: "jouwwinkel.myshopify.com",
+        store: "jouwwebshop.myshopify.com",
         price: "€119",
         // "Brown bomber jacket on hanger" by Tobias Tullius,
         // unsplash.com/photos/Fg15LdqpWrs (Unsplash licence).
@@ -1186,13 +1186,13 @@ export const SOLUTION_PAGES_NL: readonly ProductPageData[] = [
     },
     pillars: {
       heading:
-        "Alles wat je Shopify-winkel nodig heeft om door AI aanbevolen te worden",
+        "Alles wat je Shopify-webshop nodig heeft om door AI aanbevolen te worden",
       intro:
-        "Beseam dekt de vier dingen af die bepalen of AI-assistenten je producten aanbevelen, allemaal via één koppeling met je Shopify-winkel.",
+        "Beseam dekt de vier dingen af die bepalen of AI-assistenten je producten aanbevelen, allemaal via één koppeling met je Shopify-webshop.",
       items: [
         {
           product: "ai-visibility-tracking",
-          title: "Zie bij welke vragen je winkel verschijnt",
+          title: "Zie bij welke vragen je webshop verschijnt",
           body: "Beseam stelt de vragen van je klanten op vanuit je Shopify-catalogus, stelt ze aan AI-assistenten, en laat zien waar je producten worden aanbevolen en wie in plaats daarvan verschijnt.",
           points: [
             "Vragen op basis van je eigen catalogus",
@@ -1216,7 +1216,7 @@ export const SOLUTION_PAGES_NL: readonly ProductPageData[] = [
         {
           product: "product-descriptions",
           title: "Betere productpagina's, direct in Shopify gepubliceerd",
-          body: "Beseam leest elk product en elke variant in je winkel, herschrijft beschrijvingen en vult ontbrekende productdata aan. Keur de wijzigingen goed en ze worden in je winkel gepubliceerd, of automatiseer de wijzigingen die je vertrouwt.",
+          body: "Beseam leest elk product en elke variant in je webshop, herschrijft beschrijvingen en vult ontbrekende productdata aan. Keur de wijzigingen goed en ze worden in je webshop gepubliceerd, of automatiseer de wijzigingen die je vertrouwt.",
           points: [
             "Elk product en elke variant in je catalogus",
             "Gerangschikt op verwachte omzetimpact",
@@ -1237,7 +1237,7 @@ export const SOLUTION_PAGES_NL: readonly ProductPageData[] = [
         {
           product: "content-creation",
           title: "Categoriepagina's, gidsen en vergelijkingen",
-          body: "Assistenten gebruiken pagina's die uitleggen en vergelijken. Beseam helpt je categoriepagina's, blogartikelen en koopgidsen in je winkel te maken en te verbeteren, rond je eigen producten.",
+          body: "Assistenten gebruiken pagina's die uitleggen en vergelijken. Beseam helpt je categoriepagina's, blogartikelen en koopgidsen in je webshop te maken en te verbeteren, rond je eigen producten.",
           points: [
             "Categoriepagina's die je assortiment uitleggen",
             "Koopgidsen en vergelijkingen voor je blog",
@@ -1267,7 +1267,7 @@ export const SOLUTION_PAGES_NL: readonly ProductPageData[] = [
         },
         {
           product: "technical-performance",
-          title: "Een Shopify-winkel die AI kan lezen en vertrouwen",
+          title: "Een Shopify-webshop die AI kan lezen en vertrouwen",
           body: "Thema's en apps kunnen gestructureerde data onvolledig of dubbel maken. Beseam controleert of productdata, prijzen en voorraad overeenkomen met je pagina's, en of AI-crawlers ze kunnen bereiken.",
           points: [
             "Gestructureerde data uit je thema en apps",
@@ -1304,9 +1304,9 @@ export const SOLUTION_PAGES_NL: readonly ProductPageData[] = [
       ],
     },
     checklist: {
-      heading: "Wat AI nodig heeft van een Shopify-winkel",
+      heading: "Wat AI nodig heeft van een Shopify-webshop",
       intro:
-        "AI-assistenten bevelen producten aan die ze kunnen begrijpen, vergelijken en vertrouwen. Dit zijn de details die in een Shopify-winkel het meest tellen.",
+        "AI-assistenten bevelen producten aan die ze kunnen begrijpen, vergelijken en vertrouwen. Dit zijn de details die in een Shopify-webshop het meest tellen.",
       items: [
         {
           title: "Concrete productbeschrijvingen",
@@ -1326,7 +1326,7 @@ export const SOLUTION_PAGES_NL: readonly ProductPageData[] = [
         },
         {
           title: "Gidsen en vergelijkingen",
-          body: "Blogartikelen en gidsen die koopvragen beantwoorden, geven assistenten een reden om je winkel te noemen.",
+          body: "Blogartikelen en gidsen die koopvragen beantwoorden, geven assistenten een reden om je webshop te noemen.",
         },
         {
           title: "Schone gestructureerde data",
@@ -1342,17 +1342,17 @@ export const SOLUTION_PAGES_NL: readonly ProductPageData[] = [
         },
       ],
     },
-    benefitsHeading: "Gemaakt voor Shopify-winkels",
+    benefitsHeading: "Gemaakt voor Shopify-webshops",
     showBenefits: true,
     benefits: [
       {
         title: "Koppeling met één klik",
-        body: "Koppel je Shopify-winkel met één klik. Geen developers, geen themawijzigingen.",
+        body: "Koppel je Shopify-webshop met één klik. Geen developers, geen themawijzigingen.",
         icon: Plug,
       },
       {
         title: "Je hele catalogus",
-        body: "Beseam leest elk product en elke variant in je winkel, hoe groot je catalogus ook is.",
+        body: "Beseam leest elk product en elke variant in je webshop, hoe groot je catalogus ook is.",
         icon: Package,
       },
       {
@@ -1363,12 +1363,12 @@ export const SOLUTION_PAGES_NL: readonly ProductPageData[] = [
     ],
     mistakes: {
       heading:
-        "Veelgemaakte fouten die Shopify-winkels uit AI-antwoorden houden",
+        "Veelgemaakte fouten die Shopify-webshops uit AI-antwoorden houden",
       items: [
         notKnowingMistake("jouw producten"),
         {
           title: "Leveranciersbeschrijvingen ongewijzigd overgenomen",
-          body: "Van leveranciers gekopieerde beschrijvingen zijn gelijk aan die van honderden andere winkels en beantwoorden zelden de vragen van klanten.",
+          body: "Van leveranciers gekopieerde beschrijvingen zijn gelijk aan die van honderden andere webshops en beantwoorden zelden de vragen van klanten.",
         },
         {
           title: "Lege categoriepagina's",
@@ -1389,7 +1389,7 @@ export const SOLUTION_PAGES_NL: readonly ProductPageData[] = [
     steps: [
       {
         title: "Koppel Shopify",
-        body: "Koppel je winkel met één klik. Beseam importeert je catalogus zonder je themacode aan te raken.",
+        body: "Koppel je webshop met één klik. Beseam importeert je catalogus zonder je themacode aan te raken.",
       },
       {
         title: "Volg je AI-zichtbaarheid",
@@ -1409,7 +1409,7 @@ export const SOLUTION_PAGES_NL: readonly ProductPageData[] = [
       {
         question: "Hoe zorg ik dat ChatGPT mijn Shopify-producten aanbeveelt?",
         answer:
-          "Begin met weten bij welke vragen je winkel verschijnt. Maak daarna je productbeschrijvingen concreet, voeg categoriepagina's en gidsen toe voor de vragen die klanten uitzoeken, en houd je gestructureerde data schoon. Beseam dekt alle vier af en laat zien wat je eerst moet verbeteren.",
+          "Begin met weten bij welke vragen je webshop verschijnt. Maak daarna je productbeschrijvingen concreet, voeg categoriepagina's en gidsen toe voor de vragen die klanten uitzoeken, en houd je gestructureerde data schoon. Beseam dekt alle vier af en laat zien wat je eerst moet verbeteren.",
       },
       {
         question: "Heb ik een developer nodig om Beseam in te stellen?",
@@ -1417,7 +1417,7 @@ export const SOLUTION_PAGES_NL: readonly ProductPageData[] = [
           "Nee. De koppeling met Shopify kost één klik, en Beseam regelt de rest.",
       },
       {
-        question: "Wijzigt Beseam mijn Shopify-winkel zonder mijn goedkeuring?",
+        question: "Wijzigt Beseam mijn Shopify-webshop zonder mijn goedkeuring?",
         answer:
           "Nee. Elke wijziging die klanten zien, wacht op je goedkeuring, tenzij je dat soort wijziging automatiseert, en alle wijzigingen blijven terug te draaien.",
       },
@@ -1429,7 +1429,7 @@ export const SOLUTION_PAGES_NL: readonly ProductPageData[] = [
       {
         question: "Kunnen Shopify-apps mijn AI-zichtbaarheid beïnvloeden?",
         answer:
-          "Ja. Apps kunnen dubbele gestructureerde data toevoegen, pagina's vertragen of veranderen wat crawlers zien. Beseam controleert je winkel zoals die echt wordt geladen, inclusief wat je apps toevoegen.",
+          "Ja. Apps kunnen dubbele gestructureerde data toevoegen, pagina's vertragen of veranderen wat crawlers zien. Beseam controleert je webshop zoals die echt wordt geladen, inclusief wat je apps toevoegen.",
       },
       {
         question:

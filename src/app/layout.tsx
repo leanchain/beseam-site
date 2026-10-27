@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 
 import "./globals.css";
 import { AnalyticsScripts } from "@/components/analytics/AnalyticsScripts";
+import { EarlyAccessDialog } from "@/components/beseam/early-access-cta";
 import BeseamFooter from "@/components/beseam/footer";
 import BeseamNavbar from "@/components/beseam/navbar";
 import { ThemeProvider } from "@/components/theme-provider";
@@ -147,6 +148,7 @@ export default function RootLayout({
               </main>
               <BeseamFooter />
             </div>
+            <EarlyAccessDialog />
           </CookieConsentProvider>
         </ThemeProvider>
       </body>
