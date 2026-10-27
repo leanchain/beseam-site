@@ -16,22 +16,18 @@ const LEAD_SOURCES = new Set([
   "store_health_review",
   "product_visibility_monitoring",
   "contact",
+  "early_access",
 ]);
 
-// Sources where a person is waiting to hear back: notify contact@beseam.com
-// directly instead of only queueing the lead into the marketing list.
+// Human follow-up requests: store in Trevra and notify contact@beseam.com.
 const REVIEW_SOURCES = new Set([
   "store_health_review",
   "product_visibility_monitoring",
   "contact",
+  "early_access",
 ]);
 
-// Who else gets a copy of a form submission, by source. Every address here
-// must also be listed in wrangler.jsonc (send_email) and be a verified
-// destination in Cloudflare Email Routing.
-const EXTRA_NOTIFY = {
-  contact: ["guido@beseam.com"],
-};
+const TREVRA_KINDS = { early_access: "contact" };
 
 const UTM_KEYS = new Set([
   "utm_source",
@@ -109,6 +105,7 @@ async function readLead(request, url, forcedSource) {
       submissionId: clean(body.submissionId, 100),
       name: clean(body.name, 100),
       store: clean(body.store, 300),
+      company: clean(body.company, 300),
       message: clean(body.message, 2000),
       utm: cleanUtm(body.utm),
     },
@@ -158,12 +155,14 @@ async function addLeadToTrevra(env, lead) {
   if (!trevraCaptureConfigured(env)) return false;
 
   const payload = {
-    kind: lead.source,
+    kind: TREVRA_KINDS[lead.source] || lead.source,
     person: {
       email: lead.email,
       ...(lead.name ? { name: lead.name } : {}),
     },
-    ...(lead.store ? { company: { domain: lead.store } } : {}),
+    ...(lead.store || lead.company
+      ? { company: { domain: lead.store || lead.company } }
+      : {}),
     ...(lead.message ? { message: lead.message } : {}),
     ...(Object.keys(lead.utm).length ? { attribution: lead.utm } : {}),
   };
@@ -249,6 +248,7 @@ async function addLeadToSendPulse(env, lead) {
   const variables = { Source: lead.source };
   if (lead.name) variables.Name = lead.name;
   if (lead.store) variables.Store = lead.store;
+  if (lead.company) variables.Company = lead.company;
   if (lead.message) variables.Message = lead.message.slice(0, 500);
   if (lead.utm.utm_source) variables.UtmSource = lead.utm.utm_source;
   if (lead.utm.utm_medium) variables.UtmMedium = lead.utm.utm_medium;
@@ -297,26 +297,17 @@ async function submitScanLead(lead, env) {
 }
 
 async function submitReview(lead, env) {
-  const { source, name, email, store, message, utm } = lead;
-  const requiresStore = source !== "contact";
-  const label =
-    source === "contact"
-      ? "New contact form message"
-      : "New Store Health Review request";
+  const { source, name, email, store, company, message, utm } = lead;
+  const label = source === "contact" ? "New contact form message"
+    : source === "early_access" ? "New early access request"
+    : "New Store Health Review request";
 
-  if (
-    name.length < 2 ||
-    (requiresStore && store.length < 4) ||
-    (!requiresStore && message.length < 3)
-  ) {
-    return json(
-      {
-        error: requiresStore
-          ? "Name, work email and store URL are required."
-          : "Name, work email and a message are required.",
-      },
-      400,
-    );
+  const missing = name.length < 2 || (source === "contact" ? message.length < 3
+    : source === "early_access" ? company.length < 2 : store.length < 4);
+  if (missing) {
+    return json({ error: source === "contact" ? "Name, work email and a message are required."
+      : source === "early_access" ? "Name, work email and company are required."
+      : "Name, work email and store URL are required." }, 400);
   }
 
   let capturedByTrevra = false;
@@ -339,8 +330,9 @@ async function submitReview(lead, env) {
     "",
     "Name: " + name,
     "Work email: " + email,
+    company ? "Company: " + company : null,
     store ? "Store: " + store : null,
-    "Message: " + (message || "Not provided"),
+    source === "early_access" ? null : "Message: " + (message || "Not provided"),
     "",
     "Attribution:",
     JSON.stringify(utm, null, 2),
@@ -357,19 +349,21 @@ async function submitReview(lead, env) {
     "</p><p><strong>Work email:</strong> " +
     escapeHtml(email) +
     "</p>" +
+    (company ? "<p><strong>Company:</strong> " + escapeHtml(company) + "</p>" : "") +
     (store ? "<p><strong>Store:</strong> " + escapeHtml(store) + "</p>" : "") +
-    "<p><strong>Message:</strong><br>" +
-    escapeHtml(message || "Not provided").replaceAll("\n", "<br>") +
-    "</p><p><strong>Attribution:</strong><br><code>" +
+    (source === "early_access" ? "" : "<p><strong>Message:</strong><br>" + escapeHtml(message || "Not provided").replaceAll("\n", "<br>") + "</p>") +
+    "<p><strong>Attribution:</strong><br><code>" +
     escapeHtml(JSON.stringify(utm)) +
     "</code></p>";
 
   if (env.REVIEW_EMAIL) {
     const notification = {
-      from: "website@beseam.com",
+      from: "noreply@beseam.com",
       replyTo: email,
       subject:
-        source === "contact" ? label + " from " + name : label + " - " + store,
+        source === "contact" ? label + " from " + name
+          : source === "early_access" ? label + " from " + name + " (" + company + ")"
+          : label + " - " + store,
       text: textBody,
       html: htmlBody,
     };
@@ -385,16 +379,6 @@ async function submitReview(lead, env) {
         "[lead] review notification email failed after Trevra capture",
         error,
       );
-    }
-    // Extra recipients get a best-effort copy: contact@ above is the
-    // delivery that decides success, so a failed copy never makes the
-    // visitor resend a message that already arrived.
-    for (const to of EXTRA_NOTIFY[source] ?? []) {
-      try {
-        await env.REVIEW_EMAIL.send({ ...notification, to });
-      } catch (error) {
-        console.error("[lead] copy to " + to + " failed", error);
-      }
     }
   }
 
