@@ -40,3 +40,6 @@ deleted/
 .wrangler/
 .impeccable
 .lemoncrow
+
+# Agent task worktrees (.githooks/agent-task)
+.worktrees/
