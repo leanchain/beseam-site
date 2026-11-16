@@ -1,0 +1,160 @@
+name: Cloudflare PR Preview
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened, closed]
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: Pull request number to preview
+        required: true
+        type: number
+
+permissions:
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: cloudflare-preview-${{ github.event.pull_request.number || inputs.pr_number }}
+  cancel-in-progress: false
+
+jobs:
+  resolve:
+    runs-on: ubuntu-latest
+    outputs:
+      number: ${{ steps.pr.outputs.number }}
+      sha: ${{ steps.pr.outputs.sha }}
+      state: ${{ steps.pr.outputs.state }}
+    steps:
+      - uses: actions/github-script@v7
+        id: pr
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number || inputs.pr_number }}
+        with:
+          script: |
+            const number = Number(process.env.PR_NUMBER);
+            if (!Number.isSafeInteger(number) || number < 1) {
+              throw new Error("A positive pull request number is required.");
+            }
+            const { data: pr } = await github.rest.pulls.get({
+              ...context.repo, pull_number: number,
+            });
+            core.setOutput("number", String(pr.number));
+            core.setOutput("sha", pr.head.sha);
+            core.setOutput("state", pr.state);
+
+  # Fork code executes only here, on a separate runner with no deployment
+  # credentials, write permissions, persisted checkout token, or shared cache.
+  build:
+    needs: resolve
+    if: needs.resolve.outputs.state == 'open'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.resolve.outputs.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci --no-audit --no-fund
+      - run: npm run build
+      - run: npm run check:export
+      - uses: actions/upload-artifact@v4
+        with:
+          name: preview-assets
+          path: out/
+          if-no-files-found: error
+          retention-days: 1
+
+  # Never check out or execute PR code in the credentialed job. Only static
+  # assets cross the job boundary; the production Worker/config is never used.
+  deploy:
+    needs: [resolve, build]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      name: preview-pr-${{ needs.resolve.outputs.number }}
+      url: ${{ steps.deploy.outputs.url }}
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/download-artifact@v4
+        with:
+          name: preview-assets
+          path: ${{ runner.temp }}/preview-assets
+      - name: Check the PR still matches this build
+        uses: actions/github-script@v7
+        env:
+          PR_NUMBER: ${{ needs.resolve.outputs.number }}
+          EXPECTED_SHA: ${{ needs.resolve.outputs.sha }}
+        with:
+          script: |
+            const { data: pr } = await github.rest.pulls.get({
+              ...context.repo, pull_number: Number(process.env.PR_NUMBER),
+            });
+            if (pr.state !== "open" || pr.head.sha !== process.env.EXPECTED_SHA) {
+              throw new Error("PR closed or changed during the build. Run the latest preview.");
+            }
+      - name: Deploy static preview
+        id: deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_PREVIEW_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: b9d8247a692a62f48e1f7754ef9f834d
+          PR_NUMBER: ${{ needs.resolve.outputs.number }}
+        run: |
+          set -euo pipefail
+          if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
+            echo "::error::Add the CLOUDFLARE_PREVIEW_API_TOKEN Actions secret with Account / Workers Scripts / Edit permission."
+            exit 1
+          fi
+          [[ "$PR_NUMBER" =~ ^[1-9][0-9]*$ ]]
+          export PREVIEW_ASSETS="$RUNNER_TEMP/preview-assets"
+          node --input-type=module <<'JS'
+          import { writeFileSync } from "node:fs";
+          const assets = process.env.PREVIEW_ASSETS;
+          writeFileSync(assets + "/_headers", "/*\n  X-Robots-Tag: noindex, nofollow\n");
+          writeFileSync(assets + "/robots.txt", "User-agent: *\nDisallow: /\n");
+          writeFileSync(process.env.RUNNER_TEMP + "/preview-wrangler.json", JSON.stringify({
+            name: "beseam-site-pr-" + process.env.PR_NUMBER,
+            compatibility_date: "2026-11-16",
+            workers_dev: true,
+            assets: { directory: assets, not_found_handling: "404-page" },
+          }));
+          JS
+          npm exec --yes --package wrangler@4.127.1 -- wrangler deploy --config "$RUNNER_TEMP/preview-wrangler.json"
+          preview_url="https://beseam-site-pr-${PR_NUMBER}.pankaj4u4m.workers.dev"
+          echo "url=$preview_url" >> "$GITHUB_OUTPUT"
+          {
+            echo "### PR #$PR_NUMBER preview"
+            echo "$preview_url"
+            echo
+            echo "Static pages only. Production API handlers and secrets are not included."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  cleanup:
+    needs: resolve
+    if: needs.resolve.outputs.state == 'closed'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Delete the closed PR's preview Worker
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_PREVIEW_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: b9d8247a692a62f48e1f7754ef9f834d
+          PR_NUMBER: ${{ needs.resolve.outputs.number }}
+        run: |
+          set -euo pipefail
+          if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
+            echo "::error::Add the CLOUDFLARE_PREVIEW_API_TOKEN Actions secret to clean up previews."
+            exit 1
+          fi
+          [[ "$PR_NUMBER" =~ ^[1-9][0-9]*$ ]]
+          npm exec --yes --package wrangler@4.127.1 -- wrangler delete --name "beseam-site-pr-$PR_NUMBER" --force

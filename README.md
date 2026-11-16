@@ -44,13 +44,40 @@ bun run build
 
 The production build is a static Next.js export in `out/`.
 
+## Pull request previews
+
+`.github/workflows/preview.yml` builds each open pull request, including forks,
+and publishes its static export to
+`https://beseam-site-pr-<number>.pankaj4u4m.workers.dev`. The URL appears in the
+GitHub deployment and the workflow's job summary. Pushes update the same URL;
+closing or merging the PR deletes its preview Worker. Search engines are
+blocked with `robots.txt` and an `X-Robots-Tag` header.
+
+Add `CLOUDFLARE_PREVIEW_API_TOKEN` under GitHub **Settings → Secrets and variables
+→ Actions**. Create this token in Cloudflare with **Account → Workers Scripts →
+Edit**, restricted to account `b9d8247a692a62f48e1f7754ef9f834d`. No production
+Worker secrets are copied. The CLI OAuth login cannot create API tokens.
+
+For an existing open PR, run the **Cloudflare PR Preview** workflow manually with its
+number, or use:
+
+```bash
+gh workflow run preview.yml --repo leanchain/beseam-site -f pr_number=123
+```
+
+Fork code builds on a separate runner with read-only repository access, no
+deployment credentials, and no shared cache. The deployment job handles only
+the exported static assets using a fixed preview configuration. These previews
+cover pages, styling, videos, and navigation; production Worker API routes,
+lead capture, and scan verification are unavailable.
+
 ## Cloudflare deployment
 
 Production deploys through Cloudflare Workers Builds connected to the
 `leanchain/beseam-site` GitHub repository. GitHub reports these deployments as
-`Workers Builds: beseam`; the pipeline is managed in Cloudflare, so there is no
-GitHub Actions deployment workflow in this repository. Open that check's details
-to view the build and deployment logs. Netlify is not a deployment target.
+`Workers Builds: beseam`; the production pipeline is managed in Cloudflare.
+Open that check's details to view the build and deployment logs. Netlify is not
+a deployment target.
 
 `main.js` serves the static export through the Workers Assets binding, handles
 legacy redirects, and accepts the same-origin review fallback form.
