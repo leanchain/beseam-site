@@ -308,7 +308,7 @@ export const pagesDe: PageCopy = {
       "Markenübergreifende Grössenempfehlung für Schuh-Onlineshops. Kundinnen und Kunden wählen Grösse und Marke eines Schuhs, den sie bereits tragen, und erhalten vor dem Checkout eine klare Grösse. In Minuten live auf Shopify.",
     breadcrumb: "Beseam Fit",
     eyebrow: "Grössenberater für Schuh-Onlineshops",
-    headline: "Eine klare Schuhgrösse, vor dem Checkout.",
+    headline: "Weniger Retouren dank müheloser Grössenempfehlungen",
     intro:
       "Beseam Fit vergleicht Grössen über Marken hinweg. Ihre Kundinnen und Kunden wählen einen Schuh, den sie bereits tragen, und erhalten die richtige Grösse für den Schuh, den sie gerade ansehen, direkt auf Ihrer Produktseite.",
     videoLabel: "Video: So funktioniert Beseam Fit, 50 Sekunden",

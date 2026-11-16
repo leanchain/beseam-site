@@ -306,7 +306,7 @@ export const pagesNl: PageCopy = {
       "Maatadvies over merken heen voor schoenenwebshops. Shoppers kiezen een maat en merk die ze al dragen en krijgen vóór het afrekenen één duidelijke maat. In een paar minuten live op Shopify.",
     breadcrumb: "Beseam Fit",
     eyebrow: "Maatadvies voor schoenenwebshops",
-    headline: "Eén duidelijke schoenmaat, vóór het afrekenen.",
+    headline: "Minder retouren met moeiteloos maatadvies",
     intro:
       "Beseam Fit vergelijkt maten tussen merken. Shoppers kiezen een schoen die ze al dragen en krijgen de juiste maat voor de schoen die ze bekijken, direct op je productpagina.",
     videoLabel: "Video: zo werkt Beseam Fit, 50 seconden",

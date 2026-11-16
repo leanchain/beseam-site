@@ -111,7 +111,7 @@ export default function FitPage({ locale = "en" }: { locale?: Locale }) {
             <p className="mx-auto mt-6 inline-flex rounded-button bg-signal px-3 py-1 text-[13px] font-semibold text-ink-deep">
               {fit.eyebrow}
             </p>
-            <h1 className="mx-auto mt-5 max-w-[18ch] text-balance font-display text-[clamp(2.6rem,5vw,4.25rem)] font-semibold leading-[1.02] tracking-[-0.035em] text-ink-deep">
+            <h1 className="mx-auto mt-5 max-w-[24ch] text-balance font-display text-[clamp(2.6rem,5vw,4.25rem)] font-semibold leading-[1.02] tracking-[-0.035em] text-ink-deep">
               {fit.headline}
             </h1>
             <p className="mx-auto mt-6 max-w-[60ch] text-[17px] leading-[1.7] text-black/72 sm:text-[18px]">

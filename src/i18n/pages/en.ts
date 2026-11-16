@@ -313,7 +313,7 @@ export const pagesEn = {
       "Cross-brand size matching for footwear webshops. Shoppers pick a size and brand they already wear and get one clear size before checkout. Live in minutes on Shopify.",
     breadcrumb: "Beseam Fit",
     eyebrow: "Shoe size recommender for footwear webshops",
-    headline: "One clear shoe size, before checkout.",
+    headline: "Lower returns with frictionless size recommendations",
     intro:
       "Beseam Fit matches sizes across brands. Shoppers pick a shoe they already wear, and get the right size for the shoe they're looking at, right on your product page.",
     videoLabel: "Video: how Beseam Fit works, 50 seconds",
