@@ -311,8 +311,6 @@ export const pagesDe: PageCopy = {
     headline: "Eine klare Schuhgrösse, vor dem Checkout.",
     intro:
       "Beseam Fit vergleicht Grössen über Marken hinweg. Ihre Kundinnen und Kunden wählen einen Schuh, den sie bereits tragen, und erhalten die richtige Grösse für den Schuh, den sie gerade ansehen, direkt auf Ihrer Produktseite.",
-    ctaInstall: "Auf Shopify installieren",
-    trialNote: "Ab $99 pro Monat · 30 Tage kostenlos testen",
     videoLabel: "Video: So funktioniert Beseam Fit, 50 Sekunden",
     stepsHeading:
       "Welche Grösse soll ich bestellen? Beantwortet in drei Schritten.",
@@ -350,44 +348,38 @@ export const pagesDe: PageCopy = {
         body: "Das Widget spricht Deutsch, Englisch, Französisch, Italienisch und Spanisch, und sein Aussehen lässt sich an Ihren Shop anpassen.",
       },
     ],
-    plansHeading: "Pläne",
-    plansIntro:
-      "Jeder Plan beginnt mit 30 Tagen kostenlosem Test und wird über Shopify abgerechnet. Bei jährlicher Zahlung sparen Sie 17%.",
-    perMonth: "pro Monat",
-    plans: [
-      {
-        name: "Starter",
-        price: "$99",
-        items: [
-          "2'000 Empfehlungen pro Monat",
-          "Unbegrenzt viele Produkte",
-          "Analysen zu den Empfehlungen",
-          "Import von Messdaten",
-        ],
-      },
-      {
-        name: "Growth",
-        price: "$499",
-        items: [
-          "10'000 Empfehlungen pro Monat",
-          "Erweiterte Analysen",
-          "Anpassungen pro Produkt und Grösse",
-          "WhatsApp-Support-Chat-Integration",
-          "Erweitertes Widget-Design",
-          "Bevorzugter Support",
-        ],
-      },
-      {
-        name: "Pro",
-        price: "$999",
-        items: [
-          "50'000 Empfehlungen pro Monat",
-          "Alles aus Growth",
-          'Ohne "Powered by Beseam"',
-          "Persönlicher Support",
-        ],
-      },
+    analyticsHeading: "Optimieren mit detaillierten Analysen.",
+    analyticsBody:
+      "Beseam Fit zeigt, was das Widget für Ihren Onlineshop leistet, damit Sie nie raten müssen, ob es sich lohnt.",
+    analyticsPoints: [
+      "Vergleichen Sie Conversion und grössenbedingte Retouren von Kundinnen und Kunden mit und ohne Beseam Fit.",
+      "Sehen Sie, wo Kundinnen und Kunden abspringen, vom Öffnen des Widgets bis zur empfohlenen Grösse im Warenkorb.",
+      "Verfolgen Sie die Entwicklung über die Zeit und sehen Sie die Wirkung jeder Änderung.",
     ],
+    dashboard: {
+      title: "Leistung der Empfehlungen",
+      badge: "Beispieldaten",
+      period: "Letzte 120 Tage",
+      sessions: "Sitzungen mit dem Widget",
+      funnel: [
+        "Widget geladen",
+        "Widget gesehen",
+        "Interaktion",
+        "Grösse empfohlen",
+        "In den Warenkorb",
+      ],
+      conversion: "Conversion-Rate",
+      conversionHint: "Bestellungen pro Produktseiten-Sitzung",
+      returns: "Grössenbedingte Retourenquote",
+      returnsHint: "Retouren innerhalb von 30 Tagen",
+      used: "Mit Beseam Fit",
+      notUsed: "Ohne Beseam Fit",
+      higher: "höher",
+      activity: "Aktivität über die Zeit",
+      activityHint: "Täglich, letzte 120 Tage",
+      legendRecommended: "Grösse empfohlen",
+      legendCart: "In den Warenkorb",
+    },
     faqs: [
       {
         question: "Müssen Kundinnen und Kunden ihre Füsse ausmessen?",
@@ -416,7 +408,7 @@ export const pagesDe: PageCopy = {
       {
         question: "Was kostet es?",
         answer:
-          "Die Pläne beginnen bei $99 pro Monat, mit 30 Tagen kostenlosem Test. Sie bezahlen über Ihre Shopify-Rechnung und können jederzeit kündigen.",
+          "Beseam Fit gibt es ab CHF 49 pro Monat. Fragen Sie eine Demo an, und wir finden mit Ihnen den passenden Plan für Ihren Onlineshop.",
       },
     ],
     closingHeading: "Mehr Umsatz. Weniger Retouren.",

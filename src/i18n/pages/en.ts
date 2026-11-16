@@ -305,8 +305,8 @@ export const pagesEn = {
     figNamedBy: (brand: string, engines: string) =>
       `${brand}: named by ${engines}`,
   },
-  // /fit -- the Beseam Fit shoe size recommender (fit-page.tsx). Plans and
-  // prices mirror the Shopify App Store listing; keep the two in sync.
+  // /fit -- the Beseam Fit shoe size recommender (fit-page.tsx). The
+  // dashboard figures are the video's illustrative data, labelled as such.
   fit: {
     metaTitle: "Beseam Fit: Shoe Size Recommender for Shopify",
     metaDescription:
@@ -316,8 +316,6 @@ export const pagesEn = {
     headline: "One clear shoe size, before checkout.",
     intro:
       "Beseam Fit matches sizes across brands. Shoppers pick a shoe they already wear, and get the right size for the shoe they're looking at, right on your product page.",
-    ctaInstall: "Install on Shopify",
-    trialNote: "From $99 per month · 30-day free trial",
     videoLabel: "Video: how Beseam Fit works, 50 seconds",
     stepsHeading: "Which size should I order? Answered in three steps.",
     steps: [
@@ -353,44 +351,38 @@ export const pagesEn = {
         body: "The widget speaks English, German, French, Italian and Spanish, and its look can be matched to your store.",
       },
     ],
-    plansHeading: "Plans",
-    plansIntro:
-      "Every plan starts with a 30-day free trial and is billed through Shopify. Pay yearly and save 17%.",
-    perMonth: "per month",
-    plans: [
-      {
-        name: "Starter",
-        price: "$99",
-        items: [
-          "2,000 recommendations per month",
-          "Unlimited products",
-          "Recommendation analytics",
-          "Measurement imports",
-        ],
-      },
-      {
-        name: "Growth",
-        price: "$499",
-        items: [
-          "10,000 recommendations per month",
-          "Advanced analytics",
-          "Product and size overrides",
-          "WhatsApp support chat integration",
-          "Advanced widget styling",
-          "Priority support",
-        ],
-      },
-      {
-        name: "Pro",
-        price: "$999",
-        items: [
-          "50,000 recommendations per month",
-          "Everything in Growth",
-          'Remove "Powered by Beseam"',
-          "Personal support",
-        ],
-      },
+    analyticsHeading: "Optimise with in-depth analytics.",
+    analyticsBody:
+      "Beseam Fit shows what the widget does for your webshop, so you never have to guess whether it pays off.",
+    analyticsPoints: [
+      "Compare conversion and size-related returns for shoppers who used Beseam Fit and those who didn't.",
+      "See where shoppers drop off, from opening the widget to adding the recommended size to their cart.",
+      "Follow the trend over time, and see the effect of every change you make.",
     ],
+    dashboard: {
+      title: "Recommendation performance",
+      badge: "Illustrative data",
+      period: "Last 120 days",
+      sessions: "Sessions with the widget",
+      funnel: [
+        "Widget loaded",
+        "Widget viewed",
+        "Shopper interacted",
+        "Size recommended",
+        "Added to cart",
+      ],
+      conversion: "Conversion rate",
+      conversionHint: "Orders per product-page session",
+      returns: "Size-related return rate",
+      returnsHint: "Returns within 30 days",
+      used: "Used Beseam Fit",
+      notUsed: "Did not use Beseam Fit",
+      higher: "higher",
+      activity: "Activity over time",
+      activityHint: "Daily, last 120 days",
+      legendRecommended: "Size recommended",
+      legendCart: "Added to cart",
+    },
     faqs: [
       {
         question: "Do shoppers need to measure their feet?",
@@ -419,7 +411,7 @@ export const pagesEn = {
       {
         question: "What does it cost?",
         answer:
-          "Plans start at $99 per month, with a 30-day free trial. You pay through your Shopify bill and can cancel any time.",
+          "Beseam Fit starts from CHF 49 per month. Book a demo and we'll help you choose the right plan for your webshop.",
       },
     ],
     closingHeading: "More sales. Fewer returns.",

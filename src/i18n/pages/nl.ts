@@ -309,8 +309,6 @@ export const pagesNl: PageCopy = {
     headline: "Eén duidelijke schoenmaat, vóór het afrekenen.",
     intro:
       "Beseam Fit vergelijkt maten tussen merken. Shoppers kiezen een schoen die ze al dragen en krijgen de juiste maat voor de schoen die ze bekijken, direct op je productpagina.",
-    ctaInstall: "Installeren op Shopify",
-    trialNote: "Vanaf $99 per maand · 30 dagen gratis proberen",
     videoLabel: "Video: zo werkt Beseam Fit, 50 seconden",
     stepsHeading: "Welke maat moet ik bestellen? Beantwoord in drie stappen.",
     steps: [
@@ -346,44 +344,38 @@ export const pagesNl: PageCopy = {
         body: "De widget spreekt Engels, Duits, Frans, Italiaans en Spaans, en je past de look aan je webshop aan.",
       },
     ],
-    plansHeading: "Abonnementen",
-    plansIntro:
-      "Elk abonnement begint met 30 dagen gratis proberen en wordt via Shopify gefactureerd. Betaal per jaar en bespaar 17%.",
-    perMonth: "per maand",
-    plans: [
-      {
-        name: "Starter",
-        price: "$99",
-        items: [
-          "2.000 adviezen per maand",
-          "Onbeperkt aantal producten",
-          "Analyses van het maatadvies",
-          "Meetgegevens importeren",
-        ],
-      },
-      {
-        name: "Growth",
-        price: "$499",
-        items: [
-          "10.000 adviezen per maand",
-          "Uitgebreide analyses",
-          "Aanpassingen per product en maat",
-          "Koppeling met WhatsApp-supportchat",
-          "Uitgebreide widgetstyling",
-          "Support met voorrang",
-        ],
-      },
-      {
-        name: "Pro",
-        price: "$999",
-        items: [
-          "50.000 adviezen per maand",
-          "Alles uit Growth",
-          'Zonder "Powered by Beseam"',
-          "Persoonlijke support",
-        ],
-      },
+    analyticsHeading: "Optimaliseer met uitgebreide analyses.",
+    analyticsBody:
+      "Beseam Fit laat zien wat de widget voor je webshop doet, zodat je nooit hoeft te gokken of hij zich terugverdient.",
+    analyticsPoints: [
+      "Vergelijk conversie en maatgerelateerde retouren van shoppers die Beseam Fit gebruikten en shoppers die dat niet deden.",
+      "Zie waar shoppers afhaken, van het openen van de widget tot de geadviseerde maat in het winkelwagentje.",
+      "Volg de trend over tijd, en zie het effect van elke wijziging die je maakt.",
     ],
+    dashboard: {
+      title: "Prestaties van het maatadvies",
+      badge: "Voorbeelddata",
+      period: "Laatste 120 dagen",
+      sessions: "Sessies met de widget",
+      funnel: [
+        "Widget geladen",
+        "Widget bekeken",
+        "Interactie",
+        "Maat geadviseerd",
+        "In winkelwagen",
+      ],
+      conversion: "Conversieratio",
+      conversionHint: "Bestellingen per sessie op een productpagina",
+      returns: "Maatgerelateerde retouren",
+      returnsHint: "Retouren binnen 30 dagen",
+      used: "Met Beseam Fit",
+      notUsed: "Zonder Beseam Fit",
+      higher: "hoger",
+      activity: "Activiteit over tijd",
+      activityHint: "Per dag, laatste 120 dagen",
+      legendRecommended: "Maat geadviseerd",
+      legendCart: "In winkelwagen",
+    },
     faqs: [
       {
         question: "Moeten shoppers hun voeten opmeten?",
@@ -412,7 +404,7 @@ export const pagesNl: PageCopy = {
       {
         question: "Wat kost het?",
         answer:
-          "Abonnementen beginnen bij $99 per maand, met 30 dagen gratis proberen. Je betaalt via je Shopify-factuur en kunt altijd opzeggen.",
+          "Beseam Fit begint vanaf CHF 49 per maand. Plan een demo en we kiezen samen het abonnement dat bij je webshop past.",
       },
     ],
     closingHeading: "Meer verkopen. Minder retouren.",

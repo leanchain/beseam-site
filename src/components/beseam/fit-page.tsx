@@ -1,29 +1,27 @@
 import Link from "next/link";
 
-import { ArrowRight, BarChart3, Check, Languages, Zap } from "lucide-react";
+import { BarChart3, Check, Languages, Zap } from "lucide-react";
 
 import { BookReviewCta } from "@/components/beseam/book-review-cta";
 import FaqGrid from "@/components/beseam/faq-grid";
+import FitDashboard from "@/components/beseam/fit-dashboard";
 import Halftone from "@/components/beseam/halftone";
 import Logo from "@/components/beseam/logo";
 import { Reveal } from "@/components/beseam/reveal";
-import TrackedLink from "@/components/beseam/tracked-link";
 import { getDictionary } from "@/i18n";
 import { localizedPath, type Locale } from "@/i18n/locale-rules.mjs";
 import { getPageCopy } from "@/i18n/pages";
 import { SITE_URL } from "@/lib/seo";
-
-/** The app's Shopify App Store listing, where every plan is installed. */
-export const FIT_APP_URL = "https://apps.shopify.com/beseam-sizing";
 
 const FEATURE_ICONS = [Zap, BarChart3, Languages] as const;
 const TILES = ["#ffe680", "#e3d3ff", "#c6efdc"] as const;
 
 /**
  * /fit: the landing page for Beseam Fit, the shoe size recommender sold as a
- * Shopify app. Hero with the two actions, the product video, the three steps
- * a shopper takes, the learning loop, features, plans, FAQ and a closing
- * call to action. The copy follows the video's storyline.
+ * Shopify app. Hero with a demo call to action, the product video, the three
+ * steps a shopper takes, the learning loop, features, the analytics
+ * dashboard, FAQ and a closing call to action. The copy follows the video's
+ * storyline.
  */
 export default function FitPage({ locale = "en" }: { locale?: Locale }) {
   const t = getDictionary(locale);
@@ -51,14 +49,7 @@ export default function FitPage({ locale = "en" }: { locale?: Locale }) {
         operatingSystem: "Web, Shopify",
         description: fit.metaDescription,
         url,
-        installUrl: FIT_APP_URL,
         publisher: { "@id": `${SITE_URL}/#organization` },
-        offers: fit.plans.map((plan) => ({
-          "@type": "Offer",
-          name: plan.name,
-          price: plan.price.replace(/[^0-9.]/g, ""),
-          priceCurrency: "USD",
-        })),
       },
       {
         "@type": "BreadcrumbList",
@@ -78,32 +69,16 @@ export default function FitPage({ locale = "en" }: { locale?: Locale }) {
     ],
   };
 
-  const actions = (placement: string, dark = false) => (
-    <div className="flex flex-col items-center justify-center gap-3 sm:flex-row">
-      <TrackedLink
-        href={FIT_APP_URL}
-        eventName="fit_install_clicked"
-        eventCategory="conversion"
-        placement={placement}
-        className={`group inline-flex min-h-12 w-full items-center justify-center gap-3 rounded-button px-7 py-3 text-[15px] font-semibold leading-tight focus-visible:ring-2 focus-visible:ring-offset-3 sm:w-auto ${
-          dark
-            ? "bg-signal text-ink-deep hover:bg-white focus-visible:ring-white focus-visible:ring-offset-pigment"
-            : "bg-signal-ink text-white focus-visible:ring-signal-ink"
-        }`}
-      >
-        {fit.ctaInstall}
-        <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-      </TrackedLink>
-      <BookReviewCta
-        label={t.hero.ctaDemo}
-        location={placement}
-        className={`w-full sm:w-auto ${
-          dark
-            ? "bg-white text-ink-deep transition-colors hover:bg-white/88 focus-visible:ring-white focus-visible:ring-offset-pigment"
-            : "border border-black/15 bg-white text-ink-deep transition-colors hover:border-black/40"
-        }`}
-      />
-    </div>
+  const demo = (placement: string, dark = false) => (
+    <BookReviewCta
+      label={t.hero.ctaDemo}
+      location={placement}
+      className={`w-full sm:w-auto ${
+        dark
+          ? "bg-signal text-ink-deep transition-colors hover:bg-white focus-visible:ring-white focus-visible:ring-offset-pigment"
+          : ""
+      }`}
+    />
   );
 
   return (
@@ -142,10 +117,7 @@ export default function FitPage({ locale = "en" }: { locale?: Locale }) {
             <p className="mx-auto mt-6 max-w-[60ch] text-[17px] leading-[1.7] text-black/72 sm:text-[18px]">
               {fit.intro}
             </p>
-            <div className="mt-9">{actions("fit_hero")}</div>
-            <p className="mt-4 text-[13px] font-medium text-black/55">
-              {fit.trialNote}
-            </p>
+            <div className="mt-9">{demo("fit_hero")}</div>
           </Reveal>
 
           <Reveal delay={0.08}>
@@ -248,50 +220,38 @@ export default function FitPage({ locale = "en" }: { locale?: Locale }) {
         </div>
       </section>
 
-      {/* Plans, as listed in the Shopify App Store. */}
+      {/* Analytics: why they matter, and the dashboard from the video. */}
       <section className="bg-[#fff9e8]">
         <div className="mx-auto max-w-[76rem] px-5 py-12 sm:px-8 sm:py-14 lg:px-10 lg:py-16">
           <Reveal>
-            <h2 className="text-center font-display text-[clamp(2rem,3.2vw,3rem)] font-semibold leading-[1.05] tracking-[-0.03em] text-ink-deep">
-              {fit.plansHeading}
+            <h2 className="mx-auto max-w-[22ch] text-balance text-center font-display text-[clamp(2rem,3.2vw,3rem)] font-semibold leading-[1.05] tracking-[-0.03em] text-ink-deep">
+              {fit.analyticsHeading}
             </h2>
             <p className="mx-auto mt-5 max-w-[56ch] text-center text-[17px] leading-[1.7] text-black/64">
-              {fit.plansIntro}
+              {fit.analyticsBody}
             </p>
-            <ul className="mt-10 grid gap-4 md:grid-cols-3 lg:mt-12">
-              {fit.plans.map((plan) => (
+            <ul className="mx-auto mt-8 grid max-w-[60rem] gap-3 md:grid-cols-3">
+              {fit.analyticsPoints.map((point) => (
                 <li
-                  key={plan.name}
-                  className="flex flex-col rounded-media border border-black/10 bg-white p-6 md:p-7"
+                  key={point}
+                  className="flex gap-2.5 text-[15px] leading-snug text-black/72"
                 >
-                  <h3 className="font-display text-[20px] font-semibold tracking-[-0.02em] text-ink-deep">
-                    {plan.name}
-                  </h3>
-                  <p className="mt-3 flex items-baseline gap-2">
-                    <span className="font-display text-[40px] font-semibold leading-none tracking-[-0.03em] text-ink-deep">
-                      {plan.price}
-                    </span>
-                    <span className="text-[14px] text-black/55">
-                      {fit.perMonth}
-                    </span>
-                  </p>
-                  <ul className="mt-6 space-y-2.5 border-t border-black/10 pt-6">
-                    {plan.items.map((item) => (
-                      <li
-                        key={item}
-                        className="flex gap-2.5 text-[15px] leading-snug text-black/72"
-                      >
-                        <Check
-                          aria-hidden="true"
-                          className="mt-0.5 h-4 w-4 shrink-0 text-[#1a6b43]"
-                        />
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
+                  <Check
+                    aria-hidden="true"
+                    className="mt-0.5 h-4 w-4 shrink-0 text-[#1a6b43]"
+                  />
+                  {point}
                 </li>
               ))}
             </ul>
+          </Reveal>
+          <Reveal delay={0.06}>
+            <div className="mx-auto mt-10 max-w-[64rem] lg:mt-12">
+              <FitDashboard
+                copy={fit.dashboard}
+                numberLocale={copy.common.dateLocale}
+              />
+            </div>
           </Reveal>
         </div>
       </section>
@@ -313,7 +273,7 @@ export default function FitPage({ locale = "en" }: { locale?: Locale }) {
             <p className="mx-auto mt-5 max-w-[52ch] text-[17px] leading-[1.7] text-white/70">
               {fit.closingBody}
             </p>
-            <div className="mt-10">{actions("fit_closing", true)}</div>
+            <div className="mt-10">{demo("fit_closing", true)}</div>
           </Reveal>
         </div>
       </section>
