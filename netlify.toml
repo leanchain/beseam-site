@@ -1,7 +1,0 @@
-[build]
-# Next.js plugin handles routing/output; build artifacts live in .next
-command = "npm run build"
-publish = ".next"
-
-[[plugins]]
-package = "@netlify/plugin-nextjs"

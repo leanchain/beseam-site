@@ -46,6 +46,12 @@ The production build is a static Next.js export in `out/`.
 
 ## Cloudflare deployment
 
+Production deploys through Cloudflare Workers Builds connected to the
+`leanchain/beseam-site` GitHub repository. GitHub reports these deployments as
+`Workers Builds: beseam`; the pipeline is managed in Cloudflare, so there is no
+GitHub Actions deployment workflow in this repository. Open that check's details
+to view the build and deployment logs. Netlify is not a deployment target.
+
 `main.js` serves the static export through the Workers Assets binding, handles
 legacy redirects, and accepts the same-origin review fallback form.
 
