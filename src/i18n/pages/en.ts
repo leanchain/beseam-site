@@ -305,6 +305,119 @@ export const pagesEn = {
     figNamedBy: (brand: string, engines: string) =>
       `${brand}: named by ${engines}`,
   },
+  // /fit -- the Beseam Fit shoe size recommender (fit-page.tsx). The
+  // dashboard figures are the video's illustrative data, labelled as such.
+  fit: {
+    metaTitle: "Beseam Fit: Shoe Size Recommender for Shopify",
+    metaDescription:
+      "Cross-brand size matching for footwear webshops. Shoppers pick a size and brand they already wear and get one clear size before checkout. Live in minutes on Shopify.",
+    breadcrumb: "Beseam Fit",
+    eyebrow: "Shoe size recommender for footwear webshops",
+    headline: "Lower returns with frictionless size recommendations",
+    intro:
+      "Beseam Fit matches sizes across brands. Shoppers pick a shoe they already wear, and get the right size for the shoe they're looking at, right on your product page.",
+    videoLabel: "Video: how Beseam Fit works, 50 seconds",
+    stepsHeading: "Which size should I order? Answered in three steps.",
+    steps: [
+      {
+        title: "Shoppers pick a shoe they already wear",
+        body: "They choose the brand and size of a shoe that fits them well. No measuring tape needed, although they can measure their foot instead.",
+      },
+      {
+        title: "Matched across 3,000+ brands and 75,000+ models",
+        body: "Beseam Fit compares that shoe with the one on your product page, including how wide it fits.",
+      },
+      {
+        title: "One clear size, added to cart",
+        body: "Shoppers see one recommended size and add it to the cart in a click. Beseam Fit remembers their fit for the next time.",
+      },
+    ],
+    learnHeading: "It learns from every order.",
+    learnBody:
+      "Every recommendation is checked against what shoppers order and what they send back. Those results go back into the fit model, so recommendations keep getting better.",
+    loop: ["Recommended", "Ordered", "Returned", "Improved"],
+    featuresHeading: "Built for footwear webshops",
+    features: [
+      {
+        title: "Live in minutes",
+        body: "Add Beseam Fit to your Shopify theme from the theme editor. No code, and no size charts to upload. Other major platforms are supported too.",
+      },
+      {
+        title: "In-depth analytics",
+        body: "See how many shoppers use the widget, which sizes they get, and how conversion and size-related returns compare with shoppers who don't.",
+      },
+      {
+        title: "In your shoppers' language",
+        body: "The widget speaks English, German, French, Italian and Spanish, and its look can be matched to your store.",
+      },
+    ],
+    analyticsHeading: "Optimise with in-depth analytics.",
+    analyticsBody:
+      "Beseam Fit shows what the widget does for your webshop, so you never have to guess whether it pays off.",
+    analyticsPoints: [
+      "Compare conversion and size-related returns for shoppers who used Beseam Fit and those who didn't.",
+      "See where shoppers drop off, from opening the widget to adding the recommended size to their cart.",
+      "Follow the trend over time, and see the effect of every change you make.",
+    ],
+    dashboard: {
+      title: "Recommendation performance",
+      badge: "Illustrative data",
+      period: "Last 120 days",
+      sessions: "Sessions with the widget",
+      funnel: [
+        "Widget loaded",
+        "Widget viewed",
+        "Shopper interacted",
+        "Size recommended",
+        "Added to cart",
+      ],
+      conversion: "Conversion rate",
+      conversionHint: "Orders per product-page session",
+      returns: "Size-related return rate",
+      returnsHint: "Returns within 30 days",
+      used: "Used Beseam Fit",
+      notUsed: "Did not use Beseam Fit",
+      higher: "higher",
+      activity: "Activity over time",
+      activityHint: "Daily, last 120 days",
+      legendRecommended: "Size recommended",
+      legendCart: "Added to cart",
+    },
+    faqs: [
+      {
+        question: "Do shoppers need to measure their feet?",
+        answer:
+          "No. Shoppers compare with a shoe they already own and know fits. Measuring their foot is an option for those who prefer it.",
+      },
+      {
+        question: "Do I need to upload size charts?",
+        answer:
+          "No. Beseam Fit uses its own sizing data on more than 3,000 brands and 75,000 models, and learns from your orders and returns.",
+      },
+      {
+        question: "Which platforms does Beseam Fit work with?",
+        answer:
+          "Beseam Fit is available as an app in the Shopify App Store. It also works on other major ecommerce platforms: book a demo and we'll set it up with you.",
+      },
+      {
+        question: "Which languages does the widget support?",
+        answer: "English, German, French, Italian and Spanish.",
+      },
+      {
+        question: "How do the recommendations improve?",
+        answer:
+          "Beseam Fit checks every recommendation against what shoppers order and return, and feeds those results back into its fit model.",
+      },
+      {
+        question: "What does it cost?",
+        answer:
+          "Beseam Fit starts from CHF 49 per month. Book a demo and we'll help you choose the right plan for your webshop.",
+      },
+    ],
+    closingHeading: "More sales. Fewer returns.",
+    closingBody:
+      "Give shoppers one clear size before checkout, and stop paying for the returns that guessing causes.",
+  },
 };
 
 export type PageCopy = typeof pagesEn;

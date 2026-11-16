@@ -302,4 +302,117 @@ export const pagesDe: PageCopy = {
     figNamedBy: (brand: string, engines: string) =>
       `${brand}: genannt von ${engines}`,
   },
+  fit: {
+    metaTitle: "Beseam Fit: Schuhgrössen-Berater für Shopify",
+    metaDescription:
+      "Markenübergreifende Grössenempfehlung für Schuh-Onlineshops. Kundinnen und Kunden wählen Grösse und Marke eines Schuhs, den sie bereits tragen, und erhalten vor dem Checkout eine klare Grösse. In Minuten live auf Shopify.",
+    breadcrumb: "Beseam Fit",
+    eyebrow: "Grössenberater für Schuh-Onlineshops",
+    headline: "Weniger Retouren dank müheloser Grössenempfehlungen",
+    intro:
+      "Beseam Fit vergleicht Grössen über Marken hinweg. Ihre Kundinnen und Kunden wählen einen Schuh, den sie bereits tragen, und erhalten die richtige Grösse für den Schuh, den sie gerade ansehen, direkt auf Ihrer Produktseite.",
+    videoLabel: "Video: So funktioniert Beseam Fit, 50 Sekunden",
+    stepsHeading:
+      "Welche Grösse soll ich bestellen? Beantwortet in drei Schritten.",
+    steps: [
+      {
+        title:
+          "Kundinnen und Kunden wählen einen Schuh, den sie bereits tragen",
+        body: "Sie geben Marke und Grösse eines Schuhs an, der ihnen gut passt. Ein Massband ist nicht nötig, sie können ihren Fuss aber auch ausmessen.",
+      },
+      {
+        title: "Abgeglichen mit über 3'000 Marken und 75'000 Modellen",
+        body: "Beseam Fit vergleicht diesen Schuh mit dem Schuh auf Ihrer Produktseite, auch in der Weite.",
+      },
+      {
+        title: "Eine klare Grösse, direkt im Warenkorb",
+        body: "Sie sehen eine empfohlene Grösse und legen sie mit einem Klick in den Warenkorb. Beseam Fit merkt sich ihre Passform für das nächste Mal.",
+      },
+    ],
+    learnHeading: "Mit jeder Bestellung lernt es dazu.",
+    learnBody:
+      "Jede Empfehlung wird mit den tatsächlichen Bestellungen und Retouren abgeglichen. Diese Ergebnisse fliessen zurück ins Passform-Modell, sodass die Empfehlungen laufend besser werden.",
+    loop: ["Empfohlen", "Bestellt", "Retourniert", "Verbessert"],
+    featuresHeading: "Gemacht für Schuh-Onlineshops",
+    features: [
+      {
+        title: "In Minuten live",
+        body: "Fügen Sie Beseam Fit im Theme-Editor zu Ihrem Shopify-Theme hinzu. Ohne Code und ohne Grössentabellen. Auch andere grosse Plattformen werden unterstützt.",
+      },
+      {
+        title: "Detaillierte Analysen",
+        body: "Sehen Sie, wie viele Kundinnen und Kunden das Widget nutzen, welche Grössen sie erhalten und wie sich Conversion und grössenbedingte Retouren gegenüber anderen unterscheiden.",
+      },
+      {
+        title: "In der Sprache Ihrer Kundschaft",
+        body: "Das Widget spricht Deutsch, Englisch, Französisch, Italienisch und Spanisch, und sein Aussehen lässt sich an Ihren Shop anpassen.",
+      },
+    ],
+    analyticsHeading: "Optimieren mit detaillierten Analysen.",
+    analyticsBody:
+      "Beseam Fit zeigt, was das Widget für Ihren Onlineshop leistet, damit Sie nie raten müssen, ob es sich lohnt.",
+    analyticsPoints: [
+      "Vergleichen Sie Conversion und grössenbedingte Retouren von Kundinnen und Kunden mit und ohne Beseam Fit.",
+      "Sehen Sie, wo Kundinnen und Kunden abspringen, vom Öffnen des Widgets bis zur empfohlenen Grösse im Warenkorb.",
+      "Verfolgen Sie die Entwicklung über die Zeit und sehen Sie die Wirkung jeder Änderung.",
+    ],
+    dashboard: {
+      title: "Leistung der Empfehlungen",
+      badge: "Beispieldaten",
+      period: "Letzte 120 Tage",
+      sessions: "Sitzungen mit dem Widget",
+      funnel: [
+        "Widget geladen",
+        "Widget gesehen",
+        "Interaktion",
+        "Grösse empfohlen",
+        "In den Warenkorb",
+      ],
+      conversion: "Conversion-Rate",
+      conversionHint: "Bestellungen pro Produktseiten-Sitzung",
+      returns: "Grössenbedingte Retourenquote",
+      returnsHint: "Retouren innerhalb von 30 Tagen",
+      used: "Mit Beseam Fit",
+      notUsed: "Ohne Beseam Fit",
+      higher: "höher",
+      activity: "Aktivität über die Zeit",
+      activityHint: "Täglich, letzte 120 Tage",
+      legendRecommended: "Grösse empfohlen",
+      legendCart: "In den Warenkorb",
+    },
+    faqs: [
+      {
+        question: "Müssen Kundinnen und Kunden ihre Füsse ausmessen?",
+        answer:
+          "Nein. Sie vergleichen mit einem Schuh, den sie bereits besitzen und der ihnen passt. Wer lieber misst, kann den Fuss auch ausmessen.",
+      },
+      {
+        question: "Muss ich Grössentabellen hochladen?",
+        answer:
+          "Nein. Beseam Fit nutzt eigene Grössendaten zu über 3'000 Marken und 75'000 Modellen und lernt aus Ihren Bestellungen und Retouren.",
+      },
+      {
+        question: "Mit welchen Plattformen funktioniert Beseam Fit?",
+        answer:
+          "Beseam Fit ist als App im Shopify App Store erhältlich. Es funktioniert auch auf anderen grossen E-Commerce-Plattformen: Fragen Sie eine Demo an, und wir richten es mit Ihnen ein.",
+      },
+      {
+        question: "Welche Sprachen unterstützt das Widget?",
+        answer: "Deutsch, Englisch, Französisch, Italienisch und Spanisch.",
+      },
+      {
+        question: "Wie werden die Empfehlungen besser?",
+        answer:
+          "Beseam Fit gleicht jede Empfehlung mit den Bestellungen und Retouren ab und lässt diese Ergebnisse in sein Passform-Modell einfliessen.",
+      },
+      {
+        question: "Was kostet es?",
+        answer:
+          "Beseam Fit gibt es ab CHF 49 pro Monat. Fragen Sie eine Demo an, und wir finden mit Ihnen den passenden Plan für Ihren Onlineshop.",
+      },
+    ],
+    closingHeading: "Mehr Umsatz. Weniger Retouren.",
+    closingBody:
+      "Zeigen Sie Ihrer Kundschaft vor dem Checkout eine klare Grösse, und zahlen Sie nicht länger für Retouren, die durch Raten entstehen.",
+  },
 };
