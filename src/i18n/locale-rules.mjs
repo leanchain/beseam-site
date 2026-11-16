@@ -39,6 +39,7 @@ const TRANSLATED_PATHS = Object.freeze([
   "/blog",
   "/benchmarks",
   "/compare",
+  "/fit",
 ]);
 
 /** Sections whose every page is translated, e.g. `/product/<slug>`. */
