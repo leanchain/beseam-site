@@ -157,4 +157,16 @@ jobs:
             exit 1
           fi
           [[ "$PR_NUMBER" =~ ^[1-9][0-9]*$ ]]
+          status=$(curl --silent --show-error \
+            --output "$RUNNER_TEMP/preview-service.json" --write-out '%{http_code}' \
+            --header "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+            "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/services/beseam-site-pr-$PR_NUMBER")
+          if [ "$status" = 404 ] && jq -e 'any(.errors[]?; .code == 10090)' "$RUNNER_TEMP/preview-service.json" > /dev/null; then
+            echo "No preview Worker exists for PR #$PR_NUMBER; cleanup is complete."
+            exit 0
+          fi
+          if [ "$status" != 200 ]; then
+            echo "::error::Could not check preview Worker before cleanup (HTTP $status)."
+            exit 1
+          fi
           npm exec --yes --package wrangler@4.127.1 -- wrangler delete --name "beseam-site-pr-$PR_NUMBER" --force
