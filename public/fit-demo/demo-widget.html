@@ -136,6 +136,17 @@
         "Converse": ["Chuck Taylor", "One Star"],
         "GnL": ["Example reference shoe"]
       };
+      // The brand search returns {name, slug, logo_url} rows, as the real
+      // endpoint does. A brand without a logo has logo_url: null.
+      const brandLogos = {
+        "Nike": "nike", "Adidas": "adidas", "New Balance": "newbalance",
+        "Puma": "puma", "Vans": "vans", "Converse": "converse"
+      };
+      const brandRow = (name) => ({
+        name,
+        slug: name.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
+        logo_url: brandLogos[name] ? `/fit-demo/brands/${brandLogos[name]}.svg` : null
+      });
       const product = {
         id: 1001,
         title: "Everyday high-top · Blush",
@@ -241,7 +252,7 @@
         }
         if (endpoint === "/fit/brands") {
           const search = (requested.searchParams.get("search") || "").toLowerCase();
-          return json(Object.keys(brands).filter((name) => name.toLowerCase().startsWith(search)));
+          return json(Object.keys(brands).filter((name) => name.toLowerCase().startsWith(search)).map(brandRow));
         }
         if (endpoint === "/fit/models") {
           const payload = JSON.parse(init.body || "{}");
