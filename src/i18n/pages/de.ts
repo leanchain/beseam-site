@@ -329,6 +329,13 @@ export const pagesDe: PageCopy = {
         body: "Sie sehen eine empfohlene Grösse und legen sie mit einem Klick in den Warenkorb. Beseam Fit merkt sich ihre Passform für das nächste Mal.",
       },
     ],
+    demoHeading: "Probieren Sie es auf einer Beispiel-Produktseite aus.",
+    demoBody:
+      "Das ist das echte Beseam-Fit-Widget auf einer Beispiel-Schuhseite. Öffnen Sie den Grössenberater, wählen Sie die Grösse, die Sie üblicherweise tragen, und sehen Sie die eine Grösse, die er empfiehlt.",
+    demoNote:
+      "Interaktive Vorschau, ohne Anmeldung. Produkt und Empfehlungen sind Beispiele und keine Messung der Passgenauigkeit.",
+    demoFrameTitle: "Interaktiver Beseam-Fit-Grössenberater, Beispiel-Demo",
+    demoShopperLabel: "Ansicht der Kundschaft",
     learnHeading: "Mit jeder Bestellung lernt es dazu.",
     learnBody:
       "Jede Empfehlung wird mit den tatsächlichen Bestellungen und Retouren abgeglichen. Diese Ergebnisse fliessen zurück ins Passform-Modell, sodass die Empfehlungen laufend besser werden.",

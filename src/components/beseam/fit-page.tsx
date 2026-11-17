@@ -5,6 +5,7 @@ import { BarChart3, Check, Languages, Zap } from "lucide-react";
 import { BookReviewCta } from "@/components/beseam/book-review-cta";
 import FaqGrid from "@/components/beseam/faq-grid";
 import FitDashboard from "@/components/beseam/fit-dashboard";
+import FitWidgetDemo from "@/components/beseam/fit-widget-demo";
 import Halftone from "@/components/beseam/halftone";
 import Logo from "@/components/beseam/logo";
 import { Reveal } from "@/components/beseam/reveal";
@@ -166,6 +167,32 @@ export default function FitPage({ locale = "en" }: { locale?: Locale }) {
                 </li>
               ))}
             </ol>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* The real widget on a sample product page, before the learning loop. */}
+      <section id="demo" className="scroll-mt-24 bg-ground-2">
+        <div className="mx-auto max-w-[76rem] px-5 py-12 sm:px-8 sm:py-14 lg:px-10 lg:py-16">
+          <Reveal>
+            <h2 className="mx-auto max-w-[22ch] text-balance text-center font-display text-[clamp(2rem,3.2vw,3rem)] font-semibold leading-[1.05] tracking-[-0.03em] text-ink-deep">
+              {fit.demoHeading}
+            </h2>
+            <p className="mx-auto mt-5 max-w-[56ch] text-center text-[17px] leading-[1.7] text-black/64">
+              {fit.demoBody}
+            </p>
+            <p className="mx-auto mt-3 text-center text-[13px] text-black/55">
+              {fit.demoNote}
+            </p>
+          </Reveal>
+          <Reveal delay={0.06}>
+            <div className="mx-auto mt-10 max-w-[64rem] lg:mt-12">
+              <FitWidgetDemo
+                frameTitle={fit.demoFrameTitle}
+                shopperLabel={fit.demoShopperLabel}
+                locale={locale}
+              />
+            </div>
           </Reveal>
         </div>
       </section>

@@ -332,6 +332,13 @@ export const pagesEn = {
         body: "Shoppers see one recommended size and add it to the cart in a click. Beseam Fit remembers their fit for the next time.",
       },
     ],
+    demoHeading: "Try it on a sample product page.",
+    demoBody:
+      "This is the real Beseam Fit widget on a sample shoe page. Open the size finder, choose the size you usually wear, and see the one size it recommends.",
+    demoNote:
+      "Interactive preview, no signup needed. The product and recommendations are examples, not a measurement of fit accuracy.",
+    demoFrameTitle: "Interactive Beseam Fit size finder, illustrative demo",
+    demoShopperLabel: "Shopper view",
     learnHeading: "It learns from every order.",
     learnBody:
       "Every recommendation is checked against what shoppers order and what they send back. Those results go back into the fit model, so recommendations keep getting better.",
