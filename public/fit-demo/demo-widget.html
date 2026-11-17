@@ -70,34 +70,34 @@
   </style>
 </head>
 <body>
-  <main id="demo-root" class="pdp" aria-label="Sample product page">
-    <section class="pdp-gallery" aria-label="Example product photos">
-      <div class="pdp-image" role="group" aria-roledescription="carousel" aria-label="Sample high-top shoe gallery">
+  <main id="demo-root" class="pdp" aria-label="Sample product page" data-t-aria="page">
+    <section class="pdp-gallery" aria-label="Example product photos" data-t-aria="photos">
+      <div class="pdp-image" role="group" aria-roledescription="carousel" aria-label="Sample high-top shoe gallery" data-t-aria="gallery">
         <div class="pdp-slide is-active" aria-hidden="false">
-          <img src="/fit-demo/demo-cc0-shoe-1.webp" width="1200" height="1200" alt="Three-quarter view of the white high-top shoes with blush accents" fetchpriority="high">
+          <img src="/fit-demo/demo-cc0-shoe-1.webp" width="1200" height="1200" alt="Three-quarter view of the white high-top shoes with blush accents" data-t-alt="alt1" fetchpriority="high">
         </div>
         <div class="pdp-slide" aria-hidden="true">
-          <img src="/fit-demo/demo-cc0-shoe-2.webp" width="1200" height="1200" alt="Opposite side of the same white and blush high-top shoes" loading="lazy">
+          <img src="/fit-demo/demo-cc0-shoe-2.webp" width="1200" height="1200" alt="Opposite side of the same white and blush high-top shoes" data-t-alt="alt2" loading="lazy">
         </div>
         <div class="pdp-slide" aria-hidden="true">
-          <img src="/fit-demo/demo-cc0-shoe-3.webp" width="1200" height="1200" alt="Elevated view of the same high-tops showing the laces and upper" loading="lazy">
+          <img src="/fit-demo/demo-cc0-shoe-3.webp" width="1200" height="1200" alt="Elevated view of the same high-tops showing the laces and upper" data-t-alt="alt3" loading="lazy">
         </div>
         <span class="pdp-gallery-counter" aria-live="polite">01 / 03</span>
-        <button type="button" class="pdp-gallery-arrow pdp-gallery-prev" aria-label="Previous photo">‹</button>
-        <button type="button" class="pdp-gallery-arrow pdp-gallery-next" aria-label="Next photo">›</button>
-        <div class="pdp-gallery-dots" role="group" aria-label="Choose gallery photo">
-          <button type="button" class="pdp-gallery-dot" aria-label="Show photo 1" aria-pressed="true"></button>
-          <button type="button" class="pdp-gallery-dot" aria-label="Show photo 2" aria-pressed="false"></button>
-          <button type="button" class="pdp-gallery-dot" aria-label="Show photo 3" aria-pressed="false"></button>
+        <button type="button" class="pdp-gallery-arrow pdp-gallery-prev" aria-label="Previous photo" data-t-aria="prev">‹</button>
+        <button type="button" class="pdp-gallery-arrow pdp-gallery-next" aria-label="Next photo" data-t-aria="next">›</button>
+        <div class="pdp-gallery-dots" role="group" aria-label="Choose gallery photo" data-t-aria="dots">
+          <button type="button" class="pdp-gallery-dot" aria-label="Show photo 1" data-t-aria="showPhoto" data-n="1" aria-pressed="true"></button>
+          <button type="button" class="pdp-gallery-dot" aria-label="Show photo 2" data-t-aria="showPhoto" data-n="2" aria-pressed="false"></button>
+          <button type="button" class="pdp-gallery-dot" aria-label="Show photo 3" data-t-aria="showPhoto" data-n="3" aria-pressed="false"></button>
         </div>
       </div>
     </section>
     <section class="pdp-product" aria-labelledby="demo-product-name">
       <div class="pdp-product-details">
-        <span class="pdp-overline">Sample collection</span>
-        <h3 id="demo-product-name">Everyday high-top · Blush</h3>
+        <span class="pdp-overline" data-t="collection">Sample collection</span>
+        <h3 id="demo-product-name" data-t="productName">Everyday high-top · Blush</h3>
         <p class="pdp-price">CHF 149.00</p>
-        <span class="pdp-overline" id="demo-size-label">Choose your size</span>
+        <span class="pdp-overline" id="demo-size-label" data-t="chooseSize">Choose your size</span>
         <div class="pdp-size-list" role="group" aria-labelledby="demo-size-label">
           <button type="button" class="pdp-size" data-size="40" aria-pressed="false">40</button>
           <button type="button" class="pdp-size" data-size="41" aria-pressed="false">41</button>
@@ -105,18 +105,18 @@
           <button type="button" class="pdp-size" data-size="43" aria-pressed="false">43</button>
           <button type="button" class="pdp-size" data-size="44" aria-pressed="false">44</button>
         </div>
-        <p class="pdp-size-note" role="status" aria-live="polite">EU 42 selected for this sample product.</p>
+        <p class="pdp-size-note" role="status" aria-live="polite" data-t="sizeSelected" data-size="42">EU 42 selected for this sample product.</p>
       </div>
       <div class="pdp-fit">
         <div class="pdp-fit-header">
-          <span class="pdp-overline">Find your fit</span>
-          <span class="pdp-fit-status">Preview active</span>
+          <span class="pdp-overline" data-t="findFit">Find your fit</span>
+          <span class="pdp-fit-status" data-t="previewActive">Preview active</span>
         </div>
         <div class="pdp-widget">
           <div id="advance-fit-container-landing-demo" class="beseam-fit-block-container"
                data-shop="fit-demo.invalid" data-product="demo-dance-sneaker"
                data-platform-id="1001" data-vendor="Sample store">
-            <p id="demo-fallback">Loading the size finder…</p>
+            <p id="demo-fallback" data-t="loading">Loading the size finder…</p>
           </div>
         </div>
       </div>
@@ -125,6 +125,42 @@
   <script>
     (() => {
       "use strict";
+      // The page text and the widget follow ?lang=. The widget script ships
+      // en, de, fr, es and it (no nl); the /fit page only passes lang=de.
+      const COPY = {
+        en: {
+          page: "Sample product page", photos: "Example product photos",
+          gallery: "Sample high-top shoe gallery",
+          alt1: "Three-quarter view of the white high-top shoes with blush accents",
+          alt2: "Opposite side of the same white and blush high-top shoes",
+          alt3: "Elevated view of the same high-tops showing the laces and upper",
+          prev: "Previous photo", next: "Next photo", dots: "Choose gallery photo",
+          showPhoto: "Show photo {n}", collection: "Sample collection",
+          productName: "Everyday high-top · Blush", chooseSize: "Choose your size",
+          sizeSelected: "EU {size} selected for this sample product.",
+          findFit: "Find your fit", previewActive: "Preview active",
+          loading: "Loading the size finder…"
+        },
+        de: {
+          page: "Beispiel-Produktseite", photos: "Beispielfotos des Produkts",
+          gallery: "Galerie des Beispiel-High-Tops",
+          alt1: "Dreiviertelansicht der weissen High-Top-Schuhe mit rosa Akzenten",
+          alt2: "Gegenseite derselben weissen High-Top-Schuhe mit rosa Akzenten",
+          alt3: "Ansicht von oben auf dieselben High-Tops mit Schnürung und Schaft",
+          prev: "Vorheriges Foto", next: "Nächstes Foto", dots: "Galeriefoto wählen",
+          showPhoto: "Foto {n} anzeigen", collection: "Beispielkollektion",
+          productName: "Alltags-High-Top · Rosa", chooseSize: "Wählen Sie Ihre Grösse",
+          sizeSelected: "EU {size} für dieses Beispielprodukt gewählt.",
+          findFit: "Ihre Passform finden", previewActive: "Vorschau aktiv",
+          loading: "Grössenberater wird geladen…"
+        }
+      };
+      const lang = new URLSearchParams(location.search).get("lang") === "de" ? "de" : "en";
+      const t = (key, vars = {}) => COPY[lang][key].replace(/\{(\w+)\}/g, (_, name) => vars[name]);
+      document.documentElement.lang = lang;
+      for (const el of document.querySelectorAll("[data-t]")) el.textContent = t(el.dataset.t, el.dataset);
+      for (const el of document.querySelectorAll("[data-t-aria]")) el.setAttribute("aria-label", t(el.dataset.tAria, el.dataset));
+      for (const el of document.querySelectorAll("[data-t-alt]")) el.setAttribute("alt", t(el.dataset.tAlt));
       const namespace = "beseamFitLandingDemo";
       const base = "/__beseam_fit_demo_api__";
       const brands = {
@@ -149,7 +185,7 @@
       });
       const product = {
         id: 1001,
-        title: "Everyday high-top · Blush",
+        title: t("productName"),
         handle: "demo-dance-sneaker",
         vendor: "Sample store",
         type: "Shoes",
@@ -199,7 +235,7 @@
         for (const button of sizeButtons) {
           button.setAttribute("aria-pressed", String(button.dataset.size === selected));
         }
-        sizeStatus.textContent = `EU ${selected} selected for this sample product.`;
+        sizeStatus.textContent = t("sizeSelected", { size: selected });
       };
       document.querySelector(".pdp-size-list").addEventListener("click", (event) => {
         const button = event.target.closest(".pdp-size");
@@ -293,7 +329,7 @@
         platformId: String(product.id),
         vendor: product.vendor,
         productData: product,
-        locale: "en",
+        locale: lang,
         fitMethod: "manual",
         enableAddToCart: false,
         showPoweredBy: true,

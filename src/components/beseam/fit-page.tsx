@@ -190,6 +190,7 @@ export default function FitPage({ locale = "en" }: { locale?: Locale }) {
               <FitWidgetDemo
                 frameTitle={fit.demoFrameTitle}
                 shopperLabel={fit.demoShopperLabel}
+                locale={locale}
               />
             </div>
           </Reveal>

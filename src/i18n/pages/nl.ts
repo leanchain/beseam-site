@@ -329,7 +329,7 @@ export const pagesNl: PageCopy = {
     demoBody:
       "Dit is de echte Beseam Fit-widget op een voorbeeldpagina voor een schoen. Open de maatfinder, kies de maat die je meestal draagt en zie de ene maat die hij adviseert.",
     demoNote:
-      "Interactieve preview, geen aanmelding nodig. Product en adviezen zijn voorbeelden en geen meting van de nauwkeurigheid van de pasvorm.",
+      "Interactieve preview in het Engels, geen aanmelding nodig. Product en adviezen zijn voorbeelden en geen meting van de nauwkeurigheid van de pasvorm.",
     demoFrameTitle: "Interactieve Beseam Fit-maatfinder, voorbeelddemo",
     demoShopperLabel: "Shopperweergave",
     learnHeading: "Het leert van elke bestelling.",

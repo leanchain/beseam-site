@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 
+import type { Locale } from "@/i18n/locale-rules.mjs";
+
 /**
  * The real Beseam Fit storefront widget on a sample shoe page, as on the Fit
  * landing page. It runs in a same-origin iframe (public/fit-demo/) with its
@@ -10,6 +12,9 @@ import { useEffect, useRef, useState } from "react";
  * component sizes the iframe to it.
  */
 const WIDGET_SRC = "/fit-demo/demo-widget.html";
+/** The widget script ships en, de, fr, es and it. Dutch has no strings, so
+ * /nl/fit shows the English demo. */
+const WIDGET_LANGS: readonly Locale[] = ["de"];
 const RESIZE_MESSAGE = "beseam-fit-demo-resize";
 const INITIAL_HEIGHT = 540;
 const MIN_HEIGHT = 220;
@@ -18,10 +23,15 @@ const MAX_HEIGHT = 2000;
 export default function FitWidgetDemo({
   frameTitle,
   shopperLabel,
+  locale = "en",
 }: {
   frameTitle: string;
   shopperLabel: string;
+  locale?: Locale;
 }) {
+  const src = WIDGET_LANGS.includes(locale)
+    ? `${WIDGET_SRC}?lang=${locale}`
+    : WIDGET_SRC;
   const frameRef = useRef<HTMLIFrameElement>(null);
   const [height, setHeight] = useState(INITIAL_HEIGHT);
 
@@ -61,7 +71,7 @@ export default function FitWidgetDemo({
       <iframe
         ref={frameRef}
         title={frameTitle}
-        src={WIDGET_SRC}
+        src={src}
         loading="lazy"
         sandbox="allow-scripts allow-same-origin"
         className="block w-full border-0 bg-white transition-[height] duration-200 motion-reduce:transition-none"
