@@ -325,6 +325,13 @@ export const pagesNl: PageCopy = {
         body: "Shoppers zien één aanbevolen maat en voegen die met één klik toe. Beseam Fit onthoudt hun pasvorm voor de volgende keer.",
       },
     ],
+    demoHeading: "Probeer het op een voorbeeldproductpagina.",
+    demoBody:
+      "Dit is de echte Beseam Fit-widget op een voorbeeldpagina voor een schoen. Open de maatfinder, kies de maat die je meestal draagt en zie de ene maat die hij adviseert.",
+    demoNote:
+      "Interactieve preview, geen aanmelding nodig. Product en adviezen zijn voorbeelden en geen meting van de nauwkeurigheid van de pasvorm.",
+    demoFrameTitle: "Interactieve Beseam Fit-maatfinder, voorbeelddemo",
+    demoShopperLabel: "Shopperweergave",
     learnHeading: "Het leert van elke bestelling.",
     learnBody:
       "Elk advies wordt vergeleken met wat shoppers bestellen en terugsturen. Die resultaten gaan terug in het pasvormmodel, zodat het advies steeds beter wordt.",

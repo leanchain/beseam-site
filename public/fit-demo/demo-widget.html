@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="referrer" content="no-referrer">
+  <!-- The demo cannot connect to live APIs or collect shopper data. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; font-src 'none'; form-action 'none'">
+  <!-- Gallery stills are rendered from the same CC0 shoe scan as the interactive 3D model. -->
+  <title>Beseam Fit — illustrative widget</title>
+  <style>
+    :root { color-scheme: light; }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; width: 100%; overflow-x: hidden; }
+    body { background: #fff; color: #1b2430; font: 14px/1.5 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    .pdp { display: grid; grid-template-columns: minmax(0, 1.04fr) minmax(0, .96fr); align-items: stretch; }
+    .pdp-gallery { min-width: 0; padding: 24px; border-right: 1px solid #ebe9e5; }
+    .pdp-image { position: relative; height: 100%; min-height: 510px; overflow: hidden; border-radius: 10px; background: radial-gradient(circle at 50% 35%, #faf9f6, #efede8 80%); touch-action: pan-y; }
+    .pdp-slide { position: absolute; inset: 0; opacity: 0; transform: translateX(3%); pointer-events: none; transition: opacity .26s ease, transform .26s ease; }
+    .pdp-slide.is-active { opacity: 1; transform: translateX(0); }
+    .pdp-slide img { display: block; width: 100%; height: 100%; object-fit: contain; object-position: center; filter: drop-shadow(0 14px 16px rgba(28, 35, 44, .11)); }
+    .pdp-gallery-arrow { position: absolute; z-index: 2; top: 50%; display: grid; place-items: center; width: 40px; height: 40px; padding: 0; border: 1px solid rgba(40, 44, 49, .09); border-radius: 50%; background: rgba(255, 255, 255, .93); color: #29323c; box-shadow: 0 3px 14px rgba(0, 0, 0, .08); cursor: pointer; transform: translateY(-50%); font: 24px/1 system-ui, sans-serif; }
+    .pdp-gallery-arrow:hover { background: #fff; }
+    .pdp-gallery-prev { left: 12px; }
+    .pdp-gallery-next { right: 12px; }
+    .pdp-gallery-counter { position: absolute; z-index: 2; top: 16px; right: 16px; border-radius: 99px; padding: 5px 10px; background: rgba(255, 255, 255, .9); color: #525d6a; font-size: 11px; font-weight: 750; letter-spacing: .08em; }
+    .pdp-gallery-dots { position: absolute; z-index: 2; bottom: 15px; left: 50%; display: flex; gap: 5px; padding: 8px 10px; border-radius: 99px; background: rgba(255, 255, 255, .9); transform: translateX(-50%); }
+    .pdp-gallery-dot { width: 28px; height: 28px; padding: 10px; border: 0; border-radius: 50%; background: transparent; cursor: pointer; }
+    .pdp-gallery-dot::after { content: ""; display: block; width: 8px; height: 8px; border-radius: 50%; background: #b6bac0; }
+    .pdp-gallery-dot[aria-pressed="true"]::after { background: #90000a; }
+    .pdp-gallery-arrow:focus-visible, .pdp-gallery-dot:focus-visible { outline: 2px solid #90000a; outline-offset: 3px; }
+    .pdp-product { min-width: 0; padding: 35px 36px 28px; }
+    .pdp-overline { color: #8a919a; font-size: 11px; font-weight: 750; letter-spacing: .13em; text-transform: uppercase; }
+    .pdp-product h3 { margin: 8px 0 4px; font-size: clamp(24px, 2.5vw, 30px); line-height: 1.16; letter-spacing: -.035em; }
+    .pdp-price { margin: 8px 0 24px; font-size: 19px; font-weight: 750; letter-spacing: -.02em; }
+    .pdp-size-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+    .pdp-size { min-width: 45px; min-height: 44px; padding: 8px 12px; border: 1px solid #cbd2da; border-radius: 4px; background: #fff; color: #29323c; cursor: pointer; font: inherit; font-weight: 700; transition: background-color .18s, border-color .18s; }
+    .pdp-size:hover { border-color: #6b7480; }
+    .pdp-size[aria-pressed="true"] { border-color: #29323c; color: #fff; background: #29323c; }
+    .pdp-size:focus-visible { outline: 2px solid #91000a; outline-offset: 2px; }
+    .pdp-size-note { min-height: 20px; margin: 10px 0 0; color: #7c8793; font-size: 12px; }
+    .pdp-fit { margin-top: 25px; padding-top: 22px; border-top: 1px solid #ebe9e5; }
+    .pdp-fit-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .pdp-fit-status { display: flex; align-items: center; gap: 7px; color: #8a919a; font-size: 11px; white-space: nowrap; }
+    .pdp-fit-status::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: #4ebc9a; }
+    .pdp-widget { margin-top: 14px; }
+    #advance-fit-container-landing-demo { min-height: 56px; }
+    #demo-fallback { color: #657181; font-size: 13px; }
+    /* The widget briefly hides its trigger when expanded. On reappearance,
+       retain the horizontal row and avoid a second arrow beside Select. */
+    .fit-collapse-trigger.style-tag { display: flex; align-items: center; gap: 12px; }
+    .fit-collapse-trigger.style-tag .fit-trigger-has-select ~ .fit-collapse-chevron { display: none !important; }
+    @media (max-width: 780px) {
+      .pdp { grid-template-columns: minmax(0, 1fr); }
+      .pdp-gallery { padding: 18px; border-right: 0; border-bottom: 1px solid #ebe9e5; }
+      .pdp-image { height: 340px; min-height: 0; }
+      .pdp-product { padding: 24px; }
+    }
+    @media (max-width: 460px) {
+      .pdp-gallery { padding: 12px; }
+      .pdp-image { height: 275px; }
+      .pdp-product { padding: 22px 17px; }
+      .pdp-product h3 { font-size: 25px; }
+      .pdp-gallery-arrow { width: 35px; height: 35px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <main id="demo-root" class="pdp" aria-label="Sample product page">
+    <section class="pdp-gallery" aria-label="Example product photos">
+      <div class="pdp-image" role="group" aria-roledescription="carousel" aria-label="Sample high-top shoe gallery">
+        <div class="pdp-slide is-active" aria-hidden="false">
+          <img src="/fit-demo/demo-cc0-shoe-1.webp" width="1200" height="1200" alt="Three-quarter view of the white high-top shoes with blush accents" fetchpriority="high">
+        </div>
+        <div class="pdp-slide" aria-hidden="true">
+          <img src="/fit-demo/demo-cc0-shoe-2.webp" width="1200" height="1200" alt="Opposite side of the same white and blush high-top shoes" loading="lazy">
+        </div>
+        <div class="pdp-slide" aria-hidden="true">
+          <img src="/fit-demo/demo-cc0-shoe-3.webp" width="1200" height="1200" alt="Elevated view of the same high-tops showing the laces and upper" loading="lazy">
+        </div>
+        <span class="pdp-gallery-counter" aria-live="polite">01 / 03</span>
+        <button type="button" class="pdp-gallery-arrow pdp-gallery-prev" aria-label="Previous photo">‹</button>
+        <button type="button" class="pdp-gallery-arrow pdp-gallery-next" aria-label="Next photo">›</button>
+        <div class="pdp-gallery-dots" role="group" aria-label="Choose gallery photo">
+          <button type="button" class="pdp-gallery-dot" aria-label="Show photo 1" aria-pressed="true"></button>
+          <button type="button" class="pdp-gallery-dot" aria-label="Show photo 2" aria-pressed="false"></button>
+          <button type="button" class="pdp-gallery-dot" aria-label="Show photo 3" aria-pressed="false"></button>
+        </div>
+      </div>
+    </section>
+    <section class="pdp-product" aria-labelledby="demo-product-name">
+      <div class="pdp-product-details">
+        <span class="pdp-overline">Sample collection</span>
+        <h3 id="demo-product-name">Everyday high-top · Blush</h3>
+        <p class="pdp-price">CHF 149.00</p>
+        <span class="pdp-overline" id="demo-size-label">Choose your size</span>
+        <div class="pdp-size-list" role="group" aria-labelledby="demo-size-label">
+          <button type="button" class="pdp-size" data-size="40" aria-pressed="false">40</button>
+          <button type="button" class="pdp-size" data-size="41" aria-pressed="false">41</button>
+          <button type="button" class="pdp-size" data-size="42" aria-pressed="true">42</button>
+          <button type="button" class="pdp-size" data-size="43" aria-pressed="false">43</button>
+          <button type="button" class="pdp-size" data-size="44" aria-pressed="false">44</button>
+        </div>
+        <p class="pdp-size-note" role="status" aria-live="polite">EU 42 selected for this sample product.</p>
+      </div>
+      <div class="pdp-fit">
+        <div class="pdp-fit-header">
+          <span class="pdp-overline">Find your fit</span>
+          <span class="pdp-fit-status">Preview active</span>
+        </div>
+        <div class="pdp-widget">
+          <div id="advance-fit-container-landing-demo" class="beseam-fit-block-container"
+               data-shop="fit-demo.invalid" data-product="demo-dance-sneaker"
+               data-platform-id="1001" data-vendor="Sample store">
+            <p id="demo-fallback">Loading the size finder…</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <script>
+    (() => {
+      "use strict";
+      const namespace = "beseamFitLandingDemo";
+      const base = "/__beseam_fit_demo_api__";
+      const brands = {
+        "Nike": ["Air Force 1", "Air Max 90", "Dunk Low"],
+        "Adidas": ["Stan Smith", "Ultraboost", "Gazelle"],
+        "New Balance": ["574", "990v6", "550"],
+        "Puma": ["Suede Classic", "Clyde"],
+        "Vans": ["Old Skool", "Authentic"],
+        "Converse": ["Chuck Taylor", "One Star"],
+        "GnL": ["Example reference shoe"]
+      };
+      const product = {
+        id: 1001,
+        title: "Everyday high-top · Blush",
+        handle: "demo-dance-sneaker",
+        vendor: "Sample store",
+        type: "Shoes",
+        options: ["Size"],
+        variants: [38, 39, 40, 41, 42, 43, 44, 45, 46].map((size) => ({
+          id: 2000 + size,
+          title: String(size),
+          option1: String(size),
+          available: true,
+          sku: `DEMO-${size}`
+        }))
+      };
+      const slides = [...document.querySelectorAll(".pdp-slide")];
+      const galleryDots = [...document.querySelectorAll(".pdp-gallery-dot")];
+      const galleryCounter = document.querySelector(".pdp-gallery-counter");
+      let activePhoto = 0;
+      const showPhoto = (index) => {
+        activePhoto = (index + slides.length) % slides.length;
+        slides.forEach((slide, number) => {
+          const active = number === activePhoto;
+          slide.classList.toggle("is-active", active);
+          slide.setAttribute("aria-hidden", String(!active));
+        });
+        galleryDots.forEach((dot, number) => {
+          dot.setAttribute("aria-pressed", String(number === activePhoto));
+        });
+        galleryCounter.textContent = `${String(activePhoto + 1).padStart(2, "0")} / ${String(slides.length).padStart(2, "0")}`;
+      };
+      document.querySelector(".pdp-gallery-prev").addEventListener("click", () => showPhoto(activePhoto - 1));
+      document.querySelector(".pdp-gallery-next").addEventListener("click", () => showPhoto(activePhoto + 1));
+      galleryDots.forEach((dot, number) => dot.addEventListener("click", () => showPhoto(number)));
+      const gallery = document.querySelector(".pdp-image");
+      let touchStartX = null;
+      gallery.addEventListener("touchstart", (event) => {
+        touchStartX = event.changedTouches[0]?.clientX ?? null;
+      }, { passive: true });
+      gallery.addEventListener("touchend", (event) => {
+        if (touchStartX === null) return;
+        const distance = (event.changedTouches[0]?.clientX ?? touchStartX) - touchStartX;
+        if (Math.abs(distance) > 45) showPhoto(activePhoto + (distance < 0 ? 1 : -1));
+        touchStartX = null;
+      }, { passive: true });
+      const sizeButtons = [...document.querySelectorAll(".pdp-size")];
+      const sizeStatus = document.querySelector(".pdp-size-note");
+      const markSelectedSize = (size) => {
+        const selected = String(size);
+        for (const button of sizeButtons) {
+          button.setAttribute("aria-pressed", String(button.dataset.size === selected));
+        }
+        sizeStatus.textContent = `EU ${selected} selected for this sample product.`;
+      };
+      document.querySelector(".pdp-size-list").addEventListener("click", (event) => {
+        const button = event.target.closest(".pdp-size");
+        if (button) markSelectedSize(button.dataset.size);
+      });
+      // The actual widget emits this when a recommendation selects a variant.
+      document.addEventListener("beseam:variant-selected", (event) => {
+        if (event.detail?.size) markSelectedSize(event.detail.size);
+      });
+      let profile = null;
+      const json = (body) => Promise.resolve(new Response(JSON.stringify(body), {
+        status: 200, headers: { "Content-Type": "application/json" }
+      }));
+      // Only the production widget's backend is simulated; never call the
+      // live Beseam API, Shopify or a payment endpoint from this preview.
+      window.fetch = async (input, init = {}) => {
+        const requested = new URL(typeof input === "string" ? input : input.url, location.href);
+        if (requested.origin !== location.origin || !requested.pathname.startsWith(base + "/fit/")) {
+          throw new TypeError("External requests are disabled in the illustrative demo");
+        }
+        const endpoint = requested.pathname.slice(base.length);
+        if (endpoint === "/fit/widget-style") {
+          return json({ config: {
+            appearance: {
+              primaryColor: "#8b0007", buttonColor: "#8b0007",
+              collapsible: true, collapsedStyle: "tag", collapsedColor: "#8b0007",
+              collapsedWidthPercent: 100, collapsedHeight: 74, borderRadius: "8px"
+            },
+            show_powered_by: true,
+            show_fit_meter: false,
+            show_reasoning_hint: false,
+            enable_add_to_cart: false,
+            auto_answer_enabled: false,
+            enable_photo_sizing: false,
+            enable_card_sizing: false,
+            enable_measurement_entry: false
+          } });
+        }
+        if (endpoint === "/fit/shoes/defaults") return json(null);
+        if (endpoint === "/fit/v1/shopper-profile/lookup") return json({ profile });
+        if (endpoint === "/fit/v1/shopper-profile/purchases") return json({ items: [] });
+        if (endpoint === "/fit/v1/shopper-profile/forget") {
+          profile = null;
+          return json({ ok: true });
+        }
+        if (endpoint === "/fit/v1/shopper-profile") {
+          const { device_key, ...fields } = JSON.parse(init.body || "{}");
+          profile = { ...fields, updated_at: new Date().toISOString() };
+          return json({ profile });
+        }
+        if (endpoint === "/fit/brands") {
+          const search = (requested.searchParams.get("search") || "").toLowerCase();
+          return json(Object.keys(brands).filter((name) => name.toLowerCase().startsWith(search)));
+        }
+        if (endpoint === "/fit/models") {
+          const payload = JSON.parse(init.body || "{}");
+          const selected = Object.keys(brands).find(
+            (name) => name.toLowerCase() === String(payload.brand || payload.user_brand || "").toLowerCase()
+          );
+          const search = String(payload.search || "").toLowerCase();
+          return json((brands[selected] || []).filter((model) => model.toLowerCase().includes(search))
+            .map((label) => ({ label, rows: [] })));
+        }
+        if (endpoint === "/fit/v1/recommendation") {
+          const payload = JSON.parse(init.body || "{}");
+          // Echo the chosen example size. This is NOT a fit calculation.
+          const entered = String(payload.user_size || "").match(/(?:^|\D)(3[8-9]|4[0-6])(?:\D|$)/);
+          const size = entered ? entered[1] : "42";
+          // Landing demo only: let visitors see the shared widget’s animated
+          // reference-size → product-size comparison before the sample result.
+          // Real storefront recommendation requests are never delayed here.
+          await new Promise((resolve) => setTimeout(resolve, 2000));
+          return json({ recommendations: [{
+            recommended_size: size,
+            confidence: "low",
+            reasoning: "Illustrative size only — no fit analysis was performed.",
+            is_available: true,
+            recommended_variant_id: null,
+            target_measurements: null
+          }] });
+        }
+        throw new TypeError("Unknown demo endpoint: " + endpoint);
+      };
+      window[namespace + "Instances"] = [{
+        namespaceKey: namespace,
+        blockId: "landing-demo",
+        apiBaseUrl: base,
+        platform: "generic",
+        shop: "fit-demo.invalid",
+        product: product.handle,
+        platformId: String(product.id),
+        vendor: product.vendor,
+        productData: product,
+        locale: "en",
+        fitMethod: "manual",
+        enableAddToCart: false,
+        showPoweredBy: true,
+        showFitMeter: false,
+        showReasoningHint: false,
+        appearance: {
+          collapsible: true, primaryColor: "#8b0007", collapsedColor: "#8b0007",
+          collapsedStyle: "tag", collapsedWidthPercent: 100, collapsedHeight: 74
+        }
+      }];
+      const demoRoot = document.getElementById("demo-root");
+      let lastHeight = 0;
+      const reportHeight = () => {
+        // The iframe viewport itself must not set the minimum height. Measuring
+        // documentElement.scrollHeight prevented shrinking after a close.
+        const height = Math.ceil(demoRoot.getBoundingClientRect().height);
+        if (height === lastHeight) return;
+        lastHeight = height;
+        window.parent.postMessage({ type: "beseam-fit-demo-resize", height }, location.origin);
+      };
+      if ("ResizeObserver" in window) new ResizeObserver(reportHeight).observe(demoRoot);
+      window.addEventListener("load", reportHeight);
+      window.addEventListener("resize", reportHeight);
+      document.addEventListener("click", () => setTimeout(reportHeight, 250));
+      reportHeight();
+    })();
+  </script>
+  <script src="/fit-demo/demo-fit-widget.js" data-advance-fit-namespace="beseamFitLandingDemo"
+          onload="document.getElementById('demo-fallback')?.remove()"
+          onerror="document.getElementById('demo-fallback').textContent='The size finder is temporarily unavailable.'"></script>
+</body>
+</html>
