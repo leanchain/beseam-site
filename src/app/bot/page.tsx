@@ -76,8 +76,8 @@ export default function BotPage() {
               for merchants and shoppers. For this it requests only the guide
               pages, follows the robots.txt rules for BeseamBot (or for all
               crawlers where none name BeseamBot), waits at least three seconds
-              between requests to one site, slows down when a site answers
-              HTTP 429, and stops at the first refusal or challenge page.
+              between requests to one site, slows down when a site answers HTTP
+              429, and stops at the first refusal or challenge page.
             </p>
           </div>
           <div>
