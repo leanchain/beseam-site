@@ -70,6 +70,15 @@ export default function BotPage() {
               competitor storefront when it is part of a Beseam analysis
               workflow.
             </p>
+            <p className="mt-4 text-[16px] leading-[1.72] text-black/66">
+              Beseam Fit also reads the size guides that footwear and fashion
+              brands publish on their own sites, to build fit and sizing data
+              for merchants and shoppers. For this it requests only the guide
+              pages, follows the robots.txt rules for BeseamBot (or for all
+              crawlers where none name BeseamBot), waits at least three seconds
+              between requests to one site, slows down when a site answers
+              HTTP 429, and stops at the first refusal or challenge page.
+            </p>
           </div>
           <div>
             <p className="font-display text-[12px] font-semibold uppercase tracking-[0.08em] text-signal-ink">
