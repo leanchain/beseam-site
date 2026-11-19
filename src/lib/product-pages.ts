@@ -118,6 +118,8 @@ export type ProductPageData = {
   };
   /** Optional product-page slugs to link at the bottom, before siblings. */
   relatedProducts?: readonly string[];
+  /** Optional pointer to Beseam Fit (/fit), for industries it applies to. */
+  fit?: { heading: string; body: string; cta: string };
   stepsHeading: string;
   steps: readonly { title: string; body: string }[];
   faqs: readonly { question: string; answer: string }[];

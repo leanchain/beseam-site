@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 
 import { ArrowRight } from "lucide-react";
 
@@ -9,12 +9,32 @@ import type { PageCopy } from "@/i18n/pages";
 type DashboardCopy = PageCopy["fit"]["dashboard"];
 
 /**
- * The figures from the product video's dashboard. They are illustrative, and
- * the dashboard says so in its badge.
+ * Made-up figures that show the layout of the analytics. They are labelled as
+ * an illustration on the dashboard itself, and the dashboard shows no result
+ * (no with/without comparison, no lift): a number here must never read as
+ * something Beseam Fit achieved.
  */
 const FUNNEL = [18240, 15960, 6310, 5480, 2190] as const;
-const CONVERSION = { used: 6.4, notUsed: 2.9 } as const;
-const RETURNS = { used: 5.1, notUsed: 13.7 } as const;
+
+/**
+ * Thousands separators, written out. `Intl.NumberFormat("de-CH")` groups with
+ * U+2019 in Node and with an ASCII apostrophe in some browsers, so server and
+ * client markup differed and React threw a hydration error (#418). A fixed
+ * table renders the same everywhere. A locale missing here fails the build.
+ */
+const GROUP_SEPARATOR: Record<string, string> = {
+  "en-GB": ",",
+  "de-CH": "'",
+  "nl-NL": ".",
+};
+
+function formatInteger(value: number, locale: string) {
+  const separator = GROUP_SEPARATOR[locale];
+  if (separator === undefined) {
+    throw new Error(`No thousands separator defined for locale ${locale}`);
+  }
+  return String(value).replace(/\B(?=(\d{3})+(?!\d))/g, separator);
+}
 
 const ACCENT = "#e8573a";
 const DURATION_MS = 1600;
@@ -46,10 +66,9 @@ function linePath(values: readonly number[], width: number, height: number) {
 
 /**
  * Animated version of the analytics dashboard shown in the video: the funnel
- * of widget sessions, conversion and size-related returns with and without
- * Beseam Fit, and activity over time. Numbers count up, bars fill and lines
- * draw once it scrolls into view; with reduced motion it shows the final
- * state straight away.
+ * of widget sessions and activity over time, as an illustration. Numbers
+ * count up and lines draw once it scrolls into view; with reduced motion it
+ * shows the final state straight away.
  */
 export default function FitDashboard({
   copy,
@@ -91,15 +110,6 @@ export default function FitDashboard({
     };
   }, []);
 
-  const integer = new Intl.NumberFormat(numberLocale);
-  const decimal = new Intl.NumberFormat(numberLocale, {
-    minimumFractionDigits: 1,
-    maximumFractionDigits: 1,
-  });
-  const percent = (value: number) => `${decimal.format(value)}%`;
-  const lift = decimal.format(CONVERSION.used / CONVERSION.notUsed);
-  const drop = Math.round((1 - RETURNS.used / RETURNS.notUsed) * 100);
-
   const chartWidth = 600;
   const chartHeight = 140;
 
@@ -139,7 +149,7 @@ export default function FitDashboard({
                     className="mt-1 font-display text-[24px] font-semibold tabular-nums leading-none tracking-[-0.02em] sm:text-[28px]"
                     style={{ color: last ? ACCENT : "#111318" }}
                   >
-                    {integer.format(Math.round(value * progress))}
+                    {formatInteger(Math.round(value * progress), numberLocale)}
                   </p>
                   {previous ? (
                     <p className="mt-1.5 inline-flex items-center gap-1 text-[11px] font-semibold text-black/45">
@@ -151,37 +161,6 @@ export default function FitDashboard({
               );
             })}
           </ol>
-        </div>
-
-        {/* With and without Beseam Fit. */}
-        <div className="grid gap-4 md:grid-cols-2">
-          <Comparison
-            title={copy.conversion}
-            hint={copy.conversionHint}
-            badge={`${lift}× ${copy.higher}`}
-            badgeClass="bg-signal text-ink-deep"
-            rows={[
-              { label: copy.used, value: CONVERSION.used, strong: true },
-              { label: copy.notUsed, value: CONVERSION.notUsed },
-            ]}
-            scale={8}
-            progress={progress}
-            format={percent}
-          />
-          <Comparison
-            title={copy.returns}
-            hint={copy.returnsHint}
-            badge={`−${drop}%`}
-            badgeClass="text-white"
-            badgeStyle={{ background: ACCENT }}
-            rows={[
-              { label: copy.used, value: RETURNS.used, strong: true },
-              { label: copy.notUsed, value: RETURNS.notUsed },
-            ]}
-            scale={16}
-            progress={progress}
-            format={percent}
-          />
         </div>
 
         {/* Activity over time. */}
@@ -243,67 +222,9 @@ export default function FitDashboard({
             </g>
           </svg>
         </div>
-      </div>
-    </div>
-  );
-}
 
-function Comparison({
-  title,
-  hint,
-  badge,
-  badgeClass,
-  badgeStyle,
-  rows,
-  scale,
-  progress,
-  format,
-}: {
-  title: string;
-  hint: string;
-  badge: string;
-  badgeClass: string;
-  badgeStyle?: CSSProperties;
-  rows: { label: string; value: number; strong?: boolean }[];
-  /** The value that fills a bar completely. */
-  scale: number;
-  progress: number;
-  format: (value: number) => string;
-}) {
-  return (
-    <div className="rounded-media border border-black/10 p-4 sm:p-5">
-      <div className="flex items-start justify-between gap-3">
-        <div>
-          <p className="text-[13px] font-semibold text-ink-deep">{title}</p>
-          <p className="mt-0.5 text-[12px] text-black/50">{hint}</p>
-        </div>
-        <span
-          className={`shrink-0 rounded-button px-2.5 py-1 text-[12px] font-semibold transition-opacity duration-500 ${badgeClass}`}
-          style={{ ...badgeStyle, opacity: progress > 0.6 ? 1 : 0 }}
-        >
-          {badge}
-        </span>
+        <p className="text-[12px] leading-snug text-black/55">{copy.note}</p>
       </div>
-      <ul className="mt-4 space-y-3">
-        {rows.map((row) => (
-          <li key={row.label}>
-            <div className="flex items-baseline justify-between gap-3 text-[13px]">
-              <span className="text-black/64">{row.label}</span>
-              <span className="font-semibold tabular-nums text-ink-deep">
-                {format(row.value * progress)}
-              </span>
-            </div>
-            <span className="mt-1.5 block h-2 overflow-hidden rounded-full bg-black/[0.07]">
-              <span
-                className={`block h-full rounded-full ${row.strong ? "bg-ink-deep" : "bg-black/25"}`}
-                style={{
-                  width: `${Math.min(100, (row.value / scale) * 100 * progress)}%`,
-                }}
-              />
-            </span>
-          </li>
-        ))}
-      </ul>
     </div>
   );
 }

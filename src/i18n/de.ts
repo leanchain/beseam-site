@@ -28,6 +28,7 @@ export const de: Dictionary = {
           descriptions: "Produktbeschreibungen",
           content: "Content-Erstellung",
           technical: "Technische Performance",
+          fit: "Beseam Fit",
         },
       },
       solutions: {
@@ -46,6 +47,7 @@ export const de: Dictionary = {
           blog: "Blog",
           report: "KI-Shopping-Bericht",
           compare: "Vergleiche",
+          scan: "Kostenloser Shop-Scan",
         },
       },
       company: {

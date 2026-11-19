@@ -47,6 +47,7 @@ const DESTINATIONS: {
     descriptions: "/product/product-descriptions",
     content: "/product/content-creation",
     technical: "/product/technical-performance",
+    fit: "/fit",
   },
   solutions: {
     footwear: "/solutions/footwear",
@@ -59,6 +60,7 @@ const DESTINATIONS: {
     blog: "/blog",
     report: "/benchmarks",
     compare: "/compare",
+    scan: "/scan",
   },
   company: {
     about: "/about",

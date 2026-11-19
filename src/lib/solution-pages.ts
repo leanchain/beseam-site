@@ -325,6 +325,11 @@ export const SOLUTION_PAGES: readonly ProductPageData[] = [
       platformFaq,
     ],
     relatedProducts: ALL_PRODUCTS,
+    fit: {
+      heading: "Help shoppers pick the right shoe size",
+      body: "Beseam Fit is our shoe size recommender for footwear webshops. Shoppers choose a shoe they already wear and get one clear size on your product page, before checkout.",
+      cta: "Explore Beseam Fit",
+    },
   },
   {
     slug: "fashion-apparel",

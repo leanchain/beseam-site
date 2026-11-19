@@ -25,6 +25,7 @@ export const nl: Dictionary = {
           descriptions: "Productbeschrijvingen",
           content: "Contentcreatie",
           technical: "Technische prestaties",
+          fit: "Beseam Fit",
         },
       },
       solutions: {
@@ -43,6 +44,7 @@ export const nl: Dictionary = {
           blog: "Blog",
           report: "AI Shopping Rapport",
           compare: "Vergelijkingen",
+          scan: "Gratis webshopscan",
         },
       },
       company: {

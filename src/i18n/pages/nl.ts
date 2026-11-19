@@ -317,7 +317,7 @@ export const pagesNl: PageCopy = {
         body: "Ze kiezen het merk en de maat van een schoen die goed past. Een meetlint is niet nodig, al kunnen ze hun voet ook opmeten.",
       },
       {
-        title: "Vergeleken met 3.000+ merken en 75.000+ modellen",
+        title: "Vergeleken over merken en modellen heen",
         body: "Beseam Fit vergelijkt die schoen met de schoen op je productpagina, ook in de breedte.",
       },
       {
@@ -332,15 +332,15 @@ export const pagesNl: PageCopy = {
       "Interactieve preview in het Engels, geen aanmelding nodig. Product en adviezen zijn voorbeelden en geen meting van de nauwkeurigheid van de pasvorm.",
     demoFrameTitle: "Interactieve Beseam Fit-maatfinder, voorbeelddemo",
     demoShopperLabel: "Shopperweergave",
-    learnHeading: "Het leert van elke bestelling.",
+    learnHeading: "Zie wat er na elk advies gebeurt.",
     learnBody:
-      "Elk advies wordt vergeleken met wat shoppers bestellen en terugsturen. Die resultaten gaan terug in het pasvormmodel, zodat het advies steeds beter wordt.",
-    loop: ["Geadviseerd", "Besteld", "Geretourneerd", "Verbeterd"],
+      "Beseam Fit volgt elk advies tot aan de bestelling en de retour, zodat je analyses laten zien hoe het advies in je eigen webshop presteert.",
+    loop: ["Geadviseerd", "Besteld", "Geretourneerd", "Gemeten"],
     featuresHeading: "Gemaakt voor schoenenwebshops",
     features: [
       {
         title: "In minuten live",
-        body: "Voeg Beseam Fit toe aan je Shopify-thema via de thema-editor. Geen code en geen maattabellen nodig. Andere grote platforms worden ook ondersteund.",
+        body: "Voeg Beseam Fit toe aan je Shopify-thema via de thema-editor. Geen code nodig.",
       },
       {
         title: "Uitgebreide analyses",
@@ -353,7 +353,7 @@ export const pagesNl: PageCopy = {
     ],
     analyticsHeading: "Optimaliseer met uitgebreide analyses.",
     analyticsBody:
-      "Beseam Fit laat zien wat de widget voor je webshop doet, zodat je nooit hoeft te gokken of hij zich terugverdient.",
+      "De analyses van Beseam Fit laten zien hoe shoppers de widget in je webshop gebruiken, zodat je zelf kunt beoordelen of hij zich terugverdient.",
     analyticsPoints: [
       "Vergelijk conversie en maatgerelateerde retouren van shoppers die Beseam Fit gebruikten en shoppers die dat niet deden.",
       "Zie waar shoppers afhaken, van het openen van de widget tot de geadviseerde maat in het winkelwagentje.",
@@ -371,17 +371,11 @@ export const pagesNl: PageCopy = {
         "Maat geadviseerd",
         "In winkelwagen",
       ],
-      conversion: "Conversieratio",
-      conversionHint: "Bestellingen per sessie op een productpagina",
-      returns: "Maatgerelateerde retouren",
-      returnsHint: "Retouren binnen 30 dagen",
-      used: "Met Beseam Fit",
-      notUsed: "Zonder Beseam Fit",
-      higher: "hoger",
       activity: "Activiteit over tijd",
       activityHint: "Per dag, laatste 120 dagen",
       legendRecommended: "Maat geadviseerd",
       legendCart: "In winkelwagen",
+      note: "Illustratie met verzonnen cijfers om de opzet van de analyses te tonen. Het zijn geen resultaten van een webshop.",
     },
     faqs: [
       {
@@ -392,21 +386,21 @@ export const pagesNl: PageCopy = {
       {
         question: "Moet ik maattabellen uploaden?",
         answer:
-          "Nee. Beseam Fit gebruikt eigen maatgegevens van meer dan 3.000 merken en 75.000 modellen, en leert van je bestellingen en retouren.",
+          "Beseam Fit vergelijkt schoenen op basis van eigen maatgegevens. Hoe goed je assortiment gedekt is, hangt af van de merken en modellen die je verkoopt: plan een demo en we checken het samen met je.",
       },
       {
         question: "Met welke platforms werkt Beseam Fit?",
         answer:
-          "Beseam Fit staat als app in de Shopify App Store. Het werkt ook op andere grote e-commerceplatforms: plan een demo en we richten het samen met je in.",
+          "Beseam Fit staat als app in de Shopify App Store. Voor andere platforms: plan een demo en we vertellen je wat mogelijk is.",
       },
       {
         question: "Welke talen ondersteunt de widget?",
         answer: "Engels, Duits, Frans, Italiaans en Spaans.",
       },
       {
-        question: "Hoe wordt het advies beter?",
+        question: "Hoe zie ik hoe goed het advies werkt?",
         answer:
-          "Beseam Fit vergelijkt elk advies met wat shoppers bestellen en terugsturen, en gebruikt die resultaten om zijn pasvormmodel te verbeteren.",
+          "Beseam Fit volgt elk advies tot aan de bestelling en de retour en toont de resultaten in je analyses, zodat je ziet hoe het advies in je eigen webshop presteert.",
       },
       {
         question: "Wat kost het?",

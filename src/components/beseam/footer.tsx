@@ -57,6 +57,7 @@ function footerGroups(t: Dictionary) {
           label: menu.product.items.technical,
           href: "/product/technical-performance",
         },
+        { label: menu.product.items.fit, href: "/fit" },
         ...(PRICING_PUBLIC ? [{ label: menu.pricing, href: "/pricing" }] : []),
       ],
     },
@@ -85,6 +86,7 @@ function footerGroups(t: Dictionary) {
         { label: menu.resources.items.blog, href: "/blog" },
         { label: menu.resources.items.report, href: "/benchmarks" },
         { label: menu.resources.items.compare, href: "/compare" },
+        { label: menu.resources.items.scan, href: "/scan" },
       ],
     },
     {

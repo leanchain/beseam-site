@@ -348,6 +348,11 @@ export const SOLUTION_PAGES_DE: readonly ProductPageData[] = [
       platformFaq,
     ],
     relatedProducts: ALL_PRODUCTS,
+    fit: {
+      heading: "Helfen Sie Kundinnen und Kunden bei der Grössenwahl",
+      body: "Beseam Fit ist unser Grössenberater für Schuh-Onlineshops. Kundinnen und Kunden wählen einen Schuh, den sie bereits tragen, und erhalten auf Ihrer Produktseite vor dem Checkout eine klare Grösse.",
+      cta: "Beseam Fit entdecken",
+    },
   },
   {
     slug: "fashion-apparel",

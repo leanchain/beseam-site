@@ -38,6 +38,7 @@ const enDictionary = {
           descriptions: "Product descriptions",
           content: "Content creation",
           technical: "Technical performance",
+          fit: "Beseam Fit",
         },
       },
       solutions: {
@@ -56,6 +57,7 @@ const enDictionary = {
           blog: "Blog",
           report: "AI Shopping Report",
           compare: "Comparisons",
+          scan: "Free store scan",
         },
       },
       company: {

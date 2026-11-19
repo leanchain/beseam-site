@@ -350,6 +350,11 @@ export const SOLUTION_PAGES_NL: readonly ProductPageData[] = [
       platformFaq,
     ],
     relatedProducts: ALL_PRODUCTS,
+    fit: {
+      heading: "Help shoppers de juiste schoenmaat kiezen",
+      body: "Beseam Fit is ons maatadvies voor schoenenwebshops. Shoppers kiezen een schoen die ze al dragen en krijgen vóór het afrekenen één duidelijke maat op je productpagina.",
+      cta: "Ontdek Beseam Fit",
+    },
   },
   {
     slug: "fashion-apparel",

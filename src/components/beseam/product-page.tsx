@@ -174,6 +174,30 @@ export default function ProductPage({
       </Band>
     ));
   }
+  if (page.fit) {
+    const fit = page.fit;
+    bands.push((warm) => (
+      <section className={warm ? "bg-[#fff9e8]" : "bg-ground"}>
+        <div className="mx-auto flex max-w-[76rem] flex-col items-start gap-6 px-5 py-12 sm:px-8 sm:py-14 lg:flex-row lg:items-center lg:justify-between lg:gap-12 lg:px-10 lg:py-16">
+          <Reveal>
+            <h2 className="max-w-[28ch] text-balance font-display text-[clamp(1.6rem,2.6vw,2.2rem)] font-semibold leading-[1.1] tracking-[-0.025em] text-ink-deep">
+              {fit.heading}
+            </h2>
+            <p className="mt-3 max-w-[60ch] text-[16px] leading-[1.7] text-black/64">
+              {fit.body}
+            </p>
+          </Reveal>
+          <Link
+            href={link("/fit")}
+            className="group inline-flex min-h-12 shrink-0 items-center justify-center gap-3 rounded-button border border-black/15 bg-white px-7 py-3 text-[15px] font-semibold leading-tight text-ink-deep transition-colors hover:border-black/40"
+          >
+            {fit.cta}
+            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+          </Link>
+        </div>
+      </section>
+    ));
+  }
   bands.push((warm) => (
     <Band warm={warm} heading={page.stepsHeading}>
       <ol className="mt-10 grid gap-5 md:grid-cols-3 lg:mt-12 lg:gap-6">
